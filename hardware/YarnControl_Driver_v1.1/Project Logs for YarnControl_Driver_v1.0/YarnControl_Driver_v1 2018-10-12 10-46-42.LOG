@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=NetC11_1 Pin=C12-1
+Removed Pin From Net: NetName=GND Pin=C12-2
+Removed Member From Class: ClassName=YarnControl_Driver_v1.0 Member=C12
+Removed Member From Class: ClassName=YarnControl_Driver_v1.0 Member=C12

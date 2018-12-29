@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=+24V Pin=C?-1
+Removed Pin From Net: NetName=GND Pin=C?-2
+Removed Pin From Net: NetName=NetD12_2 Pin=R?-1
+Removed Pin From Net: NetName=NetR?_2 Pin=R?-2
+Removed Member From Class: ClassName=Double_H_Bridge_v1.0 Member=C?
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=NetD11_2 Pin=R?-1
+Added Pin To Net: NetName=NetD12_2 Pin=R?-1
+Added Pin To Net: NetName=NetQ13_3 Pin=R?-2
+Added Pin To Net: NetName=NetQ15_3 Pin=R?-2
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R31 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 0.5R
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K

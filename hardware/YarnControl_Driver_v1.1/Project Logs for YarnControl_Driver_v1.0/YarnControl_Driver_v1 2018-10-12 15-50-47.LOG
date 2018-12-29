@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=485_DE Pin=U4-2
+Removed Pin From Net: NetName=485_DE Pin=U4-3
+Added Component: Designator=R11(0805)
+Added Pin To Net: NetName=485_DE Pin=R11-2
+Added Pin To Net: NetName=NetR11_1 Pin=R11-1
+Added Pin To Net: NetName=NetR11_1 Pin=U4-2
+Added Pin To Net: NetName=NetR11_1 Pin=U4-3
+Added Net: Name=NetR11_1
+Added Member To Class: ClassName=YarnControl_Driver_v1.0 Member=Component R11 1K

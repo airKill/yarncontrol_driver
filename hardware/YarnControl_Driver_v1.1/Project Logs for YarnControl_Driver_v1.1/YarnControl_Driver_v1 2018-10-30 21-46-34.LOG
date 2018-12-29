@@ -1,0 +1,5 @@
+Change Component DesignItemId : Designator=C3 Old DesignItemId=Cap Pol1 New DesignItemId=CAP
+Change Component Footprint: Designator=C3 Old Footprint=CAP-5mm New Footprint=1812
+Change Component Comment : Designator=C3 Old Comment=220uF New Comment=47uF
+Added Component: Designator=C34(CAP-5mm)
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component C34 1000uF/35V

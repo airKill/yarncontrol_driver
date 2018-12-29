@@ -1,0 +1,19 @@
+Change Component Footprint: Designator=R48 Old Footprint=1812 New Footprint=2512
+Added Component: Designator=U11(EL357N)
+Added Component: Designator=U12(EL357N)
+Added Component: Designator=U13(EL357N)
+Added Pin To Net: NetName=NetR28_2 Pin=U11-1
+Added Pin To Net: NetName=ENA Pin=U11-2
+Added Pin To Net: NetName=NetD10_1 Pin=U11-3
+Added Pin To Net: NetName=VDD Pin=U11-4
+Added Pin To Net: NetName=NetR32_2 Pin=U12-1
+Added Pin To Net: NetName=IN1 Pin=U12-2
+Added Pin To Net: NetName=NetD12_1 Pin=U12-3
+Added Pin To Net: NetName=VDD Pin=U12-4
+Added Pin To Net: NetName=NetR37_2 Pin=U13-1
+Added Pin To Net: NetName=IN2 Pin=U13-2
+Added Pin To Net: NetName=NetD13_1 Pin=U13-3
+Added Pin To Net: NetName=VDD Pin=U13-4
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component U11 EL357N
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component U12 EL357N
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component U13 EL357N

@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=485_RX Pin=U1-25
+Added Pin To Net: NetName=485_TX Pin=U1-25

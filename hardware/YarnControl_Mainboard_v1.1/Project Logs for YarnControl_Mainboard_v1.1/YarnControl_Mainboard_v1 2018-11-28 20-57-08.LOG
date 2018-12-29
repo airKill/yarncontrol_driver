@@ -1,0 +1,11 @@
+Removed Pin From Net: NetName=RFID_TXD Pin=J12-1
+Removed Pin From Net: NetName=RFID_RXD Pin=J12-2
+Removed Pin From Net: NetName=+5V Pin=J12-3
+Removed Pin From Net: NetName=GND Pin=J12-4
+Removed Member From Class: ClassName=mainboard_interface.v1.1 Member=J12
+Added Component: Designator=U10(MifareRC522)
+Added Pin To Net: NetName=GND Pin=U10-1
+Added Pin To Net: NetName=RFID_TXD Pin=U10-2
+Added Pin To Net: NetName=RFID_RXD Pin=U10-3
+Added Pin To Net: NetName=+5V Pin=U10-4
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component U10 MifareRC522

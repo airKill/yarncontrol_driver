@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=SENSOR_SCK Pin=U5-11
+Removed Pin From Net: NetName=SENSOR_DOUT Pin=U5-12
+Added Component: Designator=R52(0805)
+Added Component: Designator=R53(0805)
+Added Pin To Net: NetName=SENSOR_SCK Pin=R52-1
+Added Pin To Net: NetName=SENSOR_DOUT Pin=R53-1
+Added Pin To Net: NetName=NetR52_2 Pin=R52-2
+Added Pin To Net: NetName=NetR52_2 Pin=U5-11
+Added Net: Name=NetR52_2
+Added Pin To Net: NetName=NetR53_2 Pin=R53-2
+Added Pin To Net: NetName=NetR53_2 Pin=U5-12
+Added Net: Name=NetR53_2
+Added Member To Class: ClassName=YarnControl_Driver_v1.3 Member=Component R52 1K
+Added Member To Class: ClassName=YarnControl_Driver_v1.3 Member=Component R53 1K

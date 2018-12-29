@@ -1,0 +1,3 @@
+Change Component Footprint: Designator=J4 Old Footprint=J381-180 New Footprint=KF2510-4
+Change Class Name : Old Net Name=YarnControl_Driver_v1.2 New Net Name=YarnControl_Driver_v1.3
+Change Class Name : Old Net Name=YarnControl_motor_v1.2 New Net Name=YarnControl_motor_v1.3

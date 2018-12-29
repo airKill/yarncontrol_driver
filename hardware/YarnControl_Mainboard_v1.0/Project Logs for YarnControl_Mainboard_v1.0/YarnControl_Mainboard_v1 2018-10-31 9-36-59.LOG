@@ -1,0 +1,2 @@
+Added Pin To Net: NetName=RFID_TXD Pin=U1-80
+Added Pin To Net: NetName=RFID_RXD Pin=U1-83

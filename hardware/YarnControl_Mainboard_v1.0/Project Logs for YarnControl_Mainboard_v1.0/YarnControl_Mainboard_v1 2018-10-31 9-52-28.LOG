@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=STEP_MOTOR3_EN Pin=J5-4
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J5-4

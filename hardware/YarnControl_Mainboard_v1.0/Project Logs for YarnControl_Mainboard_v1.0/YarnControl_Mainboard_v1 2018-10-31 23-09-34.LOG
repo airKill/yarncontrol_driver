@@ -1,0 +1,8 @@
+Added Component: Designator=J13(XH2.54-6T)
+Added Pin To Net: NetName=+5V Pin=J13-1
+Added Pin To Net: NetName=NetJ13_2 Pin=J13-2
+Added Pin To Net: NetName=NetJ13_3 Pin=J13-3
+Added Pin To Net: NetName=NetJ13_4 Pin=J13-4
+Added Pin To Net: NetName=NetJ13_5 Pin=J13-5
+Added Pin To Net: NetName=GND Pin=J13-6
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component J13 SERVO MOTOR

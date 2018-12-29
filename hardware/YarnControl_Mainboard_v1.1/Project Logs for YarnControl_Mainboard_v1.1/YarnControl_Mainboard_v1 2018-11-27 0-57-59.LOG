@@ -1,0 +1,10 @@
+Added Component: Designator=J7(J381-4)
+Added Component: Designator=R30(0805)
+Added Pin To Net: NetName=RS485_A Pin=J7-1
+Added Pin To Net: NetName=RS485_B Pin=J7-2
+Added Pin To Net: NetName=GND Pin=J7-3
+Added Pin To Net: NetName=+24V Pin=J7-4
+Added Pin To Net: NetName=+5V Pin=R30-1
+Added Pin To Net: NetName=NetJ10_1 Pin=R30-2
+Added Member To Class: ClassName=mainboard_rs485.v1.1 Member=Component J7 SH-4
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component R30 0R

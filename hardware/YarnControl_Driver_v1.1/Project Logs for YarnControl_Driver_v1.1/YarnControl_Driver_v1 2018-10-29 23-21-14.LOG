@@ -1,0 +1,39 @@
+Change Component Footprint: Designator=D5 Old Footprint=DIODE-0.7 New Footprint=DIDODE_LL-34
+Change Component Footprint: Designator=D11 Old Footprint=DIODE-0.7 New Footprint=DIDODE_LL-34
+Added Component: Designator=D6(DO-214AA/SMB)
+Added Component: Designator=D7(DIDODE_LL-34)
+Added Component: Designator=Q2(TO-252-2L)
+Added Component: Designator=Q3(SOT-23)
+Added Component: Designator=Q4(TO-252)
+Added Component: Designator=Q5(TO-252)
+Added Component: Designator=Q10(SOT-23)
+Added Component: Designator=R27(0805)
+Added Pin To Net: NetName=+24V Pin=D6-1
+Added Pin To Net: NetName=GND Pin=D6-2
+Added Pin To Net: NetName=REFER Pin=D7-1
+Added Pin To Net: NetName=+24V Pin=D7-2
+Added Pin To Net: NetName=NetD5_2 Pin=Q2-1
+Added Pin To Net: NetName=NetF2_1 Pin=Q2-2
+Added Pin To Net: NetName=VDD Pin=Q2-3
+Added Pin To Net: NetName=NetQ3_1 Pin=Q3-1
+Added Pin To Net: NetName=GND Pin=Q3-2
+Added Pin To Net: NetName=NetQ3_3 Pin=Q3-3
+Added Pin To Net: NetName=M1_2 Pin=Q4-1
+Added Pin To Net: NetName=SWITCH_23 Pin=Q4-2
+Added Pin To Net: NetName=+24V Pin=Q4-3
+Added Pin To Net: NetName=M1_1 Pin=Q5-1
+Added Pin To Net: NetName=SWITCH_21 Pin=Q5-2
+Added Pin To Net: NetName=+24V Pin=Q5-3
+Added Pin To Net: NetName=NetQ10_1 Pin=Q10-1
+Added Pin To Net: NetName=GND Pin=Q10-2
+Added Pin To Net: NetName=NetQ10_3 Pin=Q10-3
+Added Pin To Net: NetName=+24V Pin=R27-1
+Added Pin To Net: NetName=NetQ3_3 Pin=R27-2
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component D6 SMCJ24A
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component D7 ZMM6V2
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component Q2 2SD1760
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component Q3 MMBT3904
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component Q4 NCE40P70K
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component Q5 NCE40P70K
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component Q10 MMBT3904
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component R27 10K

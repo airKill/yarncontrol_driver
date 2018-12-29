@@ -1,0 +1,88 @@
+Removed Pin From Net: NetName=CLOSE_SW Pin=U1-60
+Added Component: Designator=R17(0805)
+Added Component: Designator=R35(0805)
+Added Component: Designator=R36(0805)
+Added Component: Designator=R37(0805)
+Added Component: Designator=R38(0805)
+Added Component: Designator=R39(0805)
+Added Component: Designator=R40(0805)
+Added Component: Designator=R41(0805)
+Added Component: Designator=R42(0805)
+Added Component: Designator=R43(0805)
+Added Component: Designator=R44(0805)
+Added Component: Designator=R45(0805)
+Added Component: Designator=R46(0805)
+Added Component: Designator=R47(0805)
+Added Component: Designator=U9(SO-16)
+Added Pin To Net: NetName=CLOSE_SW Pin=U1-4
+Added Pin To Net: NetName=GND Pin=U9-8
+Added Pin To Net: NetName=+5V Pin=U9-16
+Added Pin To Net: NetName=DIFF_G\ Pin=R42-1
+Added Pin To Net: NetName=DIFF_G\ Pin=U1-53
+Added Net: Name=DIFF_G\
+Added Pin To Net: NetName=DIFF_G Pin=R40-2
+Added Pin To Net: NetName=DIFF_G Pin=U1-54
+Added Net: Name=DIFF_G
+Added Pin To Net: NetName=DIFF_IN1 Pin=R35-2
+Added Pin To Net: NetName=DIFF_IN1 Pin=U1-62
+Added Net: Name=DIFF_IN1
+Added Pin To Net: NetName=DIFF_IN2 Pin=R45-2
+Added Pin To Net: NetName=DIFF_IN2 Pin=U1-61
+Added Net: Name=DIFF_IN2
+Added Pin To Net: NetName=DIFF_IN3 Pin=R47-1
+Added Pin To Net: NetName=DIFF_IN3 Pin=U1-60
+Added Net: Name=DIFF_IN3
+Added Pin To Net: NetName=DIFF_IN4 Pin=R37-1
+Added Pin To Net: NetName=DIFF_IN4 Pin=U1-59
+Added Net: Name=DIFF_IN4
+Added Pin To Net: NetName=DIFF_OUTPUT1+ Pin=R17-1
+Added Pin To Net: NetName=DIFF_OUTPUT1+ Pin=U9-2
+Added Net: Name=DIFF_OUTPUT1+
+Added Pin To Net: NetName=DIFF_OUTPUT1- Pin=R36-1
+Added Pin To Net: NetName=DIFF_OUTPUT1- Pin=U9-3
+Added Net: Name=DIFF_OUTPUT1-
+Added Pin To Net: NetName=DIFF_OUTPUT2+ Pin=R38-1
+Added Pin To Net: NetName=DIFF_OUTPUT2+ Pin=U9-6
+Added Net: Name=DIFF_OUTPUT2+
+Added Pin To Net: NetName=DIFF_OUTPUT2- Pin=R39-1
+Added Pin To Net: NetName=DIFF_OUTPUT2- Pin=U9-5
+Added Net: Name=DIFF_OUTPUT2-
+Added Pin To Net: NetName=DIFF_OUTPUT3+ Pin=R41-1
+Added Pin To Net: NetName=DIFF_OUTPUT3+ Pin=U9-10
+Added Net: Name=DIFF_OUTPUT3+
+Added Pin To Net: NetName=DIFF_OUTPUT3- Pin=R43-1
+Added Pin To Net: NetName=DIFF_OUTPUT3- Pin=U9-11
+Added Net: Name=DIFF_OUTPUT3-
+Added Pin To Net: NetName=DIFF_OUTPUT4+ Pin=R44-1
+Added Pin To Net: NetName=DIFF_OUTPUT4+ Pin=U9-14
+Added Net: Name=DIFF_OUTPUT4+
+Added Pin To Net: NetName=DIFF_OUTPUT4- Pin=R46-1
+Added Pin To Net: NetName=DIFF_OUTPUT4- Pin=U9-13
+Added Net: Name=DIFF_OUTPUT4-
+Added Pin To Net: NetName=NetJ13_2 Pin=R17-2
+Added Net: Name=NetJ13_2
+Added Pin To Net: NetName=NetJ13_3 Pin=R36-2
+Added Net: Name=NetJ13_3
+Added Pin To Net: NetName=NetJ13_4 Pin=R38-2
+Added Net: Name=NetJ13_4
+Added Pin To Net: NetName=NetJ13_5 Pin=R39-2
+Added Net: Name=NetJ13_5
+Added Pin To Net: NetName=NetR35_1 Pin=R35-1
+Added Pin To Net: NetName=NetR35_1 Pin=U9-1
+Added Net: Name=NetR35_1
+Added Pin To Net: NetName=NetR37_2 Pin=R37-2
+Added Pin To Net: NetName=NetR37_2 Pin=U9-15
+Added Net: Name=NetR37_2
+Added Pin To Net: NetName=NetR40_1 Pin=R40-1
+Added Pin To Net: NetName=NetR40_1 Pin=U9-4
+Added Net: Name=NetR40_1
+Added Pin To Net: NetName=NetR42_2 Pin=R42-2
+Added Pin To Net: NetName=NetR42_2 Pin=U9-12
+Added Net: Name=NetR42_2
+Added Pin To Net: NetName=NetR45_1 Pin=R45-1
+Added Pin To Net: NetName=NetR45_1 Pin=U9-7
+Added Net: Name=NetR45_1
+Added Pin To Net: NetName=NetR47_2 Pin=R47-2
+Added Pin To Net: NetName=NetR47_2 Pin=U9-9
+Added Net: Name=NetR47_2
+Added Class: Name=mainboard_motor.v1.0

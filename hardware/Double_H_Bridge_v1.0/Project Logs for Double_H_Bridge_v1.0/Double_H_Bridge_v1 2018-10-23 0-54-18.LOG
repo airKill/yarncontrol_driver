@@ -1,0 +1,65 @@
+Removed Pin From Net: NetName=NetD12_2 Pin=R?-1
+Removed Pin From Net: NetName=NetR?_2 Pin=R?-2
+Added Component: Designator=U1(SO-14)
+Added Component: Designator=U2(SO-14)
+Added Component: Designator=U3(SO-14)
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=NetD3_1 Pin=R?-1
+Added Pin To Net: NetName=NetD7_2 Pin=R?-1
+Added Pin To Net: NetName=NetD8_2 Pin=R?-1
+Added Pin To Net: NetName=NetD11_2 Pin=R?-1
+Added Pin To Net: NetName=NetD12_2 Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-2
+Added Pin To Net: NetName=NetD4_1 Pin=R?-2
+Added Pin To Net: NetName=NetD7_2 Pin=R?-2
+Added Pin To Net: NetName=NetD8_2 Pin=R?-2
+Added Pin To Net: NetName=NetQ13_3 Pin=R?-2
+Added Pin To Net: NetName=NetQ15_3 Pin=R?-2
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Pin To Net: NetName=NetR27_2 Pin=U1-1
+Added Pin To Net: NetName=NetR25_2 Pin=U1-2
+Added Pin To Net: NetName=SWITCH_21 Pin=U1-3
+Added Pin To Net: NetName=NetR25_2 Pin=U1-4
+Added Pin To Net: NetName=NetR29_2 Pin=U1-5
+Added Pin To Net: NetName=SWITCH_23 Pin=U1-6
+Added Pin To Net: NetName=REFER Pin=U1-7
+Added Pin To Net: NetName=SWITCH_13 Pin=U1-8
+Added Pin To Net: NetName=NetR19_2 Pin=U1-9
+Added Pin To Net: NetName=NetR23_2 Pin=U1-10
+Added Pin To Net: NetName=SWITCH_11 Pin=U1-11
+Added Pin To Net: NetName=NetR21_2 Pin=U1-12
+Added Pin To Net: NetName=NetR19_2 Pin=U1-13
+Added Pin To Net: NetName=+24V Pin=U1-14
+Added Pin To Net: NetName=NetD7_1 Pin=U2-1
+Added Pin To Net: NetName=NetD4_1 Pin=U2-2
+Added Pin To Net: NetName=SWITCH_22 Pin=U2-3
+Added Pin To Net: NetName=NetD4_1 Pin=U2-4
+Added Pin To Net: NetName=NetD9_1 Pin=U2-5
+Added Pin To Net: NetName=SWITCH_24 Pin=U2-6
+Added Pin To Net: NetName=GND Pin=U2-7
+Added Pin To Net: NetName=SWITCH_14 Pin=U2-8
+Added Pin To Net: NetName=NetD3_1 Pin=U2-9
+Added Pin To Net: NetName=NetD10_1 Pin=U2-10
+Added Pin To Net: NetName=SWITCH_12 Pin=U2-11
+Added Pin To Net: NetName=NetD8_1 Pin=U2-12
+Added Pin To Net: NetName=NetD3_1 Pin=U2-13
+Added Pin To Net: NetName=VDD Pin=U2-14
+Added Pin To Net: NetName=NetD3_1 Pin=U3-1
+Added Pin To Net: NetName=NetD3_1 Pin=U3-2
+Added Pin To Net: NetName=NetD4_1 Pin=U3-4
+Added Pin To Net: NetName=NetD4_1 Pin=U3-5
+Added Pin To Net: NetName=NetR?_2 Pin=U3-6
+Added Pin To Net: NetName=GND Pin=U3-7
+Added Pin To Net: NetName=VDD Pin=U3-14
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 0.5R
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component U1 74VHC00
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component U2 74HC08
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component U3 74VHC00

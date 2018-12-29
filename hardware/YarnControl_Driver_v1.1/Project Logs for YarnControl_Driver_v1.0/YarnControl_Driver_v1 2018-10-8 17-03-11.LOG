@@ -1,0 +1,3 @@
+Change Component Footprint: Designator=J4 Old Footprint=CH3.96-2P New Footprint=CH3.96-4P
+Added Pin To Net: NetName=SENSOR_A- Pin=J4-3
+Added Pin To Net: NetName=SENSOR_A+ Pin=J4-4

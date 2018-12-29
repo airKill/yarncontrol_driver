@@ -1,0 +1,44 @@
+#ifndef __ESP8266_INIT_H__
+#define __ESP8266_INIT_H__
+
+#include "stm32f10x.h"
+
+
+#define ESP8266_EN_PORT           	 GPIOA
+//#define ESP8266_EN_PIN             GPIO_Pin_1	//金老师开发板
+#define ESP8266_EN_PIN             	GPIO_Pin_7		//实际pcb
+#define ESP8266_EN_RCC            	RCC_APB2Periph_GPIOA
+
+#define ESP8266_EN_ACTIVE          GPIO_SetBits(ESP8266_EN_PORT, ESP8266_EN_PIN)
+#define ESP8266_EN_INACTIVE        GPIO_ResetBits(ESP8266_EN_PORT, ESP8266_EN_PIN)
+
+#define ESP8266_USART				USART2
+
+typedef struct
+{
+    char *cmd_resp;					//命令回复指针。比如获取命令返回的数据，可以提取此指针内的数据
+    char *cmd_hdl;					//命令处理。在发送命令后，会在返回内容里搜索用户指定的返回数据
+    uint8_t espStatus;
+    uint8_t netWork;
+} NET_DEVICE_INFO_T;
+
+enum
+{
+    ESP8266_GOT_IP = 2,
+    ESP8266_Connect_OK,
+    ESP8266_CLOSE_TCP,
+    ESP8266_LOST_WIFI,
+	ESP8266_Busy,
+	ESP8266_NOREPONSE,
+    Reconfig_WIFI
+};
+
+extern NET_DEVICE_INFO_T netDeviceInfo_t;
+
+
+void esp8266_init(void);
+
+
+
+#endif
+

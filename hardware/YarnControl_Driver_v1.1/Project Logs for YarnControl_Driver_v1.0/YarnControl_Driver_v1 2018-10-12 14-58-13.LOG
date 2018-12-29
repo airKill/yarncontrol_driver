@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=+24V Pin=Q2-1
+Removed Pin From Net: NetName=MOTOR_2 Pin=Q2-3
+Added Pin To Net: NetName=MOTOR_2 Pin=Q2-1
+Added Pin To Net: NetName=+24V Pin=Q2-3

@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=DIFF_G\ Pin=U1-53
+Removed Pin From Net: NetName=DIFF_IN4 Pin=U1-59
+Removed Pin From Net: NetName=DIFF_IN3 Pin=U1-60
+Removed Pin From Net: NetName=DIFF_IN2 Pin=U1-61
+Removed Pin From Net: NetName=DIFF_IN1 Pin=U1-62
+Added Pin To Net: NetName=DIFF_IN1 Pin=U1-53
+Added Pin To Net: NetName=DIFF_IN2 Pin=U1-59
+Added Pin To Net: NetName=DIFF_IN4 Pin=U1-60
+Added Pin To Net: NetName=DIFF_G\ Pin=U1-61
+Added Pin To Net: NetName=DIFF_IN3 Pin=U1-62

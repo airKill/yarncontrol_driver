@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=+24V Pin=J7-1
+Removed Pin From Net: NetName=GND Pin=J7-2
+Removed Pin From Net: NetName=RS485_A Pin=J7-3
+Removed Pin From Net: NetName=RS485_B Pin=J7-4
+Added Pin To Net: NetName=GND Pin=J7-1
+Added Pin To Net: NetName=+24V Pin=J7-2
+Added Pin To Net: NetName=RS485_B Pin=J7-3
+Added Pin To Net: NetName=RS485_A Pin=J7-4

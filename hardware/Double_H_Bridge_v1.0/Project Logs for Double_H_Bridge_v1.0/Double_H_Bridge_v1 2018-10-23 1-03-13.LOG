@@ -1,0 +1,17 @@
+Removed Pin From Net: NetName=NetD12_2 Pin=R?-1
+Removed Pin From Net: NetName=NetR?_2 Pin=R?-2
+Added Component: Designator=U0(SOT-23)
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=NetD11_2 Pin=R?-1
+Added Pin To Net: NetName=NetD12_2 Pin=R?-1
+Added Pin To Net: NetName=NetQ13_3 Pin=R?-2
+Added Pin To Net: NetName=NetQ15_3 Pin=R?-2
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Pin To Net: NetName=NetC4_2 Pin=U0-1
+Added Pin To Net: NetName=NetD3_2 Pin=U0-2
+Added Pin To Net: NetName=VDD Pin=U0-3
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 0.5R
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component U0 MAX809

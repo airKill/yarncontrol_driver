@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=VDD Pin=FB1-2
+Removed Member From Class: ClassName=Double_H_Bridge_v1.0 Member=FB1
+Added Pin To Net: NetName=VDD Pin=U4-4
+Added Pin To Net: NetName=VDD Pin=U5-4
+Added Pin To Net: NetName=VDD Pin=U6-4
+Added Pin To Net: NetName=VDD Pin=U7-4
+Added Pin To Net: NetName=VDD Pin=U8-4
+Added Pin To Net: NetName=VDD Pin=U9-4

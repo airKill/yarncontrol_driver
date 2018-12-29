@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=RS485_B Pin=R13-1
+Added Component: Designator=J9(J254-2)
+Added Pin To Net: NetName=RS485_B Pin=J9-1
+Added Pin To Net: NetName=NetJ9_2 Pin=J9-2
+Added Pin To Net: NetName=NetJ9_2 Pin=R13-1
+Added Net: Name=NetJ9_2
+Added Member To Class: ClassName=mainboard_rs485.v1.2 Member=Component J9 Jumper

@@ -1,0 +1,2 @@
+Change Component Footprint: Designator=U5 Old Footprint=SO-8 New Footprint=MP1584
+Added Pin To Net: NetName=GND Pin=U5-0

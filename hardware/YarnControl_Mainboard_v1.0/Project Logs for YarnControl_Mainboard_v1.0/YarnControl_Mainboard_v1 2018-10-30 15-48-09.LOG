@@ -1,0 +1,2 @@
+Change Component Footprint: Designator=L1 Old Footprint=0805 New Footprint=Inductance6*6
+Change Component Comment : Designator=C23 Old Comment=NS New Comment=NC

@@ -1,0 +1,42 @@
+Change Component Comment : Designator=R27 Old Comment=10R New Comment=0.5R
+Added Component: Designator=S?(SWITCH_8)
+Added Pin To Net: NetName=GND Pin=S?-9
+Added Pin To Net: NetName=GND Pin=S?-10
+Added Pin To Net: NetName=GND Pin=S?-11
+Added Pin To Net: NetName=GND Pin=S?-12
+Added Pin To Net: NetName=GND Pin=S?-13
+Added Pin To Net: NetName=GND Pin=S?-14
+Added Pin To Net: NetName=GND Pin=S?-15
+Added Pin To Net: NetName=GND Pin=S?-16
+Added Pin To Net: NetName=485_DE Pin=U6-11
+Added Pin To Net: NetName=ENA Pin=U6-14
+Added Pin To Net: NetName=IN1 Pin=U6-15
+Added Pin To Net: NetName=IN2 Pin=U6-16
+Added Pin To Net: NetName=NetD6_1 Pin=U6-17
+Added Pin To Net: NetName=SENSOR_SCK Pin=U6-18
+Added Pin To Net: NetName=SENSOR_DOUT Pin=U6-19
+Added Pin To Net: NetName=SW1 Pin=S?-1
+Added Pin To Net: NetName=SW1 Pin=U6-41
+Added Net: Name=SW1
+Added Pin To Net: NetName=SW2 Pin=S?-2
+Added Pin To Net: NetName=SW2 Pin=U6-40
+Added Net: Name=SW2
+Added Pin To Net: NetName=SW3 Pin=S?-3
+Added Pin To Net: NetName=SW3 Pin=U6-39
+Added Net: Name=SW3
+Added Pin To Net: NetName=SW4 Pin=S?-4
+Added Pin To Net: NetName=SW4 Pin=U6-38
+Added Net: Name=SW4
+Added Pin To Net: NetName=SW5 Pin=S?-5
+Added Pin To Net: NetName=SW5 Pin=U6-28
+Added Net: Name=SW5
+Added Pin To Net: NetName=SW6 Pin=S?-6
+Added Pin To Net: NetName=SW6 Pin=U6-27
+Added Net: Name=SW6
+Added Pin To Net: NetName=SW7 Pin=S?-7
+Added Pin To Net: NetName=SW7 Pin=U6-26
+Added Net: Name=SW7
+Added Pin To Net: NetName=SW8 Pin=S?-8
+Added Pin To Net: NetName=SW8 Pin=U6-25
+Added Net: Name=SW8
+Added Member To Class: ClassName=YarnControl_Driver_v1.0 Member=Component S? SW-CH8

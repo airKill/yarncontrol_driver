@@ -1,0 +1,17 @@
+Removed Pin From Net: NetName=+3.3V Pin=R2-1
+Removed Pin From Net: NetName=CLOSE_SW Pin=SW1-1
+Removed Member From Class: ClassName=mainboard_interface.v1.2 Member=SW1
+Added Component: Designator=J6(J2.54-3)
+Added Pin To Net: NetName=CLOSE_SW Pin=J6-2
+Added Pin To Net: NetName=+3.3V Pin=R2-1
+Added Pin To Net: NetName=BOOT0 Pin=R2-1
+Added Pin To Net: NetName=GND Pin=R2-2
+Added Pin To Net: NetName=NetJ6_1 Pin=J6-1
+Added Pin To Net: NetName=NetJ6_1 Pin=R28-2
+Added Pin To Net: NetName=NetJ6_1 Pin=U8-4
+Added Net: Name=NetJ6_1
+Added Pin To Net: NetName=NetJ6_3 Pin=J6-3
+Added Pin To Net: NetName=NetJ6_3 Pin=R2-2
+Added Pin To Net: NetName=NetJ6_3 Pin=U11-4
+Added Net: Name=NetJ6_3
+Added Member To Class: ClassName=mainboard_interface.v1.2 Member=Component J6 SH-3

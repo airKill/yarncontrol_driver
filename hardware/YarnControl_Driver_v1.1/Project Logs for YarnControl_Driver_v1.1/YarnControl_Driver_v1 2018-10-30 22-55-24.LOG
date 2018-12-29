@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=NetC6_1 Pin=C6-1
+Removed Pin From Net: NetName=GND Pin=C6-2
+Removed Member From Class: ClassName=YarnControl_Driver_v1.1 Member=C6
+Removed Member From Class: ClassName=YarnControl_Driver_v1.1 Member=C6
+Change Net Name : Old Net Name=NetC6_1 New Net Name=NetC7_1

@@ -1,0 +1,40 @@
+Removed Pin From Net: NetName=NetD12_2 Pin=R?-1
+Removed Pin From Net: NetName=NetR?_2 Pin=R?-2
+Change Component Designator: OldDesignator=R? NewDesignator=R31
+Change Component Designator: OldDesignator=R? NewDesignator=R32
+Change Component Designator: OldDesignator=R? NewDesignator=R33
+Change Component Designator: OldDesignator=R? NewDesignator=R34
+Added Component: Designator=P2(J508-2(1))
+Added Component: Designator=P3(J508-2(1))
+Added Component: Designator=P4(J508-2(1))
+Added Pin To Net: NetName=+24V Pin=P2-1
+Added Pin To Net: NetName=GND Pin=P2-2
+Added Pin To Net: NetName=M2_1 Pin=P3-1
+Added Pin To Net: NetName=M2_2 Pin=P3-2
+Added Pin To Net: NetName=M1_1 Pin=P4-1
+Added Pin To Net: NetName=M1_2 Pin=P4-2
+Added Pin To Net: NetName=NetD3_1 Pin=R31-1
+Added Pin To Net: NetName=NetD8_2 Pin=R31-2
+Added Pin To Net: NetName=NetD8_2 Pin=R32-1
+Added Pin To Net: NetName=GND Pin=R32-2
+Added Pin To Net: NetName=NetD7_2 Pin=R33-1
+Added Pin To Net: NetName=NetD4_1 Pin=R33-2
+Added Pin To Net: NetName=GND Pin=R34-1
+Added Pin To Net: NetName=NetD7_2 Pin=R34-2
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=NetD11_2 Pin=R?-1
+Added Pin To Net: NetName=NetD12_2 Pin=R?-1
+Added Pin To Net: NetName=NetQ13_3 Pin=R?-2
+Added Pin To Net: NetName=NetQ15_3 Pin=R?-2
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component P2 SH-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component P3 SH-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component P4 SH-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R32 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R33 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R34 10K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 0.5R
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 0.5R

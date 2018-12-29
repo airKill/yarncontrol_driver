@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=NetD12_2 Pin=R?-1
+Removed Pin From Net: NetName=NetR?_2 Pin=R?-2
+Change Component Designator: OldDesignator=R? NewDesignator=R100
+Change Component Designator: OldDesignator=R? NewDesignator=R101
+Added Pin To Net: NetName=GND Pin=R100-1
+Added Pin To Net: NetName=NetQ13_3 Pin=R100-2
+Added Pin To Net: NetName=GND Pin=R101-1
+Added Pin To Net: NetName=NetQ15_3 Pin=R101-2
+Added Pin To Net: NetName=NetD11_2 Pin=R?-1
+Added Pin To Net: NetName=NetD12_2 Pin=R?-1
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R100 0.5R
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R? 4.7K

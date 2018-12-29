@@ -1,0 +1,96 @@
+C51 COMPILER V7.50   直羅电籣                                                              02/19/2012 23:24:36 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE 直羅电籣
+OBJECT MODULE PLACED IN 直流电机.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 直流电机.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          //**************************************************************************//
+   2          //      程序名称：直流电机测试程序
+   3          //      功能描述：直流电机正转2秒，反转2秒，自动加速正转，自动减速反转，依次循环
+   4          //      单片机：  AT89S52，外接12M晶振
+   5          //      硬件连接：P1.0----IN1
+   6          //                        P1.1----IN2
+   7          //            P1.2----ENA
+   8          //                        直流电机两端分别接OUT1和OUT2，
+   9          //                        电机驱动电压根据所接电机而定,驱动板芯片逻辑电压为+5V
+  10          //      维护记录：2012.2.8 双龙电子科技
+  11          //**************************************************************************//
+  12          #include<reg52.h>
+  13          sbit IN1=P1^0;
+  14          sbit IN2=P1^1;
+  15          sbit ENA=P1^2;
+  16          void delay(unsigned int z);
+  17          void delay_us(unsigned int aa);
+  18          /*******************主函数**************************/
+  19          void main()
+  20          {
+  21   1              while(1)
+  22   1              {
+  23   2                      unsigned int i,cycle=0,T=2048;
+  24   2                      IN1=1;      //正转
+  25   2                      IN2=0;
+  26   2                      for(i=0;i<200;i++)
+  27   2                      {
+  28   3                              delay(10);//PWM占空比为50%，修改延时调整PWM脉冲
+  29   3                              ENA=~ENA;
+  30   3                      }
+  31   2                      IN1=0;      //反转
+  32   2                      IN2=1;
+  33   2                      for(i=0;i<100;i++)
+  34   2                      {
+  35   3                              delay(20);//PWM占空比为50%，修改延时调整PWM脉冲
+  36   3                              ENA=~ENA;
+  37   3                      }
+  38   2                      IN1=1;     //自动加速正转
+  39   2                      IN2=0;
+  40   2                      while(cycle!=T)
+  41   2                      {       ENA=1;
+  42   3                              delay_us(cycle++);
+  43   3                              ENA=0;
+  44   3                              delay_us(T-cycle);
+  45   3                      
+  46   3                      }
+  47   2                      IN1=0;     //自动减速反转
+  48   2                      IN2=1;
+  49   2                      while(cycle!=T)
+  50   2                      {       ENA=1;
+  51   3                              delay_us(cycle++);
+  52   3                              ENA=0;
+  53   3                              delay_us(T-cycle);
+  54   3                      
+  55   3                      }
+C51 COMPILER V7.50   直羅电籣                                                              02/19/2012 23:24:36 PAGE 2   
+
+  56   2              }               
+  57   1      }
+  58          /******************z秒延时函数*************************/
+  59          void delay(unsigned int z)
+  60          {
+  61   1              unsigned int x,y;
+  62   1              for(x=z;x>0;x--)
+  63   1                      for(y=110;y>0;y--);
+  64   1      }
+  65          /****************微妙延时******************************/
+  66          void delay_us(unsigned int aa)
+  67          {
+  68   1              while(aa--);    
+  69   1      }
+  70          
+  71          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    212    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

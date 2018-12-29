@@ -1,0 +1,14 @@
+Added Component: Designator=LED2(LED)
+Added Component: Designator=R?(0805)
+Added Pin To Net: NetName=+3.3V Pin=R?-2
+Added Pin To Net: NetName=LED1 Pin=LED1-2
+Added Pin To Net: NetName=LED1 Pin=U1-52
+Added Net: Name=LED1
+Added Pin To Net: NetName=LED2 Pin=LED2-2
+Added Pin To Net: NetName=LED2 Pin=U1-51
+Added Net: Name=LED2
+Added Pin To Net: NetName=NetLED2_1 Pin=LED2-1
+Added Pin To Net: NetName=NetLED2_1 Pin=R?-1
+Added Net: Name=NetLED2_1
+Added Member To Class: ClassName=mainboard_mcu.v1.0 Member=Component LED2 GREEN
+Added Member To Class: ClassName=mainboard_mcu.v1.0 Member=Component R? 1K

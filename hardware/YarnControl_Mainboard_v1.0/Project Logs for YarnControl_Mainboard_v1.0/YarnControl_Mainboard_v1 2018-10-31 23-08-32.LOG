@@ -1,0 +1,24 @@
+Added Component: Designator=J4(XH2.54-6T)
+Added Component: Designator=J5(XH2.54-6T)
+Added Component: Designator=J6(XH2.54-6T)
+Added Pin To Net: NetName=+5V Pin=J4-1
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J4-2
+Added Pin To Net: NetName=STEP_MOTOR1_DIR Pin=J4-3
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J4-4
+Added Pin To Net: NetName=GND Pin=J4-5
+Added Pin To Net: NetName=+24V Pin=J4-6
+Added Pin To Net: NetName=+5V Pin=J5-1
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J5-2
+Added Pin To Net: NetName=STEP_MOTOR2_DIR Pin=J5-3
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J5-4
+Added Pin To Net: NetName=GND Pin=J5-5
+Added Pin To Net: NetName=+24V Pin=J5-6
+Added Pin To Net: NetName=+5V Pin=J6-1
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J6-2
+Added Pin To Net: NetName=STEP_MOTOR3_DIR Pin=J6-3
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J6-4
+Added Pin To Net: NetName=GND Pin=J6-5
+Added Pin To Net: NetName=+24V Pin=J6-6
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component J4 STEP MOTOR1
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component J5 STEP MOTOR2
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component J6 STEP MOTOR3

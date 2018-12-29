@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=R? NewDesignator=R47
+Change Component Designator: OldDesignator=R? NewDesignator=R48
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R35 4.7K
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component R47 0.5R

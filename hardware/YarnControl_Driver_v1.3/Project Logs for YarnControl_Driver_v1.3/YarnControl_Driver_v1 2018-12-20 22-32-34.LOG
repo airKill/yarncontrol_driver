@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=RS485_A Pin=R10-2
+Added Component: Designator=J11(J254-2)
+Added Pin To Net: NetName=RS485_A Pin=J11-1
+Added Pin To Net: NetName=NetJ11_2 Pin=J11-2
+Added Pin To Net: NetName=NetJ11_2 Pin=R10-2
+Added Net: Name=NetJ11_2
+Added Member To Class: ClassName=YarnControl_Driver_v1.3 Member=Component J11 Jumper

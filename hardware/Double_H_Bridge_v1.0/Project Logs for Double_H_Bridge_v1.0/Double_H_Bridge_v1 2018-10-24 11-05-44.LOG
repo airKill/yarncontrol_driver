@@ -1,0 +1,72 @@
+Removed Pin From Net: NetName=GND Pin=Q1-3
+Removed Pin From Net: NetName=GND Pin=Q2-3
+Removed Pin From Net: NetName=GND Pin=Q3-3
+Removed Pin From Net: NetName=GND Pin=Q4-3
+Removed Pin From Net: NetName=GND Pin=Q5-3
+Removed Pin From Net: NetName=GND Pin=Q6-3
+Removed Pin From Net: NetName=NetQ1_1 Pin=R19-2
+Removed Pin From Net: NetName=NetQ1_1 Pin=R20-1
+Removed Pin From Net: NetName=NetQ2_1 Pin=R21-2
+Removed Pin From Net: NetName=NetQ2_1 Pin=R22-1
+Removed Pin From Net: NetName=NetQ3_1 Pin=R23-2
+Removed Pin From Net: NetName=NetQ3_1 Pin=R24-1
+Removed Pin From Net: NetName=NetQ4_1 Pin=R25-2
+Removed Pin From Net: NetName=NetQ4_1 Pin=R26-1
+Removed Pin From Net: NetName=NetQ5_1 Pin=R27-2
+Removed Pin From Net: NetName=NetQ5_1 Pin=R28-1
+Removed Pin From Net: NetName=NetQ6_1 Pin=R29-2
+Removed Pin From Net: NetName=NetQ6_1 Pin=R30-1
+Change Component DesignItemId : Designator=Q1 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component DesignItemId : Designator=Q2 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component DesignItemId : Designator=Q3 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component DesignItemId : Designator=Q4 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component DesignItemId : Designator=Q5 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component DesignItemId : Designator=Q6 Old DesignItemId=NPN New DesignItemId=S8050
+Change Component Footprint: Designator=Q1 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Footprint: Designator=Q2 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Footprint: Designator=Q3 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Footprint: Designator=Q4 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Footprint: Designator=Q5 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Footprint: Designator=Q6 Old Footprint=901X_SOT-23 New Footprint=SOT-23
+Change Component Comment : Designator=Q1 Old Comment=NPN New Comment=S8050
+Change Component Comment : Designator=Q2 Old Comment=NPN New Comment=S8050
+Change Component Comment : Designator=Q3 Old Comment=NPN New Comment=S8050
+Change Component Comment : Designator=Q4 Old Comment=NPN New Comment=S8050
+Change Component Comment : Designator=Q5 Old Comment=NPN New Comment=S8050
+Change Component Comment : Designator=Q6 Old Comment=NPN New Comment=S8050
+Added Pin To Net: NetName=GND Pin=Q1-2
+Added Pin To Net: NetName=GND Pin=Q2-2
+Added Pin To Net: NetName=GND Pin=Q3-2
+Added Pin To Net: NetName=GND Pin=Q4-2
+Added Pin To Net: NetName=GND Pin=Q5-2
+Added Pin To Net: NetName=GND Pin=Q6-2
+Added Pin To Net: NetName=NetQ1_1 Pin=R13-2
+Added Pin To Net: NetName=NetQ2_1 Pin=R14-2
+Added Pin To Net: NetName=NetQ3_1 Pin=R15-2
+Added Pin To Net: NetName=NetQ4_1 Pin=R16-2
+Added Pin To Net: NetName=NetQ5_1 Pin=R17-2
+Added Pin To Net: NetName=NetQ6_1 Pin=R18-2
+Added Pin To Net: NetName=NetQ1_3 Pin=Q1-3
+Added Pin To Net: NetName=NetQ1_3 Pin=R19-2
+Added Pin To Net: NetName=NetQ1_3 Pin=R20-1
+Added Net: Name=NetQ1_3
+Added Pin To Net: NetName=NetQ2_3 Pin=Q2-3
+Added Pin To Net: NetName=NetQ2_3 Pin=R21-2
+Added Pin To Net: NetName=NetQ2_3 Pin=R22-1
+Added Net: Name=NetQ2_3
+Added Pin To Net: NetName=NetQ3_3 Pin=Q3-3
+Added Pin To Net: NetName=NetQ3_3 Pin=R23-2
+Added Pin To Net: NetName=NetQ3_3 Pin=R24-1
+Added Net: Name=NetQ3_3
+Added Pin To Net: NetName=NetQ4_3 Pin=Q4-3
+Added Pin To Net: NetName=NetQ4_3 Pin=R25-2
+Added Pin To Net: NetName=NetQ4_3 Pin=R26-1
+Added Net: Name=NetQ4_3
+Added Pin To Net: NetName=NetQ5_3 Pin=Q5-3
+Added Pin To Net: NetName=NetQ5_3 Pin=R27-2
+Added Pin To Net: NetName=NetQ5_3 Pin=R28-1
+Added Net: Name=NetQ5_3
+Added Pin To Net: NetName=NetQ6_3 Pin=Q6-3
+Added Pin To Net: NetName=NetQ6_3 Pin=R29-2
+Added Pin To Net: NetName=NetQ6_3 Pin=R30-1
+Added Net: Name=NetQ6_3

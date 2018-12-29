@@ -1,0 +1,4 @@
+Added Component: Designator=C30(CA6032-C)
+Added Pin To Net: NetName=VDD Pin=C30-1
+Added Pin To Net: NetName=GND Pin=C30-2
+Added Member To Class: ClassName=YarnControl_motor_v1.1 Member=Component C30 100uF

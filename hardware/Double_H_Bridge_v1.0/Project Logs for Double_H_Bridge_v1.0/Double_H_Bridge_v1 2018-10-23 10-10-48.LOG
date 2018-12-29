@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=NetF1_1 Pin=Q7-1
+Removed Pin From Net: NetName=NetD5_2 Pin=Q7-2
+Removed Pin From Net: NetName=VDD Pin=Q7-3
+Removed Member From Class: ClassName=Double_H_Bridge_v1.0 Member=Q7
+Added Component: Designator=Q?(TO-252-2L)
+Added Pin To Net: NetName=NetD5_2 Pin=Q?-1
+Added Pin To Net: NetName=VDD Pin=Q?-2
+Added Pin To Net: NetName=NetF1_1 Pin=Q?-3
+Added Member To Class: ClassName=Double_H_Bridge_v1.0 Member=Component Q? 2SD1760

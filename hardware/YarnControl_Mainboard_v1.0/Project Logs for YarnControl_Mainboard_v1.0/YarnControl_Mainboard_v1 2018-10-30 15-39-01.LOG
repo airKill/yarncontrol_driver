@@ -1,0 +1,11 @@
+Change Component Designator: OldDesignator=R? NewDesignator=R34
+Added Component: Designator=U2(SOP8)
+Added Pin To Net: NetName=FLASH_SPI_NSS Pin=U2-1
+Added Pin To Net: NetName=FLASH_SPI_MISO Pin=U2-2
+Added Pin To Net: NetName=NetR6_1 Pin=U2-3
+Added Pin To Net: NetName=GND Pin=U2-4
+Added Pin To Net: NetName=FLASH_SPI_MOSI Pin=U2-5
+Added Pin To Net: NetName=FLASH_SPI_SCK Pin=U2-6
+Added Pin To Net: NetName=NetR5_2 Pin=U2-7
+Added Pin To Net: NetName=+3.3V Pin=U2-8
+Added Member To Class: ClassName=mainboard_mcu.v1.0 Member=Component U2 W25X16

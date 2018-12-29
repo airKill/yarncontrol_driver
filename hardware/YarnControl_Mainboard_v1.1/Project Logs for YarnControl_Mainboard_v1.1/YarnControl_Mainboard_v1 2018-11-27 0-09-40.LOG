@@ -1,0 +1,117 @@
+Removed Pin From Net: NetName=+5V Pin=J4-1
+Removed Pin From Net: NetName=STEP_MOTOR1_CP Pin=J4-2
+Removed Pin From Net: NetName=STEP_MOTOR1_DIR Pin=J4-3
+Removed Pin From Net: NetName=STEP_MOTOR1_EN Pin=J4-4
+Removed Pin From Net: NetName=GND Pin=J4-5
+Removed Pin From Net: NetName=+5V Pin=J5-1
+Removed Pin From Net: NetName=STEP_MOTOR2_CP Pin=J5-2
+Removed Pin From Net: NetName=STEP_MOTOR2_DIR Pin=J5-3
+Removed Pin From Net: NetName=STEP_MOTOR2_EN Pin=J5-4
+Removed Pin From Net: NetName=GND Pin=J5-5
+Removed Pin From Net: NetName=+5V Pin=J6-1
+Removed Pin From Net: NetName=STEP_MOTOR3_CP Pin=J6-2
+Removed Pin From Net: NetName=STEP_MOTOR3_DIR Pin=J6-3
+Removed Pin From Net: NetName=STEP_MOTOR3_EN Pin=J6-4
+Removed Pin From Net: NetName=GND Pin=J6-5
+Removed Pin From Net: NetName=+5V Pin=J8-1
+Removed Pin From Net: NetName=+5V Pin=J8-2
+Removed Pin From Net: NetName=+5V Pin=J8-3
+Removed Pin From Net: NetName=GND Pin=J9-3
+Removed Pin From Net: NetName=ENCODER_A Pin=J11-2
+Removed Pin From Net: NetName=ENCODER_B Pin=J11-3
+Removed Pin From Net: NetName=ENCODER_C Pin=J11-4
+Removed Pin From Net: NetName=GND Pin=J11-5
+Removed Pin From Net: NetName=GND Pin=J11-6
+Removed Pin From Net: NetName=+5V Pin=J13-1
+Removed Pin From Net: NetName=GND Pin=J13-6
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J4
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J4
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J6
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J6
+Removed Member From Class: ClassName=mainboard_interface.v1.1 Member=J9
+Removed Member From Class: ClassName=mainboard_interface.v1.1 Member=J11
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J13
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J13
+Removed Member From Class: ClassName=mainboard_motor.v1.1 Member=J13
+Change Component DesignItemId : Designator=J4 Old DesignItemId=SH-6 New DesignItemId=D Connector 9
+Change Component DesignItemId : Designator=J5 Old DesignItemId=SH-6 New DesignItemId=D Connector 15
+Change Component Footprint: Designator=J4 Old Footprint=XH2.54-6T New Footprint=DSUB1.385-2H9
+Change Component Footprint: Designator=J5 Old Footprint=XH2.54-6T New Footprint=DSUB1.385-2H15
+Change Component Comment : Designator=J4 Old Comment=STEP MOTOR1 New Comment=D Connector 9
+Change Component Comment : Designator=J5 Old Comment=STEP MOTOR2 New Comment=D Connector 15
+Added Component: Designator=Q1(MOS-N_SOT-23)
+Added Component: Designator=Q2(901X_SOT-23)
+Added Component: Designator=R18(0805)
+Added Component: Designator=R19(0805)
+Added Component: Designator=R20(0805)
+Added Pin To Net: NetName=V12 Pin=J4-1
+Added Pin To Net: NetName=GND Pin=J4-2
+Added Pin To Net: NetName=ENCODER_C Pin=J4-3
+Added Pin To Net: NetName=ENCODER_A Pin=J4-4
+Added Pin To Net: NetName=V12 Pin=J4-5
+Added Pin To Net: NetName=GND Pin=J4-7
+Added Pin To Net: NetName=ENCODER_B Pin=J4-8
+Added Pin To Net: NetName=+5V Pin=J4-9
+Added Pin To Net: NetName=GND Pin=J4-10
+Added Pin To Net: NetName=GND Pin=J4-11
+Added Pin To Net: NetName=GND Pin=J5-1
+Added Pin To Net: NetName=STEP_MOTOR3_DIR Pin=J5-4
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J5-5
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J5-6
+Added Pin To Net: NetName=STEP_MOTOR1_DIR Pin=J5-7
+Added Pin To Net: NetName=+5V Pin=J5-8
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J5-11
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J5-12
+Added Pin To Net: NetName=STEP_MOTOR2_DIR Pin=J5-13
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J5-14
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J5-15
+Added Pin To Net: NetName=GND Pin=J5-16
+Added Pin To Net: NetName=GND Pin=J5-17
+Added Pin To Net: NetName=V12 Pin=J7-1
+Added Pin To Net: NetName=+5V Pin=Q1-S
+Added Pin To Net: NetName=GND Pin=Q2-3
+Added Pin To Net: NetName=+5V Pin=R18-1
+Change Net Name : Old Net Name=V12 New Net Name=+24V
+Added Pin To Net: NetName=CLOSE_SW_IN Pin=J4-6
+Added Pin To Net: NetName=CLOSE_SW_IN Pin=R29-2
+Added Net: Name=CLOSE_SW_IN
+Added Pin To Net: NetName=LCD_5V Pin=J8-1
+Added Pin To Net: NetName=LCD_5V Pin=J8-2
+Added Pin To Net: NetName=LCD_5V Pin=J8-3
+Added Pin To Net: NetName=LCD_5V Pin=Q1-D
+Added Net: Name=LCD_5V
+Added Pin To Net: NetName=LCD_POWER Pin=R20-1
+Added Pin To Net: NetName=LCD_POWER Pin=U1-81
+Added Net: Name=LCD_POWER
+Added Pin To Net: NetName=NetJ5_2 Pin=J5-2
+Added Pin To Net: NetName=NetJ5_2 Pin=R36-2
+Added Pin To Net: NetName=NetJ5_2 Pin=R50-2
+Added Net: Name=NetJ5_2
+Added Pin To Net: NetName=NetJ5_3 Pin=J5-3
+Added Pin To Net: NetName=NetJ5_3 Pin=R38-2
+Added Pin To Net: NetName=NetJ5_3 Pin=R48-2
+Added Net: Name=NetJ5_3
+Added Pin To Net: NetName=NetJ5_9 Pin=J5-9
+Added Pin To Net: NetName=NetJ5_9 Pin=R17-2
+Added Pin To Net: NetName=NetJ5_9 Pin=R51-2
+Added Net: Name=NetJ5_9
+Added Pin To Net: NetName=NetJ5_10 Pin=J5-10
+Added Pin To Net: NetName=NetJ5_10 Pin=R39-2
+Added Pin To Net: NetName=NetJ5_10 Pin=R49-2
+Added Net: Name=NetJ5_10
+Added Pin To Net: NetName=NetQ1_G Pin=Q1-G
+Added Pin To Net: NetName=NetQ1_G Pin=R18-2
+Added Pin To Net: NetName=NetQ1_G Pin=R19-2
+Added Net: Name=NetQ1_G
+Added Pin To Net: NetName=NetQ2_1 Pin=Q2-1
+Added Pin To Net: NetName=NetQ2_1 Pin=R19-1
+Added Net: Name=NetQ2_1
+Added Pin To Net: NetName=NetQ2_2 Pin=Q2-2
+Added Pin To Net: NetName=NetQ2_2 Pin=R20-2
+Added Net: Name=NetQ2_2
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component J4 D Connector 9
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component Q1 SI2301
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component Q2 S9014
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component R18 10K
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component R19 10K
+Added Member To Class: ClassName=mainboard_interface.v1.1 Member=Component R20 10K

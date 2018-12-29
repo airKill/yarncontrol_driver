@@ -1,0 +1,3 @@
+Removed Pin From Net: NetName=ENCODER_B Pin=U1-63
+Added Pin To Net: NetName=ENCODER_C Pin=U1-63
+Added Net: Name=ENCODER_C

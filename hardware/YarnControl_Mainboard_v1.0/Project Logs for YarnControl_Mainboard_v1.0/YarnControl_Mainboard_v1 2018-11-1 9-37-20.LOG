@@ -1,0 +1,16 @@
+Added Component: Designator=R48(0805)
+Added Component: Designator=R49(0805)
+Added Component: Designator=R50(0805)
+Added Component: Designator=R51(0805)
+Added Pin To Net: NetName=+5V Pin=R48-1
+Added Pin To Net: NetName=NetJ13_2 Pin=R48-2
+Added Pin To Net: NetName=+5V Pin=R49-1
+Added Pin To Net: NetName=NetJ13_3 Pin=R49-2
+Added Pin To Net: NetName=+5V Pin=R50-1
+Added Pin To Net: NetName=NetJ13_4 Pin=R50-2
+Added Pin To Net: NetName=+5V Pin=R51-1
+Added Pin To Net: NetName=NetJ13_5 Pin=R51-2
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component R48 10K
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component R49 10K
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component R50 10K
+Added Member To Class: ClassName=mainboard_motor.v1.0 Member=Component R51 10K

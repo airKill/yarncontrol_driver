@@ -1,0 +1,262 @@
+BL51 BANKED LINKER/LOCATER V5.12                                                        03/30/2012  20:27:32  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.12, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE 28BYJ-48步进电机.obj TO 28BYJ-48步进电机 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  28BYJ-48步进电机.obj (28BYJ_48步絖电籣)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  28BYJ-48步进电机 (28BYJ_48步絖电籣)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0008H     UNIT         ?DT?28BYJ_48步絖电籣
+            IDATA   0010H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     004CH     UNIT         ?PR?M_SINGLE_POS?28BYJ_48步絖电籣
+            CODE    00DBH     004CH     UNIT         ?PR?M_SINGLE_REV?28BYJ_48步絖电籣
+            CODE    0127H     004CH     UNIT         ?PR?M_DOUBLE_POS?28BYJ_48步絖电籣
+            CODE    0173H     004CH     UNIT         ?PR?M_DOUBLE_REV?28BYJ_48步絖电籣
+            CODE    01BFH     004CH     UNIT         ?PR?M_EIGHT_POS?28BYJ_48步絖电籣
+            CODE    020BH     004CH     UNIT         ?PR?M_EIGHT_REV?28BYJ_48步絖电籣
+            CODE    0257H     0026H     UNIT         ?PR?MAIN?28BYJ_48步絖电籣
+            CODE    027DH     0022H     UNIT         ?PR?_DELAY?28BYJ_48步絖电籣
+            CODE    029FH     0020H     UNIT         ?CO?28BYJ_48步絖电籣
+            CODE    02BFH     0005H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   28BYJ-48步进电机 (28BYJ_48步絖电籣)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?28BYJ_48步絖电籣
+  +--> ?C_INITSEG
+
+?PR?MAIN?28BYJ_48步絖电籣
+  +--> ?PR?M_SINGLE_POS?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+  +--> ?PR?M_SINGLE_REV?28BYJ_48步絖电籣
+  +--> ?PR?M_DOUBLE_POS?28BYJ_48步絖电籣
+  +--> ?PR?M_DOUBLE_REV?28BYJ_48步絖电籣
+  +--> ?PR?M_EIGHT_POS?28BYJ_48步絖电籣
+  +--> ?PR?M_EIGHT_REV?28BYJ_48步絖电籣
+BL51 BANKED LINKER/LOCATER V5.12                                                      03/30/2012  20:27:32  PAGE 2
+
+
+
+?PR?M_SINGLE_POS?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+?PR?M_SINGLE_REV?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+?PR?M_DOUBLE_POS?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+?PR?M_DOUBLE_REV?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+?PR?M_EIGHT_POS?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+?PR?M_EIGHT_REV?28BYJ_48步絖电籣
+  +--> ?CO?28BYJ_48步絖电籣
+  +--> ?PR?_DELAY?28BYJ_48步絖电籣
+
+
+
+SYMBOL TABLE OF MODULE:  28BYJ-48步进电机 (28BYJ_48步絖电籣)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        28BYJ_48步絖电籣
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0127H         PUBLIC        m_double_pos
+  D:0090H         PUBLIC        P1
+  C:00DBH         PUBLIC        m_single_rev
+  D:00B0H         PUBLIC        P3
+  C:008FH         PUBLIC        m_single_pos
+  D:00A8H         PUBLIC        IE
+  C:020BH         PUBLIC        m_eight_rev
+  C:01BFH         PUBLIC        m_eight_pos
+  D:00B8H         PUBLIC        IP
+  C:0257H         PUBLIC        main
+  C:02ABH         PUBLIC        double_rev
+  C:02A7H         PUBLIC        double_pos
+  D:0098H         PUBLIC        SCON
+  C:02A3H         PUBLIC        single_rev
+  D:0088H         PUBLIC        TCON
+  C:029FH         PUBLIC        single_pos
+  C:02B7H         PUBLIC        eight_rev
+  C:02AFH         PUBLIC        eight_pos
+  D:0008H         PUBLIC        N
+  D:00C8H         PUBLIC        T2CON
+  D:000AH         PUBLIC        i
+  D:000CH         PUBLIC        j
+  D:000EH         PUBLIC        k
+BL51 BANKED LINKER/LOCATER V5.12                                                      03/30/2012  20:27:32  PAGE 3
+
+
+  C:0281H         PUBLIC        _delay
+  D:00D0H         PUBLIC        PSW
+  C:0173H         PUBLIC        m_double_rev
+  -------         PROC          MAIN
+  C:0257H         LINE#         34
+  C:0257H         LINE#         35
+  C:0257H         LINE#         36
+  C:0257H         LINE#         37
+  C:0257H         LINE#         38
+  C:025AH         LINE#         39
+  C:025DH         LINE#         40
+  C:0260H         LINE#         41
+  C:0263H         LINE#         42
+  C:0266H         LINE#         43
+  C:0269H         LINE#         44
+  C:026CH         LINE#         45
+  C:026FH         LINE#         46
+  C:0272H         LINE#         47
+  C:0275H         LINE#         48
+  C:0278H         LINE#         49
+  C:027BH         LINE#         50
+  -------         ENDPROC       MAIN
+  C:027DH         SYMBOL        L?0074
+  -------         PROC          L?0073
+  -------         ENDPROC       L?0073
+  C:027DH         SYMBOL        L?0074
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        z
+  -------         DO            
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  -------         ENDDO         
+  C:0281H         LINE#         53
+  C:0281H         LINE#         54
+  C:0281H         LINE#         56
+  C:028AH         LINE#         57
+  C:029EH         LINE#         58
+  -------         ENDPROC       _DELAY
+  -------         PROC          M_SINGLE_POS
+  C:008FH         LINE#         60
+  C:008FH         LINE#         61
+  C:008FH         LINE#         62
+  C:009FH         LINE#         63
+  C:009FH         LINE#         64
+  C:00A4H         LINE#         65
+  C:00A8H         LINE#         66
+  C:00A8H         LINE#         67
+  C:00B0H         LINE#         68
+  C:00B7H         LINE#         69
+  C:00BFH         LINE#         70
+  C:00D0H         LINE#         71
+  C:00DAH         LINE#         72
+  -------         ENDPROC       M_SINGLE_POS
+  -------         PROC          M_SINGLE_REV
+  C:00DBH         LINE#         75
+  C:00DBH         LINE#         76
+  C:00DBH         LINE#         77
+BL51 BANKED LINKER/LOCATER V5.12                                                      03/30/2012  20:27:32  PAGE 4
+
+
+  C:00EBH         LINE#         78
+  C:00EBH         LINE#         79
+  C:00F0H         LINE#         80
+  C:00F4H         LINE#         81
+  C:00F4H         LINE#         82
+  C:00FCH         LINE#         83
+  C:0103H         LINE#         84
+  C:010BH         LINE#         85
+  C:011CH         LINE#         86
+  C:0126H         LINE#         87
+  -------         ENDPROC       M_SINGLE_REV
+  -------         PROC          M_DOUBLE_POS
+  C:0127H         LINE#         90
+  C:0127H         LINE#         91
+  C:0127H         LINE#         92
+  C:0137H         LINE#         93
+  C:0137H         LINE#         94
+  C:013CH         LINE#         95
+  C:0140H         LINE#         96
+  C:0140H         LINE#         97
+  C:0148H         LINE#         98
+  C:014FH         LINE#         99
+  C:0157H         LINE#         100
+  C:0168H         LINE#         101
+  C:0172H         LINE#         102
+  -------         ENDPROC       M_DOUBLE_POS
+  -------         PROC          M_DOUBLE_REV
+  C:0173H         LINE#         104
+  C:0173H         LINE#         105
+  C:0173H         LINE#         106
+  C:0183H         LINE#         107
+  C:0183H         LINE#         108
+  C:0188H         LINE#         109
+  C:018CH         LINE#         110
+  C:018CH         LINE#         111
+  C:0194H         LINE#         112
+  C:019BH         LINE#         113
+  C:01A3H         LINE#         114
+  C:01B4H         LINE#         115
+  C:01BEH         LINE#         116
+  -------         ENDPROC       M_DOUBLE_REV
+  -------         PROC          M_EIGHT_POS
+  C:01BFH         LINE#         118
+  C:01BFH         LINE#         119
+  C:01BFH         LINE#         120
+  C:01CFH         LINE#         121
+  C:01CFH         LINE#         122
+  C:01D4H         LINE#         123
+  C:01D8H         LINE#         124
+  C:01D8H         LINE#         125
+  C:01E0H         LINE#         126
+  C:01E7H         LINE#         127
+  C:01EFH         LINE#         128
+  C:0200H         LINE#         129
+  C:020AH         LINE#         130
+  -------         ENDPROC       M_EIGHT_POS
+  -------         PROC          M_EIGHT_REV
+BL51 BANKED LINKER/LOCATER V5.12                                                      03/30/2012  20:27:32  PAGE 5
+
+
+  C:020BH         LINE#         132
+  C:020BH         LINE#         133
+  C:020BH         LINE#         134
+  C:021BH         LINE#         135
+  C:021BH         LINE#         136
+  C:0220H         LINE#         137
+  C:0224H         LINE#         138
+  C:0224H         LINE#         139
+  C:022CH         LINE#         140
+  C:0233H         LINE#         141
+  C:023BH         LINE#         142
+  C:024CH         LINE#         143
+  C:0256H         LINE#         144
+  -------         ENDPROC       M_EIGHT_REV
+  -------         ENDMOD        28BYJ_48步絖电籣
+
+Program Size: data=17.0 xdata=0 code=708
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

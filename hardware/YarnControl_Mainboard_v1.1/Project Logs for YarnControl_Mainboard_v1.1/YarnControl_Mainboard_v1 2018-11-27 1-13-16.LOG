@@ -1,0 +1,36 @@
+Removed Pin From Net: NetName=GND Pin=J5-1
+Removed Pin From Net: NetName=STEP_MOTOR3_DIR Pin=J5-4
+Removed Pin From Net: NetName=STEP_MOTOR2_EN Pin=J5-5
+Removed Pin From Net: NetName=STEP_MOTOR2_CP Pin=J5-6
+Removed Pin From Net: NetName=STEP_MOTOR1_DIR Pin=J5-7
+Removed Pin From Net: NetName=STEP_MOTOR3_EN Pin=J5-11
+Removed Pin From Net: NetName=STEP_MOTOR3_CP Pin=J5-12
+Removed Pin From Net: NetName=STEP_MOTOR2_DIR Pin=J5-13
+Removed Pin From Net: NetName=STEP_MOTOR1_EN Pin=J5-14
+Removed Pin From Net: NetName=STEP_MOTOR1_CP Pin=J5-15
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J5-1
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J5-2
+Added Pin To Net: NetName=STEP_MOTOR2_DIR Pin=J5-3
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J5-4
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J5-5
+Added Pin To Net: NetName=STEP_MOTOR3_DIR Pin=J5-9
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J5-10
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J5-11
+Added Pin To Net: NetName=STEP_MOTOR1_DIR Pin=J5-12
+Added Pin To Net: NetName=GND Pin=J5-13
+Added Pin To Net: NetName=NetJ5_6 Pin=J5-6
+Added Pin To Net: NetName=NetJ5_6 Pin=R17-2
+Added Pin To Net: NetName=NetJ5_6 Pin=R51-2
+Added Net: Name=NetJ5_6
+Added Pin To Net: NetName=NetJ5_7 Pin=J5-7
+Added Pin To Net: NetName=NetJ5_7 Pin=R39-2
+Added Pin To Net: NetName=NetJ5_7 Pin=R49-2
+Added Net: Name=NetJ5_7
+Added Pin To Net: NetName=NetJ5_14 Pin=J5-14
+Added Pin To Net: NetName=NetJ5_14 Pin=R36-2
+Added Pin To Net: NetName=NetJ5_14 Pin=R50-2
+Added Net: Name=NetJ5_14
+Added Pin To Net: NetName=NetJ5_15 Pin=J5-15
+Added Pin To Net: NetName=NetJ5_15 Pin=R38-2
+Added Pin To Net: NetName=NetJ5_15 Pin=R48-2
+Added Net: Name=NetJ5_15

@@ -1,0 +1,12 @@
+Removed Pin From Net: NetName=STEP_MOTOR2_EN Pin=J5-5
+Removed Pin From Net: NetName=STEP_MOTOR2_CP Pin=J5-6
+Removed Pin From Net: NetName=STEP_MOTOR3_EN Pin=J5-11
+Removed Pin From Net: NetName=STEP_MOTOR3_CP Pin=J5-12
+Removed Pin From Net: NetName=STEP_MOTOR1_EN Pin=J5-14
+Removed Pin From Net: NetName=STEP_MOTOR1_CP Pin=J5-15
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J5-5
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J5-6
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J5-11
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J5-12
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J5-14
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J5-15

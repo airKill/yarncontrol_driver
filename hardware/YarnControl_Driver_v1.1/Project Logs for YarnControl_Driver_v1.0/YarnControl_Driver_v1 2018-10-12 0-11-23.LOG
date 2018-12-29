@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=SENSOR_B- Pin=C19-1
+Removed Pin From Net: NetName=SENSOR_B- Pin=U5-9
+Added Component: Designator=R9(0805)
+Added Pin To Net: NetName=SENSOR_B- Pin=R9-2
+Added Pin To Net: NetName=NetC19_1 Pin=C19-1
+Added Pin To Net: NetName=NetC19_1 Pin=R9-1
+Added Pin To Net: NetName=NetC19_1 Pin=U5-9
+Added Net: Name=NetC19_1
+Added Member To Class: ClassName=YarnControl_Driver_v1.0 Member=Component R9 1K
