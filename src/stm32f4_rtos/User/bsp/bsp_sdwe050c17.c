@@ -192,118 +192,18 @@ void Sdwe_refresh_allname(u8 file_count)
   for(i=0;i<file_count;i++)
     Sdwe_refresh_filename(file,i);
 }
-//void Sdwe_protocol(u8 *buf,u16 len)
-//{
-//  u16 var_addr,value;
-//  u16 command;
-//
-//  if((buf[0] == 0xA5) && (buf[1] == 0x5A) && (buf[2] == (len - 3)))
-//  {//指令格式正确
-//    if(buf[3] == 0x81)
-//    {//读寄存器返回
-//      
-//    }
-//    else if(buf[3] == 0x83)
-//    {//读变量存储器返回
-//      var_addr = (buf[4] << 8) + buf[5];
-//      if((var_addr >= 0x0300) && (var_addr < 0x0400))
-//      {//数据录入地址
-//        value = ((buf[7] << 8) + buf[8]) * 1000 / 100;//串口数据为两位数小数，单位kg，转换为g
-//        if((var_addr >= 0x030a) && (var_addr <= 0x0313))
-//        {//1——10号从机，设定张力
-//          SlavePara.value_set[var_addr - 0x030a] = value;
-//          printf("value_set %d# %.2f\r\n",var_addr - 0x030a + 1,(float)value / 1000);
-//        }
-//        else if((var_addr >= 0x031e) && (var_addr <= 0x0327))
-//        {//11——20号从机，设定张力
-//          SlavePara.value_set[var_addr - 0x031e + 10] = value;
-//          printf("value_set %d# %.2f\r\n",var_addr - 0x031e + 10 + 1,(float)value / 1000);
-//        }
-//        else if((var_addr >= 0x0332) && (var_addr <= 0x033b))
-//        {//21——30号从机，设定张力
-//          SlavePara.value_set[var_addr - 0x0332 + 20] = value;
-//          printf("value_set %d# %.2f\r\n",var_addr - 0x0332 + 20 + 1,(float)value / 1000);
-//        }
-//        message_mode = WORK_STAGE_SET_COMPARE;
-//      }
-//      else if(var_addr == 0x0200)
-//      {
-//        u8 llen;
-//        llen = buf[6] * 2;//串口发送为字长
-//        memcpy(input_password_buf,buf + 7,len);
-//        input_password_len = get_valid_length(input_password_buf,llen);
-//      }
-//      else if(var_addr == 0x0100)
-//      {
-//        u8 fault;
-//        value = (buf[7] << 8) + buf[8];
-//        if(value == 1)
-//        {//登录按钮
-//          if(input_password_len != 6)
-//          {//密码错误
-//            Sdwe_disString(VGUS_ADDR_LOGIN_ERROR,"ERROR!",strlen("ERROR!"));
-//          }
-//          else
-//          {
-//            fault = array_compare(input_password_buf,"111111",input_password_len);
-//            if(fault == 0)
-//            {//密码正确
-//              Sdwe_disPicture(VGUS_PICTURE_INTERFACE);
-//            }
-//            else
-//            {//密码错误
-//              Sdwe_disString(VGUS_ADDR_LOGIN_ERROR,"ERROR!",strlen("ERROR!"));
-//            }
-//          }
-//        }
-//      }
-//      else if(var_addr == 0x0101)
-//      {
-//        value = (buf[7] << 8) + buf[8];
-//      }
-//      else if(var_addr == 0x0102)
-//      {//复位键
-//        
-//      }
-//      else if(var_addr == 0x0103)
-//      {//存储键
-//        
-//      }
-//      else if((var_addr >= 0x0400) && (var_addr < 0x0500))
-//      {//从机有效命令
-//        value = (buf[7] << 8) + buf[8];
-//        if(var_addr <= 0x41d)
-//        {//从机开关设置
-//          SlavePara.onoff[var_addr - 0x0400] = value;
-//          printf("%d# %d\r\n",var_addr - 0x0400 + 1,value);
-//        }
-//        else if(var_addr == 0x430)
-//        {//启动/停止按钮
-//          if(value == 1)
-//          {//启动
-//            message_mode = WORK_STAGE_START;
-////            Sdwe_disString(VGUS_ADDR_WORKING_STATE,"RUNNING...",strlen("RUNNING..."));
-//          }
-//          else 
-//          {//停止
-//            
-//          }
-//        }
-//        else if(var_addr == 0x431)
-//        {//全开/全关按钮
-//          if(value == 1)
-//          {//全开
-//            
-//          }
-//          else
-//          {//全关
-//            
-//          }
-//        }
-//      }
-//    }
-//  }
-//}
+
+//胚料页面
+void Sdwe_peiliao_page(PRODUCT_PARA *para)
+{
+  
+}
+
+//产量页面
+void Sdwe_product_page(PRODUCT_PARA *para)
+{
+  
+}
 
 u8 get_valid_length(u8 *buf,u8 len)
 {
@@ -315,7 +215,6 @@ u8 get_valid_length(u8 *buf,u8 len)
       length = i;
       break;
     }
-      
   }
   return length;
 }

@@ -25,19 +25,6 @@ typedef struct
   u8 page_count_select;  
   u8 onoff[30];
   u8 file_select[10];
-  u32 capacity_a;
-  u32 capacity_b;
-  u32 total_pulse_count;
-  u32 working_time;
-  u32 idle_time;
-  u32 latitude_weight;
-  u32 longitude_weight;
-  u32 rubber_weight;
-  u32 loom_num;
-  u32 total_capacity;
-  u16 kaidu_set;
-  u16 weimi_set;
-  
 }DEVICE_INFO;
 extern DEVICE_INFO device_info;
 

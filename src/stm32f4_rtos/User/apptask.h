@@ -73,6 +73,8 @@ extern TaskHandle_t xHandleTaskReadDisk;
 extern TaskHandle_t xHandleTaskMsgPro;
 extern TaskHandle_t xHandleTaskRev485;
 extern TaskHandle_t xHandleTaskManageCapacity;
+extern TaskHandle_t xHandleTaskPluseCount;
+
 extern SemaphoreHandle_t  xSemaphore_pluse;
 extern SemaphoreHandle_t  xSemaphore_lcd;
 extern SemaphoreHandle_t  xSemaphore_rs485;

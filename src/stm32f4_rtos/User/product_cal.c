@@ -1,0 +1,70 @@
+#include "includes.h"
+
+PRODUCT_PARA product_para;
+
+//计算产量
+float product_per_meter(PRODUCT_PARA *para)
+{
+  float meter;
+  if(para->kaidu_set > 0)
+  {
+    meter = (para->pulse_count / para->weimi_set / para->kaidu_set) * para->loom_num;
+  }
+  else if(para->kaidu_set == 0)
+  {
+    meter = para->pulse_count / para->weimi_set;
+  }
+  return meter;
+}
+
+//计算每米成品重量
+float final_per_meter(PRODUCT_PARA *para)
+{
+  float weight;
+  weight = para->latitude_weight + para->longitude_weight + para->rubber_weight;
+  return weight;
+}
+
+//计算已完成产量
+float product_complete_meter(PRODUCT_PARA *para)
+{
+  float complete_meter;
+  complete_meter = para->product_a + para->product_b;//已完成产量=A班产量+B班产量
+  return complete_meter;
+}
+
+//计算未完成产量
+float product_uncomplete_meter(PRODUCT_PARA *para)
+{
+  float uncomplete_meter;
+  float complete_meter;
+  complete_meter = para->product_a + para->product_b;//已完成产量=A班产量+B班产量
+  uncomplete_meter = para->total_meter_set - complete_meter;//未完成产量=总产量-已完成产量
+  return uncomplete_meter;
+}
+
+//计算每千纬数量
+u32 count_per_kilo(PRODUCT_PARA *para)
+{
+  u32 count;
+  count = para->pulse_count / 1000;
+  return count;
+}
+
+//计算已完成重量
+float product_complete_kilo(PRODUCT_PARA *para)
+{
+  float weight;
+  weight = final_per_meter(para) * product_complete_meter(para) / para->loss;//已完成重量=每米成品重量*完成产量/损耗
+  return weight;
+}
+
+//计算未完成重量
+float product_uncomplete_kilo(PRODUCT_PARA *para)
+{
+  float weight;
+  weight = para->total_weitht_set - product_complete_kilo(para);
+  return weight;
+}
+
+

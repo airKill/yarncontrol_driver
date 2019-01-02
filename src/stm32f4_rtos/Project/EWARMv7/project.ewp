@@ -1453,6 +1453,9 @@
       <name>$PROJ_DIR$\..\..\User\para.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\product_cal.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\protocol.c</name>
     </file>
     <file>
