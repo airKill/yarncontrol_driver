@@ -934,9 +934,33 @@ static void vTaskTaskLED(void *pvParameters)
 
 static void vTaskTaskRFID(void *pvParameters)
 {
+  u16 isCard;
+  u8 card_id[4];
   while(1)
   {
-    vTaskDelay(500);
+    rc522_cmd_request(REQUEST_TYPE_ALL);
+    vTaskDelay(100);
+    rc522_cmd_anticoll(COLLISION_GRADE_1);
+    vTaskDelay(100);
+//    if(rfid_rev_flag)
+//    {
+//      rfid_rev_flag = 0;
+//      printf("rev rc522\r\n");
+//      isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
+//      if(isCard == Mifare1_S50)
+//      {
+//        printf("s50 ");
+//        rc522_cmd_anticoll(COLLISION_GRADE_1);
+//        vTaskDelay(100);
+//        if(rfid_rev_flag)
+//        {
+//          rfid_rev_flag = 0;
+////          rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
+////          printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
+//        }
+//      }
+//    }
+//    vTaskDelay(1000);
   }
 }
 
