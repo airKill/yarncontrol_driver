@@ -1507,6 +1507,9 @@
       <name>$PROJ_DIR$\..\..\User\protocol.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\rc522.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\SysInfoTest.c</name>
     </file>
   </group>

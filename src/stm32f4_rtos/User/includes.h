@@ -79,7 +79,7 @@
 #include "cJSON.h"
 
 #include "product_cal.h"
-
+#include "rc522.h"
 /* 在主函数中调用 */
 extern void vSetupSysInfoTest(void);
 
