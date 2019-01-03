@@ -20,7 +20,7 @@ void bsp_InitSdwe050c17(void)
   LCD_POWER_ON();
 }
 
-void Init_GUI(void)
+void Init_JINGSHA_GUI(void)
 {
   u8 i;
   u8 name[20],name_1[20];
@@ -39,6 +39,11 @@ void Init_GUI(void)
     Sdwe_writeIcon(PAGE1_SLAVE_ONOFF1 + i,SlavePara.onoff[i]);
     vTaskDelay(5);
   }
+}
+
+void Init_CHANNENG_GUI(void)
+{
+  
 }
 
 //µ÷ÓÃÍ¼Æ¬

@@ -67,6 +67,7 @@ extern u8 isWork,old_isWork;
 **********************************************************************************************************
 */
 extern TaskHandle_t xHandleTaskLED;
+extern TaskHandle_t xHandleTaskRFID;
 extern TaskHandle_t xHandleTaskLCD;
 extern TaskHandle_t xHandleTaskMassStorage;
 extern TaskHandle_t xHandleTaskReadDisk;

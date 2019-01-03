@@ -22,6 +22,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_sdwe050c17.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_servomotor.c</path>
     <encoding>System</encoding>
   </override>
@@ -34,6 +38,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\src\bsp_uart_fifo.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\includes.h</path>
     <encoding>System</encoding>
   </override>
@@ -43,6 +51,18 @@
   </override>
   <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\para.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\product_cal.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\product_cal.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\protocol.h</path>
     <encoding>System</encoding>
   </override>
   <override>

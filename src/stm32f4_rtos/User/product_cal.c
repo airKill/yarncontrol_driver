@@ -2,6 +2,25 @@
 
 PRODUCT_PARA product_para;
 
+void init_product_para(PRODUCT_PARA para)
+{
+  para.product_a = 0;
+  para.product_b = 0;
+  para.working_time = 0;
+  para.idle_time = 0;
+  para.latitude_weight = 0;
+  para.longitude_weight = 0;
+  para.rubber_weight = 0;
+  para.final_weight = 0;
+  para.loom_num = 0;
+  para.total_meter_set = 0;
+  para.total_weitht_set = 0;
+  para.kaidu_set = 0;
+  para.weimi_set = 0;
+  para.weimi_dis_set = 0;
+  para.loss = 0;
+}
+
 //¼ÆËã²úÁ¿
 float product_per_meter(PRODUCT_PARA *para)
 {
@@ -67,4 +86,9 @@ float product_uncomplete_kilo(PRODUCT_PARA *para)
   return weight;
 }
 
-
+float get_float_1bit(float data)
+{
+  float tmp;
+  tmp = (float)((int)(data * 10)) / 10;
+  return tmp;
+}

@@ -2,6 +2,7 @@
 
 TaskHandle_t xHandleTaskLCD = NULL;
 TaskHandle_t xHandleTaskLED = NULL;
+TaskHandle_t xHandleTaskRFID = NULL;
 TaskHandle_t xHandleTaskMassStorage = NULL;
 TaskHandle_t xHandleTaskReadDisk = NULL;
 TaskHandle_t xHandleTaskMsgPro = NULL;
@@ -24,6 +25,9 @@ u8 download_num = 0;
 u8 working_stage = WORK_STAGE_IDLE;
 u8 isWork = 0,old_isWork = 0;
 u8 usb_disk_flag = 0;
+
+u32 pluse_count = 0;
+u8 grade = 0;
 
 extern void DemoFatFS(void);
 extern const char * FR_Table[];
@@ -81,7 +85,7 @@ void vTaskTaskLCD(void *pvParameters)
           if(var_addr == MAIN_PAGE_KEY_JINGSHA)
           {//经纱管理
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == MAIN_PAGE_KEY_WEIMI)
           {//纬密
@@ -135,12 +139,12 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE2_KEY_LEFT)
           {//第二页向左
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == PAGE3_KEY_LEFT)
           {//第三页向左
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == PAGE1_KEY_SAVE)
           {//第一页保存
@@ -166,17 +170,17 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE1_KEY_RIGHT)
           {//第一页向右
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == PAGE2_KEY_RIGHT)
           {//第二页向右
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == PAGE3_KEY_RIGHT)
           {//第三页向右
             vTaskDelay(100);
-            Init_GUI();
+            Init_JINGSHA_GUI();
           }
           else if(var_addr == PAGE1_SECRET_KEY_CANCEL)
           {//第一页取消输入密码
@@ -475,7 +479,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//密码正确
               Sdwe_disPicture(PAGE_1_SET_VALUE);
               vTaskDelay(10);
-              Init_GUI();
+              Init_JINGSHA_GUI();
             }
             else
             {//密码错误
@@ -499,7 +503,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//密码正确
               Sdwe_disPicture(PAGE_2_SET_VALUE);
               vTaskDelay(10);
-              Init_GUI();
+              Init_JINGSHA_GUI();
             }
             else
             {//密码错误
@@ -523,7 +527,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//密码正确
               Sdwe_disPicture(PAGE_3_SET_VALUE);
               vTaskDelay(10);
-              Init_GUI();
+              Init_JINGSHA_GUI();
             }
             else
             {//密码错误
@@ -694,7 +698,7 @@ void vTaskTaskLCD(void *pvParameters)
                     __set_PRIMASK(1);
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                     __set_PRIMASK(0);
-                    Init_GUI();
+                    Init_JINGSHA_GUI();
                     Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"调用成功",strlen("调用成功"));
                     bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
                     ptMsg->addr = 0xff;
@@ -925,6 +929,14 @@ static void vTaskTaskLED(void *pvParameters)
     bsp_LedToggle(2);
     vTaskDelay(500);
     Task_iwdg_refresh(TASK_LED);
+  }
+}
+
+static void vTaskTaskRFID(void *pvParameters)
+{
+  while(1)
+  {
+    vTaskDelay(500);
   }
 }
 
@@ -1253,18 +1265,44 @@ static void vTaskReadDisk(void *pvParameters)
 void vTaskManageCapacity(void *pvParameters)
 {
   BaseType_t xResult;
-  u32 pluse_count = 0;
   u8 buf[10];
+  float complete_p,uncomplete_p;
+  float complete_m,uncomplete_m;
+  float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
+  init_product_para(product_para);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
       pluse_count++;
+      product_para.pulse_count = pluse_count;
+      p_value = product_per_meter(&product_para);
+      p_value = get_float_1bit(p_value);//取1位小数点
+      if(p_value != old_p_value)
+      {//产量值有变化时才保持并显示
+        if(grade == 0)
+        {//A班
+          product_para.product_a = p_value;//A班产量
+          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(p_value * 10));
+        }
+        else if(grade == 0)
+        {//B班
+          product_para.product_b = p_value;//A班产量
+          Sdwe_disDigi(PAGE_PRODUCT_B,(int)(p_value * 10));
+        }
+        complete_p = product_complete_meter(&product_para);//已完成产量
+        uncomplete_p = product_uncomplete_meter(&product_para);//未完成产量
+        complete_m = product_complete_kilo(&product_para);//已完成重量
+        uncomplete_m = product_uncomplete_kilo(&product_para);//未完成重量
+        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(complete_p * 10));
+        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(uncomplete_p * 10));
+        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(complete_m * 10));
+        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(uncomplete_m * 10));
+      }
       memset(buf,0,10);
       sprintf(buf,"%d",pluse_count);
-      Sdwe_disString(PAGE_CAPACITY_PLUSE_COUNT,buf,strlen(buf));
     }
   }
 }
@@ -1281,10 +1319,16 @@ void AppTaskCreate (void)
 {
   xTaskCreate( vTaskTaskLED,   	/* 任务函数  */
               "vTaskTaskLED",     	/* 任务名    */
-              128,               	/* 任务栈大小，单位word，也就是4字节 */
+              64,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskLED );  /* 任务句柄  */
+  xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
+              "vTaskTaskRFID",     	/* 任务名    */
+              64,               	/* 任务栈大小，单位word，也就是4字节 */
+              NULL,              	/* 任务参数  */
+              1,                 	/* 任务优先级*/
+              &xHandleTaskRFID );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
               256,             		/* 任务栈大小，单位word，也就是4字节 */

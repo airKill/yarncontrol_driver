@@ -122,7 +122,27 @@
 #define PAGE_U_TEXT_READ_STATE  0x06C8
 #define PAGE_U_ICON_SELECT1     0x044B
 
-#define PAGE_CAPACITY_PLUSE_COUNT 0x0750
+#define PAGE_PRODUCT_A 0x0800
+#define PAGE_PRODUCT_B 0x0805
+#define PAGE_PRODUCT_COMPLETE  0x080A
+#define PAGE_PRODUCT_UNCOMPLETE  0x080F
+#define PAGE_PRODUCT_KILOCOUNT   0x0814
+#define PAGE_PRODUCT_SPEED   0x0819
+#define PAGE_PRODUCT_TIME_ON    0x081E
+#define PAGE_PRODUCT_TIME_OFF    0x0823
+#define PAGE_PRODUCT_COMPLETE_W  0x0828
+#define PAGE_PRODUCT_UNCOMPLETE_W  0x082D
+#define PAGE_PRODUCT_JINGSHA       0x0832
+#define PAGE_PRODUCT_WEISHA       0x0837
+#define PAGE_PRODUCT_RUBBER       0x083C
+#define PAGE_PRODUCT_FINAL        0x0841
+#define PAGE_PRODUCT_ZHIJI        0x0846
+#define PAGE_PRODUCT_LOSS        0x084B
+#define PAGE_PRODUCT_TOTAL_METER        0x0850
+#define PAGE_PRODUCT_TOTAL_WEIGHT        0x0855
+#define PAGE_PRODUCT_KAIDU        0x085A
+#define PAGE_PRODUCT_WEIMI        0x085F
+#define PAGE_PRODUCT_WEISHU_DIS        0x0864
 
 #define VGUS_ON   1
 #define VGUS_OFF   0
@@ -131,7 +151,8 @@ extern u8 lcd_rev_buf[50];
 extern u16 lcd_rev_len;
 
 void bsp_InitSdwe050c17(void);
-void Init_GUI(void);
+void Init_JINGSHA_GUI(void);
+void Init_CHANNENG_GUI(void);
 void Sdwe_disPicture(u8 picture);
 void Sdwe_disDigi(u16 addr,u16 data);
 void Sdwe_disString(u16 addr,u8 *str,u16 len);
