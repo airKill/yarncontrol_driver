@@ -94,11 +94,19 @@ u8 rc522_find(u8 *buf,u8 len)
   return type;
 }
 
+<<<<<<< HEAD
 void rc522_card_id(u8 *buf,u8 len,u8 *card)
 {
   u8 check = 0,i;
   u8 type = 0;
   u16 atq = 0;
+=======
+u8 rc522_card_id(u8 *buf,u8 len,u8 *card)
+{
+  u8 check = 0,i;
+  u8 type = 0;
+  u16 err = 0;
+>>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
   for(i=0;i<=7;i++)
   {
     check ^= buf[i];
@@ -112,6 +120,17 @@ void rc522_card_id(u8 *buf,u8 len,u8 *card)
       card[1] = buf[5];
       card[2] = buf[6];
       card[3] = buf[7];
+<<<<<<< HEAD
     }
   }
+=======
+      err = 0;
+    }
+    else
+      err = 1;
+  }
+  else
+    err = 1;
+  return err;
+>>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
 }

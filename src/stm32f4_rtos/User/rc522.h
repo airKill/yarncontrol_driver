@@ -22,5 +22,9 @@ void rc522_cmd_request(u8 mode);
 void rc522_cmd_anticoll(u8 cmd);
 void rc522_cmd_select(u8 *uid);
 u8 rc522_find(u8 *buf,u8 len);
+<<<<<<< HEAD
 void rc522_card_id(u8 *buf,u8 len,u8 *card);
+=======
+u8 rc522_card_id(u8 *buf,u8 len,u8 *card);
+>>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
 #endif

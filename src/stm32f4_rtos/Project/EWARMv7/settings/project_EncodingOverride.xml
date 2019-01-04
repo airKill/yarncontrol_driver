@@ -30,6 +30,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_sw_onoff.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_w25qxx.c</path>
     <encoding>System</encoding>
   </override>
