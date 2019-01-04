@@ -936,31 +936,67 @@ static void vTaskTaskRFID(void *pvParameters)
 {
   u16 isCard;
   u8 card_id[4];
+  u8 cnt = 0;
+  u8 timeout = 0;
   while(1)
   {
-    rc522_cmd_request(REQUEST_TYPE_ALL);
+    switch(cnt)
+    {
+      case 0:
+        rc522_cmd_request(REQUEST_TYPE_ALL);
+        cnt++;
+        timeout = 10;
+        break;
+      case 1:
+        if(rfid_rev_flag)
+        {
+          rfid_rev_flag = 0;
+          printf("rev rc522\r\n");
+          isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
+          if(isCard == Mifare1_S50)
+          {
+            printf("s50 ");
+            rc522_cmd_anticoll(COLLISION_GRADE_1);
+            cnt++;
+            timeout = 10;
+          }
+          else
+            cnt = 0;
+        }
+        else
+        {
+          timeout--;
+          if(timeout == 0)
+          {//1s内模块无回复退出
+            cnt = 0;
+          }
+        }
+        break;
+      case 2:
+        if(rfid_rev_flag)
+        {
+          rfid_rev_flag = 0;
+          u8 err;
+          err = rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
+          if(err == 0)
+          {//卡号正确
+            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
+          }
+          cnt = 0;
+        }
+        else
+        {
+          timeout--;
+          if(timeout == 0)
+          {
+            cnt = 0;
+          }
+        }
+        break;
+      default:
+        break;
+    }
     vTaskDelay(100);
-    rc522_cmd_anticoll(COLLISION_GRADE_1);
-    vTaskDelay(100);
-//    if(rfid_rev_flag)
-//    {
-//      rfid_rev_flag = 0;
-//      printf("rev rc522\r\n");
-//      isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
-//      if(isCard == Mifare1_S50)
-//      {
-//        printf("s50 ");
-//        rc522_cmd_anticoll(COLLISION_GRADE_1);
-//        vTaskDelay(100);
-//        if(rfid_rev_flag)
-//        {
-//          rfid_rev_flag = 0;
-////          rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
-////          printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
-//        }
-//      }
-//    }
-//    vTaskDelay(1000);
   }
 }
 
@@ -1301,6 +1337,10 @@ void vTaskManageCapacity(void *pvParameters)
     if(xResult == pdTRUE)
     {
       pluse_count++;
+      if((pluse_count % 1000) == 0)
+      {
+        Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,pluse_count % 1000);
+      }
       product_para.pulse_count = pluse_count;
       p_value = product_per_meter(&product_para);
       p_value = get_float_1bit(p_value);//取1位小数点
@@ -1478,7 +1518,9 @@ void TIM_CallBack1(void)
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)
-{
+{//定时时间500ms
+  static u16 sample_time = 0;
+  u16 speed_1,speed_2,speed;
   EventBits_t uxBits;
   uxBits = xEventGroupWaitBits(idwgEventGroup, /* 事件标志组句柄 */
                                IWDG_BIT_ALL,            /* 等待bit0和bit1被设置 */
@@ -1488,6 +1530,24 @@ void UserTimerCallback(TimerHandle_t xTimer)
   if((uxBits & IWDG_BIT_ALL) == IWDG_BIT_ALL)
   {
     IWDG_Feed();
+  }
+  if(isWork == 1)
+  {
+    if(sample_time == 0)
+    {
+      speed_1 = pluse_count;
+    }
+    else if(sample_time >= 120)
+    {//计算1分钟内的脉冲数
+      sample_time = 0;
+      speed_2 = pluse_count;
+      speed = speed_2 - speed_1;
+      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed);//显示速度
+    }
+    else
+    {
+      sample_time++;
+    }
   }
 }
 
