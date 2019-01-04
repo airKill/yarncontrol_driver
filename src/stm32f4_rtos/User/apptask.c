@@ -936,33 +936,7 @@ static void vTaskTaskRFID(void *pvParameters)
 {
   u16 isCard;
   u8 card_id[4];
-<<<<<<< HEAD
-  while(1)
-  {
-    rc522_cmd_request(REQUEST_TYPE_ALL);
-    vTaskDelay(100);
-    rc522_cmd_anticoll(COLLISION_GRADE_1);
-    vTaskDelay(100);
-//    if(rfid_rev_flag)
-//    {
-//      rfid_rev_flag = 0;
-//      printf("rev rc522\r\n");
-//      isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
-//      if(isCard == Mifare1_S50)
-//      {
-//        printf("s50 ");
-//        rc522_cmd_anticoll(COLLISION_GRADE_1);
-//        vTaskDelay(100);
-//        if(rfid_rev_flag)
-//        {
-//          rfid_rev_flag = 0;
-////          rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
-////          printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
-//        }
-//      }
-//    }
-//    vTaskDelay(1000);
-=======
+
   u8 cnt = 0;
   u8 timeout = 0;
   while(1)
@@ -978,7 +952,6 @@ static void vTaskTaskRFID(void *pvParameters)
         if(rfid_rev_flag)
         {
           rfid_rev_flag = 0;
-          printf("rev rc522\r\n");
           isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
           if(isCard == Mifare1_S50)
           {
@@ -1024,7 +997,6 @@ static void vTaskTaskRFID(void *pvParameters)
         break;
     }
     vTaskDelay(100);
->>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
   }
 }
 

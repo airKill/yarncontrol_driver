@@ -962,6 +962,7 @@ static void InitHardUart(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(UART5, &USART_InitStructure);
   
+//  USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
   USART_ITConfig(UART5, USART_IT_IDLE, ENABLE);	/* 使能接收中断 */
   USART_DMACmd(UART5,USART_DMAReq_Rx,ENABLE);
   /*
@@ -973,7 +974,7 @@ static void InitHardUart(void)
   
   /* CPU的小缺陷：串口配置好，如果直接Send，则第1个字节发送不出去
   如下语句解决第1个字节无法正确发送出去的问题 */
-  USART_ClearFlag(UART5, USART_FLAG_TC);     /* 清发送完成标志，Transmission Complete flag */
+//  USART_ClearFlag(UART5, USART_FLAG_TC);     /* 清发送完成标志，Transmission Complete flag */
 #endif
   
 #if UART6_FIFO_EN == 1			/* PG14/USART6_TX , PC7/USART6_RX,PG8/USART6_RTS, PG15/USART6_CTS */
@@ -1477,10 +1478,6 @@ void UART5_IRQHandler(void)
 {
   u16 data;
   u16 UART_ReceiveSize = 0;
-<<<<<<< HEAD
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-=======
->>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
   if(USART_GetITStatus(UART5,USART_IT_IDLE) != RESET)
   {
     DMA_Cmd(DMA1_Stream0, DISABLE);
@@ -1489,13 +1486,8 @@ void UART5_IRQHandler(void)
     data = data;
     UART_ReceiveSize = UART5_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream0);
     rfid_rev_cnt = UART_ReceiveSize;
-<<<<<<< HEAD
-//    memcpy(rfid_rev_buf,UART5_RX_BUF,rfid_rev_cnt);
-    UART1ToPC(UART5_RX_BUF,UART_ReceiveSize);
-=======
     memcpy(rfid_rev_buf,UART5_RX_BUF,rfid_rev_cnt);
-//    UART1ToPC(UART5_RX_BUF,UART_ReceiveSize);
->>>>>>> e91465d28df06ad15ef63bed982c7be4489bd12e
+//    UART1ToPC(rfid_rev_buf,rfid_rev_cnt);
     DMA_ClearFlag(DMA1_Stream0,DMA_FLAG_TCIF0 | DMA_FLAG_FEIF0 | DMA_FLAG_DMEIF0 | DMA_FLAG_TEIF0 | DMA_FLAG_HTIF0);//??DMA1_Steam3??????
     DMA_SetCurrDataCounter(DMA1_Stream0, UART5_RX_BUF_SIZE);
     DMA_Cmd(DMA1_Stream0, ENABLE);
