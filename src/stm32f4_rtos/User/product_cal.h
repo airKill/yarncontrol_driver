@@ -23,7 +23,7 @@ typedef struct
   u16 loss;             //ËðºÄ
 }PRODUCT_PARA;
 extern PRODUCT_PARA product_para;
-void init_product_para(PRODUCT_PARA para);
+void init_product_para(PRODUCT_PARA *para);
 float product_per_meter(PRODUCT_PARA *para);
 float final_per_meter(PRODUCT_PARA *para);
 float product_complete_meter(PRODUCT_PARA *para);

@@ -2,23 +2,23 @@
 
 PRODUCT_PARA product_para;
 
-void init_product_para(PRODUCT_PARA para)
+void init_product_para(PRODUCT_PARA *para)
 {
-  para.product_a = 0;
-  para.product_b = 0;
-  para.working_time = 0;
-  para.idle_time = 0;
-  para.latitude_weight = 0;
-  para.longitude_weight = 0;
-  para.rubber_weight = 0;
-  para.final_weight = 0;
-  para.loom_num = 0;
-  para.total_meter_set = 0;
-  para.total_weitht_set = 0;
-  para.kaidu_set = 0;
-  para.weimi_set = 0;
-  para.weimi_dis_set = 0;
-  para.loss = 0;
+  para->product_a = 0;
+  para->product_b = 0;
+  para->working_time = 0;
+  para->idle_time = 0;
+  para->latitude_weight = 10;
+  para->longitude_weight = 10;
+  para->rubber_weight = 10;
+  para->final_weight = 0;
+  para->loom_num = 10;
+  para->total_meter_set = 100;
+  para->total_weitht_set = 100;
+  para->kaidu_set = 10;
+  para->weimi_set = 100;
+  para->weimi_dis_set = 500;
+  para->loss = 10;
 }
 
 //╪фкЦ╡За©

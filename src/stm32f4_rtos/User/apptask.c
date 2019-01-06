@@ -93,7 +93,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
           {//产能
-            
+            Sdwe_peiliao_page(&product_para);
           }
           else if(var_addr == MAIN_PAGE_KEY_SYS_CONFIG)
           {//系统配置
@@ -109,11 +109,6 @@ void vTaskTaskLCD(void *pvParameters)
               Sdwe_writeIcon(i + PAGE_HISTORY_ICON_FILE1,file_select[i]);
             }
           }
-//          else if(var_addr == PAGE_START_STOP)
-//          {
-//            value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-//            isWork = value;
-//          }
           else if(var_addr == PAGE1_KEY_SET_WEIGHT)
           {//第一页修改设定
             memset(input_password_buf,0,10);
@@ -818,6 +813,17 @@ void vTaskTaskLCD(void *pvParameters)
               printf("复位队列发送成功\r\n");
             }
           }
+          else if(var_addr == PAGE_PRODUCT_PEILIAO)
+          {//
+            Sdwe_product_page(&product_para);
+          }
+          else if(var_addr == PAGE_PRODUCT_CONTINUE)
+          {//
+            TIM_Cmd(TIM1, ENABLE);
+            TIM_CtrlPWMOutputs(TIM1, ENABLE);
+            init_product_para(&product_para);
+            pluse_count = 0;
+          }
         }
       }
     }
@@ -1330,7 +1336,7 @@ void vTaskManageCapacity(void *pvParameters)
   float complete_m,uncomplete_m;
   float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
-  init_product_para(product_para);
+  init_product_para(&product_para);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
@@ -1364,6 +1370,17 @@ void vTaskManageCapacity(void *pvParameters)
         Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(uncomplete_p * 10));
         Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(complete_m * 10));
         Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(uncomplete_m * 10));
+        
+        if(complete_p >= product_para.total_meter_set)
+        {//完成产量
+          TIM_CtrlPWMOutputs(TIM1, DISABLE);
+          TIM_Cmd(TIM1, DISABLE);
+        }
+        else if(complete_m >= product_para.total_weitht_set)
+        {//完成重量
+          TIM_CtrlPWMOutputs(TIM1, DISABLE);
+          TIM_Cmd(TIM1, DISABLE);
+        }
       }
       memset(buf,0,10);
       sprintf(buf,"%d",pluse_count);
@@ -1531,11 +1548,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {
     IWDG_Feed();
   }
-  if(isWork == 1)
+//  if(isWork == 1)
   {
     if(sample_time == 0)
     {
       speed_1 = pluse_count;
+      sample_time++;
     }
     else if(sample_time >= 120)
     {//计算1分钟内的脉冲数

@@ -2,6 +2,7 @@
 #define _BSP_SDWe050C17_H
 
 #include "protocol.h"
+#include "product_cal.h"
 
 #define LCD_POWER_PORT  GPIOD
 #define LCD_POWER_PIN	GPIO_Pin_0
@@ -124,14 +125,14 @@
 
 #define PAGE_PRODUCT_A 0x0800
 #define PAGE_PRODUCT_B 0x0805
-#define PAGE_PRODUCT_COMPLETE  0x080A
-#define PAGE_PRODUCT_UNCOMPLETE  0x080F
+#define PAGE_PRODUCT_UNCOMPLETE  0x080A
+#define PAGE_PRODUCT_COMPLETE  0x080F
 #define PAGE_PRODUCT_KILOCOUNT   0x0814
 #define PAGE_PRODUCT_SPEED   0x0819
 #define PAGE_PRODUCT_TIME_ON    0x081E
 #define PAGE_PRODUCT_TIME_OFF    0x0823
-#define PAGE_PRODUCT_COMPLETE_W  0x0828
-#define PAGE_PRODUCT_UNCOMPLETE_W  0x082D
+#define PAGE_PRODUCT_UNCOMPLETE_W  0x0828
+#define PAGE_PRODUCT_COMPLETE_W  0x082D
 #define PAGE_PRODUCT_JINGSHA       0x0832
 #define PAGE_PRODUCT_WEISHA       0x0837
 #define PAGE_PRODUCT_RUBBER       0x083C
@@ -143,6 +144,9 @@
 #define PAGE_PRODUCT_KAIDU        0x085A
 #define PAGE_PRODUCT_WEIMI        0x085F
 #define PAGE_PRODUCT_WEISHU_DIS        0x0864
+
+#define PAGE_PRODUCT_PEILIAO    0x0140
+#define PAGE_PRODUCT_CONTINUE    0x0141
 
 #define VGUS_ON   1
 #define VGUS_OFF   0
@@ -168,4 +172,6 @@ void Sdwe_clearString(u16 addr);
 void Sdwe_clear_filename(u8 file_count);
 u8 hex_to_decimal(u8 da);
 void Sdwe_ClearReadDisk(void);
+void Sdwe_product_page(PRODUCT_PARA *para);
+void Sdwe_peiliao_page(PRODUCT_PARA *para);
 #endif

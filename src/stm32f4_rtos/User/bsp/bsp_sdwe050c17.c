@@ -198,16 +198,42 @@ void Sdwe_refresh_allname(u8 file_count)
     Sdwe_refresh_filename(file,i);
 }
 
-//胚料页面
+//产量页面
 void Sdwe_peiliao_page(PRODUCT_PARA *para)
 {
+  float meter,unmeter;
+  float weight,unweight;
+  Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10));
+  meter = product_complete_meter(para);
+  unmeter = product_uncomplete_meter(para);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(unmeter * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(meter * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,0);
+  Sdwe_disDigi(PAGE_PRODUCT_SPEED,0);
   
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_ON,0);
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF,0);
+  weight = product_complete_kilo(para);
+  unweight = product_uncomplete_kilo(para);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(weight * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(unweight * 10));
 }
 
-//产量页面
+//胚料页面
 void Sdwe_product_page(PRODUCT_PARA *para)
 {
-  
+  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,(int)(para->latitude_weight * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,(int)(para->longitude_weight * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,(int)(para->rubber_weight * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(para->final_weight * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,(int)(para->loom_num));
+  Sdwe_disDigi(PAGE_PRODUCT_LOSS,(int)(para->loss));
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set));
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set));
+  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set));
+  Sdwe_disDigi(PAGE_PRODUCT_WEIMI,(int)(para->weimi_set * 10));
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set));
 }
 
 u8 get_valid_length(u8 *buf,u8 len)
