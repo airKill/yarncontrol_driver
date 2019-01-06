@@ -11,7 +11,7 @@ void init_product_para(PRODUCT_PARA *para)
   para->latitude_weight = 10;
   para->longitude_weight = 10;
   para->rubber_weight = 10;
-  para->final_weight = 0;
+  para->final_weight = final_per_meter(para);
   para->loom_num = 10;
   para->total_meter_set = 100;
   para->total_weitht_set = 100;

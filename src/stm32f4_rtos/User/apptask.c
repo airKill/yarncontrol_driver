@@ -824,6 +824,72 @@ void vTaskTaskLCD(void *pvParameters)
             init_product_para(&product_para);
             pluse_count = 0;
           }
+          else if(var_addr == PAGE_PRODUCT_JINGSHA)
+          {//经纱设置
+            float meter;
+            meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+            product_para.latitude_weight = meter;
+            product_para.final_weight = final_per_meter(&product_para);
+            Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(product_para.final_weight * 10),2);
+          }
+          else if(var_addr == PAGE_PRODUCT_WEISHA)
+          {//纬纱设置
+            float meter;
+            meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+            product_para.longitude_weight = meter;
+            product_para.final_weight = final_per_meter(&product_para);
+            Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(product_para.final_weight * 10),2);
+          }
+          else if(var_addr == PAGE_PRODUCT_RUBBER)
+          {//橡胶设置
+            float meter;
+            meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+            product_para.rubber_weight = meter;
+            product_para.final_weight = final_per_meter(&product_para);
+            Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(product_para.final_weight * 10),2);
+          }
+          else if(var_addr == PAGE_PRODUCT_ZHIJI)
+          {//织机条数
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
+            product_para.loom_num = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_LOSS)
+          {//损耗
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
+            product_para.loss = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
+          {//生产任务米设置
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10]);
+            product_para.total_meter_set = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_TOTAL_WEIGHT)
+          {//生产任务重量设置
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
+            product_para.total_weitht_set = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_KAIDU)
+          {//开度设置
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+            product_para.kaidu_set = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_WEIMI)
+          {//纬密设置
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+            product_para.weimi_set = cnt;
+          }
+          else if(var_addr == PAGE_PRODUCT_WEISHU_DIS)
+          {//纬密显示设置
+            float cnt;
+            cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
+            product_para.weimi_dis_set = cnt;
+          }
         }
       }
     }
@@ -942,67 +1008,104 @@ static void vTaskTaskRFID(void *pvParameters)
 {
   u16 isCard;
   u8 card_id[4];
-
+  u8 err;
   u8 cnt = 0;
   u8 timeout = 0;
   while(1)
   {
-    switch(cnt)
+//    switch(cnt)
+//    {
+//      case 0:
+//        rc522_cmd_request(REQUEST_TYPE_ALL);
+//        cnt++;
+//        timeout = 10;
+//        break;
+//      case 1:
+//        if(rfid_rev_flag)
+//        {
+//          rfid_rev_flag = 0;
+//          isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
+//          if(isCard == Mifare1_S50)
+//          {
+//            printf("s50 ");
+//            rc522_cmd_anticoll(COLLISION_GRADE_1);
+//            cnt++;
+//            timeout = 10;
+//          }
+//          else
+//            cnt = 0;
+//        }
+//        else
+//        {
+//          timeout--;
+//          if(timeout == 0)
+//          {//1s内模块无回复退出
+//            cnt = 0;
+//          }
+//        }
+//        break;
+//      case 2:
+//        if(rfid_rev_flag)
+//        {
+//          rfid_rev_flag = 0;
+//          u8 err;
+//          err = rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
+//          if(err == 0)
+//          {//卡号正确
+//            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
+//          }
+//          cnt = 0;
+//        }
+//        else
+//        {
+//          timeout--;
+//          if(timeout == 0)
+//          {
+//            cnt = 0;
+//          }
+//        }
+//        break;
+//      default:
+//        break;
+//    }
+    rfid_rev_flag = 0;
+    rc522_cmd_request(REQUEST_TYPE_ALL);
+    vTaskDelay(100);
+    if(rfid_rev_flag)
     {
-      case 0:
-        rc522_cmd_request(REQUEST_TYPE_ALL);
-        cnt++;
-        timeout = 10;
-        break;
-      case 1:
-        if(rfid_rev_flag)
+      rfid_rev_flag = 0;
+      if(rfid_rev_cnt == 8)
+      {
+        isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
+        if(isCard == Mifare1_S50)
         {
-          rfid_rev_flag = 0;
-          isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
-          if(isCard == Mifare1_S50)
+          printf("s50\r\n");
+          rc522_cmd_anticoll(COLLISION_GRADE_1);
+          vTaskDelay(100);
+          if(rfid_rev_flag)
           {
-            printf("s50 ");
-            rc522_cmd_anticoll(COLLISION_GRADE_1);
-            cnt++;
-            timeout = 10;
-          }
-          else
-            cnt = 0;
-        }
-        else
-        {
-          timeout--;
-          if(timeout == 0)
-          {//1s内模块无回复退出
-            cnt = 0;
-          }
-        }
-        break;
-      case 2:
-        if(rfid_rev_flag)
-        {
-          rfid_rev_flag = 0;
-          u8 err;
-          err = rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
-          if(err == 0)
-          {//卡号正确
+            rfid_rev_flag = 0;
+            if(rfid_rev_cnt == 10)
+            {
+              card_id[0] = rfid_rev_buf[4];
+              card_id[1] = rfid_rev_buf[5];
+              card_id[2] = rfid_rev_buf[6];
+              card_id[3] = rfid_rev_buf[7];
+              if((card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99))
+              {//停机功能卡
+                Sdwe_disPicture(22);
+              }
+              else if((card_id[0] == 0x39) && (card_id[0] == 0xb3) && (card_id[0] == 0x7f) && (card_id[0] == 0x3e))
+              {//A/B班功能卡
+                Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"刷卡成功",strlen("刷卡成功"));
+                bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+              }
+            }
             printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
           }
-          cnt = 0;
         }
-        else
-        {
-          timeout--;
-          if(timeout == 0)
-          {
-            cnt = 0;
-          }
-        }
-        break;
-      default:
-        break;
+      }
     }
-    vTaskDelay(100);
   }
 }
 
@@ -1166,9 +1269,9 @@ static void vTaskMsgPro(void *pvParameters)
             if(readSlave.reg == REG_GET_WEIGHT)
             {//获取到重量并显示到屏幕
               SlavePara.value_sample[readSlave.addr - 1] = readSlave.value;
-              Sdwe_disDigi(PAGE1_SAMPLE_VALUE1 + readSlave.addr - 1,SlavePara.value_sample[index] / 10);
+              Sdwe_disDigi(PAGE1_SAMPLE_VALUE1 + readSlave.addr - 1,SlavePara.value_sample[index] / 10,2);
               Sdwe_writeIcon(PAGE1_SLAVE_STATE1 + readSlave.addr - 1,VGUS_OFF);//对应位置正确错误图标
-              Sdwe_disDigi(PAGE1_ECHO_WEIGHT + readSlave.addr - 1,readSlave.set_value / 10);
+              Sdwe_disDigi(PAGE1_ECHO_WEIGHT + readSlave.addr - 1,readSlave.set_value / 10,2);
             }
           }
         }
@@ -1179,7 +1282,7 @@ static void vTaskMsgPro(void *pvParameters)
           {
             if(info.reg == REG_GET_WEIGHT)
             {//获取到重量并显示到屏幕
-              Sdwe_disDigi(PAGE1_ECHO_WEIGHT + index,0);
+              Sdwe_disDigi(PAGE1_ECHO_WEIGHT + index,0,2);
               //            Sdwe_writeIcon(PAGE1_SLAVE_ONOFF1 + index,0);
             }
           }
@@ -1234,7 +1337,7 @@ static void vTaskRev485(void *pvParameters)
                     (void *) &ptMsg,           /* 发送结构体指针变量ptMsg的地址 */
                     (TickType_t)10) == pdPASS )
       {
-        printf("isWork is %d 队列发送成功\r\n",isWork);
+//        printf("isWork is %d 队列发送成功\r\n",isWork);
       }
     }
     Task_iwdg_refresh(TASK_Rev485);
@@ -1343,9 +1446,9 @@ void vTaskManageCapacity(void *pvParameters)
     if(xResult == pdTRUE)
     {
       pluse_count++;
-      if((pluse_count % 1000) == 0)
+      if((pluse_count % (product_para.weimi_dis_set)) == 0)
       {
-        Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,pluse_count % 1000);
+        Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,pluse_count / product_para.weimi_dis_set,4);
       }
       product_para.pulse_count = pluse_count;
       p_value = product_per_meter(&product_para);
@@ -1355,21 +1458,21 @@ void vTaskManageCapacity(void *pvParameters)
         if(grade == 0)
         {//A班
           product_para.product_a = p_value;//A班产量
-          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(p_value * 10));
+          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(p_value * 10),4);
         }
         else if(grade == 0)
         {//B班
           product_para.product_b = p_value;//A班产量
-          Sdwe_disDigi(PAGE_PRODUCT_B,(int)(p_value * 10));
+          Sdwe_disDigi(PAGE_PRODUCT_B,(int)(p_value * 10),4);
         }
         complete_p = product_complete_meter(&product_para);//已完成产量
         uncomplete_p = product_uncomplete_meter(&product_para);//未完成产量
         complete_m = product_complete_kilo(&product_para);//已完成重量
         uncomplete_m = product_uncomplete_kilo(&product_para);//未完成重量
-        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(complete_p * 10));
-        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(uncomplete_p * 10));
-        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(complete_m * 10));
-        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(uncomplete_m * 10));
+        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(complete_p * 10),4);
+        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(uncomplete_p * 10),4);
+        Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(complete_m * 10),2);
+        Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(uncomplete_m * 10),2);
         
         if(complete_p >= product_para.total_meter_set)
         {//完成产量
@@ -1532,12 +1635,13 @@ void TIM_CallBack1(void)
 {
   Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);
   Sdwe_clearString(PAGE_U_TEXT_READ_STATE);
+  Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)
 {//定时时间500ms
   static u16 sample_time = 0;
-  u16 speed_1,speed_2,speed;
+  static u16 speed_1 = 0,speed_2 = 0,speed = 0;
   EventBits_t uxBits;
   uxBits = xEventGroupWaitBits(idwgEventGroup, /* 事件标志组句柄 */
                                IWDG_BIT_ALL,            /* 等待bit0和bit1被设置 */
@@ -1560,7 +1664,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       sample_time = 0;
       speed_2 = pluse_count;
       speed = speed_2 - speed_1;
-      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed);//显示速度
+      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed,2);//显示速度
     }
     else
     {

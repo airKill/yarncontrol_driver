@@ -94,7 +94,7 @@ void bsp_InitUart(void)
   UART2ToPC('\0',1);
   UART3ToPC('\0',1);
   UART4ToPC('\0',1);
-  UART5ToPC('\0',1);
+  UART5ToPC("hello world",strlen("hello world"));
 }
 
 /*

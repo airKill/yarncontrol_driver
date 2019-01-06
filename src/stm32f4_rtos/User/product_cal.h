@@ -17,7 +17,7 @@ typedef struct
   u8 loom_num;          //织机条数
   u32 total_meter_set;   //总米设置
   u32 total_weitht_set;  //总重量设置
-  u8 kaidu_set;         //开度设置
+  float kaidu_set;         //开度设置
   float weimi_set;         //纬密设置
   u16 weimi_dis_set;     //纬密显示设置
   u16 loss;             //损耗

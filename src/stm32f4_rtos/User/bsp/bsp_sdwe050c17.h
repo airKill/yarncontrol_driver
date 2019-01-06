@@ -145,8 +145,13 @@
 #define PAGE_PRODUCT_WEIMI        0x085F
 #define PAGE_PRODUCT_WEISHU_DIS        0x0864
 
+#define PAGE_PRODUCT_RFID_WARNNING  0x0900
+
 #define PAGE_PRODUCT_PEILIAO    0x0140
 #define PAGE_PRODUCT_CONTINUE    0x0141
+
+#define PAGE_STOP_ON    0x0460
+#define PAGE_STOP_OFF    0x0470
 
 #define VGUS_ON   1
 #define VGUS_OFF   0
@@ -158,7 +163,7 @@ void bsp_InitSdwe050c17(void);
 void Init_JINGSHA_GUI(void);
 void Init_CHANNENG_GUI(void);
 void Sdwe_disPicture(u8 picture);
-void Sdwe_disDigi(u16 addr,u16 data);
+void Sdwe_disDigi(u16 addr,u32 data,u8 bytes);
 void Sdwe_disString(u16 addr,u8 *str,u16 len);
 void Sdwe_protocol(u8 *buf,u16 len);
 u8 get_valid_length(u8 *buf,u8 len);
