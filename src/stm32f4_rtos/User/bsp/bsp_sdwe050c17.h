@@ -148,6 +148,18 @@
 #define PAGE_PRODUCT_RFID_WARNNING  0x0900
 #define PAGE_STOP_WARNNING  0x090A
 
+#define PAGE_STOP_WAIT_TRANSFER 0x0869
+#define PAGE_STOP_TRANSFER      0x086E
+#define PAGE_STOP_WAIT_PPC      0x0873
+#define PAGE_STOP_WAIT_MATERIAL 0x0878
+#define PAGE_STOP_NO_MATERIAL   0x087D
+#define PAGE_STOP_CLEAN         0x0882
+#define PAGE_STOP_TECH_ADJUST   0x0887
+#define PAGE_STOP_DEVICE_ADJUST 0x088C
+#define PAGE_STOP_REPAIR        0x0891
+#define PAGE_STOP_WAIT_QAD      0x0896
+#define PAGE_STOP_REPLACE_PAN   0x089B
+
 #define PAGE_PRODUCT_PEILIAO    0x0140
 #define PAGE_PRODUCT_CONTINUE    0x0141
 
@@ -181,4 +193,5 @@ u8 hex_to_decimal(u8 da);
 void Sdwe_ClearReadDisk(void);
 void Sdwe_product_page(PRODUCT_PARA *para);
 void Sdwe_peiliao_page(PRODUCT_PARA *para);
+void Sdwe_stop_page(PRODUCT_PARA *para);
 #endif

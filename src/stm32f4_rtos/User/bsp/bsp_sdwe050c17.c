@@ -270,6 +270,44 @@ void Sdwe_peiliao_page(PRODUCT_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 
+void Sdwe_stop_page(PRODUCT_PARA *para)
+{
+  u8 buf[20];
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[0] / 3600,para->stop_time[0] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_TRANSFER,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[1] / 3600,para->stop_time[1] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_TRANSFER,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[2] / 3600,para->stop_time[2] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_PPC,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[3] / 3600,para->stop_time[3] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_MATERIAL,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[4] / 3600,para->stop_time[4] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_NO_MATERIAL,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[5] / 3600,para->stop_time[5] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_CLEAN,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[6] / 3600,para->stop_time[6] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_TECH_ADJUST,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[7] / 3600,para->stop_time[7] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_DEVICE_ADJUST,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[8] / 3600,para->stop_time[8] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_REPAIR,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[9] / 3600,para->stop_time[9] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_QAD,buf,strlen(buf));
+  memset(buf,0,20);
+  sprintf(buf,"%04d:%02d",para->stop_time[10] / 3600,para->stop_time[10] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_REPLACE_PAN,buf,strlen(buf));
+}
+
 u8 get_valid_length(u8 *buf,u8 len)
 {
   u8 i,length;

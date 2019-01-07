@@ -894,19 +894,19 @@ void vTaskTaskLCD(void *pvParameters)
             cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
             product_para.weimi_dis_set = cnt;
           }
-          else if((var_addr >= PAGE_STOP_ON) && (var_addr <= PAGE_STOP_ON + 11))
+          else if((var_addr >= PAGE_STOP_OFF) && (var_addr <= PAGE_STOP_OFF + 11))
           {//停机原因选择
             if(product_para.system_state == SYS_NORMAL)
             {//只有系统正常时，才能选择停机原因
-              product_para.system_state = var_addr - PAGE_STOP_ON + 1;
-              Sdwe_writeIcon(var_addr - PAGE_STOP_ON,VGUS_ON);//图标显示选中
+              product_para.system_state = var_addr - PAGE_STOP_OFF + 1;
+              Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_ON);//图标显示选中
               printf("System stop is num %d.\r\n",product_para.system_state);
             }
             else
             {
-              if(product_para.system_state == (var_addr - PAGE_STOP_ON + 1))
+              if(product_para.system_state == (var_addr - PAGE_STOP_OFF + 1))
               {//取消选择停机
-                Sdwe_writeIcon(var_addr - PAGE_STOP_ON,VGUS_OFF);
+                Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_OFF);
                 product_para.system_state = SYS_NORMAL;
                 printf("System normal.\r\n");
               }
@@ -1114,6 +1114,10 @@ static void vTaskTaskRFID(void *pvParameters)
             if(rfid_rev_cnt == 10)
             {
               card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
+              printf("%x ",rfid_rev_buf[4]);
+              printf("%x ",rfid_rev_buf[5]);
+              printf("%x ",rfid_rev_buf[6]);
+              printf("%x ",rfid_rev_buf[7]);
               //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、无效卡
               u32 *card_A_buf;
               u32 *card_B_buf;
