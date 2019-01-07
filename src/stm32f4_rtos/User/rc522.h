@@ -14,6 +14,14 @@
 #define Mifare1_S70     0x0002
 #define Mifare1_Light     0x0010
 
+typedef enum 
+{
+  FUNC_IDLE = 0,       //A°à
+  FUNC_CLASS_A,
+  FUNC_CLASS_B,
+  FUNC_REPAIR
+}CARD_FUNCTION;
+
 extern u8 rfid_rev_flag;
 extern u8 rfid_rev_buf[20];
 extern u8 rfid_rev_cnt;

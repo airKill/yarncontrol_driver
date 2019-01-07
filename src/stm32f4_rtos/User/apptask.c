@@ -25,9 +25,12 @@ u8 download_num = 0;
 u8 working_stage = WORK_STAGE_IDLE;
 u8 isWork = 0,old_isWork = 0;
 u8 usb_disk_flag = 0;
-
+u16 sample_time = 0;
 u32 pluse_count = 0;
 u8 grade = 0;
+u8 class_time = 0;
+u8 card_record = 0;
+u8 card_func = FUNC_IDLE;
 
 extern void DemoFatFS(void);
 extern const char * FR_Table[];
@@ -77,6 +80,7 @@ void vTaskTaskLCD(void *pvParameters)
             rtc_time.hour = hex_to_decimal(lcd_rev_buf[10]);
             rtc_time.minute = hex_to_decimal(lcd_rev_buf[11]);
             rtc_time.second = hex_to_decimal(lcd_rev_buf[12]);
+            class_time = get_class_time(&rtc_time);
           }
         }
         else if(lcd_rev_buf[3] == 0x83)
@@ -93,7 +97,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
           {//产能
-            Sdwe_peiliao_page(&product_para);
+            Sdwe_product_page(&product_para);
           }
           else if(var_addr == MAIN_PAGE_KEY_SYS_CONFIG)
           {//系统配置
@@ -146,21 +150,21 @@ void vTaskTaskLCD(void *pvParameters)
             memset(input_password_buf,0,10);
             Sdwe_clearString(PAGE1_FILE_TEXT_DIS);
             Sdwe_clearString(PAGE1_FILE_TEXT_WARN);
-            Sdwe_readRTC();
+//            Sdwe_readRTC();
           }
           else if(var_addr == PAGE2_KEY_SAVE)
           {//第二页保存
             memset(input_password_buf,0,10);
             Sdwe_clearString(PAGE2_FILE_TEXT_DIS);
             Sdwe_clearString(PAGE2_FILE_TEXT_WARN);
-            Sdwe_readRTC();
+//            Sdwe_readRTC();
           }
           else if(var_addr == PAGE3_KEY_SAVE)
           {//第三页保存
             memset(input_password_buf,0,10);
             Sdwe_clearString(PAGE3_FILE_TEXT_DIS);
             Sdwe_clearString(PAGE3_FILE_TEXT_WARN);
-            Sdwe_readRTC();
+//            Sdwe_readRTC();
           }
           else if(var_addr == PAGE1_KEY_RIGHT)
           {//第一页向右
@@ -815,7 +819,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == PAGE_PRODUCT_PEILIAO)
           {//
-            Sdwe_product_page(&product_para);
+            Sdwe_peiliao_page(&product_para);
           }
           else if(var_addr == PAGE_PRODUCT_CONTINUE)
           {//
@@ -889,6 +893,28 @@ void vTaskTaskLCD(void *pvParameters)
             float cnt;
             cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
             product_para.weimi_dis_set = cnt;
+          }
+          else if((var_addr >= PAGE_STOP_ON) && (var_addr <= PAGE_STOP_ON + 11))
+          {//停机原因选择
+            if(product_para.system_state == SYS_NORMAL)
+            {//只有系统正常时，才能选择停机原因
+              product_para.system_state = var_addr - PAGE_STOP_ON + 1;
+              Sdwe_writeIcon(var_addr - PAGE_STOP_ON,VGUS_ON);//图标显示选中
+              printf("System stop is num %d.\r\n",product_para.system_state);
+            }
+            else
+            {
+              if(product_para.system_state == (var_addr - PAGE_STOP_ON + 1))
+              {//取消选择停机
+                Sdwe_writeIcon(var_addr - PAGE_STOP_ON,VGUS_OFF);
+                product_para.system_state = SYS_NORMAL;
+                printf("System normal.\r\n");
+              }
+              else
+              {
+                Sdwe_disString(PAGE_STOP_WARNNING,"选择无效",strlen("选择无效"));
+              }
+            }
           }
         }
       }
@@ -1007,7 +1033,7 @@ static void vTaskTaskLED(void *pvParameters)
 static void vTaskTaskRFID(void *pvParameters)
 {
   u16 isCard;
-  u8 card_id[4];
+  u32 card_id;
   u8 err;
   u8 cnt = 0;
   u8 timeout = 0;
@@ -1087,21 +1113,65 @@ static void vTaskTaskRFID(void *pvParameters)
             rfid_rev_flag = 0;
             if(rfid_rev_cnt == 10)
             {
-              card_id[0] = rfid_rev_buf[4];
-              card_id[1] = rfid_rev_buf[5];
-              card_id[2] = rfid_rev_buf[6];
-              card_id[3] = rfid_rev_buf[7];
-              if((card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99))
-              {//停机功能卡
-                Sdwe_disPicture(22);
+              card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
+              //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、无效卡
+              u32 *card_A_buf;
+              u32 *card_B_buf;
+              u32 *card_repair_buf;
+              
+              card_A_buf = mymalloc(SRAMIN,product_para.card_A_count);
+              card_B_buf = mymalloc(SRAMIN,product_para.card_B_count);
+              card_repair_buf = mymalloc(SRAMIN,product_para.card_repair_count);
+              if(card_A_buf != NULL)
+                W25QXX_Read((u8 *)&card_A_buf,(u32)W25QXX_ADDR_RFID_A,product_para.card_A_count);//读取A班卡缓冲区
+              if(card_B_buf != NULL)
+                W25QXX_Read((u8 *)&card_B_buf,(u32)W25QXX_ADDR_RFID_B,product_para.card_B_count);//读取B班卡缓冲区
+              if(card_repair_buf != NULL)
+                W25QXX_Read((u8 *)&card_repair_buf,(u32)W25QXX_ADDR_RFID_REPAIR,product_para.card_repair_count);//读取维护班卡缓冲区
+              if(get_card_function(card_id,card_A_buf,product_para.card_A_count))
+              {
+                card_func = FUNC_CLASS_A;
               }
-              else if((card_id[0] == 0x39) && (card_id[0] == 0xb3) && (card_id[0] == 0x7f) && (card_id[0] == 0x3e))
-              {//A/B班功能卡
-                Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"刷卡成功",strlen("刷卡成功"));
-                bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+              else if(get_card_function(card_id,card_B_buf,product_para.card_B_count))
+              {
+                card_func = FUNC_CLASS_B;
               }
+              else if(get_card_function(card_id,card_repair_buf,product_para.card_repair_count))
+              {
+                card_func = FUNC_REPAIR;
+              }
+              else
+              {//无效卡
+                card_func = FUNC_IDLE;
+              }
+              myfree(SRAMIN,card_A_buf);
+              myfree(SRAMIN,card_B_buf);
+              myfree(SRAMIN,card_repair_buf);
+//              if((card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99))
+//              {//停机功能卡
+//                Sdwe_disPicture(22);
+//              }
+//              else if((card_id[0] == 0x39) && (card_id[0] == 0xb3) && (card_id[0] == 0x7f) && (card_id[0] == 0x3e))
+//              {//A/B班功能卡
+//                if(card_record == 0)
+//                {//此时间段内未打卡
+//                  if((class_time == CLASS_A) && (card_func == FUNC_CLASS_A))
+//                  {//卡片为A班而且时间段为早班，打卡有效
+//                    card_record = 1;
+//                  }
+//                  else if((class_time == CLASS_B) && (card_func == FUNC_CLASS_B))
+//                  {//卡片为B班而且时间段为晚班，打卡有效
+//                    card_record = 2;
+//                  }
+//                  else
+//                  {//无效卡
+//                    bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+//                    Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"无效卡",strlen("无效卡"));
+//                  }
+//                }
+//              }
             }
-            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
+//            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
           }
         }
       }
@@ -1329,6 +1399,10 @@ static void vTaskRev485(void *pvParameters)
     if(isWork != old_isWork)
     {
       old_isWork = isWork;
+      if(isWork)
+      {
+        sample_time = 0;
+      }
       ptMsg->addr = BROADCAST;
       ptMsg->func = FUNC_WRITE;
       ptMsg->reg = REG_START;
@@ -1615,15 +1689,14 @@ void AppObjCreate (void)
     /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
   }
   xTimerUser = xTimerCreate("Timer",          /* 定时器名字 */
-                             500,    /* 定时器周期,单位时钟节拍 */
+                             100,    /* 定时器周期,单位时钟节拍 */
                              pdTRUE,          /* 周期性 */
                              (void *)0,      /* 定时器ID */
                              UserTimerCallback); /* 定时器回调函数 */
     
   if(xTimerUser != NULL)
   {
-    
-    if(xTimerStart(xTimerUser, 500) != pdPASS)
+    if(xTimerStart(xTimerUser,1000) != pdPASS)
     {
       printf("xSemaphore_rs485 fault\r\n");
       /* 定时器还没有进入激活状态 */
@@ -1639,9 +1712,8 @@ void TIM_CallBack1(void)
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)
-{//定时时间500ms
-  static u16 sample_time = 0;
-  static u16 speed_1 = 0,speed_2 = 0,speed = 0;
+{//定时时间1s
+  static u16 speed_1 = 0,speed_2 = 0;
   EventBits_t uxBits;
   uxBits = xEventGroupWaitBits(idwgEventGroup, /* 事件标志组句柄 */
                                IWDG_BIT_ALL,            /* 等待bit0和bit1被设置 */
@@ -1652,23 +1724,47 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {
     IWDG_Feed();
   }
-//  if(isWork == 1)
+  Sdwe_readRTC();//每秒获取一次时间
+  if(isWork == 1)
   {
     if(sample_time == 0)
     {
       speed_1 = pluse_count;
       sample_time++;
     }
-    else if(sample_time >= 120)
+    else if(sample_time >= 60)
     {//计算1分钟内的脉冲数
       sample_time = 0;
       speed_2 = pluse_count;
-      speed = speed_2 - speed_1;
-      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed,2);//显示速度
+      product_para.speed = speed_2 - speed_1;
+      Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
     }
     else
     {
       sample_time++;
+    }
+  }
+  if(product_para.system_state == SYS_NORMAL)
+  {
+    product_para.total_work_time++;
+    if((product_para.total_work_time % 60) == 0)
+    {
+      u8 on_time_buf[10];
+      memset(on_time_buf,0,10);
+      sprintf(on_time_buf,"%04d:%02d",product_para.total_work_time / 3600,product_para.total_work_time % 3600 / 60);
+      Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen(on_time_buf));
+    }
+  }
+  else
+  {
+    product_para.total_stop_time++;//停机总时间
+    product_para.stop_time[product_para.system_state - 1]++;
+    if((product_para.total_stop_time % 60) == 0)
+    {
+      u8 off_time_buf[10];
+      memset(off_time_buf,0,10);
+      sprintf(off_time_buf,"%04d:%02d",product_para.total_stop_time / 3600,product_para.total_stop_time % 3600 / 60);
+      Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen(off_time_buf));
     }
   }
 }

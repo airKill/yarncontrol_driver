@@ -2,14 +2,39 @@
 #define __PRODUCT_CAL_H
 
 #include "stm32f4xx.h"
+#include "protocol.h"
+
+typedef enum 
+{
+  CLASS_A = 0,       //A班
+  CLASS_B,
+}CLASS_NUM;
+
+typedef enum 
+{
+  SYS_NORMAL = 0,       //系统正常
+  SYS_WAIT_TRANSFER,    //待转机
+  SYS_TRANSFER,         //转机
+  SYS_WAIT_PPC,         //待PPC处理
+  SYS_WAIT_MATERIAL,    //待料
+  SYS_NO_MATERIAL,      //缺料
+  SYS_CLEAN,            //清洁卫生
+  SYS_TECH_ADJUST,      //工艺调校
+  SYS_DEVICE_ADJUST,    //织机调校
+  SYS_REPAIR,           //维修
+  SYS_WAIT_QAD,         //待QAD处理
+  SYS_REPLACE_PAN       //替换盘头
+}SYSTEM_STATE;
 
 typedef struct
 {
+  u8 system_state;
+  u32 stop_time[11];
   u32 pulse_count; //脉冲数
   float product_a;        //A班产量       
   float product_b;        //B班产量
-  u32 working_time;      //总开机时间
-  u32 idle_time;         //总停机时间
+  u32 total_work_time;      //总开机时间
+  u32 total_stop_time;         //总停机时间
   float latitude_weight;   //经纱重量/米
   float longitude_weight;  //纬纱重量/米
   float rubber_weight;     //橡胶重量/米
@@ -21,6 +46,10 @@ typedef struct
   float weimi_set;         //纬密设置
   u16 weimi_dis_set;     //纬密显示设置
   u16 loss;             //损耗
+  u16 speed;            //机器速度   
+  u16 card_A_count;     //A班数量
+  u16 card_B_count;     //B班数量
+  u16 card_repair_count;//维修卡片数量
 }PRODUCT_PARA;
 extern PRODUCT_PARA product_para;
 void init_product_para(PRODUCT_PARA *para);
@@ -32,4 +61,6 @@ u32 count_per_kilo(PRODUCT_PARA *para);
 float product_complete_kilo(PRODUCT_PARA *para);
 float product_uncomplete_kilo(PRODUCT_PARA *para);
 float get_float_1bit(float data);
+u8 get_class_time(RTC_TIME *time);
+u8 get_card_function(u32 card,u32 *buf_lib,u16 buf_len);
 #endif

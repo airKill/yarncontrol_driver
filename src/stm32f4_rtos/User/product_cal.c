@@ -4,10 +4,11 @@ PRODUCT_PARA product_para;
 
 void init_product_para(PRODUCT_PARA *para)
 {
+  para->system_state = 0;
   para->product_a = 0;
   para->product_b = 0;
-  para->working_time = 0;
-  para->idle_time = 0;
+  para->total_work_time = 0;
+  para->total_stop_time = 0;
   para->latitude_weight = 10;
   para->longitude_weight = 10;
   para->rubber_weight = 10;
@@ -91,4 +92,34 @@ float get_float_1bit(float data)
   float tmp;
   tmp = (float)((int)(data * 10)) / 10;
   return tmp;
+}
+
+u8 get_class_time(RTC_TIME *time)
+{
+  u8 num;
+  u32 dat;
+  dat = (time->hour * 10000) + (time->minute * 100) + time->second;
+  if((dat >= 80000) && (dat <= 200000))//时间在08:00:00~20:00:00之间
+  {
+    num = CLASS_A;
+  }
+  else
+    num = CLASS_B;
+  return num;
+}
+
+//功能:从一个数组里查找是否有相同的数
+//card:卡片编号，4字节
+//buf_lib:数组
+//buf_len:数组长度
+u8 get_card_function(u32 card,u32 *buf_lib,u16 buf_len)
+{
+  u8 same = 0;
+  u16 i;
+  for(i=0;i<buf_len;i++)
+  {
+    if(card == buf_lib[i])
+      same = 1;
+  }
+  return same;
 }

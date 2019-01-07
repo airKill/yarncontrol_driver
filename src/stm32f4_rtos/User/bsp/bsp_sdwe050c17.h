@@ -146,6 +146,7 @@
 #define PAGE_PRODUCT_WEISHU_DIS        0x0864
 
 #define PAGE_PRODUCT_RFID_WARNNING  0x0900
+#define PAGE_STOP_WARNNING  0x090A
 
 #define PAGE_PRODUCT_PEILIAO    0x0140
 #define PAGE_PRODUCT_CONTINUE    0x0141
@@ -158,6 +159,7 @@
 
 extern u8 lcd_rev_buf[50];
 extern u16 lcd_rev_len;
+extern u8 lcd_busy;
 
 void bsp_InitSdwe050c17(void);
 void Init_JINGSHA_GUI(void);

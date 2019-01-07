@@ -5,7 +5,10 @@
 
 #define W25QXX_ADDR_INFO   0            //目录数据占用W25Q64一个扇区
 #define W25QXX_ADDR_FILE   4096      //保存文件从第二扇区地址开始
-
+#define W25QXX_ADDR_CHANNENG    0xA000  //产能页面数据
+#define W25QXX_ADDR_RFID_A        0xB000  //班次A卡片保存数据
+#define W25QXX_ADDR_RFID_B        0xC000  //班次B卡片保存数据
+#define W25QXX_ADDR_RFID_REPAIR   0xD000  //维修卡片保存数据
 //每次保存文件，占用空间（BYTE），即偏移量，实际所用空间为1（文件名长度）+ 10（文件名）+6（存储时间日期）+30（张力设定值） =47
 #define FILE_SIZE    100 
 #define FILE_COUNT_MAX  10
