@@ -32,6 +32,7 @@ u8 class_time = 0;
 u8 card_record = 0,old_card_record = 0;
 
 u8 card_config = READ_PERMISSION;
+u8 page_num = 0;
 
 extern void DemoFatFS(void);
 extern const char * FR_Table[];
@@ -911,6 +912,11 @@ void vTaskTaskLCD(void *pvParameters)
               }
             }
           }
+          
+          else if(var_addr == PAGE_CONFIG_CARD)
+          {//员工卡设置
+            card_config = WRITE_PERMISSION;
+          }
           else if(var_addr == PAGE_CARD_A_INC)
           {//增加A班卡
             card_config = WRITE_INC_A;
@@ -1055,64 +1061,11 @@ static void vTaskTaskRFID(void *pvParameters)
   u16 isCard;
   u32 card_id;
   u8 card_type = FUNC_IDLE;
+  u8 err;
+  static u8 cnt = 0;
   while(1)
   {
-//    switch(cnt)
-//    {
-//      case 0:
-//        rc522_cmd_request(REQUEST_TYPE_ALL);
-//        cnt++;
-//        timeout = 10;
-//        break;
-//      case 1:
-//        if(rfid_rev_flag)
-//        {
-//          rfid_rev_flag = 0;
-//          isCard = rc522_find(rfid_rev_buf,rfid_rev_cnt);
-//          if(isCard == Mifare1_S50)
-//          {
-//            printf("s50 ");
-//            rc522_cmd_anticoll(COLLISION_GRADE_1);
-//            cnt++;
-//            timeout = 10;
-//          }
-//          else
-//            cnt = 0;
-//        }
-//        else
-//        {
-//          timeout--;
-//          if(timeout == 0)
-//          {//1s内模块无回复退出
-//            cnt = 0;
-//          }
-//        }
-//        break;
-//      case 2:
-//        if(rfid_rev_flag)
-//        {
-//          rfid_rev_flag = 0;
-//          u8 err;
-//          err = rc522_card_id(rfid_rev_buf,rfid_rev_cnt,card_id);
-//          if(err == 0)
-//          {//卡号正确
-//            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
-//          }
-//          cnt = 0;
-//        }
-//        else
-//        {
-//          timeout--;
-//          if(timeout == 0)
-//          {
-//            cnt = 0;
-//          }
-//        }
-//        break;
-//      default:
-//        break;
-//    }
-    if(READ_PERMISSION)
+    if(card_config == 0)
     {
       rfid_rev_flag = 0;
       rc522_cmd_request(REQUEST_TYPE_ALL);
@@ -1196,7 +1149,7 @@ static void vTaskTaskRFID(void *pvParameters)
     }
     else
     {
-      if(card_config > WRITE_INC_A)
+      if(card_config > WRITE_PERMISSION)
       {
         rfid_rev_flag = 0;
         rc522_cmd_request(REQUEST_TYPE_ALL);//请求卡
@@ -1686,7 +1639,7 @@ void AppTaskCreate (void)
               &xHandleTaskLED );  /* 任务句柄  */
   xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
               "vTaskTaskRFID",     	/* 任务名    */
-              64,               	/* 任务栈大小，单位word，也就是4字节 */
+              256,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskRFID );  /* 任务句柄  */
@@ -1813,6 +1766,7 @@ void TIM_CallBack1(void)
   Sdwe_clearString(PAGE_U_TEXT_READ_STATE);
   Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);
   Sdwe_clearString(PAGE_STOP_WARNNING);
+  Sdwe_clearString(PAGE_CARD_WARNNING);
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)

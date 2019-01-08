@@ -1071,6 +1071,9 @@
   </group>
   <group>
     <name>ESP8266</name>
+    <excluded>
+      <configuration>Flash</configuration>
+    </excluded>
     <file>
       <name>$PROJ_DIR$\..\..\User\esp8266\esp8266_handler.c</name>
     </file>
@@ -1140,6 +1143,9 @@
   </group>
   <group>
     <name>JSON</name>
+    <excluded>
+      <configuration>Flash</configuration>
+    </excluded>
     <file>
       <name>$PROJ_DIR$\..\..\User\JSON\cJSON.c</name>
     </file>
@@ -1167,6 +1173,9 @@
   </group>
   <group>
     <name>MQTT</name>
+    <excluded>
+      <configuration>Flash</configuration>
+    </excluded>
     <file>
       <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnect.h</name>
     </file>
@@ -1221,6 +1230,9 @@
   </group>
   <group>
     <name>MQTT/DEMO</name>
+    <excluded>
+      <configuration>Flash</configuration>
+    </excluded>
     <file>
       <name>$PROJ_DIR$\..\..\User\MQTTPacket\mqtt.h</name>
     </file>

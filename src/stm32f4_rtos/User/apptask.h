@@ -62,6 +62,7 @@ extern SLAVE slave_info; /* 定义一个结构体用于消息队列 */
 extern u8 working_stage;
 extern u8 isWork,old_isWork;
 extern u8 card_record,old_card_record;
+extern u8 page_num;
 /*
 **********************************************************************************************************
 变量声明

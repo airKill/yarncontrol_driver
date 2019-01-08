@@ -131,9 +131,9 @@ u8 get_card_type(u32 id)
   u32 *card_B_buf;
   u32 *card_repair_buf;
   u8 type;
-  card_A_buf = mymalloc(SRAMIN,product_para.card_A_count);
-  card_B_buf = mymalloc(SRAMIN,product_para.card_B_count);
-  card_repair_buf = mymalloc(SRAMIN,product_para.card_repair_count);
+  card_A_buf = mymalloc(SRAMIN,256);
+  card_B_buf = mymalloc(SRAMIN,256);
+  card_repair_buf = mymalloc(SRAMIN,256);
   if(card_A_buf != NULL)
     W25QXX_Read((u8 *)&card_A_buf,(u32)W25QXX_ADDR_RFID_A,product_para.card_A_count);//¶ÁÈ¡A°à¿¨»º³åÇø
   if(card_B_buf != NULL)
@@ -165,9 +165,9 @@ u8 get_card_type(u32 id)
 void inc_card_type(u32 id,u8 type)
 {
   u32 *card_buf;
+  card_buf = mymalloc(SRAMIN,256);
   if(type == FUNC_CLASS_A)
   {
-    card_buf = mymalloc(SRAMIN,product_para.card_A_count);
     W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,product_para.card_A_count);
     card_buf[product_para.card_A_count] = id;
     product_para.card_A_count++;
@@ -175,7 +175,6 @@ void inc_card_type(u32 id,u8 type)
   }
   else if(type == FUNC_CLASS_B)
   {
-    card_buf = mymalloc(SRAMIN,product_para.card_B_count);
     W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_B,product_para.card_B_count);
     card_buf[product_para.card_A_count] = id;
     product_para.card_B_count++;
@@ -183,11 +182,10 @@ void inc_card_type(u32 id,u8 type)
   }
   else if(type == FUNC_REPAIR)
   {
-    card_buf = mymalloc(SRAMIN,product_para.card_repair_count);
     W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,product_para.card_repair_count);
     card_buf[product_para.card_A_count] = id;
     product_para.card_repair_count++;
-    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,product_para.card_repair_count);
+    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,product_para.card_repair_count);  
   }
   myfree(SRAMIN,card_buf);
 }

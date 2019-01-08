@@ -1100,7 +1100,7 @@ static void ConfigUartNVIC(void)
 #if UART5_FIFO_EN == 1
   /* 使能串口5中断t */
   NVIC_InitStructure.NVIC_IRQChannel = UART5_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 4;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);

@@ -240,12 +240,12 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   float weight,unweight;
   u8 on_time_buf[10];
   u8 off_time_buf[10];
-  Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),2);
+  Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),4);
   meter = product_complete_meter(para);
   unmeter = product_uncomplete_meter(para);
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(unmeter * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(meter * 10),2);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(unmeter * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(meter * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->pulse_count / para->weimi_dis_set,4);
   Sdwe_disDigi(PAGE_PRODUCT_SPEED,para->speed,2);
   memset(on_time_buf,0,10);
