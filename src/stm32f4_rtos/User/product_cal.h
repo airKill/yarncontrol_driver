@@ -10,6 +10,18 @@ typedef enum
   CLASS_B,
 }CLASS_NUM;
 
+typedef enum
+{
+  READ_PERMISSION = 0,
+  WRITE_PERMISSION,
+  WRITE_INC_A,
+  WRITE_DEC_A,
+  WRITE_INC_B,
+  WRITE_DEC_B,
+  WRITE_INC_REPAIR,
+  WRITE_DEC_REPAIR,
+}CARD_FUNC;
+
 typedef enum 
 {
   SYS_NORMAL = 0,       //系统正常
@@ -50,6 +62,8 @@ typedef struct
   u16 card_A_count;     //A班数量
   u16 card_B_count;     //B班数量
   u16 card_repair_count;//维修卡片数量
+  u8 class_time_hour;
+  u8 class_time_minute;
 }PRODUCT_PARA;
 extern PRODUCT_PARA product_para;
 void init_product_para(PRODUCT_PARA *para);
@@ -61,6 +75,8 @@ u32 count_per_kilo(PRODUCT_PARA *para);
 float product_complete_kilo(PRODUCT_PARA *para);
 float product_uncomplete_kilo(PRODUCT_PARA *para);
 float get_float_1bit(float data);
-u8 get_class_time(RTC_TIME *time);
-u8 get_card_function(u32 card,u32 *buf_lib,u16 buf_len);
+u8 get_class_time(RTC_TIME *time,PRODUCT_PARA *para);
+u8 is_same_data(u32 card,u32 *buf_lib,u16 buf_len);
+u8 get_card_type(u32 id);
+void inc_card_type(u32 id,u8 type);
 #endif

@@ -53,7 +53,11 @@
           
           
           
+<<<<<<< Updated upstream
         <item>SlavePara</item><item>device_info</item><item>name_buf</item><item>input_password_buf</item><item>input_password_buf</item><item>fx</item><item>m_ctrl_dev</item><item>UART2_RX_BUF</item><item>UART5_RX_BUF</item><item>sendbuf</item><item>card_id</item><item>p_value</item><item>product_para</item><item>pluse_count</item><item>lcd_rev_buf</item><item>var_addr</item><item></item></expressions>
+=======
+        <item>SlavePara</item><item>device_info</item><item>name_buf</item><item>input_password_buf</item><item>input_password_buf</item><item>fx</item><item>m_ctrl_dev</item><item>UART2_RX_BUF</item><item>UART5_RX_BUF</item><item>sendbuf</item><item>card_id</item><item>p_value</item><item>product_para</item><item/></expressions>
+>>>>>>> Stashed changes
         <col-names>
           
           

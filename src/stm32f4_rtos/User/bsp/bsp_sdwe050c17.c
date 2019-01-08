@@ -118,6 +118,12 @@ void Sdwe_disString(u16 addr,u8 *str,u16 len)
   lcd_busy = 0;
 }
 
+void SDWE_WARNNING(u16 addr,u8 *str)
+{
+  Sdwe_disString(addr,str,strlen(str));
+  bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+}
+
 void Sdwe_clearString(u16 addr)
 {
   u8 sendbuf[10];

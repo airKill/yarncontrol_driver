@@ -27,10 +27,11 @@ u8 isWork = 0,old_isWork = 0;
 u8 usb_disk_flag = 0;
 u16 sample_time = 0;
 u32 pluse_count = 0;
-u8 grade = 0;
+
 u8 class_time = 0;
-u8 card_record = 0;
-u8 card_func = FUNC_IDLE;
+u8 card_record = 0,old_card_record = 0;
+
+u8 card_config = READ_PERMISSION;
 
 extern void DemoFatFS(void);
 extern const char * FR_Table[];
@@ -80,7 +81,7 @@ void vTaskTaskLCD(void *pvParameters)
             rtc_time.hour = hex_to_decimal(lcd_rev_buf[10]);
             rtc_time.minute = hex_to_decimal(lcd_rev_buf[11]);
             rtc_time.second = hex_to_decimal(lcd_rev_buf[12]);
-            class_time = get_class_time(&rtc_time);
+            class_time = get_class_time(&rtc_time,&product_para);
           }
         }
         else if(lcd_rev_buf[3] == 0x83)
@@ -658,22 +659,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             if(ison == 0)
             {//未选择文件
-              Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"未选择文件",strlen("未选择文件"));
-              bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+              SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"未选择文件");
             }
             else
             {
               if(device_info.page_count_all == 0)
               {//没有保存的文件
-                Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"无文件",strlen("无文件"));
-                bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+                SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无文件");
               }
               else
               {
                 if(cnt > 1)
                 {//选择文件超过1个
-                  Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"只能选一个",strlen("只能选一个"));
-                  bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+                  SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"只能选一个");
                 }
                 else
                 {
@@ -698,8 +696,7 @@ void vTaskTaskLCD(void *pvParameters)
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                     __set_PRIMASK(0);
                     Init_JINGSHA_GUI();
-                    Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"调用成功",strlen("调用成功"));
-                    bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+                    SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"调用成功");
                     ptMsg->addr = 0xff;
                     ptMsg->func = FUNC_WRITE;
                     ptMsg->reg = REG_SET_WEIGHT;
@@ -787,15 +784,13 @@ void vTaskTaskLCD(void *pvParameters)
             }
             if(cnt == 0)
             {//未选择文件
-              Sdwe_disString(PAGE_U_TEXT_READ_STATE,"未选择文件",strlen("未选择文件"));
-              bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+              SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"未选择文件");
             }
             else
             {
               if(Disk_File.filenum == 0)
               {//没有保存的文件
-                Sdwe_disString(PAGE_U_TEXT_READ_STATE,"无文件",strlen("无文件"));
-                bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"无文件");
               }
               else
               {
@@ -912,9 +907,37 @@ void vTaskTaskLCD(void *pvParameters)
               }
               else
               {
-                Sdwe_disString(PAGE_STOP_WARNNING,"选择无效",strlen("选择无效"));
+                SDWE_WARNNING(PAGE_STOP_WARNNING,"无效操作");
               }
             }
+          }
+          else if(var_addr == PAGE_CARD_A_INC)
+          {//增加A班卡
+            card_config = WRITE_INC_A;
+          }
+          else if(var_addr == PAGE_CARD_A_DEC)
+          {//减少A班卡
+            card_config = WRITE_DEC_A;
+          }
+          else if(var_addr == PAGE_CARD_B_INC)
+          {//增加B班卡
+            card_config = WRITE_INC_B;
+          }
+          else if(var_addr == PAGE_CARD_B_DEC)
+          {//减少B班卡
+            card_config = WRITE_DEC_B;
+          }
+          else if(var_addr == PAGE_CARD_REPAIR_INC)
+          {//增加维护卡
+            card_config = WRITE_INC_REPAIR;
+          }
+          else if(var_addr == PAGE_CARD_REPAIR_DEC)
+          {//减少维护卡
+            card_config = WRITE_DEC_REPAIR;
+          }
+          else if(var_addr == PAGE_CARD_QUIT)
+          {//退出卡设置页面
+            card_config = READ_PERMISSION;
           }
         }
       }
@@ -992,14 +1015,12 @@ static void vTaskMassStorage(void *pvParameters)
         result = f_write(&file,buf,len,&bw);
         if(result == FR_OK)
         {
-          Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"写入成功",strlen("写入成功"));
-          bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入成功");
           printf("%s.CSV文件写入成功\r\n",name_1);
         }
         else
         {
-          Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"写入失败",strlen("写入失败"));
-          bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入失败");
           printf("%s.CSV文件写入失败\r\n",name_1);
         }
         /* 关闭文件*/
@@ -1010,8 +1031,7 @@ static void vTaskMassStorage(void *pvParameters)
       }
       else
       {
-        Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘",strlen("无U盘"));
-        bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘");
         printf("U盘未插入\r\n");
       }
     }
@@ -1034,9 +1054,7 @@ static void vTaskTaskRFID(void *pvParameters)
 {
   u16 isCard;
   u32 card_id;
-  u8 err;
-  u8 cnt = 0;
-  u8 timeout = 0;
+  u8 card_type = FUNC_IDLE;
   while(1)
   {
 //    switch(cnt)
@@ -1094,91 +1112,172 @@ static void vTaskTaskRFID(void *pvParameters)
 //      default:
 //        break;
 //    }
-    rfid_rev_flag = 0;
-    rc522_cmd_request(REQUEST_TYPE_ALL);
-    vTaskDelay(100);
-    if(rfid_rev_flag)
+    if(READ_PERMISSION)
     {
       rfid_rev_flag = 0;
-      if(rfid_rev_cnt == 8)
+      rc522_cmd_request(REQUEST_TYPE_ALL);
+      vTaskDelay(100);
+      if(rfid_rev_flag)
       {
-        isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
-        if(isCard == Mifare1_S50)
+        rfid_rev_flag = 0;
+        if(rfid_rev_cnt == 8)
         {
-          printf("s50\r\n");
-          rc522_cmd_anticoll(COLLISION_GRADE_1);
-          vTaskDelay(100);
-          if(rfid_rev_flag)
+          isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
+          if(isCard == Mifare1_S50)
           {
-            rfid_rev_flag = 0;
-            if(rfid_rev_cnt == 10)
+            printf("s50\r\n");
+            rc522_cmd_anticoll(COLLISION_GRADE_1);
+            vTaskDelay(100);
+            if(rfid_rev_flag)
             {
-              card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
-              printf("%x ",rfid_rev_buf[4]);
-              printf("%x ",rfid_rev_buf[5]);
-              printf("%x ",rfid_rev_buf[6]);
-              printf("%x ",rfid_rev_buf[7]);
-              //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、无效卡
-              u32 *card_A_buf;
-              u32 *card_B_buf;
-              u32 *card_repair_buf;
-              
-              card_A_buf = mymalloc(SRAMIN,product_para.card_A_count);
-              card_B_buf = mymalloc(SRAMIN,product_para.card_B_count);
-              card_repair_buf = mymalloc(SRAMIN,product_para.card_repair_count);
-              if(card_A_buf != NULL)
-                W25QXX_Read((u8 *)&card_A_buf,(u32)W25QXX_ADDR_RFID_A,product_para.card_A_count);//读取A班卡缓冲区
-              if(card_B_buf != NULL)
-                W25QXX_Read((u8 *)&card_B_buf,(u32)W25QXX_ADDR_RFID_B,product_para.card_B_count);//读取B班卡缓冲区
-              if(card_repair_buf != NULL)
-                W25QXX_Read((u8 *)&card_repair_buf,(u32)W25QXX_ADDR_RFID_REPAIR,product_para.card_repair_count);//读取维护班卡缓冲区
-              if(get_card_function(card_id,card_A_buf,product_para.card_A_count))
+              rfid_rev_flag = 0;
+              if(rfid_rev_cnt == 10)
               {
-                card_func = FUNC_CLASS_A;
+                card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
+                printf("%x ",rfid_rev_buf[4]);
+                printf("%x ",rfid_rev_buf[5]);
+                printf("%x ",rfid_rev_buf[6]);
+                printf("%x ",rfid_rev_buf[7]);
+                //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、未注册卡
+                card_type = get_card_type(card_id);
+                if(card_type == FUNC_REPAIR)
+                {//维护卡
+                  Sdwe_disPicture(22);
+                }
+                else if(card_type == FUNC_CLASS_A)
+                {//A班卡
+                  if(class_time == CLASS_A)
+                  {//A班卡打在A时间段
+                    card_record = 1;//A班
+                    if(old_card_record != card_record)
+                    {
+                      old_card_record = card_record;
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"打开成功");
+                    }
+                    else
+                    {
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡");
+                    }
+                  }
+                  else
+                  {//A班卡打在B时间段
+                    SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作");
+                  }
+                }
+                else if(card_type == FUNC_CLASS_B)
+                {//B班卡
+                  if(class_time == CLASS_B)
+                  {//A班卡打在A时间段
+                    card_record = 2;//A班
+                    if(old_card_record != card_record)
+                    {
+                      old_card_record = card_record;
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"打开成功");
+                    }
+                    else
+                    {
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡");
+                    }
+                  }
+                  else
+                  {//A班卡打在B时间段
+                    SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作");
+                  }
+                }
+                else
+                {//未注册卡
+                  SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未注册卡");
+                }
               }
-              else if(get_card_function(card_id,card_B_buf,product_para.card_B_count))
-              {
-                card_func = FUNC_CLASS_B;
-              }
-              else if(get_card_function(card_id,card_repair_buf,product_para.card_repair_count))
-              {
-                card_func = FUNC_REPAIR;
-              }
-              else
-              {//无效卡
-                card_func = FUNC_IDLE;
-              }
-              myfree(SRAMIN,card_A_buf);
-              myfree(SRAMIN,card_B_buf);
-              myfree(SRAMIN,card_repair_buf);
-//              if((card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99) && (card_id[0] == 0x99))
-//              {//停机功能卡
-//                Sdwe_disPicture(22);
-//              }
-//              else if((card_id[0] == 0x39) && (card_id[0] == 0xb3) && (card_id[0] == 0x7f) && (card_id[0] == 0x3e))
-//              {//A/B班功能卡
-//                if(card_record == 0)
-//                {//此时间段内未打卡
-//                  if((class_time == CLASS_A) && (card_func == FUNC_CLASS_A))
-//                  {//卡片为A班而且时间段为早班，打卡有效
-//                    card_record = 1;
-//                  }
-//                  else if((class_time == CLASS_B) && (card_func == FUNC_CLASS_B))
-//                  {//卡片为B班而且时间段为晚班，打卡有效
-//                    card_record = 2;
-//                  }
-//                  else
-//                  {//无效卡
-//                    bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
-//                    Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"无效卡",strlen("无效卡"));
-//                  }
-//                }
-//              }
             }
-//            printf("%x %x %x %x\r\n",card_id[0],card_id[1],card_id[2],card_id[3]);
           }
         }
       }
+    }
+    else
+    {
+      if(card_config > WRITE_INC_A)
+      {
+        rfid_rev_flag = 0;
+        rc522_cmd_request(REQUEST_TYPE_ALL);//请求卡
+        vTaskDelay(100);
+        if(rfid_rev_flag)
+        {//收到模块返回命令
+          rfid_rev_flag = 0;
+          if(rfid_rev_cnt == 8)
+          {//
+            isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
+            if(isCard == Mifare1_S50)
+            {//识别到s50卡
+              printf("s50\r\n");
+              rc522_cmd_anticoll(COLLISION_GRADE_1);//防碰撞获取卡片ID
+              vTaskDelay(100);
+              if(rfid_rev_flag)
+              {
+                rfid_rev_flag = 0;
+                if(rfid_rev_cnt == 10)
+                {
+                  card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
+                  if(card_id != 0)
+                  {
+                    card_type = get_card_type(card_id);
+                    if(card_config == WRITE_INC_A)
+                    {
+                      if(card_type == FUNC_IDLE)
+                      {//卡片不存在，添加到数据库
+                        inc_card_type(card_id,FUNC_CLASS_A);
+                      }
+                      else
+                      {
+                        SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                      }
+                    }
+                    else if(card_config == WRITE_DEC_A)
+                    {
+                      if(card_type == FUNC_CLASS_A)
+                      {//卡片存在，删除
+                        
+                      }
+                    }
+                    else if(card_config == WRITE_INC_B)
+                    {
+                      if(card_type == FUNC_IDLE)
+                      {//卡片不存在，添加到数据库
+                        inc_card_type(card_id,FUNC_CLASS_B);
+                      }
+                      else
+                      {
+                        SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                      }
+                    }
+                    else if(card_config == WRITE_DEC_B)
+                    {
+                      
+                    }
+                    else if(card_config == WRITE_INC_REPAIR)
+                    {
+                      if(card_type == FUNC_IDLE)
+                      {//卡片不存在，添加到数据库
+                        inc_card_type(card_id,FUNC_REPAIR);
+                      }
+                      else
+                      {
+                        SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                      }
+                    }
+                    else if(card_config == WRITE_DEC_REPAIR)
+                    {
+                      
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        card_config = WRITE_PERMISSION;
+      }
+      vTaskDelay(100);
     }
   }
 }
@@ -1501,8 +1600,7 @@ static void vTaskReadDisk(void *pvParameters)
       }
       else
       {
-        Sdwe_disString(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘",strlen("无U盘"));
-        bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
+        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘");
       }
     }
     Task_iwdg_refresh(TASK_ReadDisk);
@@ -1533,16 +1631,17 @@ void vTaskManageCapacity(void *pvParameters)
       p_value = get_float_1bit(p_value);//取1位小数点
       if(p_value != old_p_value)
       {//产量值有变化时才保持并显示
-        if(grade == 0)
-        {//A班
-          product_para.product_a = p_value;//A班产量
-          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(p_value * 10),4);
-        }
-        else if(grade == 0)
+        if(card_record == 2)
         {//B班
           product_para.product_b = p_value;//A班产量
           Sdwe_disDigi(PAGE_PRODUCT_B,(int)(p_value * 10),4);
         }
+        else
+        {//A班
+          product_para.product_a = p_value;//A班产量
+          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(p_value * 10),4);
+        }
+        
         complete_p = product_complete_meter(&product_para);//已完成产量
         uncomplete_p = product_uncomplete_meter(&product_para);//未完成产量
         complete_m = product_complete_kilo(&product_para);//已完成重量
@@ -1713,6 +1812,7 @@ void TIM_CallBack1(void)
   Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);
   Sdwe_clearString(PAGE_U_TEXT_READ_STATE);
   Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);
+  Sdwe_clearString(PAGE_STOP_WARNNING);
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)

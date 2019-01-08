@@ -161,7 +161,16 @@
 #define PAGE_STOP_REPLACE_PAN   0x089B
 
 #define PAGE_PRODUCT_PEILIAO    0x0140
-#define PAGE_PRODUCT_CONTINUE    0x0141
+#define PAGE_PRODUCT_CONTINUE   0x0141
+
+#define PAGE_CARD_A_INC 0x0150
+#define PAGE_CARD_A_DEC 0x0151
+#define PAGE_CARD_B_INC 0x0152
+#define PAGE_CARD_B_DEC 0x0153
+#define PAGE_CARD_REPAIR_INC 0x0154
+#define PAGE_CARD_REPAIR_DEC 0x0155
+#define PAGE_CARD_QUIT       0x0156
+#define PAGE_CARD_WARNNING      0x0950
 
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
@@ -194,4 +203,5 @@ void Sdwe_ClearReadDisk(void);
 void Sdwe_product_page(PRODUCT_PARA *para);
 void Sdwe_peiliao_page(PRODUCT_PARA *para);
 void Sdwe_stop_page(PRODUCT_PARA *para);
+void SDWE_WARNNING(u16 addr,u8 *str);
 #endif
