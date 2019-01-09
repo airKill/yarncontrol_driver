@@ -94,7 +94,7 @@ void bsp_InitUart(void)
   UART2ToPC('\0',1);
   UART3ToPC('\0',1);
   UART4ToPC('\0',1);
-  UART5ToPC("hello world",strlen("hello world"));
+  UART5ToPC('\0',1);
 }
 
 /*
@@ -859,7 +859,7 @@ static void InitHardUart(void)
   
   /* CPU的小缺陷：串口配置好，如果直接Send，则第1个字节发送不出去
   如下语句解决第1个字节无法正确发送出去的问题 */
-//  USART_ClearFlag(UART5, USART_FLAG_TC);     /* 清发送完成标志，Transmission Complete flag */
+  USART_ClearFlag(UART5, USART_FLAG_TC);     /* 清发送完成标志，Transmission Complete flag */
 #endif
   
 #if UART6_FIFO_EN == 1			/* PG14/USART6_TX , PC7/USART6_RX,PG8/USART6_RTS, PG15/USART6_CTS */

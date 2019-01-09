@@ -1206,6 +1206,7 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_CLASS_A);
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
                         }
                         else
                         {
@@ -1224,6 +1225,7 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_CLASS_B);
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
                         }
                         else
                         {
@@ -1239,6 +1241,7 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_REPAIR);
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
                         }
                         else
                         {
@@ -1771,7 +1774,7 @@ void AppObjCreate (void)
     /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
   }
   xTimerUser = xTimerCreate("Timer",          /* 定时器名字 */
-                             100,    /* 定时器周期,单位时钟节拍 */
+                             1000,    /* 定时器周期,单位时钟节拍 */
                              pdTRUE,          /* 周期性 */
                              (void *)0,      /* 定时器ID */
                              UserTimerCallback); /* 定时器回调函数 */

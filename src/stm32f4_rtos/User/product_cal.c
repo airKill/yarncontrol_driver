@@ -167,20 +167,23 @@ void inc_card_type(u32 id,u8 type)
     card_buf[device_info.card_A_count] = id;
     device_info.card_A_count++;
     W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,device_info.card_A_count);
+    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   }
   else if(type == FUNC_CLASS_B)
   {
     W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_B,device_info.card_B_count);
-    card_buf[device_info.card_A_count] = id;
+    card_buf[device_info.card_B_count] = id;
     device_info.card_B_count++;
     W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_B,device_info.card_B_count);
+    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   }
   else if(type == FUNC_REPAIR)
   {
     W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,device_info.card_repair_count);
-    card_buf[device_info.card_A_count] = id;
+    card_buf[device_info.card_repair_count] = id;
     device_info.card_repair_count++;
-    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,device_info.card_repair_count);  
+    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_REPAIR,device_info.card_repair_count); 
+    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   }
   myfree(SRAMIN,card_buf);
 }

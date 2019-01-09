@@ -6,13 +6,17 @@ void read_device_info(void)
 {
   u8 i;
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-  if(device_info.isfirst != 0xaa)
+  if(device_info.isfirst != 0xab)
   {
     device_info.isfirst = 0xaa;
     sprintf(device_info.device_id,"%s","jx1234");
     device_info.device_id_len = 6;
+    device_info.system_state = 0;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
+    device_info.card_A_count = 0;
+    device_info.card_B_count = 0;
+    device_info.card_repair_count = 0;
     for(i=0;i<30;i++)
     {
       device_info.onoff[i] = 0;
@@ -20,6 +24,10 @@ void read_device_info(void)
     for(i=0;i<10;i++)
     {
       device_info.file_select[i] = 0;
+    }
+    for(i=0;i<11;i++)
+    {
+      device_info.stop_time[i] = 0;
     }
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   }

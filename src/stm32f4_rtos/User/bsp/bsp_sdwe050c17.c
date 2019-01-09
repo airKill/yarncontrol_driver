@@ -191,7 +191,7 @@ void Sdwe_readRTC(void)
   sendbuf[3] = VGUS_REGISTER_READ;
   sendbuf[4] = 0x20;
   sendbuf[5] = 7;
-  while(lcd_busy);
+//  while(lcd_busy);
   UART4ToPC(sendbuf,6);
 }
 

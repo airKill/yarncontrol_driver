@@ -193,6 +193,9 @@
 #define PAGE_DEVICE_ID          0x0973
 #define PAGE_DEVICE_WARNNING    0x0978
 
+#define PAGE_CHANGE_HOUR    0x0980
+#define PAGE_CHANGE_MINUTE    0x0981
+
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
 
