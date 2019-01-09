@@ -3,6 +3,7 @@
 
 #include "protocol.h"
 #include "product_cal.h"
+#include "para.h"
 
 #define LCD_POWER_PORT  GPIOD
 #define LCD_POWER_PIN	GPIO_Pin_0
@@ -162,6 +163,8 @@
 
 #define PAGE_PRODUCT_PEILIAO    0x0140
 #define PAGE_PRODUCT_CONTINUE   0x0141
+#define PAGE_PRODUCT_QUIT       0x0142
+#define PAGE_PEILIAO_QUIT       0x0143
 
 #define PAGE_CONFIG_TIME        0x0145
 #define PAGE_CONFIG_SECRET      0x0146
@@ -178,6 +181,17 @@
 #define PAGE_CARD_REPAIR_DEC 0x0155
 #define PAGE_CARD_QUIT       0x0156
 #define PAGE_CARD_WARNNING      0x0950
+
+#define PAGE_CONFIG_PASSWORD    0x0964//进入系统配置界面输入登录密码
+#define PAGE_CONFIG_DIS         0x0969
+#define PAGE_CONFIG_WARNNING    0x096E
+
+#define PAGE_PASSWORD_IMPORT    0x0955//登录密码 修改
+#define PAGE_PASSWORD_DIS       0x095A
+#define PAGE_PASSWORD_WARNNING  0x095F
+
+#define PAGE_DEVICE_ID          0x0973
+#define PAGE_DEVICE_WARNNING    0x0978
 
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
@@ -208,7 +222,7 @@ void Sdwe_clear_filename(u8 file_count);
 u8 hex_to_decimal(u8 da);
 void Sdwe_ClearReadDisk(void);
 void Sdwe_product_page(PRODUCT_PARA *para);
-void Sdwe_peiliao_page(PRODUCT_PARA *para);
-void Sdwe_stop_page(PRODUCT_PARA *para);
+void Sdwe_peiliao_page(PEILIAO_PARA *para);
+void Sdwe_stop_page(DEVICE_INFO *para);
 void SDWE_WARNNING(u16 addr,u8 *str);
 #endif

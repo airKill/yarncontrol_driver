@@ -1003,6 +1003,9 @@
       <name>$PROJ_DIR$\..\..\User\bsp\src\bsp_led.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\bsp_relay.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\src\bsp_sdio_sd.c</name>
     </file>
     <file>

@@ -3,6 +3,7 @@
 
 #include "stm32f4xx.h"
 #include "protocol.h"
+#include "para.h"
 
 typedef enum 
 {
@@ -12,7 +13,8 @@ typedef enum
 
 typedef enum
 {
-  READ_PERMISSION = 0,
+  CARD_DISABLE= 0,
+  READ_PERMISSION,
   WRITE_PERMISSION,
   WRITE_INC_A,
   WRITE_DEC_A,
@@ -40,42 +42,45 @@ typedef enum
 
 typedef struct
 {
-  u8 system_state;
-  u32 stop_time[11];
-  u32 pulse_count; //脉冲数
   float product_a;        //A班产量       
   float product_b;        //B班产量
+  float product_uncomplete;        //未完成产量       
+  float product_complete;          //已完成产量
+  u32 weicount_kilowei;         //纬数/千纬
+  u16 speed;            //机器速度   
   u32 total_work_time;      //总开机时间
   u32 total_stop_time;         //总停机时间
+  float weight_uncomplete;        //未完成重量       
+  float weight_complete;          //已完成重量
+}PRODUCT_PARA;
+extern PRODUCT_PARA product_para;
+
+typedef struct
+{
   float latitude_weight;   //经纱重量/米
   float longitude_weight;  //纬纱重量/米
   float rubber_weight;     //橡胶重量/米
   float final_weight;    //成品重量/米
   u8 loom_num;          //织机条数
+  u16 loss;             //损耗
   u32 total_meter_set;   //总米设置
   u32 total_weitht_set;  //总重量设置
   float kaidu_set;         //开度设置
   float weimi_set;         //纬密设置
   u16 weimi_dis_set;     //纬密显示设置
-  u16 loss;             //损耗
-  u16 speed;            //机器速度   
-  u16 card_A_count;     //A班数量
-  u16 card_B_count;     //B班数量
-  u16 card_repair_count;//维修卡片数量
-  u8 class_time_hour;
-  u8 class_time_minute;
-}PRODUCT_PARA;
-extern PRODUCT_PARA product_para;
+}PEILIAO_PARA;
+extern PEILIAO_PARA peiliao_para;
+
 void init_product_para(PRODUCT_PARA *para);
-float product_per_meter(PRODUCT_PARA *para);
-float final_per_meter(PRODUCT_PARA *para);
+float product_per_meter(PEILIAO_PARA *para,u32 pluse);
+float final_per_meter(PEILIAO_PARA *para);
 float product_complete_meter(PRODUCT_PARA *para);
-float product_uncomplete_meter(PRODUCT_PARA *para);
-u32 count_per_kilo(PRODUCT_PARA *para);
-float product_complete_kilo(PRODUCT_PARA *para);
-float product_uncomplete_kilo(PRODUCT_PARA *para);
+float product_uncomplete_meter(PRODUCT_PARA *para,PEILIAO_PARA *peiliao);
+u32 count_per_kilo(u32 pluse);
+float product_complete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao);
+float product_uncomplete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao);
 float get_float_1bit(float data);
-u8 get_class_time(RTC_TIME *time,PRODUCT_PARA *para);
+u8 get_class_time(RTC_TIME *time,DEVICE_INFO *para);
 u8 is_same_data(u32 card,u32 *buf_lib,u16 buf_len);
 u8 get_card_type(u32 id);
 void inc_card_type(u32 id,u8 type);

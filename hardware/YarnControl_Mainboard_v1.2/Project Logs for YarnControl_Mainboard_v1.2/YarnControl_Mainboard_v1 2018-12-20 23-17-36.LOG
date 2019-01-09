@@ -1,6 +1,0 @@
-Removed Pin From Net: NetName=NetJ6_3 Pin=R2-2
-Added Component: Designator=R52(0805)
-Added Pin To Net: NetName=GND Pin=R2-2
-Added Pin To Net: NetName=+3.3V Pin=R52-1
-Added Pin To Net: NetName=NetJ6_3 Pin=R52-2
-Added Member To Class: ClassName=mainboard_interface.v1.2 Member=Component R52 10K

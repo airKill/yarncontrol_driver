@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
+<<<<<<< Updated upstream
 <Project>
   <Desktop>
     <Static>
@@ -514,5 +515,8 @@
     </Positions>
   </Desktop>
 </Project>
+=======
+<Project/>
+>>>>>>> Stashed changes
 
 

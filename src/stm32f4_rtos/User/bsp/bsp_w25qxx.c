@@ -110,6 +110,7 @@ u16 W25QXX_ReadID(void)
 //NumByteToRead:要读取的字节数(最大65535)
 void W25QXX_Read(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead)   
 { 
+  __set_PRIMASK(1);
   u16 i;   										    
   W25QXX_CS_ENABLE();                            //使能器件   
   SPI1_ReadWriteByte(W25X_ReadData);         //发送读取命令   
@@ -120,7 +121,8 @@ void W25QXX_Read(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead)
   {
     pBuffer[i] = SPI1_ReadWriteByte(0XFF);   //循环读数  
   }
-  W25QXX_CS_DISABLE();  				    	      
+  W25QXX_CS_DISABLE();  
+  __set_PRIMASK(0);
 }  
 //SPI在一页(0~65535)内写入少于256个字节的数据
 //在指定地址开始写入最大256字节的数据
@@ -180,6 +182,7 @@ void W25QXX_Write_NoCheck(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite)
 u8 W25QXX_BUFFER[4096];		 
 void W25QXX_Write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite)   
 { 
+  __set_PRIMASK(1);
   u32 secpos;
   u16 secoff;
   u16 secremain;	   
@@ -194,9 +197,7 @@ void W25QXX_Write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite)
     secremain = NumByteToWrite;//不大于4096个字节
   while(1) 
   {	
-    __set_PRIMASK(1);
     W25QXX_Read(W25QXX_BUF,secpos * 4096,4096);//读出整个扇区的内容
-    __set_PRIMASK(0);
     for(i=0;i<secremain;i++)//校验数据
     {
       if(W25QXX_BUF[secoff+i] != 0XFF)
@@ -230,6 +231,7 @@ void W25QXX_Write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite)
         secremain = NumByteToWrite;			//下一个扇区可以写完了
     }	 
   };	 
+  __set_PRIMASK(0);
 }
 //擦除整个芯片		  
 //等待时间超长...

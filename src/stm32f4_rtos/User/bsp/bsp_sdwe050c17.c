@@ -26,11 +26,15 @@ void Init_JINGSHA_GUI(void)
   u8 i;
   u8 name[20],name_1[20];
   u8 name_len;
+  u8 id[10];
   memset(name,0,20);
   memset(name_1,0,20);
+  memset(id,0,10);
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
-  sprintf(name,"%d号机-%s",device_info.master_id,name_1);
-  name_len = strlen(name);
+//  sprintf((char *)name,"%d号机-%s",device_info.master_id,name_1);
+  memcpy(id,device_info.device_id,device_info.device_id_len);
+  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   Sdwe_disString(PAGE1_SYSTEM_STATE,"系统正常...",strlen("系统正常..."));
   for(i=0;i<30;i++)
@@ -120,7 +124,7 @@ void Sdwe_disString(u16 addr,u8 *str,u16 len)
 
 void SDWE_WARNNING(u16 addr,u8 *str)
 {
-  Sdwe_disString(addr,str,strlen(str));
+  Sdwe_disString(addr,str,strlen((char const*)str));
   bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
 }
 
@@ -199,28 +203,29 @@ void Sdwe_clear_filename(u8 file_count)
 
 void Sdwe_refresh_filename(FILE_INFO file,u8 file_count)
 {
-  u8 i;
   u8 time_buf[30];
   u8 len;
   u8 name[20],name_1[20];
   u8 name_len;
+  u8 id[10];
+  memset(id,0,10);
   memset(time_buf,0,30);
   len = sizeof(FILE_INFO);
-  __set_PRIMASK(1);
-  W25QXX_Read((u8 *)&file,(u32)(W25QXX_ADDR_FILE + FILE_SIZE * file_count),len);
-  __set_PRIMASK(0);
+  W25QXX_Read((u8 *)&file,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * file_count),len);
   if(file.filename_len <= 10)
   {
     memset(name,0,20);
     memset(name_1,0,20);
     memcpy(name_1,file.filename,file.filename_len);
-    sprintf(name,"%d号机-%s",device_info.master_id,name_1);
-    name_len = strlen(name);
+//    sprintf((char *)name,"%d号机-%s",device_info.master_id,name_1);
+    memcpy(id,device_info.device_id,device_info.device_id_len);
+    sprintf((char *)name,"%s-%s.CSV",id,name_1);
+    name_len = strlen((char const*)name);
     Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20,name,name_len);//显示文件名
-    sprintf(time_buf,"20%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
+    sprintf((char *)time_buf,"20%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
             file.hour,file.minute,file.second);
-    len = strlen(time_buf);
-    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + 10 + file_count * 20,time_buf,strlen(time_buf));//显示日期时间
+    len = strlen((char const*)time_buf);
+    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + 10 + file_count * 20,time_buf,strlen((char const*)time_buf));//显示日期时间
   }
 }
 void Sdwe_refresh_allname(u8 file_count)
@@ -236,32 +241,26 @@ void Sdwe_refresh_allname(u8 file_count)
 //产量页面
 void Sdwe_product_page(PRODUCT_PARA *para)
 {
-  float meter,unmeter;
-  float weight,unweight;
   u8 on_time_buf[10];
   u8 off_time_buf[10];
   Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),4);
-  meter = product_complete_meter(para);
-  unmeter = product_uncomplete_meter(para);
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(unmeter * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(meter * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->pulse_count / para->weimi_dis_set,4);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(para->product_uncomplete * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(para->product_complete * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->weicount_kilowei,4);
   Sdwe_disDigi(PAGE_PRODUCT_SPEED,para->speed,2);
   memset(on_time_buf,0,10);
   memset(off_time_buf,0,10);
-  sprintf(on_time_buf,"%04d:%02d",para->total_work_time / 3600,para->total_work_time % 3600 / 60);
-  sprintf(off_time_buf,"%04d:%02d",para->total_stop_time / 3600,para->total_stop_time % 3600 / 60);
-  Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen(on_time_buf));
-  Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen(off_time_buf));
-  weight = product_complete_kilo(para);
-  unweight = product_uncomplete_kilo(para);
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(weight * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(unweight * 10),2);
+  sprintf((char *)on_time_buf,"%04d:%02d",para->total_work_time / 3600,para->total_work_time % 3600 / 60);
+  sprintf((char *)off_time_buf,"%04d:%02d",para->total_stop_time / 3600,para->total_stop_time % 3600 / 60);
+  Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen((char const*)on_time_buf));
+  Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen((char const*)off_time_buf));
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),2);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),2);
 }
 
 //胚料页面
-void Sdwe_peiliao_page(PRODUCT_PARA *para)
+void Sdwe_peiliao_page(PEILIAO_PARA *para)
 {
   Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,(int)(para->latitude_weight * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHA,(int)(para->longitude_weight * 10),2);
@@ -269,49 +268,49 @@ void Sdwe_peiliao_page(PRODUCT_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(para->final_weight * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,(int)(para->loom_num),2);
   Sdwe_disDigi(PAGE_PRODUCT_LOSS,(int)(para->loss),2);
-  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),2);
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),2);
   Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEIMI,(int)(para->weimi_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 
-void Sdwe_stop_page(PRODUCT_PARA *para)
+void Sdwe_stop_page(DEVICE_INFO *para)
 {
   u8 buf[20];
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[0] / 3600,para->stop_time[0] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_WAIT_TRANSFER,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[0] / 3600,para->stop_time[0] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_TRANSFER,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[1] / 3600,para->stop_time[1] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_TRANSFER,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[1] / 3600,para->stop_time[1] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_TRANSFER,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[2] / 3600,para->stop_time[2] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_WAIT_PPC,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[2] / 3600,para->stop_time[2] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_PPC,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[3] / 3600,para->stop_time[3] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_WAIT_MATERIAL,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[3] / 3600,para->stop_time[3] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_MATERIAL,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[4] / 3600,para->stop_time[4] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_NO_MATERIAL,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[4] / 3600,para->stop_time[4] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_NO_MATERIAL,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[5] / 3600,para->stop_time[5] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_CLEAN,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[5] / 3600,para->stop_time[5] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_CLEAN,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[6] / 3600,para->stop_time[6] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_TECH_ADJUST,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[6] / 3600,para->stop_time[6] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_TECH_ADJUST,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[7] / 3600,para->stop_time[7] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_DEVICE_ADJUST,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[7] / 3600,para->stop_time[7] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_DEVICE_ADJUST,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[8] / 3600,para->stop_time[8] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_REPAIR,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[8] / 3600,para->stop_time[8] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_REPAIR,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[9] / 3600,para->stop_time[9] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_WAIT_QAD,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[9] / 3600,para->stop_time[9] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_WAIT_QAD,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf(buf,"%04d:%02d",para->stop_time[10] / 3600,para->stop_time[10] % 3600 / 60);
-  Sdwe_disString(PAGE_STOP_REPLACE_PAN,buf,strlen(buf));
+  sprintf((char *)buf,"%04d:%02d",para->stop_time[10] / 3600,para->stop_time[10] % 3600 / 60);
+  Sdwe_disString(PAGE_STOP_REPLACE_PAN,buf,strlen((char const*)buf));
 }
 
 u8 get_valid_length(u8 *buf,u8 len)

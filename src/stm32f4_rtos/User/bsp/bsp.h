@@ -83,7 +83,7 @@
 #include "bsp_stepmotor.h"
 #include "bsp_servomotor.h"
 #include "bsp_sw_onoff.h"
-
+#include "bsp_relay.h"
 #include "apptask.h"
 #include "para.h"
 #include "protocol.h"

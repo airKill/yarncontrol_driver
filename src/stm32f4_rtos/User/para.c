@@ -5,13 +5,12 @@ DEVICE_INFO device_info;
 void read_device_info(void)
 {
   u8 i;
-  __set_PRIMASK(1);
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-  __set_PRIMASK(0);
   if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
-    device_info.master_id = 0x01;
+    sprintf(device_info.device_id,"%s","jx1234");
+    device_info.device_id_len = 6;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
     for(i=0;i<30;i++)
@@ -22,9 +21,7 @@ void read_device_info(void)
     {
       device_info.file_select[i] = 0;
     }
-    __set_PRIMASK(1);
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-    __set_PRIMASK(0);
   }
   if(device_info.page_count_all == 0)
   {
@@ -47,9 +44,7 @@ void read_device_info(void)
   }
   else
   {
-    __set_PRIMASK(1);
-    W25QXX_Read((u8 *)&File_info,(u32)(W25QXX_ADDR_FILE + FILE_SIZE * device_info.page_count_select),sizeof(File_info));
-    __set_PRIMASK(0);
+    W25QXX_Read((u8 *)&File_info,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * device_info.page_count_select),sizeof(File_info));
   }
 }
 

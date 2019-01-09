@@ -4,8 +4,9 @@
 #include "stm32f4xx.h"
 
 #define W25QXX_ADDR_INFO   0            //目录数据占用W25Q64一个扇区
-#define W25QXX_ADDR_FILE   4096      //保存文件从第二扇区地址开始
-#define W25QXX_ADDR_CHANNENG    0xA000  //产能页面数据
+#define W25QXX_ADDR_JINGSHA   0x1000      //保存文件从第二扇区地址开始
+#define W25QXX_ADDR_CHANNENG    0x6000  //产能页面数据
+#define W25QXX_ADDR_PEILIAO    0x7000  //产能页面数据
 #define W25QXX_ADDR_RFID_A        0xB000  //班次A卡片保存数据
 #define W25QXX_ADDR_RFID_B        0xC000  //班次B卡片保存数据
 #define W25QXX_ADDR_RFID_REPAIR   0xD000  //维修卡片保存数据
@@ -21,13 +22,21 @@
 typedef struct
 {
   u8 isfirst;
-  u8 master_id;
+  u8 device_id[6];
+  u8 device_id_len;
+  u8 system_state;
   u8 password[6];
   u8 password_len;
   u8 page_count_all;         
   u8 page_count_select;  
   u8 onoff[30];
   u8 file_select[10];
+  u8 class_time_hour;
+  u8 class_time_minute;
+  u16 card_A_count;     //A班数量
+  u16 card_B_count;     //B班数量
+  u16 card_repair_count;//维修卡片数量
+  u32 stop_time[11];
 }DEVICE_INFO;
 extern DEVICE_INFO device_info;
 
