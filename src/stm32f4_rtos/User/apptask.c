@@ -810,6 +810,7 @@ void vTaskTaskLCD(void *pvParameters)
             peiliao_para.latitude_weight = meter;
             peiliao_para.final_weight = final_per_meter(&peiliao_para);
             Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_WEISHA)
           {//纬纱设置
@@ -818,6 +819,7 @@ void vTaskTaskLCD(void *pvParameters)
             peiliao_para.longitude_weight = meter;
             peiliao_para.final_weight = final_per_meter(&peiliao_para);
             Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_RUBBER)
           {//橡胶设置
@@ -826,18 +828,21 @@ void vTaskTaskLCD(void *pvParameters)
             peiliao_para.rubber_weight = meter;
             peiliao_para.final_weight = final_per_meter(&peiliao_para);
             Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_ZHIJI)
           {//织机条数
             u16 cnt;
             cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             peiliao_para.loom_num = cnt;
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_LOSS)
           {//损耗
             u16 cnt;
             cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             peiliao_para.loss = cnt;
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
           {//生产任务米设置
