@@ -72,6 +72,7 @@ typedef struct
 extern PEILIAO_PARA peiliao_para;
 
 void init_product_para(PRODUCT_PARA *para);
+void init_peiliao_para(PEILIAO_PARA *para);
 float product_per_meter(PEILIAO_PARA *para,u32 pluse);
 float final_per_meter(PEILIAO_PARA *para);
 float product_complete_meter(PRODUCT_PARA *para);

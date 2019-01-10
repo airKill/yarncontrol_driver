@@ -43,6 +43,9 @@
 #define PAGE_3_FILENAME     13
 #define PAGE_HISTORY        14
 #define PAGE_U              19
+#define PAGE_REPAIR         22    
+#define PAGE_CONFIG         23  
+#define PAGE_HIDDEN         29    
 
 #define MAIN_PAGE_KEY_JINGSHA   0x0100
 #define MAIN_PAGE_KEY_WEIMI     0x0101
@@ -145,6 +148,7 @@
 #define PAGE_PRODUCT_KAIDU        0x085A
 #define PAGE_PRODUCT_WEIMI        0x085F
 #define PAGE_PRODUCT_WEISHU_DIS        0x0864
+#define PAGE_WEIMI_WARNNING     0x0905
 
 #define PAGE_PRODUCT_RFID_WARNNING  0x0900
 #define PAGE_STOP_WARNNING  0x090A
@@ -193,8 +197,10 @@
 #define PAGE_DEVICE_ID          0x0973
 #define PAGE_DEVICE_WARNNING    0x0978
 
-#define PAGE_CHANGE_HOUR    0x0980
-#define PAGE_CHANGE_MINUTE    0x0981
+#define PAGE_CHANGE_HOUR        0x0980
+#define PAGE_CHANGE_MINUTE      0x0981
+#define PAGE_CHANGE_SWITCH      0x0982
+#define PAGE_CHANGE_WARNNING      0x0983
 
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
@@ -228,4 +234,5 @@ void Sdwe_product_page(PRODUCT_PARA *para);
 void Sdwe_peiliao_page(PEILIAO_PARA *para);
 void Sdwe_stop_page(DEVICE_INFO *para);
 void SDWE_WARNNING(u16 addr,u8 *str);
+void Sdwe_change_class_time(DEVICE_INFO *para);
 #endif

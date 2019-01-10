@@ -31,6 +31,7 @@ typedef struct
   u8 page_count_select;  
   u8 onoff[30];
   u8 file_select[10];
+  u8 isChange_class;
   u8 class_time_hour;
   u8 class_time_minute;
   u16 card_A_count;     //A°àÊıÁ¿

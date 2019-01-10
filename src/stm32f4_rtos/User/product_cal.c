@@ -17,6 +17,21 @@ void init_product_para(PRODUCT_PARA *para)
   para->weight_complete = 0;
 }
 
+void init_peiliao_para(PEILIAO_PARA *para)
+{
+  para->latitude_weight = 100;
+  para->longitude_weight = 100;
+  para->rubber_weight = 100;
+  para->final_weight = para->latitude_weight + para->longitude_weight + para->rubber_weight;
+  para->loom_num = 10;
+  para->loss = 10;
+  para->total_meter_set = 10000;
+  para->total_weitht_set = 10000;
+  para->kaidu_set = 10;
+  para->weimi_set = 10;
+  para->weimi_dis_set = 500;
+}
+
 //计算产量
 float product_per_meter(PEILIAO_PARA *para,u32 pluse)
 {
@@ -95,12 +110,24 @@ u8 get_class_time(RTC_TIME *time,DEVICE_INFO *para)
   u32 dat,set_value;
   dat = (time->hour * 10000) + (time->minute * 100) + time->second;
   set_value = (para->class_time_hour * 10000) + (para->class_time_minute * 100);//设定的换班时间
-  if((dat >= set_value) && (dat <= (set_value + 120000)))//时间在08:00:00~20:00:00之间
-  {
-    num = CLASS_A;
+  if(set_value >= 120000)
+  {//换班时间大于12点，则下班时间为凌晨
+    if(((dat >= set_value) && (dat <= 235959)) || (dat < (set_value - 120000)))
+    {//A班时间为：设定时间~凌晨00:00:00~（设定时间 - 12：00:00）
+      num = CLASS_A;
+    }
+    else
+      num = CLASS_B;
   }
   else
-    num = CLASS_B;
+  {
+    if((dat >= set_value) && (dat <= (set_value + 120000)))
+    {
+      num = CLASS_A;
+    }
+    else
+      num = CLASS_B;
+  }
   return num;
 }
 
@@ -163,11 +190,11 @@ void inc_card_type(u32 id,u8 type)
   card_buf = mymalloc(SRAMIN,256);
   if(type == FUNC_CLASS_A)
   {
-    W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,device_info.card_A_count);
-    card_buf[device_info.card_A_count] = id;
-    device_info.card_A_count++;
-    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,device_info.card_A_count);
-    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+    W25QXX_Read((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,device_info.card_A_count);//读取A板卡数据库
+    card_buf[device_info.card_A_count] = id;//将此卡写入缓冲区
+    device_info.card_A_count++;//A班卡数量加1
+    W25QXX_Write((u8 *)&card_buf,(u32)W25QXX_ADDR_RFID_A,device_info.card_A_count);//将新的缓冲区写入数据库
+    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));//保存A班卡数量
   }
   else if(type == FUNC_CLASS_B)
   {

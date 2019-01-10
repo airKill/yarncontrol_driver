@@ -275,6 +275,13 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 
+void Sdwe_change_class_time(DEVICE_INFO *para)
+{
+  Sdwe_disDigi(PAGE_CHANGE_HOUR,(int)(para->class_time_hour),2);
+  Sdwe_disDigi(PAGE_CHANGE_MINUTE,(int)(para->class_time_minute),2);
+  Sdwe_writeIcon(PAGE_CHANGE_SWITCH,para->isChange_class);
+}
+
 void Sdwe_stop_page(DEVICE_INFO *para)
 {
   u8 buf[20];

@@ -6,7 +6,9 @@ void read_device_info(void)
 {
   u8 i;
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-  if(device_info.isfirst != 0xab)
+  W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+  W25QXX_Read((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+  if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
     sprintf(device_info.device_id,"%s","jx1234");
@@ -14,6 +16,9 @@ void read_device_info(void)
     device_info.system_state = 0;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
+    device_info.isChange_class = 1;//默认开启A/B换班
+    device_info.class_time_hour = 8;//默认换班时间08:00:00
+    device_info.class_time_minute = 0;
     device_info.card_A_count = 0;
     device_info.card_B_count = 0;
     device_info.card_repair_count = 0;
@@ -30,6 +35,10 @@ void read_device_info(void)
       device_info.stop_time[i] = 0;
     }
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+    init_product_para(&product_para);
+    W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+    init_peiliao_para(&peiliao_para);
+    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
   }
   if(device_info.page_count_all == 0)
   {
