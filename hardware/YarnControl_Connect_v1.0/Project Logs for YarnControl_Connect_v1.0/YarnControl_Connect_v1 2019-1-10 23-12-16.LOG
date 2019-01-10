@@ -1,0 +1,86 @@
+Added Component: Designator=J1(PWR)
+Added Component: Designator=J2(PWR)
+Added Component: Designator=J3(DSUB1.385-2H15)
+Added Component: Designator=J4(PWR)
+Added Component: Designator=J5(DSUB1.385-2H9)
+Added Component: Designator=J6(PWR)
+Added Component: Designator=J7(PWR)
+Added Component: Designator=J8(J508-2(1))
+Added Component: Designator=J9(J508-2(1))
+Added Component: Designator=J10(PWR)
+Added Component: Designator=J11(J508-2(1))
+Added Pin To Net: NetName=+24V Pin=J1-1
+Added Pin To Net: NetName=GND Pin=J1-2
+Added Pin To Net: NetName=+24V Pin=J2-1
+Added Pin To Net: NetName=GND Pin=J2-2
+Added Pin To Net: NetName=GND Pin=J3-1
+Added Pin To Net: NetName=+5V Pin=J3-8
+Added Pin To Net: NetName=GND Pin=J3-16
+Added Pin To Net: NetName=GND Pin=J3-17
+Added Pin To Net: NetName=GND Pin=J4-4
+Added Pin To Net: NetName=+5V Pin=J5-5
+Added Pin To Net: NetName=GND Pin=J5-7
+Added Pin To Net: NetName=GND Pin=J5-10
+Added Pin To Net: NetName=GND Pin=J5-11
+Added Pin To Net: NetName=GND Pin=J6-1
+Added Pin To Net: NetName=+5V Pin=J6-4
+Added Pin To Net: NetName=GND Pin=J7-4
+Added Pin To Net: NetName=GND Pin=J9-1
+Added Pin To Net: NetName=CLOSE_SW_IN Pin=J5-2
+Added Pin To Net: NetName=CLOSE_SW_IN Pin=J9-2
+Added Net: Name=CLOSE_SW_IN
+Added Pin To Net: NetName=DIFF_OUTPUT1+ Pin=J3-9
+Added Pin To Net: NetName=DIFF_OUTPUT1+ Pin=J10-1
+Added Net: Name=DIFF_OUTPUT1+
+Added Pin To Net: NetName=DIFF_OUTPUT1- Pin=J3-2
+Added Pin To Net: NetName=DIFF_OUTPUT1- Pin=J10-2
+Added Net: Name=DIFF_OUTPUT1-
+Added Pin To Net: NetName=DIFF_OUTPUT2+ Pin=J3-3
+Added Pin To Net: NetName=DIFF_OUTPUT2+ Pin=J10-4
+Added Net: Name=DIFF_OUTPUT2+
+Added Pin To Net: NetName=DIFF_OUTPUT2- Pin=J3-10
+Added Pin To Net: NetName=DIFF_OUTPUT2- Pin=J10-3
+Added Net: Name=DIFF_OUTPUT2-
+Added Pin To Net: NetName=ENCODER_B Pin=J5-4
+Added Pin To Net: NetName=ENCODER_B Pin=J6-2
+Added Net: Name=ENCODER_B
+Added Pin To Net: NetName=ENCODER_C Pin=J5-9
+Added Pin To Net: NetName=ENCODER_C Pin=J6-3
+Added Net: Name=ENCODER_C
+Added Pin To Net: NetName=RELAY1 Pin=J5-8
+Added Pin To Net: NetName=RELAY1 Pin=J8-1
+Added Net: Name=RELAY1
+Added Pin To Net: NetName=RELAY2 Pin=J5-3
+Added Pin To Net: NetName=RELAY2 Pin=J8-2
+Added Net: Name=RELAY2
+Added Pin To Net: NetName=RS485_A Pin=J1-4
+Added Pin To Net: NetName=RS485_A Pin=J2-4
+Added Net: Name=RS485_A
+Added Pin To Net: NetName=RS485_B Pin=J1-3
+Added Pin To Net: NetName=RS485_B Pin=J2-3
+Added Net: Name=RS485_B
+Added Pin To Net: NetName=START_STOP1 Pin=J5-6
+Added Pin To Net: NetName=START_STOP1 Pin=J11-1
+Added Net: Name=START_STOP1
+Added Pin To Net: NetName=START_STOP2 Pin=J5-1
+Added Pin To Net: NetName=START_STOP2 Pin=J11-2
+Added Net: Name=START_STOP2
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J3-14
+Added Pin To Net: NetName=STEP_MOTOR1_CP Pin=J4-1
+Added Net: Name=STEP_MOTOR1_CP
+Added Pin To Net: NetName=STEP_MOTOR1_DIR Pin=J3-7
+Added Pin To Net: NetName=STEP_MOTOR1_DIR Pin=J4-2
+Added Net: Name=STEP_MOTOR1_DIR
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J3-15
+Added Pin To Net: NetName=STEP_MOTOR1_EN Pin=J4-3
+Added Net: Name=STEP_MOTOR1_EN
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J3-5
+Added Pin To Net: NetName=STEP_MOTOR2_CP Pin=J7-1
+Added Net: Name=STEP_MOTOR2_CP
+Added Pin To Net: NetName=STEP_MOTOR2_DIR Pin=J3-13
+Added Pin To Net: NetName=STEP_MOTOR2_DIR Pin=J7-2
+Added Net: Name=STEP_MOTOR2_DIR
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J3-6
+Added Pin To Net: NetName=STEP_MOTOR2_EN Pin=J7-3
+Added Net: Name=STEP_MOTOR2_EN
+Added Class: Name=YarnControl_Connect_v1.0
