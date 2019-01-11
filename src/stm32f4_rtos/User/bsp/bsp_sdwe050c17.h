@@ -45,12 +45,14 @@
 #define PAGE_U              19
 #define PAGE_REPAIR         22    
 #define PAGE_CONFIG         23  
-#define PAGE_HIDDEN         29    
+#define PAGE_HIDDEN         29  
+#define PAGE_PERIOD         30 
 
 #define MAIN_PAGE_KEY_JINGSHA   0x0100
 #define MAIN_PAGE_KEY_WEIMI     0x0101
 #define MAIN_PAGE_KEY_CHANNENG  0x0102
 #define MAIN_PAGE_KEY_SYS_CONFIG     0x0103
+#define MAIN_PAGE_WARNNING      0x1000
 
 #define PAGE_FILE_KEY           0x0104
 #define PAGE_START_STOP           0x0130
@@ -202,6 +204,18 @@
 #define PAGE_CHANGE_SWITCH      0x0982
 #define PAGE_CHANGE_WARNNING    0x0983
 
+#define PAGE_HIDDEN_JINGSHA     0x0480
+#define PAGE_HIDDEN_CHANNENG    0x0481
+#define PAGE_HIDDEN_WEIMI       0x0482
+
+#define PAGE_PERIOD_ENABLE      0x0483
+#define PAGE_PERIOD_YEAR        0x0988
+#define PAGE_PERIOD_MONTH       0x098A
+#define PAGE_PERIOD_DAY         0x098C
+#define PAGE_PERIOD_PASSWORD_IMPORT    0x098E
+#define PAGE_PERIOD_PASSWORD_DIS    0x0994
+#define PAGE_PERIOD_WARNNING    0x0999
+
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
 
@@ -235,4 +249,6 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para);
 void Sdwe_stop_page(DEVICE_INFO *para);
 void SDWE_WARNNING(u16 addr,u8 *str);
 void Sdwe_change_class_time(DEVICE_INFO *para);
+void Sdwe_period_page(DEVICE_INFO *para);
+void Sdwe_hidden_page(DEVICE_INFO *para);
 #endif

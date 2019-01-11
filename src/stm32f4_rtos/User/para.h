@@ -27,13 +27,20 @@ typedef struct
   u8 system_state;
   u8 password[6];
   u8 password_len;
+  u8 period_password[10];
+  u8 period_password_len;
+  u8 period_enable_onoff;
+  u8 period_year;
+  u8 period_month;
+  u8 period_day;
   u8 page_count_all;         
   u8 page_count_select;  
   u8 onoff[30];
   u8 file_select[10];
-  u8 isChange_class;
+  u8 class_enable_onoff;
   u8 class_time_hour;
   u8 class_time_minute;
+  u8 page_enable_onoff[3];//0:经纱页面，1：产能页面，2：纬密页面
   u16 card_A_count;     //A班数量
   u16 card_B_count;     //B班数量
   u16 card_repair_count;//维修卡片数量

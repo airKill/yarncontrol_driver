@@ -131,6 +131,22 @@ u8 get_class_time(RTC_TIME *time,DEVICE_INFO *para)
   return num;
 }
 
+u8 get_period_state(RTC_TIME *current,DEVICE_INFO *set)
+{
+  u8 over = 0;
+  u32 current_date;
+  u32 set_date;
+  current_date = current->year * 10000 + current->month * 100 + current->day;
+  set_date = set->period_year * 10000 + set->period_month * 100 + set->period_day;
+  if(current_date >= set_date)
+  {
+    over = 1;
+  }
+  else
+    over = 0;
+  return over;
+}
+
 //功能:从一个数组里查找是否有相同的数
 //card:卡片编号，4字节
 //buf_lib:数组

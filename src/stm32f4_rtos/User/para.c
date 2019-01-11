@@ -16,12 +16,15 @@ void read_device_info(void)
     device_info.system_state = 0;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
-    device_info.isChange_class = 1;//默认开启A/B换班
+    device_info.class_enable_onoff = 1;//默认开启A/B换班
     device_info.class_time_hour = 8;//默认换班时间08:00:00
     device_info.class_time_minute = 0;
     device_info.card_A_count = 0;
     device_info.card_B_count = 0;
     device_info.card_repair_count = 0;
+    device_info.page_enable_onoff[0] = 1;
+    device_info.page_enable_onoff[1] = 1;
+    device_info.page_enable_onoff[2] = 1;
     for(i=0;i<30;i++)
     {
       device_info.onoff[i] = 0;
@@ -34,6 +37,13 @@ void read_device_info(void)
     {
       device_info.stop_time[i] = 0;
     }
+    device_info.period_enable_onoff = 0;//默认试用期关闭
+    device_info.period_year = 20;//默认试用期限2020年
+    device_info.period_month = 1;//默认试用期限1月
+    device_info.period_day = 1;//默认试用期限1日
+    memset(device_info.period_password,0,10);
+    strcpy(device_info.period_password,"admin1");
+    device_info.period_password_len = strlen(device_info.period_password);;
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
     init_product_para(&product_para);
     W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
