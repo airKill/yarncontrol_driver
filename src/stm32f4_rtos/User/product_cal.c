@@ -23,7 +23,7 @@ void init_peiliao_para(PEILIAO_PARA *para)
   para->longitude_weight = 100;
   para->rubber_weight = 100;
   para->final_weight = para->latitude_weight + para->longitude_weight + para->rubber_weight;
-  para->loom_num = 10;
+  para->loom_num = 1;
   para->loss = 10;
   para->total_meter_set = 10000;
   para->total_weitht_set = 10000;
@@ -38,11 +38,11 @@ float product_per_meter(PEILIAO_PARA *para,u32 pluse)
   float meter;
   if(para->kaidu_set > 0)
   {
-    meter = (pluse / para->weimi_set / para->kaidu_set) * para->loom_num;
+    meter = (pluse / para->weimi_set / 100 / para->kaidu_set) * para->loom_num;
   }
   else if(para->kaidu_set == 0)
   {
-    meter = pluse / para->weimi_set;
+    meter = pluse / para->weimi_set / 100 * para->loom_num;
   }
   return meter;
 }
@@ -85,7 +85,7 @@ u32 count_per_kilo(u32 pluse)
 float product_complete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
 {
   float weight;
-  weight = final_per_meter(peiliao) * product_complete_meter(para) / peiliao->loss;//已完成重量=每米成品重量*完成产量/损耗
+  weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para) / peiliao->loss;//已完成重量=每米成品重量*完成产量/损耗
   return weight;
 }
 

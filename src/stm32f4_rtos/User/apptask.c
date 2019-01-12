@@ -115,7 +115,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
           {//产能
-            if(isDevicePeriod)
+            if(isDevicePeriod == 0)
             {
               if(device_info.page_enable_onoff[1])
               {
@@ -883,6 +883,7 @@ void vTaskTaskLCD(void *pvParameters)
             cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
             peiliao_para.total_meter_set = cnt;
             init_product_para(&product_para);//重新设置生产任务后，产能清零
+            Sdwe_product_page(&product_para);
             W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
             W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
           }
@@ -892,6 +893,7 @@ void vTaskTaskLCD(void *pvParameters)
             cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             peiliao_para.total_weitht_set = cnt;
             init_product_para(&product_para);//重新设置生产任务后，产能清零
+            Sdwe_product_page(&product_para);
             W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
             W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
           }
@@ -1859,8 +1861,8 @@ void vTaskManageCapacity(void *pvParameters)
           product_para.weight_uncomplete = product_uncomplete_kilo(&product_para,&peiliao_para);//未完成重量
           Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(product_para.product_complete * 10),4);
           Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
-          Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 10),2);
-          Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),2);
+          Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 100),4);
+          Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 100),4);
           if(product_para.product_complete >= peiliao_para.total_meter_set)
           {//完成产量
             TIM_CtrlPWMOutputs(TIM1, DISABLE);

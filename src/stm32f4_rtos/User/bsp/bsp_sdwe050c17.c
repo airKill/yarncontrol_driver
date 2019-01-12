@@ -255,8 +255,8 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   sprintf((char *)off_time_buf,"%04d:%02d",para->total_stop_time / 3600,para->total_stop_time % 3600 / 60);
   Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen((char const*)on_time_buf));
   Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen((char const*)off_time_buf));
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),2);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 100),4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 100),4);
 }
 
 //ÅßÁÏÒ³Ãæ
@@ -270,7 +270,7 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_LOSS,(int)(para->loss),2);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),2);
-  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set),2);
+  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEIMI,(int)(para->weimi_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }

@@ -6,6 +6,7 @@ R6=40;
 R7=00;
 R8=14;
 RA=5A;
+TP_CORRECT;
 RC=00;
 RD=00;
 RE=01;
