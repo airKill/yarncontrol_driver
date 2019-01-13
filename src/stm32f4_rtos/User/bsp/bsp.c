@@ -47,7 +47,7 @@ void bsp_Init(void)
   bsp_InitCloseSW();
   bsp_Init_SW_ONOFF();
   W25QXX_Init();
-  bsp_InitStepMotor();
+//  bsp_InitStepMotor();
   bsp_InitServoMotor();
   read_device_info();
   para_init(&SlavePara);

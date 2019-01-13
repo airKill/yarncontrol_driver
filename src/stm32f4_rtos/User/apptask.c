@@ -1080,7 +1080,7 @@ void vTaskTaskLCD(void *pvParameters)
               Sdwe_disPicture(PAGE_PERIOD);
               Sdwe_period_page(&device_info);
             }
-            else if(strcmp((char const*)input_password_buf,"jx899dz") == 0)
+            else if(strcmp((char const*)input_password_buf,"138992") == 0)
             {//特殊密码进入隐藏页面
               Sdwe_disPicture(PAGE_HIDDEN);
               Sdwe_hidden_page(&device_info);
@@ -1821,7 +1821,7 @@ void vTaskManageCapacity(void *pvParameters)
   BaseType_t xResult;
   float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
-
+  bsp_InitStepMotor();
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
@@ -1868,12 +1868,14 @@ void vTaskManageCapacity(void *pvParameters)
             TIM_CtrlPWMOutputs(TIM1, DISABLE);
             TIM_Cmd(TIM1, DISABLE);
             RELAY_CLOSE();//产量完成后，继电器闭合
+            Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
           }
           else if(product_para.weight_complete >= peiliao_para.total_weitht_set)
           {//完成重量
             TIM_CtrlPWMOutputs(TIM1, DISABLE);
             TIM_Cmd(TIM1, DISABLE);
             RELAY_CLOSE();//产量完成后，继电器闭合
+            Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
           }
         }
       }
