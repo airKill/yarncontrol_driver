@@ -14,7 +14,7 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 [DebugChecksum]
-Checksum=-149801214
+Checksum=-1229971287
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -117,7 +117,6 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
-<<<<<<< Updated upstream
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

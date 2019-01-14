@@ -209,7 +209,7 @@ void watchdog(void)
 {
   IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);//使能写入PR和RLR
   IWDG_SetPrescaler(IWDG_Prescaler_256);  //写入PR预分频值 看门狗频率40KHZ/256=156HZ 6.4ms
-  IWDG_SetReload(200);  //写入RLR  2000×6.4 = 12.8
+  IWDG_SetReload(200);  //写入RLR  200×6.4 = 1.28
   IWDG_ReloadCounter(); //reload
   IWDG_Enable();//KR写入0xCCCC
 }

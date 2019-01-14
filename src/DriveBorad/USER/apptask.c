@@ -133,6 +133,7 @@ void vTaskRev485(void *pvParameters)
   BaseType_t xResult;
   u8 res;
   m_frame_typedef rxframe;
+  static u8 err = 0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(300); /* 设置最大等待时间为300ms */
   while(1)
   {
@@ -142,9 +143,18 @@ void vTaskRev485(void *pvParameters)
       if(m_ctrl_dev.frameok)
       {
         res = mb_unpack_frame(&rxframe);
-        if(res == MR_OK)	
+        if(res == MR_OK)
         {
           modbus_action(&rxframe,load_value);
+        }
+        else
+        {
+          err++;
+          if(err >= 20)
+          {
+            __disable_fault_irq();
+            NVIC_SystemReset();
+          }
         }
       }
     }
