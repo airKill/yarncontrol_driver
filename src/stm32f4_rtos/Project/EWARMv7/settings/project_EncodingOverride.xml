@@ -26,6 +26,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_relay.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_sdwe050c17.c</path>
     <encoding>System</encoding>
   </override>
@@ -75,6 +79,10 @@
   </override>
   <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\modbus\modbus.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\para.c</path>
     <encoding>System</encoding>
   </override>
   <override>

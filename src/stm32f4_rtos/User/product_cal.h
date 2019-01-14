@@ -62,14 +62,20 @@ typedef struct
   float rubber_weight;     //橡胶重量/米
   float final_weight;    //成品重量/米
   u8 loom_num;          //织机条数
-  u16 loss;             //损耗
+  u8 loss;             //损耗
   u32 total_meter_set;   //总米设置
   u32 total_weitht_set;  //总重量设置
   float kaidu_set;         //开度设置
   float weimi_set;         //纬密设置
-  u16 weimi_dis_set;     //纬密显示设置
+  u32 add_meter_set;       //补单数量    
+  u16 weimi_dis_set;       //纬密显示设置
 }PEILIAO_PARA;
 extern PEILIAO_PARA peiliao_para;
+
+extern u32 total_meter_gross;
+extern u32 total_weight_gross;
+extern u8 plan_complete,old_plan_complete;
+extern const char system_state_dis[20][20];
 
 void init_product_para(PRODUCT_PARA *para);
 void init_peiliao_para(PEILIAO_PARA *para);
@@ -86,4 +92,5 @@ u8 is_same_data(u32 card,u32 *buf_lib,u16 buf_len);
 u8 get_card_type(u32 id);
 void inc_card_type(u32 id,u8 type);
 u8 get_period_state(RTC_TIME *current,DEVICE_INFO *set);
+
 #endif

@@ -239,7 +239,7 @@ void bsp_init(void)
   readPara();
   mb_init(0);
   NULLMASS = device_info.hx711_offset;
-//  watchdog();
+  watchdog();
 }
 
 

@@ -3,6 +3,25 @@
 PRODUCT_PARA product_para;
 PEILIAO_PARA peiliao_para;
 
+u32 total_meter_gross = 0;
+u32 total_weight_gross = 0;
+u8 plan_complete = 0,old_plan_complete = 0;
+
+const char system_state_dis[20][20] = {
+  {"系统正常"},
+  {"待转机"},
+  {"转机"},
+  {"待PPC处理"},
+  {"待料"},
+  {"缺料"},
+  {"清洁卫生"},
+  {"工艺调校"},
+  {"织机调校"},
+  {"维修"},
+  {"待QAD处理"},
+  {"替换盘头"},        
+};
+
 void init_product_para(PRODUCT_PARA *para)
 {
   para->product_a = 0;
@@ -29,6 +48,7 @@ void init_peiliao_para(PEILIAO_PARA *para)
   para->total_weitht_set = 10000;
   para->kaidu_set = 10;
   para->weimi_set = 10;
+  para->add_meter_set = 0;
   para->weimi_dis_set = 500;
 }
 

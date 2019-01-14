@@ -390,6 +390,18 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\DriveBorad\USER\apptask.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\DriveBorad\USER\bsp_config.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\DriveBorad\USER\motor.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\Motor_demo\181112\USER\delay.c</path>
     <encoding>System</encoding>
   </override>

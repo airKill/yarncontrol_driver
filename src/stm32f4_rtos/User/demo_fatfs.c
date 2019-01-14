@@ -70,8 +70,6 @@ const char * FR_Table[]=
 */
 void DemoFatFS(void)
 {
-  uint8_t cmd;
-  
   /* 打印命令列表，用户可以通过串口操作指令 */
   DispMenu();
   

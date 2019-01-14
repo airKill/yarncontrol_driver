@@ -298,13 +298,13 @@ void AppTaskCreate (void)
   
   xTaskCreate( vTaskSample,            /* 任务函数  */
               "vTaskSample",           /* 任务名    */
-              128,                     /* stack大小，单位word，也就是4字节 */
+              256,                     /* stack大小，单位word，也就是4字节 */
               NULL,                    /* 任务参数  */
               3,                       /* 任务优先级*/
               &xHandleTaskSample);  /* 任务句柄  */
   xTaskCreate( vTaskRev485,           /* 任务函数  */
               "vTaskRev485",         /* 任务名    */
-              128,                /* stack大小，单位word，也就是4字节 */
+              512,                /* stack大小，单位word，也就是4字节 */
               NULL,               /* 任务参数  */
               4,                  /* 任务优先级*/
               &xHandleTaskRev485 ); /* 任务句柄  */

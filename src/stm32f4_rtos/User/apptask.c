@@ -820,13 +820,19 @@ void vTaskTaskLCD(void *pvParameters)
             Sdwe_peiliao_page(&peiliao_para);
             card_config = CARD_DISABLE;
           }
-          else if(var_addr == PAGE_PRODUCT_CONTINUE)
-          {//继续生产
+          else if(var_addr == PAGE_PRODUCT_CLEAR)
+          {//产量清零，重新开始生产
             TIM_Cmd(TIM1, ENABLE);
             TIM_CtrlPWMOutputs(TIM1, ENABLE);
-//            init_product_para(&product_para);
-//            pluse_count = 0;
-            RELAY_OPEN();//点击继续按钮后，继电器断开
+            total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
+            init_product_para(&product_para);//重新设置生产任务后，产能清零
+            peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
+            Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
+            Sdwe_product_page(&product_para);
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+            W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+            plan_complete = 0;
+            old_plan_complete = 0;
           }
           else if(var_addr == PAGE_PRODUCT_QUIT)
           {//退出产能页面，卡功能禁止
@@ -875,6 +881,8 @@ void vTaskTaskLCD(void *pvParameters)
             u16 cnt;
             cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             peiliao_para.loss = cnt;
+            total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));
+            total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));
             W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
           }
           else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
@@ -882,20 +890,30 @@ void vTaskTaskLCD(void *pvParameters)
             u16 cnt;
             cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
             peiliao_para.total_meter_set = cnt;
+            total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
             init_product_para(&product_para);//重新设置生产任务后，产能清零
+            peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
+            Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
             Sdwe_product_page(&product_para);
             W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
             W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+            plan_complete = 0;
+            old_plan_complete = 0;
           }
           else if(var_addr == PAGE_PRODUCT_TOTAL_WEIGHT)
           {//生产任务重量设置
             u16 cnt;
             cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             peiliao_para.total_weitht_set = cnt;
+            total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + (float)peiliao_para.loss / 100));
             init_product_para(&product_para);//重新设置生产任务后，产能清零
+            peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
+            Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
             Sdwe_product_page(&product_para);
             W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
             W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+            plan_complete = 0;
+            old_plan_complete = 0;
           }
           else if(var_addr == PAGE_PRODUCT_KAIDU)
           {//开度设置
@@ -914,6 +932,13 @@ void vTaskTaskLCD(void *pvParameters)
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
             }
           }
+          else if(var_addr == PAGE_PRODUCT_ADD_METER)
+          {//补单设置
+            u16 cnt;
+            cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
+            peiliao_para.add_meter_set = cnt;
+            W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+          }
           else if(var_addr == PAGE_PRODUCT_WEISHU_DIS)
           {//纬密显示设置
             u16 cnt;
@@ -926,6 +951,7 @@ void vTaskTaskLCD(void *pvParameters)
             if(device_info.system_state == SYS_NORMAL)
             {//只有系统正常时，才能选择停机原因
               device_info.system_state = var_addr - PAGE_STOP_OFF + 1;
+              Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_ON);//图标显示选中
               printf("System stop is num %d.\r\n",device_info.system_state);
@@ -936,6 +962,7 @@ void vTaskTaskLCD(void *pvParameters)
               {//取消选择停机
                 Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_OFF);
                 device_info.system_state = SYS_NORMAL;
+                Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                 printf("System normal.\r\n");
               }
@@ -1044,7 +1071,6 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE_DEVICE_ID)
           {//修改ID
             u8 llen;
-            u8 buf[20],i;
             llen = lcd_rev_buf[6] * 2;//串口发送为字长
             memset(input_password_buf,0,10);
             memcpy(input_password_buf,lcd_rev_buf + 7,llen);
@@ -1075,7 +1101,7 @@ void vTaskTaskLCD(void *pvParameters)
               buf[i] = '*';
             Sdwe_disString(PAGE_CONFIG_DIS,buf,input_password_len);//密码显示为*
             
-            if(strcmp((char const*)input_password_buf,device_info.period_password) == 0)
+            if(strcmp((char const*)input_password_buf,(char const *)device_info.period_password) == 0)
             {//特殊密码进入试用期页面
               Sdwe_disPicture(PAGE_PERIOD);
               Sdwe_period_page(&device_info);
@@ -1822,61 +1848,111 @@ void vTaskManageCapacity(void *pvParameters)
   float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   bsp_InitStepMotor();
+  total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));
+  total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));
+  if(product_para.product_complete >= total_meter_gross)
+  {
+    plan_complete = 1;
+  }
+  else if(product_para.weight_complete >= total_weight_gross)
+  {
+    plan_complete = 1;
+  }
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
       if((device_info.page_enable_onoff[1] == 1) && (isDevicePeriod == 0))
-      {
-        RELAY_OPEN();//有脉冲信号后，继电器断开
-        pluse_count++;
-        count++;
-        product_para.weicount_kilowei = product_para.weicount_kilowei + count / peiliao_para.weimi_dis_set;
-        if((count % (peiliao_para.weimi_dis_set)) == 0)
-        {//纬纱/千纬
-          count = 0;
-          Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-          W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-        }
-        
-        if(card_record == 2)
-        {//B班
-          product_para.product_b = product_para.product_b + product_per_meter(&peiliao_para,1);//b班产量
-          p_value = get_float_1bit(product_para.product_b);
+      {//产能使能、无试用期限
+        if(device_info.system_state == SYS_NORMAL)
+        {//系统正常时进行产能计算
+          switch(plan_complete)
+          {
+            case 0:
+              RELAY_OPEN();//有脉冲信号后，继电器断开
+              pluse_count++;
+              count++;
+              product_para.weicount_kilowei = product_para.weicount_kilowei + count / peiliao_para.weimi_dis_set;
+              if((count % (peiliao_para.weimi_dis_set)) == 0)
+              {//纬纱/千纬
+                count = 0;
+                Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
+                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+              }
+              if(card_record == 2)
+              {//B班
+                product_para.product_b = product_para.product_b + product_per_meter(&peiliao_para,1);//b班产量
+                p_value = get_float_1bit(product_para.product_b);
+              }
+              else
+              {//A班
+                product_para.product_a = product_para.product_a + product_per_meter(&peiliao_para,1);//b班产量
+                p_value = get_float_1bit(product_para.product_a);
+              }
+              if(p_value != old_p_value)
+              {//产量数据变化大于=0.1时，显示更新
+                old_p_value = p_value;
+                Sdwe_disDigi(PAGE_PRODUCT_B,(int)(product_para.product_b * 10),4);
+                Sdwe_disDigi(PAGE_PRODUCT_A,(int)(product_para.product_a * 10),4);
+                product_para.product_complete = product_complete_meter(&product_para);//已完成产量
+                product_para.product_uncomplete = total_meter_gross - product_para.product_complete;//未完成产量
+                product_para.weight_complete = product_complete_kilo(&product_para,&peiliao_para);//已完成重量
+                product_para.weight_uncomplete = total_weight_gross - product_para.weight_complete;//未完成重量
+                Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(product_para.product_complete * 10),4);
+                Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
+                Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 100),4);
+                Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 100),4);
+                if(product_para.product_uncomplete <= 0)
+                {//完成产量
+                  TIM_CtrlPWMOutputs(TIM1, DISABLE);
+                  TIM_Cmd(TIM1, DISABLE);
+                  RELAY_CLOSE();//产量完成后，继电器闭合
+                  if(old_plan_complete == 0)
+                  {
+                    plan_complete = 1;
+                  }
+                  else
+                  {
+                    plan_complete = 2;
+                  }
+                  Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                }
+                else if(product_para.weight_uncomplete <= 0)
+                {//完成重量
+                  TIM_CtrlPWMOutputs(TIM1, DISABLE);
+                  TIM_Cmd(TIM1, DISABLE);
+                  if(old_plan_complete == 0)
+                  {
+                    plan_complete = 1;
+                  }
+                  else
+                  {
+                    plan_complete = 2;
+                  }
+                  RELAY_CLOSE();//产量完成后，继电器闭合
+                  Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                }
+              }
+              break;
+            case 1:
+              RELAY_CLOSE();//产量完成后，继电器闭合
+              if(peiliao_para.add_meter_set != 0)
+              {
+                //在现有总产量基础上增加补单数量,补单数量包含损耗
+                old_plan_complete = 1;
+                total_meter_gross = (u32)(total_meter_gross + peiliao_para.add_meter_set * (1 + peiliao_para.loss / 100.0));
+                plan_complete = 0;
+              }
+              break;
+            case 2:
+              RELAY_CLOSE();//产量完成后，继电器闭合
+              break;
+          }
         }
         else
-        {//A班
-          product_para.product_a = product_para.product_a + product_per_meter(&peiliao_para,1);//b班产量
-          p_value = get_float_1bit(product_para.product_a);
-        }
-        if(p_value != old_p_value)
-        {//产量数据变化大于=0.1时，显示更新
-          old_p_value = p_value;
-          Sdwe_disDigi(PAGE_PRODUCT_B,(int)(product_para.product_b * 10),4);
-          Sdwe_disDigi(PAGE_PRODUCT_A,(int)(product_para.product_a * 10),4);
-          product_para.product_complete = product_complete_meter(&product_para);//已完成产量
-          product_para.product_uncomplete = product_uncomplete_meter(&product_para,&peiliao_para);//未完成产量
-          product_para.weight_complete = product_complete_kilo(&product_para,&peiliao_para);//已完成重量
-          product_para.weight_uncomplete = product_uncomplete_kilo(&product_para,&peiliao_para);//未完成重量
-          Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(product_para.product_complete * 10),4);
-          Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
-          Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 100),4);
-          Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 100),4);
-          if(product_para.product_complete >= peiliao_para.total_meter_set)
-          {//完成产量
-            TIM_CtrlPWMOutputs(TIM1, DISABLE);
-            TIM_Cmd(TIM1, DISABLE);
-            RELAY_CLOSE();//产量完成后，继电器闭合
-            Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
-          }
-          else if(product_para.weight_complete >= peiliao_para.total_weitht_set)
-          {//完成重量
-            TIM_CtrlPWMOutputs(TIM1, DISABLE);
-            TIM_Cmd(TIM1, DISABLE);
-            RELAY_CLOSE();//产量完成后，继电器闭合
-            Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
-          }
+        {//系统停机
+          RELAY_CLOSE();
         }
       }
       else
@@ -2055,12 +2131,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
     speed_1 = pluse_count;
     sample_time++;
   }
-  else if(sample_time >= 60)
-  {//计算1分钟内的脉冲数
+  else if(sample_time >= 10)
+  {//计算10s内的脉冲数
     sample_time = 0;
     speed_2 = pluse_count;
     pluse_count = 0;
-    product_para.speed = speed_2 - speed_1;
+    product_para.speed = (speed_2 - speed_1) * 6;//10秒内的脉冲数*6转换为1分钟脉冲数
     Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
   }
   else

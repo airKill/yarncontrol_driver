@@ -3,7 +3,6 @@
 void bsp_Init_SW_ONOFF(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  EXTI_InitTypeDef   EXTI_InitStructure;
   /* ´ò¿ªGPIOÊ±ÖÓ */
   RCC_AHB1PeriphClockCmd(RCC_SW_ONOFF, ENABLE);
   

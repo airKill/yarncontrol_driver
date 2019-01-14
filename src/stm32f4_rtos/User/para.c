@@ -11,7 +11,7 @@ void read_device_info(void)
   if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
-    sprintf(device_info.device_id,"%s","jx1234");
+    sprintf((char *)device_info.device_id,"%s","jx1234");
     device_info.device_id_len = 6;
     device_info.system_state = 0;
     device_info.page_count_all = 0;
@@ -42,11 +42,11 @@ void read_device_info(void)
     device_info.period_month = 1;//默认试用期限1月
     device_info.period_day = 1;//默认试用期限1日
     memset(device_info.period_password,0,10);
-    strcpy(device_info.period_password,"232323");
-    device_info.period_password_len = strlen(device_info.period_password);
+    strcpy((char *)device_info.period_password,"232323");
+    device_info.period_password_len = strlen((char const *)device_info.period_password);
     memset(device_info.password,0,6);
-    strcpy(device_info.password,"111111");
-    device_info.password_len = strlen(device_info.password);;  
+    strcpy((char *)device_info.password,"111111");
+    device_info.password_len = strlen((char const *)device_info.password);;  
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
     init_product_para(&product_para);
     W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));

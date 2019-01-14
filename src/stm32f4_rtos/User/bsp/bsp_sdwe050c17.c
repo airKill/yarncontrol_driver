@@ -36,7 +36,9 @@ void Init_JINGSHA_GUI(void)
   sprintf((char *)name,"%s-%s.CSV",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
-  Sdwe_disString(PAGE1_SYSTEM_STATE,"系统正常...",strlen("系统正常..."));
+//  Sdwe_disString(PAGE1_SYSTEM_STATE,"系统正常...",strlen("系统正常..."));
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
+  
   for(i=0;i<30;i++)
   {
     Sdwe_disDigi(PAGE1_SET_VALUE1 + i,SlavePara.value_set[i] / 10,2);
