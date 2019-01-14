@@ -279,65 +279,65 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
 
 void Sdwe_change_class_time(DEVICE_INFO *para)
 {
-  Sdwe_disDigi(PAGE_CHANGE_HOUR,(int)(para->class_time_hour),2);
-  Sdwe_disDigi(PAGE_CHANGE_MINUTE,(int)(para->class_time_minute),2);
-  Sdwe_writeIcon(PAGE_CHANGE_SWITCH,para->class_enable_onoff);
+  Sdwe_disDigi(PAGE_CHANGE_HOUR,(int)(para->class_para.class_time_hour),2);
+  Sdwe_disDigi(PAGE_CHANGE_MINUTE,(int)(para->class_para.class_time_minute),2);
+  Sdwe_writeIcon(PAGE_CHANGE_SWITCH,para->class_para.class_enable_onoff);
 }
 
 void Sdwe_period_page(DEVICE_INFO *para)
 {
   u8 buf[10],i;
-  Sdwe_writeIcon(PAGE_PERIOD_ENABLE,para->period_enable_onoff);
-  Sdwe_disDigi(PAGE_PERIOD_YEAR,(int)(para->period_year),2);
-  Sdwe_disDigi(PAGE_PERIOD_MONTH,(int)(para->period_month),2);
-  Sdwe_disDigi(PAGE_PERIOD_DAY,(int)(para->period_day),2);
-  for(i=0;i<para->period_password_len;i++)
+  Sdwe_writeIcon(PAGE_PERIOD_ENABLE,para->period_para.period_enable_onoff);
+  Sdwe_disDigi(PAGE_PERIOD_YEAR,(int)(para->period_para.period_year),2);
+  Sdwe_disDigi(PAGE_PERIOD_MONTH,(int)(para->period_para.period_month),2);
+  Sdwe_disDigi(PAGE_PERIOD_DAY,(int)(para->period_para.period_day),2);
+  for(i=0;i<para->period_para.period_password_len;i++)
     buf[i] = '*';
-  Sdwe_disString(PAGE_PERIOD_PASSWORD_DIS,buf,para->period_password_len);
+  Sdwe_disString(PAGE_PERIOD_PASSWORD_DIS,buf,para->period_para.period_password_len);
 }
 
 void Sdwe_hidden_page(DEVICE_INFO *para)
 {
-  Sdwe_writeIcon(PAGE_HIDDEN_JINGSHA,para->page_enable_onoff[0]);
-  Sdwe_writeIcon(PAGE_HIDDEN_CHANNENG,para->page_enable_onoff[1]);
-  Sdwe_writeIcon(PAGE_HIDDEN_WEIMI,para->page_enable_onoff[2]);
+  Sdwe_writeIcon(PAGE_HIDDEN_JINGSHA,para->func_onoff.jingsha);
+  Sdwe_writeIcon(PAGE_HIDDEN_CHANNENG,para->func_onoff.channeng);
+  Sdwe_writeIcon(PAGE_HIDDEN_WEIMI,para->func_onoff.weimi);
 }
 
 void Sdwe_stop_page(DEVICE_INFO *para)
 {
   u8 buf[20];
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[0] / 3600,para->stop_time[0] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[0] / 3600,para->stop_para.stop_time[0] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_WAIT_TRANSFER,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[1] / 3600,para->stop_time[1] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[1] / 3600,para->stop_para.stop_time[1] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_TRANSFER,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[2] / 3600,para->stop_time[2] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[2] / 3600,para->stop_para.stop_time[2] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_WAIT_PPC,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[3] / 3600,para->stop_time[3] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[3] / 3600,para->stop_para.stop_time[3] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_WAIT_MATERIAL,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[4] / 3600,para->stop_time[4] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[4] / 3600,para->stop_para.stop_time[4] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_NO_MATERIAL,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[5] / 3600,para->stop_time[5] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[5] / 3600,para->stop_para.stop_time[5] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_CLEAN,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[6] / 3600,para->stop_time[6] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[6] / 3600,para->stop_para.stop_time[6] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_TECH_ADJUST,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[7] / 3600,para->stop_time[7] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[7] / 3600,para->stop_para.stop_time[7] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_DEVICE_ADJUST,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[8] / 3600,para->stop_time[8] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[8] / 3600,para->stop_para.stop_time[8] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_REPAIR,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[9] / 3600,para->stop_time[9] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[9] / 3600,para->stop_para.stop_time[9] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_WAIT_QAD,buf,strlen((char const*)buf));
   memset(buf,0,20);
-  sprintf((char *)buf,"%04d:%02d",para->stop_time[10] / 3600,para->stop_time[10] % 3600 / 60);
+  sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[10] / 3600,para->stop_para.stop_time[10] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_REPLACE_PAN,buf,strlen((char const*)buf));
 }
 

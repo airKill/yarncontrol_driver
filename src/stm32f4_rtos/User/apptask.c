@@ -80,7 +80,7 @@ void vTaskTaskLCD(void *pvParameters)
             rtc_time.hour = hex_to_decimal(lcd_rev_buf[10]);
             rtc_time.minute = hex_to_decimal(lcd_rev_buf[11]);
             rtc_time.second = hex_to_decimal(lcd_rev_buf[12]);
-            if(device_info.period_enable_onoff == 1)
+            if(device_info.period_para.period_enable_onoff == 1)
             {
               isDevicePeriod = get_period_state(&rtc_time,&device_info); 
             }
@@ -97,7 +97,7 @@ void vTaskTaskLCD(void *pvParameters)
           {//经纱管理
             if(isDevicePeriod)
             {
-              if(device_info.page_enable_onoff[0])
+              if(device_info.func_onoff.jingsha)
               {
                 Init_JINGSHA_GUI();
               }
@@ -117,7 +117,7 @@ void vTaskTaskLCD(void *pvParameters)
           {//产能
             if(isDevicePeriod == 0)
             {
-              if(device_info.page_enable_onoff[1])
+              if(device_info.func_onoff.channeng)
               {
                 Sdwe_product_page(&product_para);
                 card_config = READ_PERMISSION;
@@ -491,7 +491,7 @@ void vTaskTaskLCD(void *pvParameters)
               buf[i] = '*';
             Sdwe_disString(PAGE1_SECRET_TEXT_DIS,buf,input_password_len);//密码显示为*
 //            if(strcmp((char const*)input_password_buf,"111111") == 0)
-            if(memcmp(&input_password_buf,&device_info.password,device_info.password_len) == 0)
+            if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
             {//密码正确
               Sdwe_disPicture(PAGE_1_SET_VALUE);
               vTaskDelay(10);
@@ -516,7 +516,7 @@ void vTaskTaskLCD(void *pvParameters)
             Sdwe_disString(PAGE2_SECRET_TEXT_DIS,buf,input_password_len);//密码显示为*
             
 //            if(strcmp((char const*)input_password_buf,"111111") == 0)
-            if(memcmp(&input_password_buf,&device_info.password,device_info.password_len) == 0)
+            if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
             {//密码正确
               Sdwe_disPicture(PAGE_2_SET_VALUE);
               vTaskDelay(10);
@@ -541,7 +541,7 @@ void vTaskTaskLCD(void *pvParameters)
             Sdwe_disString(PAGE3_SECRET_TEXT_DIS,buf,input_password_len);//密码显示为*
             
 //            if(strcmp((char const*)input_password_buf,"111111") == 0)
-            if(memcmp(&input_password_buf,&device_info.password,device_info.password_len) == 0)
+            if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
             {//密码正确
               Sdwe_disPicture(PAGE_3_SET_VALUE);
               vTaskDelay(10);
@@ -982,7 +982,7 @@ void vTaskTaskLCD(void *pvParameters)
             value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
             if(value <= 23)
             {
-              device_info.class_time_hour = value;
+              device_info.class_para.class_time_hour = value;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
             else
@@ -995,7 +995,7 @@ void vTaskTaskLCD(void *pvParameters)
             value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
             if(value <= 59)
             {
-              device_info.class_time_minute = value;
+              device_info.class_para.class_time_minute = value;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
             else
@@ -1006,7 +1006,7 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE_CHANGE_SWITCH)
           {//是否换班设置
             value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
-            device_info.class_enable_onoff = value;
+            device_info.class_para.class_enable_onoff = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           
@@ -1059,7 +1059,7 @@ void vTaskTaskLCD(void *pvParameters)
               for(i=0;i<input_password_len;i++)
                 buf[i] = '*';
               Sdwe_disString(PAGE_PASSWORD_DIS,buf,input_password_len);//密码显示为*
-              memcpy(device_info.password,input_password_buf,input_password_len);//保存密码
+              memcpy(device_info.regin_in.password,input_password_buf,input_password_len);//保存密码
               SDWE_WARNNING(PAGE_PASSWORD_WARNNING,"修改成功");
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
@@ -1101,7 +1101,7 @@ void vTaskTaskLCD(void *pvParameters)
               buf[i] = '*';
             Sdwe_disString(PAGE_CONFIG_DIS,buf,input_password_len);//密码显示为*
             
-            if(strcmp((char const*)input_password_buf,(char const *)device_info.period_password) == 0)
+            if(strcmp((char const*)input_password_buf,(char const *)device_info.period_para.period_password) == 0)
             {//特殊密码进入试用期页面
               Sdwe_disPicture(PAGE_PERIOD);
               Sdwe_period_page(&device_info);
@@ -1111,7 +1111,7 @@ void vTaskTaskLCD(void *pvParameters)
               Sdwe_disPicture(PAGE_HIDDEN);
               Sdwe_hidden_page(&device_info);
             }
-            else if(memcmp(&input_password_buf,&device_info.password,device_info.password_len) == 0)
+            else if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
             {//特殊密码进入系统设置页面
               Sdwe_disPicture(PAGE_CONFIG);
             }
@@ -1124,19 +1124,19 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE_HIDDEN_JINGSHA)
           {
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-            device_info.page_enable_onoff[0] = value;
+            device_info.func_onoff.jingsha = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           else if(var_addr == PAGE_HIDDEN_CHANNENG)
           {
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-            device_info.page_enable_onoff[1] = value;
+            device_info.func_onoff.channeng = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           else if(var_addr == PAGE_HIDDEN_WEIMI)
           {
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-            device_info.page_enable_onoff[2] = value;
+            device_info.func_onoff.weimi = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           /***********************************************************************/
@@ -1144,13 +1144,13 @@ void vTaskTaskLCD(void *pvParameters)
           else if(var_addr == PAGE_PERIOD_ENABLE)
           {
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-            device_info.period_enable_onoff = value;
+            device_info.period_para.period_enable_onoff = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           else if(var_addr == PAGE_PERIOD_YEAR)
           {
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-            device_info.period_year = value;
+            device_info.period_para.period_year = value;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           else if(var_addr == PAGE_PERIOD_MONTH)
@@ -1158,7 +1158,7 @@ void vTaskTaskLCD(void *pvParameters)
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             if((value > 0) && (value <= 12))
             {
-              device_info.period_month = value;
+              device_info.period_para.period_month = value;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
             else
@@ -1169,7 +1169,7 @@ void vTaskTaskLCD(void *pvParameters)
             value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
             if((value > 0) && (value <= 31))
             {
-              device_info.period_day = value;
+              device_info.period_para.period_day = value;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
             else
@@ -1187,8 +1187,8 @@ void vTaskTaskLCD(void *pvParameters)
             for(i=0;i<input_password_len;i++)
               buf[i] = '*';
             Sdwe_disString(PAGE_PERIOD_PASSWORD_DIS,buf,input_password_len);//密码显示为*
-            memcpy(device_info.period_password,input_password_buf,input_password_len);
-            device_info.period_password_len = input_password_len;
+            memcpy(device_info.period_para.period_password,input_password_buf,input_password_len);
+            device_info.period_para.period_password_len = input_password_len;
             W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
           }
           /***********************************************************************/
@@ -1352,7 +1352,7 @@ static void vTaskTaskRFID(void *pvParameters)
                   }
                   else if(card_type == FUNC_CLASS_A)
                   {//A班卡
-                    if(device_info.class_enable_onoff == 0)
+                    if(device_info.class_para.class_enable_onoff == 0)
                     {//如果换班功能未启用，则产量一直记在A班
                       card_record = 1;//A班
                       SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班");
@@ -1380,7 +1380,7 @@ static void vTaskTaskRFID(void *pvParameters)
                   }
                   else if(card_type == FUNC_CLASS_B)
                   {//B班卡
-                    if(device_info.class_enable_onoff == 0)
+                    if(device_info.class_para.class_enable_onoff == 0)
                     {//如果换班功能未启用，则产量一直记在A班
                       card_record = 1;//A班
                       SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班");
@@ -1724,7 +1724,7 @@ static void vTaskRev485(void *pvParameters)
   ptMsg->value = 0;
   while(1)
   {
-    if((device_info.page_enable_onoff[0] == 1) && (isDevicePeriod == 0))
+    if((device_info.func_onoff.jingsha == 1) && (isDevicePeriod == 0))
     {
       isWork = GetDeviceState();
     }
@@ -1863,7 +1863,7 @@ void vTaskManageCapacity(void *pvParameters)
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
-      if((device_info.page_enable_onoff[1] == 1) && (isDevicePeriod == 0))
+      if((device_info.func_onoff.channeng == 1) && (isDevicePeriod == 0))
       {//产能使能、无试用期限
         if(device_info.system_state == SYS_NORMAL)
         {//系统正常时进行产能计算
@@ -2157,7 +2157,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
   else
   {
     product_para.total_stop_time++;//停机总时间
-    device_info.stop_time[device_info.system_state - 1]++;
+    device_info.stop_para.stop_time[device_info.system_state - 1]++;
     if((product_para.total_stop_time % 60) == 0)
     {
       u8 off_time_buf[10];

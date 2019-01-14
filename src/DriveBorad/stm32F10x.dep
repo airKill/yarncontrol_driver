@@ -364,6 +364,10 @@
       </outputs>
       <inputs>
         <tool>
+          <name>BICOMP</name>
+          <file> 133 153 284 140 22 177 64 94 30 171 48 224 34 44 5 123 27 128 277 52 16</file>
+        </tool>
+        <tool>
           <name>ICCARM</name>
           <file> 128 177 140 48 64 133 153 224 171 22 34 277 284 52 44 16 5 123 94 30 27</file>
         </tool>
@@ -483,7 +487,7 @@
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 51 302</file>
+          <file> 302</file>
         </tool>
       </outputs>
       <inputs>
