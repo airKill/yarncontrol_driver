@@ -21,7 +21,19 @@
 #define GPIO_PORT_SERVOMOTOR_G0      GPIOD
 #define GPIO_PIN_SERVOMOTOR_G0	 GPIO_Pin_14
 
+#define DIFF_G_H()   GPIO_SetBits(GPIO_PORT_SERVOMOTOR_G,GPIO_PIN_SERVOMOTOR_G)
+#define DIFF_G_L()   GPIO_ResetBits(GPIO_PORT_SERVOMOTOR_G,GPIO_PIN_SERVOMOTOR_G)
+
+#define DIFF_G0_H()   GPIO_SetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
+#define DIFF_G0_L()   GPIO_ResetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
+
+extern u16 DMA1_MEM_LEN;
+
+void TIM4_PWM_SETPMOTOR(void);
 void bsp_InitServoMotor(void);
-void TIM12_PWM_SERVOMOTOR(void);
-void TIM4_PWM_SERVOMOTOR(void);
+void bsp_io_ServoMotor(void);
+void TIM4_PWM_Init(u16 arr,u16 psc);
+void DMA_PWM_Config(u32 cpar,u32 cmar,u16 cndtr);
+u16 DMA_send_feedback(void);
+void DMA_PWM_Enable(void);
 #endif

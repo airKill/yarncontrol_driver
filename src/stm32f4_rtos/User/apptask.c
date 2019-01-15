@@ -8,6 +8,7 @@ TaskHandle_t xHandleTaskReadDisk = NULL;
 TaskHandle_t xHandleTaskMsgPro = NULL;
 TaskHandle_t xHandleTaskRev485 = NULL;
 TaskHandle_t xHandleTaskManageCapacity = NULL;
+TaskHandle_t xHandleTaskMotorControl = NULL;
 
 SemaphoreHandle_t  xSemaphore_lcd = NULL;
 SemaphoreHandle_t  xSemaphore_rs485 = NULL;
@@ -35,6 +36,9 @@ u8 isDevicePeriod = 0;
 extern void DemoFatFS(void);
 extern const char * FR_Table[];
 extern u8 modbus_send_frame(m_frame_typedef * fx,SLAVE info);
+
+u8 pwm_flag = 0;
+
 /*
 *********************************************************************************************************
 *	函 数 名: vTaskTaskLCD
@@ -111,7 +115,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == MAIN_PAGE_KEY_WEIMI)
           {//纬密
-            
+            pwm_flag = 1;
           }
           else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
           {//产能
@@ -1963,6 +1967,40 @@ void vTaskManageCapacity(void *pvParameters)
   }
 }
 
+static void vTaskMotorControl(void *pvParameters)
+{
+  u8 i;
+  u16 send_buf[100];
+  int feedback;
+  bsp_InitServoMotor();
+  DMA_PWM_Config((u32)&TIM4->CCR1, (u32)send_buf, 100);
+  TIM4_PWM_Init(599,7199);
+  for(i=0;i<100;i++)
+  {
+    if(i != 99)
+      send_buf[i] = 100 + 10 * i;
+    else
+      send_buf[i] = 0;
+  }
+  DMA_PWM_Enable();
+//  TIM4_PWM_SETPMOTOR();
+  while(1)
+  {
+//    feedback = DMA_send_feedback();
+//    if(feedback != 0)
+//    {
+//      printf("-> ");
+//      printf("%d\r\n",DMA_send_feedback());
+//    }
+//    if(pwm_flag == 1)
+//    {
+//      pwm_flag = 0;
+//      DMA_PWM_Enable();
+//    }
+    vTaskDelay(10);
+  }
+}
+
 /*
 *********************************************************************************************************
 *	函 数 名: AppTaskCreate
@@ -2021,6 +2059,12 @@ void AppTaskCreate (void)
               NULL,        		/* 任务参数  */
               7,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
+  xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
+              "vTaskMotorControl",  		/* 任务名    */
+              128,         		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,        		/* 任务参数  */
+              8,           		/* 任务优先级*/
+              &xHandleTaskMotorControl); /* 任务句柄  */
 }
 
 /*
