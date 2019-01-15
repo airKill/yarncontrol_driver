@@ -101,3 +101,87 @@ void TIM4_PWM_SERVOMOTOR(void)
   TIM_Cmd(TIM4, ENABLE);
 }
 
+///* 开启一次DMA传输 */
+//void DMA_PWM_Enable(DMA_Channel_TypeDef*DMA_CHx)
+//{
+//  DMA_Cmd(DMA_CHx, DISABLE );
+//  TIM3->ARR = 2;	/* 由于最后一项是0，所以在最后的时刻ARR会被清零，导致下一次启动无效。*/
+//  DMA_SetCurrDataCounter(DMA_CHx,DMA1_MEM_LEN);
+//  DMA_Cmd(DMA_CHx, ENABLE);
+//  TIM_Cmd(TIM3, ENABLE);  /* 使能TIM3 */
+//  TIM3->EGR = 0x00000001;	/* 由于最后一次ARR值为0，这是为了停止定时器对io口的操作，但是不要忽略了一点：CNT并没有停止计数，而且是不会再停下来，如果没有手动操作的话，所以需要在每次dma使能时加上一句，将EGR里的UG位置1，清零计数器 */
+//}	  
+//
+///*
+//*进度反馈，返回剩下的数据量
+//*/
+//u16 DMA_send_feedback(DMA_Channel_TypeDef* DMA_CHx)
+//{
+//  return DMA_CHx->CNDTR;
+//}
+
+//void TIM3_PWM_Init(u16 arr,u16 psc)
+//{  
+//  GPIO_InitTypeDef GPIO_InitStructure;
+//  TIM_OCInitTypeDef  TIM_OCInitStructure;
+//  
+//  
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);	/* 使能定时器3时钟 */
+//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  /* 使能GPIO外设 */   
+//  
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; /* TIM_CH1*/
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  /* 复用推挽输出 */
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);/* 初始化GPIO */
+//  
+//  /* 初始化TIM3 */
+//  TIM_TimeBaseStructure.TIM_Period = arr; /* 设置在下一个更新事件装入活动的自动重装载寄存器周期的值 */
+//  TIM_TimeBaseStructure.TIM_Prescaler =psc; /* 设置用来作为TIMx时钟频率除数的预分频值 */
+//  TIM_TimeBaseStructure.TIM_ClockDivision = 0; /* 设置时钟分割:TDTS = Tck_tim */
+//  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  /*TIM向上计数模式 */
+//  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); /* 根据TIM_TimeBaseInitStruct中指定的参数初始化TIMx的时间基数单位 */
+//  
+//  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; /* 选择定时器模式:TIM脉冲宽度调制模式1 */
+//  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; /* 比较输出使能 */
+//  //TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);  /* 使能TIM3在CCR1上的预装载寄存器*/
+//  TIM_OCInitStructure.TIM_Pulse= 100;
+//  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High; /* 输出极性:TIM输出比较极性高 */
+//  TIM_OC1Init(TIM3, &TIM_OCInitStructure);  /* 根据T指定的参数初始化外设TIM3 OC1 */
+//  //TIM_DMACmd(TIM3, TIM_DMA_Update, ENABLE);	/* 如果是要调节占空比就把这行去掉注释，然后注释掉下面那行，再把DMA通道6改为DMA通道3 */
+//  TIM_DMACmd(TIM3, TIM_DMA_CC1, ENABLE);
+//  TIM_Cmd(TIM3, ENABLE);  /* 使能TIM3 */
+//  
+//}
+//int main(void)
+//{	
+//  int i;
+//  int feedback;
+//  delay_init();	
+//  uart_init(115200);
+//  KEY_Init();
+//  DMA_Config(DMA1_Channel6, (u32)&TIM3->ARR, (u32)send_buf, size);
+//  TIM3_PWM_Init(599,7199);
+//  for(i = 0; i < size; ++i)
+//  {
+//    if(i != size - 1)
+//      send_buf[i] = 100 + 10 * i;
+//    else
+//      send_buf[i] = 0;
+//  }
+//  DMA_Enable(DMA1_Channel6);
+//  while(1)
+//  {
+//    feedback = DMA_send_feedback(DMA1_Channel6);
+//    if(feedback != 0)
+//    {
+//      printf("-> ");
+//      printf("%d\r\n", DMA_send_feedback(DMA1_Channel6));
+//    }
+//    if(KEY_Scan(0) == 1)
+//    {
+//      DMA_Enable(DMA1_Channel6);
+//    }
+//  }
+//}
+
+

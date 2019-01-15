@@ -398,6 +398,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\DriveBorad\USER\modbus\modbus.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\DriveBorad\USER\motor.c</path>
     <encoding>System</encoding>
   </override>

@@ -18,6 +18,7 @@ u8 old_Device_Process = PROCESS_STOP;
 
 u16 k3_short_cnt = 0;
 u8 k3_short_flag = 0;
+u8 link_err = 0;
 
 void vTaskTaskKey(void *pvParameters)
 {
@@ -146,13 +147,14 @@ void vTaskRev485(void *pvParameters)
         if(res == MR_OK)
         {
           modbus_action(&rxframe,load_value);
+          link_err = 0;//收到主控命令正确，链接错误标志清零
         }
         else
         {
           err++;
           if(err >= 20)
           {
-            __disable_fault_irq();
+//            __disable_fault_irq();
             NVIC_SystemReset();
           }
         }
@@ -195,7 +197,7 @@ void vTaskSample(void *pvParameters)
         if((device_info.onoff == 1) && (start_stop == 1))
         {
           diff = abs(load_value - device_info.weight_value);
-          if(diff <= 300)
+          if(diff <= 200)
           {
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);  
@@ -204,21 +206,21 @@ void vTaskSample(void *pvParameters)
           {//差值大于0.5kg时，连续运转
             u16 speed;
             u8 mode;
-            if(diff > 800)
+            if(diff > 500)
             {
               speed = 850;
             }
-            else if((diff > 300) && (diff <= 400))
-            {
-              speed = 350;
-            }
             else if((diff > 400) && (diff <= 500))
             {
-              speed = 500;
+              speed = 800;
             }
-            else if((diff > 500) && (diff <= 700))
+            else if((diff > 300) && (diff <= 400))
             {
-              speed = 700;
+              speed = 750;
+            }
+            else if((diff > 200) && (diff <= 300))
+            {
+              speed = 500;
             }
             if(load_value > device_info.weight_value)
             {
@@ -326,9 +328,15 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {
     if(Device_Process != PROCESS_PAUSE)
       key_reset_time++;
-  } 
+  }
   else
     key_reset_time = 0;
+  link_err++;
+  if(link_err >= 10)
+  {//10s内未收到链接命令，重启
+    link_err = 0;
+    NVIC_SystemReset();
+  }
 }
 
 /*
