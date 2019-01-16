@@ -1970,23 +1970,23 @@ void vTaskManageCapacity(void *pvParameters)
 static void vTaskMotorControl(void *pvParameters)
 {
   u16 servomotor = 100;
-  u16 feedback;
-  bsp_InitServoMotor();
+  u16 feedback,i;
+  TIM4ConfigPwmOut(1000,10);
+  
   while(1)
   {
-    feedback = DMA_send_feedback();
-    if(feedback != 0)
-    {
-      printf("-> ");
-      printf("%d\r\n",DMA_send_feedback());
-    }
+//    feedback = DMA_send_feedback();
+//    if(feedback != 0)
+//    {
+//      printf("-> ");
+//      printf("%d\r\n",DMA_send_feedback());
+//    }
     if(pwm_flag == 1)
     {
       pwm_flag = 0;
-      DMA1_Stream0_CH2_Cmd(&TIM4_PWMDMA_Config,&servomotor,1000,DMA_MemoryInc_Disable);//匀速运行步数100
-      TIM_DMACmd(TIM4,TIM_DMA_CC1,ENABLE);
-      TIM4->CCER |= 1<<0; //打开PWM输出
-      TIM_Cmd(TIM4,ENABLE);
+      servomotor = 1000;
+//      TIM4_PWMDMA_Config(&servomotor,100);
+      TIM4StartPwmOut();
     }
     vTaskDelay(10);
   }

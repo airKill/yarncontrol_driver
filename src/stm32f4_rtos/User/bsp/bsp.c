@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "bsp.h"
+#include "includes.h"
 
 /*
 *********************************************************************************************************
@@ -28,6 +28,7 @@
 */
 void bsp_Init(void)
 {
+  u16 servomotor = 100;
   /*
   由于ST固件库的启动文件已经执行了CPU系统时钟的初始化，所以不必再次重复配置系统时钟。
   启动文件配置了CPU主时钟频率、内部Flash访问速度和可选的外部SRAM FSMC初始化。
@@ -40,6 +41,7 @@ void bsp_Init(void)
   bsp_InitUart(); 	/* 初始化串口 */
 //  bsp_InitKey();		/* 初始化按键变量 */
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
+  
   bsp_Init_Relay();
   bsp_InitDWT();       /* 初始DWT */
   bsp_InitSdwe050c17();
@@ -47,11 +49,8 @@ void bsp_Init(void)
   bsp_InitCloseSW();
   bsp_Init_SW_ONOFF();
   W25QXX_Init();
-//  bsp_InitStepMotor();
-  bsp_InitServoMotor();
   read_device_info();
   para_init(&SlavePara);
-//  watchdog();
   mb_init(0);
 }
 

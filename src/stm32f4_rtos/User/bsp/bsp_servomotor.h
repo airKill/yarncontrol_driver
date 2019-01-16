@@ -29,14 +29,10 @@
 
 extern u16 DMA1_MEM_LEN;
 
-void TIM4_PWM_SETPMOTOR(void);
-void bsp_InitServoMotor(void);
-void bsp_io_ServoMotor(void);
-void TIM4_PWM_Init(u16 arr,u16 psc);
-void DMA1_Stream0_CH2_Cmd(void (*Fuc)(uint16_t *,int32_t,int32_t),uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc);
-void TIM4_PWMDMA_Config(uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc);
-void DMA1_Stream0_CH2Init(void);
-void TIM4_CH1_PWM_Config(void);
-u16 DMA_send_feedback(void);
-void DMA_PWM_Enable(void);
+void TIM4ConfigPwmOut(u32 freq,u16 num);
+void TIM4StartPwmOut(void);
+void TIM4StopPwmOut(void);
+void TIM4_GPIO_Configuration( void );
+void TIM4_CH1_PWM_Config(u32 period);
+void TIM4_PWMDMA_Config(u16 period,u16 cnt);
 #endif
