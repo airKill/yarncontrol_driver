@@ -91,7 +91,7 @@ void USB_OTG_BSP_DisableInterrupt(void)
   NVIC_InitTypeDef NVIC_InitStructure;
   
   /* 先关闭所有和USB相关的中断 */
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 6;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
   

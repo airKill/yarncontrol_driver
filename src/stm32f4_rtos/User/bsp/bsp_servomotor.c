@@ -5,6 +5,8 @@ u16 DMA1_MEM_LEN = 0;
 void bsp_InitServoMotor(void)
 {
   bsp_io_ServoMotor();
+  DMA1_Stream0_CH2Init();
+  TIM4_CH1_PWM_Config();
   DIFF_G_H();
   DIFF_G0_L();
 }
@@ -83,93 +85,94 @@ void TIM4_PWM_Init(u16 arr,u16 psc)
   TIM_Cmd(TIM4, ENABLE);  /* 使能TIM3 */
 }
 
-void TIM4_PWM_SETPMOTOR(void)
+void TIM4_CH1_PWM_Config(void)
 {
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-  TIM_OCInitTypeDef TIM_OCInitStructure;
+  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef    TIM_OCInitStructure;
   
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);   //Open TIM3  Clock
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 2;          //定时器时钟60MHZ/(3+1)=15
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
-  TIM_TimeBaseStructure.TIM_Period = 2000;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
-  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
-  
+  TIM_DeInit(TIM4);
+  TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = 50;
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0x0000;
   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-
-  /* PWM1 Mode configuration: TIM3_CH1 */
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
-  TIM_OCInitStructure.TIM_Pulse = 1000;                            //config TIM3_CCR1 vaule
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
-  TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-  TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);         // turn on oc1 preload 
   
-  TIM_ARRPreloadConfig(TIM4, ENABLE);
-  /* TIM3 enable counter */
-  TIM_Cmd(TIM4, ENABLE);
-  TIM_SetCompare4(TIM4,1000);
-  TIM_CtrlPWMOutputs(TIM4, ENABLE);
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;////
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  //  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = 20;
+  //  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
+  //  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  //  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+  //  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+  TIM_OC1Init(TIM4, &TIM_OCInitStructure);
+  //------------------------------------------------------------------------------------	
+  //  TIM_OC1PreloadConfig(TIM4,TIM_OCPreload_Enable);
+  //  TIM_ARRPreloadConfig(TIM4,ENABLE);
+  
+  //	TIM_DMAConfig(TIM4,TIM_DMABase_ARR,TIM_DMABurstLength_3Transfers);
+  TIM_DMACmd(TIM4,TIM_DMA_CC1,DISABLE);
+  TIM4 -> CCER &= ~(1<<0); //1?±?TME4 PWMê?3?
+  TIM_Cmd(TIM4,DISABLE);
 }
 
-void DMA_PWM_Config(u32 cpar,u32 cmar,u16 cndtr)
+void DMA1_Stream0_CH2Init(void)
 {
-  DMA_InitTypeDef DMA_InitStructure;  
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);//DMA1 
+  NVIC_InitTypeDef    NVIC_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+  
+  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream0_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 8;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
 
-  DMA_DeInit(DMA1_Stream0);
-  while (DMA_GetCmdStatus(DMA1_Stream0) != DISABLE);//等待DMA可配置 
-  /* 配置 DMA Stream */
-  DMA1_MEM_LEN = cndtr;
-  DMA_InitStructure.DMA_Channel = DMA_Channel_2;  //通道选择
-  DMA_InitStructure.DMA_PeripheralBaseAddr = cpar;//DMA外设地址
-  DMA_InitStructure.DMA_Memory0BaseAddr = cmar;//DMA 存储器0地址
-  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral ;//外设到存储器模式
-  DMA_InitStructure.DMA_BufferSize = cndtr;//数据传输量 
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;//外设非增量模式
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;//存储器增量模式
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;//外设数据长度:8位
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;//存储器数据长度:8位
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;// 使用普通模式 
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;//中等优先级
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;         
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
-  DMA_Init(DMA1_Stream0, &DMA_InitStructure);//初始化DMA Stream
-  DMA_Cmd(DMA1_Stream0, ENABLE);  //开启DMA传输 	
-} 
+void DMA1_Stream0_CH2_Cmd(void (*Fuc)(uint16_t *,int32_t,int32_t),uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc)
+{
+  Fuc(DataBuf,BufSize,MemoryInc);
+  DMA_Cmd(DMA1_Stream0,ENABLE);
+}
 
-//int main(void)
-//{
-//  int i;
-//  int feedback;
-//  delay_init();	
-//  uart_init(115200);
-//  KEY_Init();
-//  DMA_Config(DMA1_Channel6, (u32)&TIM3->ARR, (u32)send_buf, size);
-//  TIM3_PWM_Init(599,7199);
-//  for(i = 0; i < size; ++i)
-//  {
-//    if(i != size - 1)
-//      send_buf[i] = 100 + 10 * i;
-//    else
-//      send_buf[i] = 0;
-//  }
-//  DMA_Enable(DMA1_Channel6);
-//  while(1)
-//  {
-//    feedback = DMA_send_feedback(DMA1_Channel6);
-//    if(feedback != 0)
-//    {
-//      printf("-> ");
-//      printf("%d\r\n", DMA_send_feedback(DMA1_Channel6));
-//    }
-//    if(KEY_Scan(0) == 1)
-//    {
-//      DMA_Enable(DMA1_Channel6);
-//    }
-//  }
-//}
+void TIM4_PWMDMA_Config(uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc)
+{
+  DMA_InitTypeDef  DMA_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+  
+  DMA_InitStructure.DMA_Channel = DMA_Channel_2;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&TIM4->ARR;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)DataBuf;
+  DMA_InitStructure.DMA_BufferSize = BufSize;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = MemoryInc;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream0,&DMA_InitStructure);
+  
+  DMA_ITConfig(DMA1_Stream0,DMA_IT_TC,ENABLE);
+}
+
+void DMA1_Stream0_IRQHandler(void)
+{	
+  if(DMA_GetITStatus(DMA1_Stream0,DMA_IT_TCIF0)==SET)
+  {
+    DMA_ClearFlag(DMA1_Stream0,DMA_IT_TCIF0);
+    DMA_Cmd(DMA1_Stream0,DISABLE);
+    TIM_DMACmd(TIM4,TIM_DMA_CC1,DISABLE);
+    TIM4 -> CCER &= ~(1<<0); //关闭TIME4 CH1 输出使能
+  }
+}
 
 

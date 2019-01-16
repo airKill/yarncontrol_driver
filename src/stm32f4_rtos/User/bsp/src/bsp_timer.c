@@ -527,7 +527,7 @@ void bsp_InitHardTimer(void)
     
     NVIC_InitStructure.NVIC_IRQChannel = TIM_HARD_IRQn;
     
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 4;	/* 比串口优先级低 */
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 7;	/* 比串口优先级低 */
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);

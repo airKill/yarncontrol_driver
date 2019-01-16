@@ -80,6 +80,7 @@
 
 #include "product_cal.h"
 #include "rc522.h"
+#include "page_weimi.h"
 /* 在主函数中调用 */
 extern void vSetupSysInfoTest(void);
 

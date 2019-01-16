@@ -1501,6 +1501,9 @@
       <name>$PROJ_DIR$\..\..\User\main.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\page_weimi.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\para.c</name>
     </file>
     <file>

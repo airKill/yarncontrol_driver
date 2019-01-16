@@ -62,6 +62,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\src\bsp_timer.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\src\bsp_uart_fifo.c</path>
     <encoding>System</encoding>
   </override>
@@ -103,6 +107,10 @@
   </override>
   <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\protocol.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\usbh_mass_storage\usb_bsp.c</path>
     <encoding>System</encoding>
   </override>
   <override>

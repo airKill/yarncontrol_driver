@@ -628,7 +628,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>MainBoard190115.bin</state>
+          <state>MainBoard190116_2s.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1463,6 +1463,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\page_weimi.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\para.c</name>

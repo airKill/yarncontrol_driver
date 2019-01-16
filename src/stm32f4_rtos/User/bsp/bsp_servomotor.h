@@ -33,7 +33,10 @@ void TIM4_PWM_SETPMOTOR(void);
 void bsp_InitServoMotor(void);
 void bsp_io_ServoMotor(void);
 void TIM4_PWM_Init(u16 arr,u16 psc);
-void DMA_PWM_Config(u32 cpar,u32 cmar,u16 cndtr);
+void DMA1_Stream0_CH2_Cmd(void (*Fuc)(uint16_t *,int32_t,int32_t),uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc);
+void TIM4_PWMDMA_Config(uint16_t *DataBuf,int32_t BufSize,int32_t MemoryInc);
+void DMA1_Stream0_CH2Init(void);
+void TIM4_CH1_PWM_Config(void);
 u16 DMA_send_feedback(void);
 void DMA_PWM_Enable(void);
 #endif

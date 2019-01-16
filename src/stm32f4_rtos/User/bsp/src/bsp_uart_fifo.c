@@ -994,7 +994,7 @@ static void ConfigUartNVIC(void)
 #if UART6_FIFO_EN == 1
   /* 使能串口6中断t */
   NVIC_InitStructure.NVIC_IRQChannel = USART6_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);

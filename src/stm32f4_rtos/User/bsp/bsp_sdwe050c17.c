@@ -271,7 +271,7 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,(int)(para->loom_num),2);
   Sdwe_disDigi(PAGE_PRODUCT_LOSS,(int)(para->loss),2);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
-  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),2);
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEIMI,(int)(para->weimi_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);

@@ -891,7 +891,7 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
           {//生产任务米设置
-            u16 cnt;
+            u32 cnt;
             cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
             peiliao_para.total_meter_set = cnt;
             total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
@@ -906,8 +906,8 @@ void vTaskTaskLCD(void *pvParameters)
           }
           else if(var_addr == PAGE_PRODUCT_TOTAL_WEIGHT)
           {//生产任务重量设置
-            u16 cnt;
-            cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
+            u32 cnt;
+            cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
             peiliao_para.total_weitht_set = cnt;
             total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + (float)peiliao_para.loss / 100));
             init_product_para(&product_para);//重新设置生产任务后，产能清零
@@ -1969,34 +1969,25 @@ void vTaskManageCapacity(void *pvParameters)
 
 static void vTaskMotorControl(void *pvParameters)
 {
-  u8 i;
-  u16 send_buf[100];
-  int feedback;
+  u16 servomotor = 100;
+  u16 feedback;
   bsp_InitServoMotor();
-  DMA_PWM_Config((u32)&TIM4->CCR1, (u32)send_buf, 100);
-  TIM4_PWM_Init(599,7199);
-  for(i=0;i<100;i++)
-  {
-    if(i != 99)
-      send_buf[i] = 100 + 10 * i;
-    else
-      send_buf[i] = 0;
-  }
-  DMA_PWM_Enable();
-//  TIM4_PWM_SETPMOTOR();
   while(1)
   {
-//    feedback = DMA_send_feedback();
-//    if(feedback != 0)
-//    {
-//      printf("-> ");
-//      printf("%d\r\n",DMA_send_feedback());
-//    }
-//    if(pwm_flag == 1)
-//    {
-//      pwm_flag = 0;
-//      DMA_PWM_Enable();
-//    }
+    feedback = DMA_send_feedback();
+    if(feedback != 0)
+    {
+      printf("-> ");
+      printf("%d\r\n",DMA_send_feedback());
+    }
+    if(pwm_flag == 1)
+    {
+      pwm_flag = 0;
+      DMA1_Stream0_CH2_Cmd(&TIM4_PWMDMA_Config,&servomotor,1000,DMA_MemoryInc_Disable);//匀速运行步数100
+      TIM_DMACmd(TIM4,TIM_DMA_CC1,ENABLE);
+      TIM4->CCER |= 1<<0; //打开PWM输出
+      TIM_Cmd(TIM4,ENABLE);
+    }
     vTaskDelay(10);
   }
 }
@@ -2175,12 +2166,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
     speed_1 = pluse_count;
     sample_time++;
   }
-  else if(sample_time >= 10)
+  else if(sample_time >= 2)
   {//计算10s内的脉冲数
     sample_time = 0;
     speed_2 = pluse_count;
     pluse_count = 0;
-    product_para.speed = (speed_2 - speed_1) * 6;//10秒内的脉冲数*6转换为1分钟脉冲数
+    product_para.speed = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
     Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
   }
   else
