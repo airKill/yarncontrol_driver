@@ -85,7 +85,7 @@ extern u32 total_weight_gross;
 extern u8 plan_complete,old_plan_complete;
 extern const char system_state_dis[20][20];
 
-void init_product_para(PRODUCT_PARA *para);
+void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA *peiliao);
 void init_peiliao_para(PEILIAO_PARA *para);
 float product_per_meter(PEILIAO_PARA *para,u32 pluse);
 float final_per_meter(PEILIAO_PARA *para);

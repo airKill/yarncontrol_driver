@@ -54,7 +54,7 @@ void read_device_info(void)
     strcpy((char *)device_info.regin_in.password,"111111");
     device_info.regin_in.password_len = strlen((char const *)device_info.regin_in.password);;  
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-    init_product_para(&product_para);
+    init_product_para(&product_para,&peiliao_para);
     W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
     init_peiliao_para(&peiliao_para);
     W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));

@@ -89,7 +89,7 @@ void TIM1_PWM_SETPMOTOR(void)
 
   TIM_TimeBaseStructure.TIM_Prescaler = 2;          //¶¨Ê±Æ÷Ê±ÖÓ60MHZ/(3+1)=15
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
-  TIM_TimeBaseStructure.TIM_Period = 2000;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
+  TIM_TimeBaseStructure.TIM_Period = 1000;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
   
   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
@@ -104,7 +104,7 @@ void TIM1_PWM_SETPMOTOR(void)
   
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
-  TIM_OCInitStructure.TIM_Pulse = 0;                            //config TIM3_CCR1 vaule
+  TIM_OCInitStructure.TIM_Pulse = 500;                            //config TIM3_CCR1 vaule
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
   TIM_OC4Init(TIM1, &TIM_OCInitStructure);
   TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);         // turn on oc1 preload 
@@ -112,7 +112,7 @@ void TIM1_PWM_SETPMOTOR(void)
   TIM_ARRPreloadConfig(TIM1, ENABLE);
   /* TIM3 enable counter */
   TIM_Cmd(TIM1, ENABLE);
-  TIM_SetCompare4(TIM1,1000);
+//  TIM_SetCompare4(TIM1,1000);
   TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 

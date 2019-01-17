@@ -6,7 +6,7 @@ void TIM4ConfigPwmOut(u32 freq,u16 num)
 {
   uint16_t period;
   //  period = SystemCoreClock / TIM_Prescaler / freq / 2; 
-  period = 84;
+  period = freq;
   TIM4_GPIO_Configuration();
   TIM4_CH1_PWM_Config(period);
   TIM4_PWMDMA_Config(period,num);
@@ -28,11 +28,10 @@ void TIM4StopPwmOut(void)
   DMA_Cmd(DMA1_Stream0,DISABLE);
 }
 
-void TIM4_GPIO_Configuration( void )
+void TIM4_GPIO_Configuration(void)
 {
-  GPIO_InitTypeDef      GPIO_InitStructure;
-  /* Enable the GPIO_LED Clock */
-  //  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
   
@@ -40,7 +39,7 @@ void TIM4_GPIO_Configuration( void )
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOD,&GPIO_InitStructure);
 }
 
@@ -65,20 +64,12 @@ void TIM4_CH1_PWM_Config(u32 period)
   
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;////
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  //  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure.TIM_Pulse = period / 2;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  //  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_Low;
-  //  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-  //  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
   TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-  //------------------------------------------------------------------------------------	
-  //  TIM_OC1PreloadConfig(TIM4,TIM_OCPreload_Enable);
-  //  TIM_ARRPreloadConfig(TIM4,ENABLE);
-  
-  //	TIM_DMAConfig(TIM4,TIM_DMABase_ARR,TIM_DMABurstLength_3Transfers);
+
   TIM_DMACmd(TIM4,TIM_DMA_CC1,DISABLE);
-  TIM4 -> CCER &= ~(1<<0); //1?¡À?TME4 PWM¨º?3?
+  TIM4 -> CCER &= ~(1<<0); //
   TIM_Cmd(TIM4,DISABLE);
 }
 

@@ -25,18 +25,21 @@ const char system_state_dis[20][20] = {
   {"Ìæ»»ÅÌÍ·"},        
 };
 
-void init_product_para(PRODUCT_PARA *para)
+void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
 {
+  u32 meter,weight;
+  meter = (u32)(peiliao->total_meter_set * (1 + peiliao->loss / 100.0));
+  weight = (u32)(peiliao->total_weitht_set * (1 + peiliao->loss / 100.0));
   para->product_a = 0;
   para->product_b = 0;
-  para->product_uncomplete = 0;
   para->product_complete = 0;
+  para->product_uncomplete = meter - para->product_complete;
   para->weicount_kilowei = 0;
   para->speed = 0;
   para->total_work_time = 0;
   para->total_stop_time = 0;
-  para->weight_uncomplete = 0;
   para->weight_complete = 0;
+  para->weight_uncomplete = weight - para->weight_complete;
 }
 
 void init_peiliao_para(PEILIAO_PARA *para)

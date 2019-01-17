@@ -117,21 +117,22 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == MAIN_PAGE_KEY_WEIMI)
             {//纬密
-              if(isDevicePeriod == 0)
-              {
-                if(device_info.func_onoff.weimi)
-                {
-                  sdew_weimi_page1(&weimi_para);
-                }
-                else
-                {
-                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
-                }
-              }
-              else
-              {
-                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
-              }
+              pwm_flag = 1;
+//              if(isDevicePeriod == 0)
+//              {
+//                if(device_info.func_onoff.weimi)
+//                {
+//                  sdew_weimi_page1(&weimi_para);
+//                }
+//                else
+//                {
+//                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
+//                }
+//              }
+//              else
+//              {
+//                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
+//              }
             }
             else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
             {//产能
@@ -809,7 +810,7 @@ void vTaskTaskLCD(void *pvParameters)
               TIM_Cmd(TIM1, ENABLE);
               TIM_CtrlPWMOutputs(TIM1, ENABLE);
               total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
-              init_product_para(&product_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
               Sdwe_product_page(&product_para);
@@ -877,7 +878,7 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_meter_set = cnt;
               total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
-              init_product_para(&product_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
               Sdwe_product_page(&product_para);
@@ -894,7 +895,7 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_weitht_set = cnt;
               total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + (float)peiliao_para.loss / 100));
-              init_product_para(&product_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
               Sdwe_product_page(&product_para);
@@ -2047,9 +2048,9 @@ void vTaskManageCapacity(void *pvParameters)
 
 static void vTaskMotorControl(void *pvParameters)
 {
-//  u16 servomotor = 100;
+  u16 servomotor = 84;
 //  u16 feedback,i;
-  TIM4ConfigPwmOut(1000,10);
+  TIM4ConfigPwmOut(servomotor,10);
   
   while(1)
   {
@@ -2062,8 +2063,7 @@ static void vTaskMotorControl(void *pvParameters)
     if(pwm_flag == 1)
     {
       pwm_flag = 0;
-//      servomotor = 1000;
-//      TIM4_PWMDMA_Config(&servomotor,100);
+      TIM4_PWMDMA_Config(servomotor,1000);
       TIM4StartPwmOut();
     }
     vTaskDelay(10);
