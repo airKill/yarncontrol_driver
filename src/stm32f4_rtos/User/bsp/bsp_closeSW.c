@@ -29,7 +29,7 @@ void bsp_InitCloseSW(void)
 
 void ConfigExitNVIC(void)
 {
-  NVIC_InitTypeDef   NVIC_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure;
   
   NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x03;
@@ -42,10 +42,14 @@ void EXTI9_5_IRQHandler(void)
 {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   if(EXTI_GetITStatus(EXTI_LineSW) != RESET)
-	{
-		EXTI_ClearITPendingBit(EXTI_LineSW); /* 清除中断标志位 */
+  {
+    EXTI_ClearITPendingBit(EXTI_LineSW); /* 清除中断标志位 */
     xSemaphoreGiveFromISR(xSemaphore_pluse, &xHigherPriorityTaskWoken);
     /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-	}
+  }
+  else if(EXTI_GetITStatus(EXTI_LineEncoder) != RESET)
+  {
+    EXTI_ClearITPendingBit(EXTI_LineEncoder); /* 清除中断标志位 */
+  }
 }

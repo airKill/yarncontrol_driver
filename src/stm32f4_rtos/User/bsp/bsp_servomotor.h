@@ -27,8 +27,6 @@
 #define DIFF_G0_H()   GPIO_SetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 #define DIFF_G0_L()   GPIO_ResetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 
-extern u16 DMA1_MEM_LEN;
-
 void TIM4ConfigPwmOut(u32 freq,u16 num);
 void TIM4StartPwmOut(void);
 void TIM4StopPwmOut(void);

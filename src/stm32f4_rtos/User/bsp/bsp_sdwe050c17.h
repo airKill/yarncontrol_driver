@@ -4,6 +4,7 @@
 #include "protocol.h"
 #include "product_cal.h"
 #include "para.h"
+#include "page_weimi.h"
 
 #define LCD_POWER_PORT  GPIOD
 #define LCD_POWER_PIN	GPIO_Pin_0
@@ -220,6 +221,29 @@
 #define PAGE_STOP_ON    0x0460
 #define PAGE_STOP_OFF    0x0470
 
+#define PAGE_WEIMI_REALWEI_1    0x1000  //纬号1——10
+#define PAGE_WEIMI_WEI_CM_1     0x1014  //纬/cm1——10
+#define PAGE_WEIMI_WEI_INCH_1   0x1028  //纬/inch1——10
+#define PAGE_WEIMI_TOTALWEI_1   0x103C  //纬循环1——10
+#define PAGE_WEIMI_MEDIANWEI_1  0x1050  //纬过渡1——10
+#define PAGE_WEIMI_REAL_MEDIAN_1  0x1064  //纬过渡1——10
+
+#define PAGE_WEIMI_STEP1_SPEED  0x1078  //送纬电机速度
+#define PAGE_WEIMI_STEP2_SPEED  0x108C  //底线电机速度
+
+#define PAGE_WEIMI_MANUAL_FORWARD       0x1200  //手动向前
+#define PAGE_WEIMI_MANUAL_BACKWARD      0x1201  //手动向前
+
+#define PAGE_WEIMI_STEP1_ADD1    0x1202         //送纬速度加1——10 
+#define PAGE_WEIMI_STEP1_SUB1    0x120C         //送纬速度减1——10 
+#define PAGE_WEIMI_STEP2_ADD1    0x1216         //底线速度加1——10 
+#define PAGE_WEIMI_STEP2_SUB1    0x1220         //底线速度减1——10 
+
+#define PAGE_WEIMI_WEIMI1         0x122A
+#define PAGE_WEIMI_WEIMI2         0x122B
+#define PAGE_WEIMI_WEISHA1        0x122C
+#define PAGE_WEIMI_WEISHA2        0x122D
+
 #define VGUS_ON   1
 #define VGUS_OFF   0
 
@@ -252,4 +276,8 @@ void SDWE_WARNNING(u16 addr,u8 *str);
 void Sdwe_change_class_time(DEVICE_INFO *para);
 void Sdwe_period_page(DEVICE_INFO *para);
 void Sdwe_hidden_page(DEVICE_INFO *para);
+void sdew_weimi_page1(WEIMI_PARA *para);
+void sdew_weimi_page2(WEIMI_PARA *para);
+void sdew_weisha_page1(WEIMI_PARA *para);
+void sdew_weisha_page2(WEIMI_PARA *para);
 #endif

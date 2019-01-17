@@ -1039,6 +1039,9 @@
       <name>$PROJ_DIR$\..\..\User\bsp\bsp_watchdog.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\encoder.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\stm32f4xx_assert.c</name>
     </file>
     <file>

@@ -7,6 +7,9 @@ u32 total_meter_gross = 0;
 u32 total_weight_gross = 0;
 u8 plan_complete = 0,old_plan_complete = 0;
 
+u8 work_idle = PLUSE_STOP;
+u16 work_idle_time = 0;
+
 const char system_state_dis[20][20] = {
   {"系统正常"},
   {"待转机"},

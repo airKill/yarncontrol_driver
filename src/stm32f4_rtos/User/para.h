@@ -4,9 +4,10 @@
 #include "stm32f4xx.h"
 
 #define W25QXX_ADDR_INFO   0            //目录数据占用W25Q64一个扇区
-#define W25QXX_ADDR_JINGSHA   0x1000      //保存文件从第二扇区地址开始
+#define W25QXX_ADDR_JINGSHA     0x1000      //保存文件从第二扇区地址开始
 #define W25QXX_ADDR_CHANNENG    0x6000  //产能页面数据
-#define W25QXX_ADDR_PEILIAO    0x7000  //产能页面数据
+#define W25QXX_ADDR_PEILIAO     0x7000  //产能页面数据
+#define W25QXX_ADDR_WEIMI       0x8000  //产能页面数据
 #define W25QXX_ADDR_RFID_A        0xA000  //班次A卡片保存数据
 #define W25QXX_ADDR_RFID_B        0xB000  //班次B卡片保存数据
 #define W25QXX_ADDR_RFID_REPAIR   0xC000  //维修卡片保存数据
@@ -67,6 +68,12 @@ typedef struct
 
 typedef struct
 {
+  u8 GEAR1;
+  u8 GEAR2;
+}GEAR_RATIO;
+
+typedef struct
+{
   u8 isfirst;
   u8 device_id[6];
   u8 device_id_len;
@@ -77,6 +84,7 @@ typedef struct
   u8 file_select[10];
   FUNCTION_ONOFF func_onoff; 
   u8 page_enable_onoff[3];//0:经纱页面，1：产能页面，2：纬密页面
+  GEAR_RATIO ratio;
   REGIN_IN regin_in;//系统登录密码及经纱页面修改密码
   PERIOD_PAGE_PARA period_para;//试用期页面参数
   CLASS_PARA class_para;//换班页面参数

@@ -5,6 +5,10 @@
 #include "protocol.h"
 #include "para.h"
 
+#define PLUSE_STOP    0
+#define PLUSE_IDLE    1
+#define PLUSE_WORK    2
+
 typedef enum 
 {
   CLASS_A = 0,       //A班
@@ -37,7 +41,8 @@ typedef enum
   SYS_DEVICE_ADJUST,    //织机调校
   SYS_REPAIR,           //维修
   SYS_WAIT_QAD,         //待QAD处理
-  SYS_REPLACE_PAN       //替换盘头
+  SYS_REPLACE_PAN,       //替换盘头
+  SYS_STOP
 }SYSTEM_STATE;
 
 typedef struct
@@ -71,6 +76,9 @@ typedef struct
   u16 weimi_dis_set;       //纬密显示设置
 }PEILIAO_PARA;
 extern PEILIAO_PARA peiliao_para;
+
+extern u8 work_idle;
+extern u16 work_idle_time;
 
 extern u32 total_meter_gross;
 extern u32 total_weight_gross;
