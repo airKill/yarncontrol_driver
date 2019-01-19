@@ -7,8 +7,8 @@ void bsp_Init_SW_ONOFF(void)
   RCC_AHB1PeriphClockCmd(RCC_SW_ONOFF, ENABLE);
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;		/* 设为输出口 */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;		/* 设为推挽模式 */
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
   
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SW_ONOFF;

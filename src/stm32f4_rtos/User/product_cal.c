@@ -111,7 +111,7 @@ u32 count_per_kilo(u32 pluse)
 float product_complete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
 {
   float weight;
-  weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para) / peiliao->loss;//已完成重量=每米成品重量*完成产量/损耗
+  weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para);//已完成重量=每米成品重量*完成产量
   return weight;
 }
 
