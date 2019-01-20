@@ -875,9 +875,11 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
             {//生产任务米设置
               u32 cnt;
+              float percent;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_meter_set = cnt;
-              total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
+              percent = 1 + (float)peiliao_para.loss / 100.0;
+              total_meter_gross = ((float)peiliao_para.total_meter_set * percent);
               init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
@@ -892,9 +894,11 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_PRODUCT_TOTAL_WEIGHT)
             {//生产任务重量设置
               u32 cnt;
+              float percent;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_weitht_set = cnt;
-              total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + (float)peiliao_para.loss / 100));
+              percent = 1 + (float)peiliao_para.loss / 100.0;
+              total_weight_gross = (peiliao_para.total_weitht_set * percent);
               init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
@@ -2023,8 +2027,8 @@ void vTaskManageCapacity(void *pvParameters)
                   {
                     product_para.weight_complete = product_complete_kilo(&product_para,&peiliao_para);//已完成重量
                     product_para.weight_uncomplete = total_weight_gross - product_para.weight_complete;//未完成重量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 100),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 100),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 10),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),4);
                     if(product_para.weight_uncomplete <= 0)
                     {//完成重量
                       TIM_CtrlPWMOutputs(TIM1, DISABLE);
@@ -2045,8 +2049,8 @@ void vTaskManageCapacity(void *pvParameters)
                   {
                     product_para.weight_complete = 0;//已完成重量
                     product_para.weight_uncomplete = 0;//未完成重量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 100),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 100),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 10),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),4);
                   }
                 }
               }

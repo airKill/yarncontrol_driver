@@ -238,12 +238,16 @@ void Sdwe_refresh_allname(u8 file_count)
 //产量页面
 void Sdwe_product_page(PRODUCT_PARA *para)
 {
+  u32 uncomplete;
+  u32 complete;
   u8 on_time_buf[10];
   u8 off_time_buf[10];
   Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(para->product_uncomplete * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(para->product_complete * 10),4);
+  uncomplete = para->product_uncomplete * 10.0;
+  complete = para->product_complete * 10.0;
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,uncomplete,4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,complete,4);
   Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->weicount_kilowei,4);
   Sdwe_disDigi(PAGE_PRODUCT_SPEED,para->speed,2);
   memset(on_time_buf,0,10);
@@ -252,8 +256,8 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   sprintf((char *)off_time_buf,"%04d:%02d",para->total_stop_time / 3600,para->total_stop_time % 3600 / 60);
   Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen((char const*)on_time_buf));
   Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen((char const*)off_time_buf));
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 100),4);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 100),4);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),4);
 }
 
 //胚料页面
