@@ -8,9 +8,9 @@ void bsp_InitStepMotor(void)
   RCC_AHB1PeriphClockCmd(RCC_STEPMOTOR2_EN, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_STEPMOTOR3_EN, ENABLE);
   
-  GPIO_PinAFConfig(GPIOB,GPIO_PinSource0,GPIO_AF_TIM3);
-  GPIO_PinAFConfig(GPIOE,GPIO_PinSource11,GPIO_AF_TIM1);
-  GPIO_PinAFConfig(GPIOE,GPIO_PinSource14,GPIO_AF_TIM1);
+  GPIO_PinAFConfig(GPIOB,GPIO_PinSource0,GPIO_AF_TIM3);//步进电机1 PWM接口
+  GPIO_PinAFConfig(GPIOE,GPIO_PinSource11,GPIO_AF_TIM1);//步进电机2 PWM接口
+  GPIO_PinAFConfig(GPIOE,GPIO_PinSource14,GPIO_AF_TIM1);//步进电机3 PWM接口
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		/* 设为输出口 */
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
@@ -49,7 +49,8 @@ void bsp_InitStepMotor(void)
   TIM3_PWM_SETPMOTOR();
   TIM1_PWM_SETPMOTOR();
   
-  STEPMOTOR3_EN_L();
+  STEPMOTOR1_DIR_L();
+  STEPMOTOR2_DIR_L();
   STEPMOTOR3_DIR_L();
 }
 
@@ -60,7 +61,7 @@ void TIM3_PWM_SETPMOTOR(void)
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);   //Open TIM3  Clock
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 3;          //定时器时钟60MHZ/(3+1)=15
+  TIM_TimeBaseStructure.TIM_Prescaler = 3;          //定时器时钟42MHZ/(3+1)=15
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
   TIM_TimeBaseStructure.TIM_Period = 999;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV2;   
@@ -87,24 +88,24 @@ void TIM1_PWM_SETPMOTOR(void)
   
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);   //Open TIM3  Clock
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 2;          //定时器时钟60MHZ/(3+1)=15
+  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;          //定时器时钟84MHZ/(3+1)=15
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
-  TIM_TimeBaseStructure.TIM_Period = 1000;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
+  TIM_TimeBaseStructure.TIM_Period = 400;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
   
   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 
-  /* PWM1 Mode configuration: TIM3_CH1 */
+  /* PWM1 Mode configuration: TIM1_CH2 */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
   TIM_OCInitStructure.TIM_Pulse = 0;                            //config TIM3_CCR1 vaule
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
   TIM_OC2Init(TIM1, &TIM_OCInitStructure);
   TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);         // turn on oc1 preload 
-  
+  /* PWM1 Mode configuration: TIM1_CH4 */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
-  TIM_OCInitStructure.TIM_Pulse = 500;                            //config TIM3_CCR1 vaule
+  TIM_OCInitStructure.TIM_Pulse = 200;                            //config TIM3_CCR1 vaule
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
   TIM_OC4Init(TIM1, &TIM_OCInitStructure);
   TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);         // turn on oc1 preload 
@@ -113,6 +114,7 @@ void TIM1_PWM_SETPMOTOR(void)
   /* TIM3 enable counter */
   TIM_Cmd(TIM1, ENABLE);
 //  TIM_SetCompare4(TIM1,1000);
+  TIM_SetAutoreload(TIM1,400);
   TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 

@@ -1406,6 +1406,7 @@ static void vTaskTaskRFID(void *pvParameters)
       if(card_config == READ_PERMISSION)
       {//在产能页面连续读取卡
         rfid_rev_flag = 0;
+        rfid_rev_cnt = 0;
         rc522_cmd_request(REQUEST_TYPE_ALL);
         vTaskDelay(100);
         if(rfid_rev_flag)
@@ -1417,6 +1418,7 @@ static void vTaskTaskRFID(void *pvParameters)
             if(isCard == Mifare1_S50)
             {
               printf("s50\r\n");
+              rfid_rev_cnt = 0;
               rc522_cmd_anticoll(COLLISION_GRADE_1);
               vTaskDelay(100);
               if(rfid_rev_flag)
@@ -1508,6 +1510,7 @@ static void vTaskTaskRFID(void *pvParameters)
         if(card_config > WRITE_PERMISSION)
         {
           rfid_rev_flag = 0;
+          rfid_rev_cnt = 0;
           rc522_cmd_request(REQUEST_TYPE_ALL);//请求卡
           vTaskDelay(100);
           if(rfid_rev_flag)
@@ -1519,6 +1522,7 @@ static void vTaskTaskRFID(void *pvParameters)
               if(isCard == Mifare1_S50)
               {//识别到s50卡
                 printf("s50\r\n");
+                rfid_rev_cnt = 0;
                 rc522_cmd_anticoll(COLLISION_GRADE_1);//防碰撞获取卡片ID
                 vTaskDelay(100);
                 if(rfid_rev_flag)
@@ -2087,8 +2091,10 @@ static void vTaskMotorControl(void *pvParameters)
 {
   u16 servomotor = 84;
 //  u16 feedback,i;
-//  TIM4ConfigPwmOut(servomotor,10);
-  
+  TIM4_PWM_Config(servomotor);
+  TIM4_CH1_ConfigPwmOut(servomotor,10);
+  TIM4_CH2_ConfigPwmOut(servomotor,10);
+  DIFF_G_init();
   while(1)
   {
 //    feedback = DMA_send_feedback();
@@ -2100,8 +2106,10 @@ static void vTaskMotorControl(void *pvParameters)
     if(pwm_flag == 1)
     {
       pwm_flag = 0;
-      TIM4_PWMDMA_Config(servomotor,1000);
-      TIM4StartPwmOut();
+      TIM4_CH1_PWMDMA_Config(servomotor,100);
+      TIM4_CH1_StartPwmOut();
+      TIM4_CH2_PWMDMA_Config(servomotor,100);
+      TIM4_CH2_StartPwmOut();
     }
     vTaskDelay(10);
   }

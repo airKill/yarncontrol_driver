@@ -847,9 +847,9 @@ static void InitHardUart(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(UART5, &USART_InitStructure);
   
-//  USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
   USART_ITConfig(UART5, USART_IT_IDLE, ENABLE);	/* 使能接收中断 */
-  USART_DMACmd(UART5,USART_DMAReq_Rx,ENABLE);
+//  USART_DMACmd(UART5,USART_DMAReq_Rx,ENABLE);
   /*
   USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
   注意: 不要在此处打开发送中断
@@ -1050,26 +1050,26 @@ void UartDMAConfig(void)
   DMA_Init(DMA1_Stream5, &DMA_InitStructure);//初始化DMA Stream
   DMA_Cmd(DMA1_Stream5, ENABLE);  //开启DMA传输 
   
-  DMA_DeInit(DMA1_Stream0);
-  while (DMA_GetCmdStatus(DMA1_Stream0) != DISABLE);//等待DMA可配置 
-  /* 配置 DMA Stream */
-  DMA_InitStructure.DMA_Channel = DMA_Channel_4;  //通道选择
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)&UART5->DR;//DMA外设地址
-  DMA_InitStructure.DMA_Memory0BaseAddr = (u32)UART5_RX_BUF;//DMA 存储器0地址
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory ;//外设到存储器模式
-  DMA_InitStructure.DMA_BufferSize = UART5_RX_BUF_SIZE;//数据传输量 
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;//外设非增量模式
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;//存储器增量模式
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;//外设数据长度:8位
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;//存储器数据长度:8位
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;// 使用普通模式 
-  DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;//中等优先级
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;         
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
-  DMA_Init(DMA1_Stream0, &DMA_InitStructure);//初始化DMA Stream
-  DMA_Cmd(DMA1_Stream0, ENABLE);  //开启DMA传输 
+//  DMA_DeInit(DMA1_Stream0);
+//  while (DMA_GetCmdStatus(DMA1_Stream0) != DISABLE);//等待DMA可配置 
+//  /* 配置 DMA Stream */
+//  DMA_InitStructure.DMA_Channel = DMA_Channel_4;  //通道选择
+//  DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)&UART5->DR;//DMA外设地址
+//  DMA_InitStructure.DMA_Memory0BaseAddr = (u32)UART5_RX_BUF;//DMA 存储器0地址
+//  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory ;//外设到存储器模式
+//  DMA_InitStructure.DMA_BufferSize = UART5_RX_BUF_SIZE;//数据传输量 
+//  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;//外设非增量模式
+//  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;//存储器增量模式
+//  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;//外设数据长度:8位
+//  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;//存储器数据长度:8位
+//  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;// 使用普通模式 
+//  DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;//中等优先级
+//  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;         
+//  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+//  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
+//  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
+//  DMA_Init(DMA1_Stream0, &DMA_InitStructure);//初始化DMA Stream
+//  DMA_Cmd(DMA1_Stream0, ENABLE);  //开启DMA传输 
 }  
 /*
 *********************************************************************************************************
@@ -1362,21 +1362,39 @@ void UART4_IRQHandler(void)
 void UART5_IRQHandler(void)
 {
   u16 data;
-  u16 UART_ReceiveSize = 0;
+  u8 tmp;
+//  if(USART_GetITStatus(UART5,USART_IT_IDLE) != RESET)
+//  {
+//    DMA_Cmd(DMA1_Stream0, DISABLE);
+//    data = UART5->SR;
+//    data = UART5->DR;
+//    data = data;
+//    UART_ReceiveSize = UART5_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream0);
+//    rfid_rev_cnt = UART_ReceiveSize;
+//    memcpy(rfid_rev_buf,UART5_RX_BUF,rfid_rev_cnt);
+////    UART1ToPC(rfid_rev_buf,rfid_rev_cnt);
+//    DMA_ClearFlag(DMA1_Stream0,DMA_FLAG_TCIF0 | DMA_FLAG_FEIF0 | DMA_FLAG_DMEIF0 | DMA_FLAG_TEIF0 | DMA_FLAG_HTIF0);//??DMA1_Steam3??????
+//    DMA_SetCurrDataCounter(DMA1_Stream0, UART5_RX_BUF_SIZE);
+//    DMA_Cmd(DMA1_Stream0, ENABLE);
+//    rfid_rev_flag = 1;
+//  }
+  if(USART_GetITStatus(UART5,USART_IT_RXNE) != RESET)
+  {
+    USART_ClearITPendingBit(UART5,USART_IT_RXNE);
+    tmp = USART_ReceiveData(UART5); 
+    rfid_rev_buf[rfid_rev_cnt] = tmp;
+    rfid_rev_cnt++;
+  }
   if(USART_GetITStatus(UART5,USART_IT_IDLE) != RESET)
   {
-    DMA_Cmd(DMA1_Stream0, DISABLE);
     data = UART5->SR;
     data = UART5->DR;
-    data = data;
-    UART_ReceiveSize = UART5_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream0);
-    rfid_rev_cnt = UART_ReceiveSize;
-    memcpy(rfid_rev_buf,UART5_RX_BUF,rfid_rev_cnt);
-//    UART1ToPC(rfid_rev_buf,rfid_rev_cnt);
-    DMA_ClearFlag(DMA1_Stream0,DMA_FLAG_TCIF0 | DMA_FLAG_FEIF0 | DMA_FLAG_DMEIF0 | DMA_FLAG_TEIF0 | DMA_FLAG_HTIF0);//??DMA1_Steam3??????
-    DMA_SetCurrDataCounter(DMA1_Stream0, UART5_RX_BUF_SIZE);
-    DMA_Cmd(DMA1_Stream0, ENABLE);
     rfid_rev_flag = 1;
+    if(rfid_rev_cnt >= 20)
+    {
+      rfid_rev_cnt = 0;
+      rfid_rev_flag = 0;
+    }
   }
 }
 #endif

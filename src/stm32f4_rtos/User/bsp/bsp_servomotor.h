@@ -27,10 +27,16 @@
 #define DIFF_G0_H()   GPIO_SetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 #define DIFF_G0_L()   GPIO_ResetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 
-void TIM4ConfigPwmOut(u32 freq,u16 num);
-void TIM4StartPwmOut(void);
-void TIM4StopPwmOut(void);
-void TIM4_GPIO_Configuration( void );
-void TIM4_CH1_PWM_Config(u32 period);
-void TIM4_PWMDMA_Config(u16 period,u16 cnt);
+void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num);
+void TIM4_CH1_StartPwmOut(void);
+void TIM4_CH1_StopPwmOut(void);
+void TIM4_CH1_GPIO_Configuration( void );
+void TIM4_PWM_Config(u32 period);
+void TIM4_CH1_PWMDMA_Config(u16 period,u16 cnt);
+void TIM4_CH2_ConfigPwmOut(u32 freq,u16 num);
+void TIM4_CH2_StartPwmOut(void);
+void TIM4_CH2_StopPwmOut(void);
+void TIM4_CH2_GPIO_Configuration(void);
+void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt);
+void DIFF_G_init(void);
 #endif
