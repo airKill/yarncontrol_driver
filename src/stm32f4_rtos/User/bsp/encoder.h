@@ -9,5 +9,10 @@
 #define EXTI_SourceEncoder      EXTI_PinSource7
 #define EXTI_LineEncoder         EXTI_Line7
 
+#define TempLen 10
+
+extern float Freq_value;
+
 void Encoder_Cap_Init(u16 arr,u16 psc);
+void Freq_Sample(void);
 #endif

@@ -4,6 +4,14 @@ u8 TIM3CH2_CAPTURE_STA=0;
 u32 TIM3CH2_CAPTURE_VAL = 0;
 u16 ReadValue1,ReadValue2;
 
+float Freq_value = 0;  //频率浮点值
+u32 Freq[TempLen];        //频率值缓冲数组
+u32 Freq_Sum=0;      //
+u32 Overflow_ptr = 0;  //溢出计数值
+u8 Freq_ptr1=0;      //滤波计数值1
+u8 Freq_ptr2=0;      //溢出计数值2
+u8 Show_flag=0;      //滤波值显示位
+
 void Encoder_Cap_Init(u16 arr,u16 psc)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -11,10 +19,12 @@ void Encoder_Cap_Init(u16 arr,u16 psc)
   NVIC_InitTypeDef NVIC_InitStructure;
   TIM_ICInitTypeDef  TIM3_ICInitStructure;
   
-  RCC_AHB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);	//ê1?üTIM5ê±?ó
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);	//ê1?üTIM5ê±?ó
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
   
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;		/* 设为输出口 */
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM3);
+  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;		/* 设为输出口 */
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
@@ -44,7 +54,52 @@ void Encoder_Cap_Init(u16 arr,u16 psc)
   NVIC_Init(&NVIC_InitStructure);  //?ù?YNVIC_InitStruct?D???¨μ?2?êy3?ê??ˉíaéèNVIC??′??÷
   
   TIM_ITConfig(TIM3,TIM_IT_Update|TIM_IT_CC2,ENABLE);//?êDí?üD??D?? ,?êDíCC1IE2????D??
+//  TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);//?êDí?üD??D?? ,?êDíCC1IE2????D??
   TIM_Cmd(TIM3,ENABLE); 	//ê1?ü?¨ê±?÷5
+}
+
+//频率采样滤波处理
+void Freq_Sample(void)
+{
+  u32 Dtemp=0; 
+  u8 i;
+  //捕捉了两次高电平
+  if(TIM3CH2_CAPTURE_STA & 0X80)
+  {
+    Freq_ptr1++;
+    Freq_ptr2++;
+    if(Freq_ptr1 >= TempLen)
+      Freq_ptr1=0;    
+    Dtemp = TIM3CH2_CAPTURE_STA & 0X3F;
+    Dtemp *= 65536;//溢出时间总和
+    if(Dtemp <= 65536)  //溢出时间总和<2
+      Dtemp = TIM3CH2_CAPTURE_VAL;
+    else 
+      Dtemp = Dtemp - 65536 + TIM3CH2_CAPTURE_VAL;
+    
+    Freq[Freq_ptr1] = Dtemp;
+    Dtemp = 0;
+    
+    if(Freq_ptr2 >= TempLen)
+    {
+      for(i=0;i<TempLen;i++)
+        Dtemp += Freq[i];     
+      Freq_value = 10000000.0 / Dtemp;
+      Freq_ptr2 = TempLen;
+    }
+    TIM3CH2_CAPTURE_STA = 0;
+    Overflow_ptr = 0;
+  }
+  else //?′2???μè′y??á?
+  {
+    Overflow_ptr++;
+    if(Overflow_ptr > 720000)
+    {
+      Freq_value = Freq_value / 10;
+      Show_flag = 1;
+      Overflow_ptr = 0;
+    }		
+  }
 }
 
 //TIM3中断处理

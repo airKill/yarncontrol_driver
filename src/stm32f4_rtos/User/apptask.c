@@ -2093,16 +2093,11 @@ static void vTaskMotorControl(void *pvParameters)
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
   DIFF_G_init();
-  Encoder_Cap_Init(0XFFFF,72-1);
-  
+  Encoder_Cap_Init(0XFFFF,168-1);
   while(1)
   {
-    if(pwm_flag == 1)
-    {
-      pwm_flag = 0;
-      ServoMotorRunning(FORWARD,100);
-    }
-    vTaskDelay(10);
+    Freq_Sample();
+    vTaskDelay(1);
   }
 }
 
@@ -2336,6 +2331,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
+  printf("freq is %f",Freq_value);
 }
 
 void Task_iwdg_refresh(u8 task)
