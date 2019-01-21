@@ -225,6 +225,14 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   NVIC_Init(&NVIC_InitStructure);
 }
 
+void ServoMotorRunning(u8 dir,u16 stepnum)
+{
+  TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
+  TIM4_CH1_StartPwmOut();
+  TIM4_CH2_PWMDMA_Config(FREQ_500KHZ,stepnum);
+  TIM4_CH2_StartPwmOut();
+}
+
 void DMA1_Stream0_IRQHandler(void)
 {
   if(DMA_GetITStatus(DMA1_Stream0,DMA_IT_TCIF0)==SET)
@@ -242,3 +250,4 @@ void DMA1_Stream3_IRQHandler(void)
     TIM4_CH2_StopPwmOut();
   }
 }
+

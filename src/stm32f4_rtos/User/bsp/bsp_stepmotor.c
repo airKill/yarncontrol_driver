@@ -46,7 +46,7 @@ void bsp_InitStepMotor(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_STEPMOTOR3_CP;
   GPIO_Init(GPIO_PORT_STEPMOTOR3_CP, &GPIO_InitStructure);
   
-  TIM3_PWM_SETPMOTOR();
+//  TIM3_PWM_SETPMOTOR();
   TIM1_PWM_SETPMOTOR();
   
   STEPMOTOR1_DIR_L();

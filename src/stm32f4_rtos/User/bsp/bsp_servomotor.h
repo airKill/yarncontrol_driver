@@ -27,6 +27,11 @@
 #define DIFF_G0_H()   GPIO_SetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 #define DIFF_G0_L()   GPIO_ResetBits(GPIO_PORT_SERVOMOTOR_G0,GPIO_PIN_SERVOMOTOR_G0)
 
+#define FREQ_500KHZ         84      //PWM频率=84MHZ/2/84=500KHZ
+#define FORWARD TIM_OCMode_PWM2         //伺服电机正向
+#define BACKWARD TIM_OCMode_PWM1        //伺服电机反向
+
+void ServoMotorRunning(u8 dir,u16 stepnum);
 void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num);
 void TIM4_CH1_StartPwmOut(void);
 void TIM4_CH1_StopPwmOut(void);

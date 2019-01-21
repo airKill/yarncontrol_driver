@@ -2089,27 +2089,18 @@ void vTaskManageCapacity(void *pvParameters)
 
 static void vTaskMotorControl(void *pvParameters)
 {
-  u16 servomotor = 84;
-//  u16 feedback,i;
-  TIM4_PWM_Config(servomotor);
-  TIM4_CH1_ConfigPwmOut(servomotor,10);
-  TIM4_CH2_ConfigPwmOut(servomotor,10);
+  TIM4_PWM_Config(FREQ_500KHZ);
+  TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
+  TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
   DIFF_G_init();
+  Encoder_Cap_Init(0XFFFF,72-1);
+  
   while(1)
   {
-//    feedback = DMA_send_feedback();
-//    if(feedback != 0)
-//    {
-//      printf("-> ");
-//      printf("%d\r\n",DMA_send_feedback());
-//    }
     if(pwm_flag == 1)
     {
       pwm_flag = 0;
-      TIM4_CH1_PWMDMA_Config(servomotor,100);
-      TIM4_CH1_StartPwmOut();
-      TIM4_CH2_PWMDMA_Config(servomotor,100);
-      TIM4_CH2_StartPwmOut();
+      ServoMotorRunning(FORWARD,100);
     }
     vTaskDelay(10);
   }

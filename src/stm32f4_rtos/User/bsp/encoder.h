@@ -9,6 +9,5 @@
 #define EXTI_SourceEncoder      EXTI_PinSource7
 #define EXTI_LineEncoder         EXTI_Line7
 
-void bsp_Init_encoder(void);
-
+void Encoder_Cap_Init(u16 arr,u16 psc);
 #endif
