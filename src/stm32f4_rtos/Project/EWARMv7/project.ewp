@@ -628,7 +628,11 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
+<<<<<<< Updated upstream
           <state>MainBoard190120_1.bin</state>
+=======
+          <state>MainBoard190118.bin</state>
+>>>>>>> Stashed changes
         </option>
         <option>
           <name>OOCCommandLineProducer</name>

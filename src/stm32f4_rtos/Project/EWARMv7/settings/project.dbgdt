@@ -44,7 +44,11 @@
         <expressions>
           
           
+<<<<<<< Updated upstream
         <item>send_buf</item><item>DataBuf</item><item>period</item><item>peiliao_para</item><item>product_para</item><item>rfid_rev_buf</item><item>UART5_RX_BUF</item><item>var_addr</item><item>device_info</item><item>total_meter_gross</item><item>para</item><item></item></expressions>
+=======
+        <item>send_buf</item><item>DataBuf</item><item>period</item><item/></expressions>
+>>>>>>> Stashed changes
         <col-names>
           
           
