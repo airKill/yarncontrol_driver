@@ -107,21 +107,21 @@ void TIM3_IRQHandler(void)
 {
   static u16 cnt = 0;
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  if((TIM3CH2_CAPTURE_STA & 0X80) == 0)//?1?¡ä3¨¦1|2???
+//  if((TIM3CH2_CAPTURE_STA & 0X80) == 0)//?1?¡ä3¨¦1|2???
   {
-    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
-    {
-      if(TIM3CH2_CAPTURE_STA & 0X40)//¨°??-2???¦Ì???¦Ì???¨¢?
-      {
-        if((TIM3CH2_CAPTURE_STA & 0X3F) == 0X3f)//??¦Ì???¨¬?3¡è¨¢?
-        {
-          TIM3CH2_CAPTURE_STA = 0X80;//¡À¨º??3¨¦1|2???¨¢?¨°?¡ä?
-          TIM3CH2_CAPTURE_VAL = 0;
-        }
-        else 
-          TIM3CH2_CAPTURE_STA++;
-      }
-    }
+//    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+//    {
+//      if(TIM3CH2_CAPTURE_STA & 0X40)//¨°??-2???¦Ì???¦Ì???¨¢?
+//      {
+//        if((TIM3CH2_CAPTURE_STA & 0X3F) == 0X3f)//??¦Ì???¨¬?3¡è¨¢?
+//        {
+//          TIM3CH2_CAPTURE_STA = 0X80;//¡À¨º??3¨¦1|2???¨¢?¨°?¡ä?
+//          TIM3CH2_CAPTURE_VAL = 0;
+//        }
+//        else 
+//          TIM3CH2_CAPTURE_STA++;
+//      }
+//    }
     if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)//2???1¡¤¡é¨¦¨²2???¨º??t
     {
       if(TIM3CH2_CAPTURE_STA & 0X40)		//2?¦Ì¨²?t¡ä???¦Ì?¨¦?¨¦y??
@@ -135,7 +135,10 @@ void TIM3_IRQHandler(void)
         {
           TIM3CH2_CAPTURE_VAL = ((0xFFFF - ReadValue1) + ReadValue2);
         }
-        TIM3CH2_CAPTURE_STA |= 0X80;		//¡À¨º??3¨¦1|2???¦Ì?¨°?¡ä?¨¦?¨¦y??
+//        TIM3CH2_CAPTURE_STA |= 0X80;		//¡À¨º??3¨¦1|2???¦Ì?¨°?¡ä?¨¦?¨¦y??
+        TIM3CH2_CAPTURE_STA = 0;
+//        Freq_Sample();
+        bsp_LedOn(1);
       }
       else  								//¦Ì¨²¨°?¡ä?2???¨¦?¨¦y??
       {
@@ -143,6 +146,7 @@ void TIM3_IRQHandler(void)
         //TIM5CH1_CAPTURE_STA=0;			//????
         TIM3CH2_CAPTURE_VAL = 0;
         TIM3CH2_CAPTURE_STA = 0X40;		//¡À¨º??2???¦Ì?¨¢?¨¦?¨¦y??
+        bsp_LedOff(1);
       }
       cnt++;
       if(cnt >= ENCODER_LINE)

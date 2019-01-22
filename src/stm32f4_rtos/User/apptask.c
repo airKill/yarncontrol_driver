@@ -1392,9 +1392,10 @@ static void vTaskTaskLED(void *pvParameters)
 {
   while(1)
   {
-    bsp_LedToggle(1);
-    bsp_LedToggle(2);
+//    bsp_LedToggle(1);
+//    bsp_LedToggle(2);
     vTaskDelay(500);
+//    ServoMotorRunning(FORWARD,100);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2106,6 +2107,7 @@ static void vTaskMotorControl(void *pvParameters)
   TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
   DIFF_G_init();
   Encoder_Cap_Init();
+  weimi_para.wei_cm_set[0] = 10;
   MotorProcess.current_seg = 0;
   MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
   step = MotorStepCount(&device_info,&weimi_para,0);//»ñÈ¡Âö³åÊý/Î³
@@ -2143,7 +2145,7 @@ static void vTaskMotorControl(void *pvParameters)
         }
       }
     }
-    Freq_Sample();
+//    Freq_Sample();
   }
 }
 
