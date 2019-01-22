@@ -12,7 +12,7 @@ u8 Freq_ptr1=0;      //滤波计数值1
 u8 Freq_ptr2=0;      //溢出计数值2
 u8 Show_flag=0;      //滤波值显示位
 
-void Encoder_Cap_Init(u16 arr,u16 psc)
+void Encoder_Cap_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -32,8 +32,8 @@ void Encoder_Cap_Init(u16 arr,u16 psc)
   GPIO_Init(GPIO_PORT_ENCODER, &GPIO_InitStructure);					 //PA0 ??à-
   
   //初始化定时器3
-  TIM_TimeBaseStructure.TIM_Period = arr; //éè?¨??êy?÷×??ˉ??×°?μ
-  TIM_TimeBaseStructure.TIM_Prescaler = psc; 	//?¤·??μ?÷
+  TIM_TimeBaseStructure.TIM_Period = 0xffff; //éè?¨??êy?÷×??ˉ??×°?μ
+  TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1; 	//?¤·??μ?÷
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //éè??ê±?ó·???:TDTS = Tck_tim
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM?òé???êy?￡ê?
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); //?ù?YTIM_TimeBaseInitStruct?D???¨μ?2?êy3?ê??ˉTIMxμ?ê±???ùêyμ￥??
@@ -105,6 +105,8 @@ void Freq_Sample(void)
 //TIM3中断处理
 void TIM3_IRQHandler(void)
 {
+  static u16 cnt = 0;
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   if((TIM3CH2_CAPTURE_STA & 0X80) == 0)//?1?′3é1|2???
   {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
@@ -141,6 +143,14 @@ void TIM3_IRQHandler(void)
         //TIM5CH1_CAPTURE_STA=0;			//????
         TIM3CH2_CAPTURE_VAL = 0;
         TIM3CH2_CAPTURE_STA = 0X40;		//±ê??2???μ?á?é?éy??
+      }
+      cnt++;
+      if(cnt >= ENCODER_LINE)
+      {//编码器一圈
+        cnt = 0;
+        xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+        /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
       }
     }
   }

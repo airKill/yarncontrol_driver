@@ -48,8 +48,4 @@ void EXTI9_5_IRQHandler(void)
     /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
-  else if(EXTI_GetITStatus(EXTI_LineEncoder) != RESET)
-  {
-    EXTI_ClearITPendingBit(EXTI_LineEncoder); /* 清除中断标志位 */
-  }
 }

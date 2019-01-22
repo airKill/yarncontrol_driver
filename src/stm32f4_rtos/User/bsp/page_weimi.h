@@ -8,17 +8,29 @@
 
 typedef struct
 {
-  u32 real_wei_count[10];
-  u32 real_total_wei[10];
-  float wei_cm_set[10];
-  float wei_inch_set[10];
-  u32 total_wei_count[10];
-  u32 median_wei_count[10];
-  u16 step1_speed[10];
-  u16 step2_speed[10];
+  u32 real_wei_count[20];//当前纬号
+  float wei_cm_set[10];//纬厘米
+  float wei_inch_set[10];//纬英寸
+  u32 total_wei_count[20];//设置总纬号
+  u16 step1_speed[10];//送纬电机速度
+  u16 step2_speed[10];//底线电机速度
 }WEIMI_PARA;
 extern WEIMI_PARA weimi_para;
 
-u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u16 pulse,u8 num);
+typedef struct
+{
+  u8 current_seg;
+  u32 current_wei;
+  u32 total_wei;
+  float pluse_count;
+  u32 real_wei_count;
+  u32 real_median_wei;
+  u16 step1_speed;
+  u16 step2_speed;
+}MOTOR_PROCESS;
+extern MOTOR_PROCESS MotorProcess;
+
+//extern u8 isMotorStop;
+u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 
 #endif

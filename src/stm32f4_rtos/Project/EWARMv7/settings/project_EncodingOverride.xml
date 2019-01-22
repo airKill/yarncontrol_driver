@@ -42,6 +42,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_servomotor.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_stepmotor.c</path>
     <encoding>System</encoding>
   </override>
@@ -63,6 +67,10 @@
   </override>
   <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\encoder.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\page_weimi.c</path>
     <encoding>System</encoding>
   </override>
   <override>

@@ -13,6 +13,8 @@ TaskHandle_t xHandleTaskMotorControl = NULL;
 SemaphoreHandle_t  xSemaphore_lcd = NULL;
 SemaphoreHandle_t  xSemaphore_rs485 = NULL;
 SemaphoreHandle_t  xSemaphore_pluse = NULL;
+SemaphoreHandle_t  xSemaphore_encoder = NULL;
+
 SemaphoreHandle_t  xSemaphore_download = NULL;
 SemaphoreHandle_t  xSemaphore_readDisk = NULL;
 SemaphoreHandle_t  xSemaphore_debug = NULL;
@@ -879,7 +881,7 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_meter_set = cnt;
               percent = 1 + (float)peiliao_para.loss / 100.0;
-              total_meter_gross = ((float)peiliao_para.total_meter_set * percent);
+              total_meter_gross = (u32)(peiliao_para.total_meter_set * percent);
               init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
@@ -898,7 +900,7 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.total_weitht_set = cnt;
               percent = 1 + (float)peiliao_para.loss / 100.0;
-              total_weight_gross = (peiliao_para.total_weitht_set * percent);
+              total_weight_gross = (u32)(peiliao_para.total_weitht_set * percent);
               init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
@@ -1194,7 +1196,14 @@ void vTaskTaskLCD(void *pvParameters)
             {//纬循环设置
               u32 cnt;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
-              weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1) / 2] = cnt;
+              if((var_addr - PAGE_WEIMI_TOTALWEI_1) == 0)
+              {
+                if(cnt == 0)
+                {//段1纬循环不能为0
+                
+                }
+              }
+              weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1)] = cnt;
             }
             else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
@@ -1215,7 +1224,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//纬过渡设置
               u32 cnt;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
-              weimi_para.median_wei_count[(var_addr - PAGE_WEIMI_MEDIANWEI_1) / 2] = cnt;
+              weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_MEDIANWEI_1) + 1] = cnt;
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_MEDIANWEI_1 + 20))
             {//送纬电机速度设置
@@ -2089,15 +2098,52 @@ void vTaskManageCapacity(void *pvParameters)
 
 static void vTaskMotorControl(void *pvParameters)
 {
+  BaseType_t xResult;
+  u16 step;
+  const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   TIM4_PWM_Config(FREQ_500KHZ);
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
   DIFF_G_init();
-  Encoder_Cap_Init(0XFFFF,168-1);
+  Encoder_Cap_Init();
+  MotorProcess.current_seg = 0;
+  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+  step = MotorStepCount(&device_info,&weimi_para,0);//获取脉冲数/纬
   while(1)
   {
+    xResult = xSemaphoreTake(xSemaphore_encoder, (TickType_t)xMaxBlockTime);
+    if(xResult == pdTRUE)
+    {
+      MotorProcess.current_wei++;//纬号增加
+      ServoMotorRunning(FORWARD,step);//发送脉冲信号到伺服驱动器
+      if(MotorProcess.current_wei >= MotorProcess.total_wei)
+      {//当前纬号超过纬循环
+        MotorProcess.current_wei = 0;
+        MotorProcess.current_seg++;//进入下一段号
+        if(MotorProcess.current_seg >= 21)
+        {
+          MotorProcess.current_seg = 0;
+        }
+        MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+        
+        if(weimi_para.total_wei_count[MotorProcess.current_seg] > 0)
+        {//下个段号纬循环大于0，进行下一个段号
+          if((MotorProcess.current_seg % 2) == 0)
+          {//到下个段号，改变脉冲/纬
+            step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+          }
+          else
+          {//到过渡号
+            
+          }
+        }
+        else
+        {//下个段号纬循环等于0，前面所有的段号循环
+          MotorProcess.current_seg = 0;
+        }
+      }
+    }
     Freq_Sample();
-    vTaskDelay(1);
   }
 }
 
@@ -2200,6 +2246,14 @@ void AppObjCreate (void)
   if(xSemaphore_pluse == NULL)
   {
     printf("xSemaphore_pluse fault\r\n");
+    /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
+  }
+  
+  xSemaphore_encoder = xSemaphoreCreateBinary();
+  
+  if(xSemaphore_encoder == NULL)
+  {
+    printf("xSemaphore_encoder fault\r\n");
     /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
   }
   
