@@ -1200,10 +1200,11 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 if(cnt == 0)
                 {//段1纬循环不能为0
-                
+                  SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0");
                 }
               }
-              weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1)] = cnt;
+              else
+                weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1)] = cnt;
             }
             else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
@@ -2130,9 +2131,10 @@ static void vTaskMotorControl(void *pvParameters)
         
         if(weimi_para.total_wei_count[MotorProcess.current_seg] > 0)
         {//下个段号纬循环大于0，进行下一个段号
+          step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
           if((MotorProcess.current_seg % 2) == 0)
           {//到下个段号，改变脉冲/纬
-            step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+            
           }
           else
           {//到过渡号
@@ -2310,6 +2312,7 @@ void TIM_CallBack1(void)
   Sdwe_clearString(PAGE_STOP_WARNNING);
   Sdwe_clearString(PAGE_CARD_WARNNING);
   Sdwe_clearString(PAGE_DEVICE_WARNNING);
+  Sdwe_clearString(PAGE_WEIMI_WARNNING);
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)

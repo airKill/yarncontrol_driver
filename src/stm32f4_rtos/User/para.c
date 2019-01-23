@@ -8,7 +8,8 @@ void read_device_info(void)
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   W25QXX_Read((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-  if(device_info.isfirst != 0xaa)
+  W25QXX_Read((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+  if(device_info.isfirst != 0xab)
   {
     device_info.isfirst = 0xaa;
     sprintf((char *)device_info.device_id,"%s","jx1234");
@@ -41,6 +42,8 @@ void read_device_info(void)
     {
       device_info.stop_para.stop_time[i] = 0;
     }
+    device_info.weimi_info.reg = 0;
+    device_info.weimi_info.count = 0;
     //试用期默认参数设置
     device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
     device_info.period_para.period_year = 20;//默认试用期限2020年
@@ -58,6 +61,8 @@ void read_device_info(void)
     W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
     init_peiliao_para(&peiliao_para);
     W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+    init_weimi_para(&weimi_para);
+    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
   }
   if(device_info.page_count_all == 0)
   {

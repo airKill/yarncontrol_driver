@@ -228,6 +228,8 @@
 #define PAGE_WEIMI_MEDIANWEI_1  0x1050  //纬过渡1——10
 #define PAGE_WEIMI_REAL_MEDIAN_1  0x1064  //纬过渡1——10
 
+#define PAGE_WEIMI_WARNNING     0x122E
+
 #define PAGE_WEIMI_STEP1_SPEED  0x1078  //送纬电机速度
 #define PAGE_WEIMI_STEP2_SPEED  0x108C  //底线电机速度
 
