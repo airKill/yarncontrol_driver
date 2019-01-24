@@ -33,7 +33,7 @@ void Encoder_Cap_Init(void)
   
   //初始化定时器3
   TIM_TimeBaseStructure.TIM_Period = 0xffff; //éè?¨??êy?÷×??ˉ??×°?μ
-  TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1; 	//?¤·??μ?÷
+  TIM_TimeBaseStructure.TIM_Prescaler = 840 - 1; 	//?¤·??μ?÷
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //éè??ê±?ó·???:TDTS = Tck_tim
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM?òé???êy?￡ê?
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); //?ù?YTIM_TimeBaseInitStruct?D???¨μ?2?êy3?ê??ˉTIMxμ?ê±???ùêyμ￥??
@@ -138,7 +138,7 @@ void TIM3_IRQHandler(void)
 //        TIM3CH2_CAPTURE_STA |= 0X80;		//±ê??3é1|2???μ?ò?′?é?éy??
         TIM3CH2_CAPTURE_STA = 0;
 //        Freq_Sample();
-        bsp_LedOn(1);
+//        bsp_LedOn(1);
       }
       else  								//μúò?′?2???é?éy??
       {
@@ -146,7 +146,7 @@ void TIM3_IRQHandler(void)
         //TIM5CH1_CAPTURE_STA=0;			//????
         TIM3CH2_CAPTURE_VAL = 0;
         TIM3CH2_CAPTURE_STA = 0X40;		//±ê??2???μ?á?é?éy??
-        bsp_LedOff(1);
+//        bsp_LedOff(1);
       }
       cnt++;
       if(cnt >= ENCODER_LINE)

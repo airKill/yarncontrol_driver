@@ -119,22 +119,22 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == MAIN_PAGE_KEY_WEIMI)
             {//纬密
-              pwm_flag = 1;
-//              if(isDevicePeriod == 0)
-//              {
-//                if(device_info.func_onoff.weimi)
-//                {
-//                  sdew_weimi_page1(&weimi_para);
-//                }
-//                else
-//                {
-//                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
-//                }
-//              }
-//              else
-//              {
-//                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
-//              }
+//              pwm_flag = 1;
+              if(isDevicePeriod == 0)
+              {
+                if(device_info.func_onoff.weimi)
+                {
+                  sdew_weimi_page1(&weimi_para);
+                }
+                else
+                {
+                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
+                }
+              }
+              else
+              {
+                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
+              }
             }
             else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
             {//产能
@@ -1393,8 +1393,8 @@ static void vTaskTaskLED(void *pvParameters)
 {
   while(1)
   {
-//    bsp_LedToggle(1);
-//    bsp_LedToggle(2);
+    bsp_LedToggle(1);
+    bsp_LedToggle(2);
     vTaskDelay(500);
 //    ServoMotorRunning(FORWARD,100);
     Task_iwdg_refresh(TASK_LED);
@@ -2112,6 +2112,7 @@ static void vTaskMotorControl(void *pvParameters)
   MotorProcess.current_seg = 0;
   MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
   step = MotorStepCount(&device_info,&weimi_para,0);//获取脉冲数/纬
+  get_weimi_para(&weimi_para,&device_info,&MotorProcess);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_encoder, (TickType_t)xMaxBlockTime);

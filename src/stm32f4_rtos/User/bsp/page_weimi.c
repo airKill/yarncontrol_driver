@@ -24,10 +24,11 @@ void init_weimi_para(WEIMI_PARA *para)
   for(i=0;i<20;i++)
   {
     para->total_wei_count[i] = 0;
+    para->real_wei_count[i] = 0;
   }
   para->wei_cm_set[0] = 10;
     para->wei_inch_set[0] = para->wei_cm_set[0] * 2.54;
-  for(i=1;i<20;i++)
+  for(i=1;i<10;i++)
   {
     para->wei_cm_set[i] = 0;
     para->wei_inch_set[i] = 0;
@@ -37,4 +38,14 @@ void init_weimi_para(WEIMI_PARA *para)
     para->step1_speed[i] = 0;
     para->step2_speed[i] = 0;
   }
+}
+
+void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
+{
+  motor->current_seg = info->weimi_info.reg;
+  motor->current_wei = info->weimi_info.count;
+  motor->total_wei = para->total_wei_count[motor->current_seg];
+  motor->real_wei_count = para->real_wei_count[motor->current_seg];
+  motor->step1_speed = para->step1_speed[motor->current_seg / 2];
+  motor->step2_speed = para->step2_speed[motor->current_seg / 2];
 }

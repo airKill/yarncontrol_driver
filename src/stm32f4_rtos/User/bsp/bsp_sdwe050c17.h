@@ -152,7 +152,6 @@
 #define PAGE_PRODUCT_WEIMI        0x085F
 #define PAGE_PRODUCT_ADD_METER        0x0862
 #define PAGE_PRODUCT_WEISHU_DIS        0x0864
-#define PAGE_WEIMI_WARNNING     0x0905
 
 #define PAGE_PRODUCT_RFID_WARNNING  0x0900
 #define PAGE_STOP_WARNNING  0x090A
@@ -245,6 +244,8 @@
 #define PAGE_WEIMI_WEIMI2         0x122B
 #define PAGE_WEIMI_WEISHA1        0x122C
 #define PAGE_WEIMI_WEISHA2        0x122D
+
+#define PAGE_WEIMI_RESET          0x122E
 
 #define VGUS_ON   1
 #define VGUS_OFF   0

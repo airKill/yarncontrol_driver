@@ -78,7 +78,6 @@ typedef struct
   u8 reg;
   u32 count;
 }WEIMI_INFO;
-extern WEIMI_INFO;
 
 typedef struct
 {

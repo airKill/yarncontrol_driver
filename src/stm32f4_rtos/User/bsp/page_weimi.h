@@ -22,9 +22,7 @@ typedef struct
   u8 current_seg;
   u32 current_wei;
   u32 total_wei;
-  float pluse_count;
   u32 real_wei_count;
-  u32 real_median_wei;
   u16 step1_speed;
   u16 step2_speed;
 }MOTOR_PROCESS;
@@ -33,4 +31,5 @@ extern MOTOR_PROCESS MotorProcess;
 //extern u8 isMotorStop;
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para);
+void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor);
 #endif

@@ -72,7 +72,7 @@ int main(void)
   在移植文件port.c中的函数prvStartFirstTask中会重新开启全局中断。通过指令cpsie i开启，__set_PRIMASK(1)
   和cpsie i是等效的。
   */
-  __set_PRIMASK(1);  
+//  __set_PRIMASK(1);  
   
   /* 硬件初始化 */
   bsp_Init(); 
