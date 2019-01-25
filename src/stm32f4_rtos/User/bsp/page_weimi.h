@@ -28,7 +28,6 @@ typedef struct
 }MOTOR_PROCESS;
 extern MOTOR_PROCESS MotorProcess;
 
-//extern u8 isMotorStop;
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para);
 void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor);

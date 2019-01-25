@@ -2119,6 +2119,14 @@ static void vTaskMotorControl(void *pvParameters)
     if(xResult == pdTRUE)
     {
       MotorProcess.current_wei++;//纬号增加
+      if((MotorProcess.current_seg % 2) == 0)
+      {
+        Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.current_seg,MotorProcess.current_wei,4);
+      }
+      else
+      {
+        Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.current_seg - 1,MotorProcess.current_wei,4);
+      }
       ServoMotorRunning(FORWARD,step);//发送脉冲信号到伺服驱动器
       if(MotorProcess.current_wei >= MotorProcess.total_wei)
       {//当前纬号超过纬循环

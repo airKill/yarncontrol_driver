@@ -2,6 +2,7 @@
 
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
+
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
@@ -23,7 +24,7 @@ void init_weimi_para(WEIMI_PARA *para)
   u8 i;
   for(i=0;i<20;i++)
   {
-    para->total_wei_count[i] = 0;
+    para->total_wei_count[i] = 1000;
     para->real_wei_count[i] = 0;
   }
   para->wei_cm_set[0] = 10;
