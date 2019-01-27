@@ -24,11 +24,14 @@ void init_weimi_para(WEIMI_PARA *para)
   u8 i;
   for(i=0;i<20;i++)
   {
-    para->total_wei_count[i] = 1000;
     para->real_wei_count[i] = 0;
+    if((i % 2) == 0)
+      para->total_wei_count[i] = 1000;//¶ÎºÅÎ³Ñ­»·ÉèÖÃ
+    else
+      para->total_wei_count[i] = 20;//¹ý¶ÉÎ³Ñ­»·ÉèÖÃ
   }
   para->wei_cm_set[0] = 10;
-    para->wei_inch_set[0] = para->wei_cm_set[0] * 2.54;
+  para->wei_inch_set[0] = para->wei_cm_set[0] * 2.54;
   for(i=1;i<10;i++)
   {
     para->wei_cm_set[i] = 0;

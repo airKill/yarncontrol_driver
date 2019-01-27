@@ -2138,16 +2138,12 @@ static void vTaskMotorControl(void *pvParameters)
         }
         MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
         
-        if(weimi_para.total_wei_count[MotorProcess.current_seg] > 0)
-        {//下个段号纬循环大于0，进行下一个段号
-          step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+        if((weimi_para.total_wei_count[MotorProcess.current_seg] > 0) &&
+           (weimi_para.wei_cm_set[MotorProcess.current_seg / 2] > 0))
+        {//下个段号纬循环和纬厘米设置大于0，进行下一个段号
           if((MotorProcess.current_seg % 2) == 0)
           {//到下个段号，改变脉冲/纬
-            
-          }
-          else
-          {//到过渡号
-            
+            step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
           }
         }
         else
@@ -2156,7 +2152,6 @@ static void vTaskMotorControl(void *pvParameters)
         }
       }
     }
-//    Freq_Sample();
   }
 }
 
