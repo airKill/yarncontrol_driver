@@ -927,6 +927,10 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 peiliao_para.weimi_set = cnt;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                weimi_para.wei_cm_set[0] = (float)cnt;//胚料页面纬厘米和纬密页面段1纬厘米相同
+                weimi_para.wei_inch_set[0] = weimi_para.wei_cm_set[0] * 2.54;
+                //转换为纬/inch显示
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
             }
             else if(var_addr == PAGE_PRODUCT_ADD_METER)
@@ -1201,10 +1205,14 @@ void vTaskTaskLCD(void *pvParameters)
                 if(cnt == 0)
                 {//段1纬循环不能为0
                   SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0");
+                  Sdwe_disDigi(var_addr,weimi_para.total_wei_count[0],4);
                 }
               }
               else
+              {
                 weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1)] = cnt;
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+              }
             }
             else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
@@ -1214,7 +1222,7 @@ void vTaskTaskLCD(void *pvParameters)
               weimi_para.wei_inch_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] = weimi_para.wei_cm_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] * 2.54;
               //转换为纬/inch显示
               Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + var_addr - PAGE_WEIMI_WEI_CM_1,(int)(weimi_para.wei_inch_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] * 10),2);
-                
+              W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
               {//第一段的纬密和胚料页面的纬密相同
                 peiliao_para.weimi_set = (float)cnt / 10.0;
@@ -1226,18 +1234,21 @@ void vTaskTaskLCD(void *pvParameters)
               u32 cnt;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_MEDIANWEI_1) + 1] = cnt;
+              W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_MEDIANWEI_1 + 20))
             {//送纬电机速度设置
               u16 cnt;
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               weimi_para.step1_speed[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = cnt;
+              W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SPEED) && (var_addr < PAGE_WEIMI_STEP2_SPEED + 20))
             {//底线电机速度设置
               u16 cnt;
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               weimi_para.step1_speed[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = cnt;
+              W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_ADD1) && (var_addr < PAGE_WEIMI_STEP1_ADD1 + 10))
             {//送纬速度加1——10
@@ -1245,6 +1256,7 @@ void vTaskTaskLCD(void *pvParameters)
               {//送纬电机速度小于主轴速度才能加
                 weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] += 1;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP1_SPEED,weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED],2);
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SUB1) && (var_addr < PAGE_WEIMI_STEP1_SUB1 + 10))
@@ -1253,6 +1265,7 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] -= 1;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP1_SPEED,weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED],2);
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_ADD1) && (var_addr < PAGE_WEIMI_STEP2_ADD1 + 10))
@@ -1261,6 +1274,7 @@ void vTaskTaskLCD(void *pvParameters)
               {//送纬电机速度小于主轴速度才能加
                 weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP2_SPEED] += 1;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP2_SPEED,weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP2_SPEED],2);
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SUB1) && (var_addr < PAGE_WEIMI_STEP2_SUB1 + 10))
@@ -1269,6 +1283,7 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP2_SPEED] -= 1;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP2_SPEED,weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP2_SPEED],2);
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
             }
             else if(var_addr == PAGE_WEIMI_WEIMI1)
@@ -1391,12 +1406,12 @@ static void vTaskMassStorage(void *pvParameters)
 
 static void vTaskTaskLED(void *pvParameters)
 {
+  u16 speed;
   while(1)
   {
     bsp_LedToggle(1);
     bsp_LedToggle(2);
     vTaskDelay(500);
-//    ServoMotorRunning(FORWARD,100);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2419,7 +2434,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-  printf("freq is %f",Freq_value);
+  printf("speed is %d\r\n",get_main_speed(Freq_value));
 }
 
 void Task_iwdg_refresh(u8 task)

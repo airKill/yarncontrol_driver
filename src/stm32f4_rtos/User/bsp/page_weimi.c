@@ -53,3 +53,10 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->step1_speed = para->step1_speed[motor->current_seg / 2];
   motor->step2_speed = para->step2_speed[motor->current_seg / 2];
 }
+
+u16 get_main_speed(float freq)
+{
+  u16 speed;
+  speed = freq / 600.0 * 60;//编码器频率*线数600*60=主轴转速/分钟
+  return speed;
+}
