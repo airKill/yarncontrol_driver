@@ -14,6 +14,7 @@
 #define TempLen 10
 
 extern float Freq_value;
+extern u16 main_speed;
 
 void Encoder_Cap_Init(void);
 void Freq_Sample(void);

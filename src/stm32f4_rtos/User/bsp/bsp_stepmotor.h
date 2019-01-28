@@ -37,7 +37,12 @@
 #define STEPMOTOR3_DIR_H()     GPIO_SetBits(GPIO_PORT_STEPMOTOR3_DIR,GPIO_PIN_STEPMOTOR3_DIR)
 #define STEPMOTOR3_DIR_L()     GPIO_ResetBits(GPIO_PORT_STEPMOTOR3_DIR,GPIO_PIN_STEPMOTOR3_DIR)
 
+#define STEPMOTOR1      1
+#define STEPMOTOR2      2
+
 void bsp_InitStepMotor(void);
 void TIM3_PWM_SETPMOTOR(void);
 void TIM1_PWM_SETPMOTOR(void);
+void StepMotor_adjust_speed(u8 motor,u32 value);
+void TIM8_PWM_SETPMOTOR(void);
 #endif

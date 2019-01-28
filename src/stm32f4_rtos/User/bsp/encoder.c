@@ -10,7 +10,8 @@ u32 Freq_Sum=0;      //
 u32 Overflow_ptr = 0;  //溢出计数值
 u8 Freq_ptr1=0;      //滤波计数值1
 u8 Freq_ptr2=0;      //溢出计数值2
-u8 Show_flag=0;      //滤波值显示位
+
+u16 main_speed = 0;
 
 void Encoder_Cap_Init(void)
 {
@@ -85,6 +86,7 @@ void Freq_Sample(void)
       for(i=0;i<TempLen;i++)
         Dtemp += Freq[i];     
       Freq_value = 10000000.0 / Dtemp;
+      main_speed = Freq_value / 600.0 * 60;//编码器频率*线数600*60=主轴转速/分钟
       Freq_ptr2 = TempLen;
     }
     TIM3CH2_CAPTURE_STA = 0;
@@ -96,9 +98,8 @@ void Freq_Sample(void)
     if(Overflow_ptr > 720000)
     {
       Freq_value = Freq_value / 10;
-      Show_flag = 1;
       Overflow_ptr = 0;
-    }		
+    }
   }
 }
 
@@ -127,6 +128,7 @@ void TIM3_IRQHandler(void)
       if(TIM3CH2_CAPTURE_STA & 0X40)		//2?μú?t′???μ?é?éy??
       {
         ReadValue2 = TIM_GetCapture2(TIM3);
+//        TIM_GetCounter(TIM3);
         if ((ReadValue2 > ReadValue1) && (TIM3CH2_CAPTURE_STA == 0x40))  //?Tò?3?
         {
           TIM3CH2_CAPTURE_VAL = (ReadValue2 - ReadValue1);

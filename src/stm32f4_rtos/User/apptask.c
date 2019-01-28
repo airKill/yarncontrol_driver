@@ -2102,6 +2102,12 @@ static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
   u16 step;
+  u16 pluse_step_dst;
+  u16 pluse_step_src;
+  int pluse_step_diff;
+  u16 step_speed;//步进电机转速，转/分钟
+  u8 step_motor_adjust = 0;//步进电机过渡调速标志
+  u16 guodu;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   TIM4_PWM_Config(FREQ_500KHZ);
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
@@ -2120,14 +2126,19 @@ static void vTaskMotorControl(void *pvParameters)
     {
       MotorProcess.current_wei++;//纬号增加
       if((MotorProcess.current_seg % 2) == 0)
-      {
+      {//偶数段号取纬循环
         Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.current_seg,MotorProcess.current_wei,4);
       }
       else
-      {
+      {//奇数段号取过渡循环号
         Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.current_seg - 1,MotorProcess.current_wei,4);
       }
-      ServoMotorRunning(FORWARD,step);//发送脉冲信号到伺服驱动器
+      ServoMotorRunning(FORWARD,step);//发送一纬对应的脉冲信号到伺服驱动器
+      if(step_motor_adjust)
+      {//过渡纬号，步进电机调速，每纬调节一次转速
+        guodu++;
+        StepMotor_adjust_speed(STEPMOTOR1,pluse_step_src + pluse_step_diff / weimi_para.total_wei_count[MotorProcess.current_seg] * guodu);
+      }
       if(MotorProcess.current_wei >= MotorProcess.total_wei)
       {//当前纬号超过纬循环
         MotorProcess.current_wei = 0;
@@ -2135,7 +2146,7 @@ static void vTaskMotorControl(void *pvParameters)
         if(MotorProcess.current_seg >= 21)
         {
           MotorProcess.current_seg = 0;
-        }
+        } 
         MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
         
         if((weimi_para.total_wei_count[MotorProcess.current_seg] > 0) &&
@@ -2144,6 +2155,20 @@ static void vTaskMotorControl(void *pvParameters)
           if((MotorProcess.current_seg % 2) == 0)
           {//到下个段号，改变脉冲/纬
             step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+            step_motor_adjust = 0;
+            pluse_step_dst = weimi_para.step1_speed[MotorProcess.current_seg / 2] / 60 * 360 / 1.8 * 8;
+            StepMotor_adjust_speed(STEPMOTOR1,pluse_step_dst);//步进电机以新的速度运行
+          }
+          else
+          {//到过渡号
+            //计算步进电机每秒脉冲数
+            //目标每分钟转速/60=每秒转速
+            //每秒转速*360/1.8*8=步进电机每秒需要脉冲数
+            pluse_step_dst = weimi_para.step1_speed[MotorProcess.current_seg / 2] / 60 * 360 / 1.8 * 8;
+            pluse_step_src = step_speed / 60 * 360 / 1.8 * 8;
+            pluse_step_diff = pluse_step_dst - pluse_step_src;
+            step_motor_adjust = 1;//步进电机过渡调速标志
+            guodu = 0;
           }
         }
         else
