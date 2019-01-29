@@ -6,10 +6,8 @@ u16 ReadValue1,ReadValue2;
 
 float Freq_value = 0;  //频率浮点值
 u32 Freq[TempLen];        //频率值缓冲数组
-u32 Freq_Sum=0;      //
-u32 Overflow_ptr = 0;  //溢出计数值
-u8 Freq_ptr1=0;      //滤波计数值1
-u8 Freq_ptr2=0;      //溢出计数值2
+u8 Freq_ptr1 = 0;      //滤波计数值1
+u8 Freq_ptr2 = 0;      //溢出计数值2
 
 u16 main_speed = 0;
 
@@ -44,7 +42,7 @@ void Encoder_Cap_Init(void)
   TIM8_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;	
   TIM8_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-  TIM8_ICInitStructure.TIM_ICFilter = 0x02;//输入滤波
+  TIM8_ICInitStructure.TIM_ICFilter = 0x10;//输入滤波
   TIM_ICInit(TIM8, &TIM8_ICInitStructure);
   
   //?D??·?×é3?ê??ˉ
@@ -55,7 +53,7 @@ void Encoder_Cap_Init(void)
   NVIC_Init(&NVIC_InitStructure);
   
   TIM_ITConfig(TIM8,TIM_IT_CC2,ENABLE);
-//  TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);
+
   TIM_Cmd(TIM8,ENABLE);
 }
 
@@ -89,18 +87,36 @@ void Freq_Sample(void)
       Freq_ptr2 = TempLen;
     }
     TIM3CH2_CAPTURE_STA = 0;
-    Overflow_ptr = 0;
   }
-  else //?′2???μè′y??á?
-  {
-    Overflow_ptr++;
-    if(Overflow_ptr > 720000)
-    {
-      Freq_value = Freq_value / 10;
-      Overflow_ptr = 0;
-    }
-  }
+//  else //?′2???μè′y??á?
+//  {
+//    Overflow_ptr++;
+//    if(Overflow_ptr > 720000)
+//    {
+//      Freq_value = Freq_value / 10;
+//      Overflow_ptr = 0;
+//    }
+//  }
 }
+
+//void TIM8_UP_TIM13_IRQHandler(void)
+//{
+//  if (TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
+//  {
+//    if(TIM3CH2_CAPTURE_STA & 0X40)
+//    {
+//      if((TIM3CH2_CAPTURE_STA & 0X3F) == 0X3f)
+//      {
+//        TIM3CH2_CAPTURE_STA = 0X80;
+//        TIM3CH2_CAPTURE_VAL = 0;
+//      }
+//      else 
+//        TIM3CH2_CAPTURE_STA++;
+//    }
+//  }
+//  printf("aaa\r\n");
+//  TIM_ClearITPendingBit(TIM8,TIM_IT_Update); 
+//}
 
 //TIM3中断处理
 void TIM8_CC_IRQHandler(void)
@@ -109,19 +125,6 @@ void TIM8_CC_IRQHandler(void)
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   if((TIM3CH2_CAPTURE_STA & 0X80) == 0)//?1?′3é1|2???
   {
-//    if (TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
-//    {
-//      if(TIM3CH2_CAPTURE_STA & 0X40)//ò??-2???μ???μ???á?
-//      {
-//        if((TIM3CH2_CAPTURE_STA & 0X3F) == 0X3f)//??μ???ì?3¤á?
-//        {
-//          TIM3CH2_CAPTURE_STA = 0X80;//±ê??3é1|2???á?ò?′?
-//          TIM3CH2_CAPTURE_VAL = 0;
-//        }
-//        else 
-//          TIM3CH2_CAPTURE_STA++;
-//      }
-//    }
     if (TIM_GetITStatus(TIM8, TIM_IT_CC2) != RESET)//2???1·￠éú2???ê??t
     {
       if(TIM3CH2_CAPTURE_STA & 0X40)		//2?μú?t′???μ?é?éy??
@@ -136,7 +139,9 @@ void TIM8_CC_IRQHandler(void)
           TIM3CH2_CAPTURE_VAL = ((0xFFFF - ReadValue1) + ReadValue2);
         }
         TIM3CH2_CAPTURE_STA |= 0X80;		
-        Freq_Sample();
+        xSemaphoreGiveFromISR(xSemaphore_freq, &xHigherPriorityTaskWoken);
+        /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
       }
       else  								//μúò?′?2???é?éy??
       {
@@ -154,8 +159,8 @@ void TIM8_CC_IRQHandler(void)
       }
     }
   }
-//  TIM_ClearITPendingBit(TIM8, TIM_IT_CC2 | TIM_IT_Update); 
   TIM_ClearITPendingBit(TIM8, TIM_IT_CC2); 
+//  TIM_ClearITPendingBit(TIM8, TIM_IT_CC2); 
 }
 
 //TIM3中断处理

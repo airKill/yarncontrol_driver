@@ -9,11 +9,13 @@ TaskHandle_t xHandleTaskMsgPro = NULL;
 TaskHandle_t xHandleTaskRev485 = NULL;
 TaskHandle_t xHandleTaskManageCapacity = NULL;
 TaskHandle_t xHandleTaskMotorControl = NULL;
+TaskHandle_t xHandleTaskFreq = NULL;
 
 SemaphoreHandle_t  xSemaphore_lcd = NULL;
 SemaphoreHandle_t  xSemaphore_rs485 = NULL;
 SemaphoreHandle_t  xSemaphore_pluse = NULL;
 SemaphoreHandle_t  xSemaphore_encoder = NULL;
+SemaphoreHandle_t  xSemaphore_freq = NULL;
 
 SemaphoreHandle_t  xSemaphore_download = NULL;
 SemaphoreHandle_t  xSemaphore_readDisk = NULL;
@@ -1234,14 +1236,14 @@ void vTaskTaskLCD(void *pvParameters)
               weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_MEDIANWEI_1) + 1] = cnt;
               W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
             }
-            else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_MEDIANWEI_1 + 20))
+            else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_STEP1_SPEED + 20))
             {//送纬电机速度设置
               u16 cnt;
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               if(cnt <= speed_zhu)
               {//当前电机速度小于主轴速度，为有效值
                 weimi_para.step1_speed[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = cnt;
-                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = cnt / speed_zhu;
+                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = (float)cnt / speed_zhu;
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
               else
@@ -1257,7 +1259,7 @@ void vTaskTaskLCD(void *pvParameters)
               if(cnt <= speed_zhu)
               {
                 weimi_para.step2_speed[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = cnt;
-                weimi_para.step2_factor[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = cnt / speed_zhu;
+                weimi_para.step2_factor[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = (float)cnt / speed_zhu;
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
               else
@@ -1271,7 +1273,7 @@ void vTaskTaskLCD(void *pvParameters)
               if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] < 1)
               {//送纬电机速度小于主轴速度才能加
                 weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] += 1;
-                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] / speed_zhu;
+                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = (float)weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] / speed_zhu;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP1_SPEED,weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED],2);
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
@@ -1281,7 +1283,7 @@ void vTaskTaskLCD(void *pvParameters)
               if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] > 0)
               {
                 weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] -= 1;
-                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] / speed_zhu;
+                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = (float)weimi_para.step2_speed[var_addr - PAGE_WEIMI_STEP1_SPEED] / speed_zhu;
                 Sdwe_disDigi(var_addr - PAGE_WEIMI_STEP1_SPEED,weimi_para.step1_speed[var_addr - PAGE_WEIMI_STEP1_SPEED],2);
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
@@ -1426,35 +1428,11 @@ static void vTaskMassStorage(void *pvParameters)
 
 static void vTaskTaskLED(void *pvParameters)
 {
-  u8 is_stop = 0,old_is_stop = 0xff;
   while(1)
   {
     bsp_LedToggle(1);
     bsp_LedToggle(2);
     vTaskDelay(500);
-    speed_zhu = get_main_speed(Freq_value);
-    printf("speed_zhu is %d\r\n",speed_zhu);
-    if(speed_zhu == 0)
-    {
-      is_stop = 0;
-      if(is_stop != old_is_stop)
-      {//主轴速度为0时，停止步进电机
-        old_is_stop = is_stop;
-        StepMotor_stop(STEPMOTOR2);
-      }
-    }
-    else
-    {
-      is_stop = 1;
-      if(is_stop != old_is_stop)
-      {//主轴速度大于0时，步进电机开始运行
-        old_is_stop = is_stop;
-        StepMotor_start(STEPMOTOR2);
-      }
-      u32 step_count;
-      step_count = from_speed_step(speed_zhu * MotorProcess.step1_factor);
-      StepMotor_adjust_speed(STEPMOTOR2,step_count);
-    }
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2204,7 +2182,7 @@ static void vTaskMotorControl(void *pvParameters)
         if(MotorProcess.current_seg >= 21)
         {
           MotorProcess.current_seg = 0;
-        } 
+        }
         MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
         
         if((weimi_para.total_wei_count[MotorProcess.current_seg] > 0) &&
@@ -2234,6 +2212,43 @@ static void vTaskMotorControl(void *pvParameters)
           MotorProcess.current_seg = 0;
         }
       }
+    }
+  }
+}
+
+static void vTaskFreq(void *pvParameters)
+{
+  u8 is_stop = 0,old_is_stop = 0xff;
+  u32 step_count;
+  BaseType_t xResult;
+  const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200);
+  while(1)
+  {
+    xResult = xSemaphoreTake(xSemaphore_freq, (TickType_t)xMaxBlockTime);
+    if(xResult == pdTRUE)
+    {
+      Freq_Sample();//计算编码器频率
+      speed_zhu = get_main_speed(Freq_value);//计算主轴速度
+      step_count = from_speed_step(speed_zhu * MotorProcess.step1_factor);//计算步进电机脉冲频率
+      is_stop = 1;
+      if(is_stop != old_is_stop)
+      {//主轴速度大于0时，步进电机开始运行
+        old_is_stop = is_stop;
+        StepMotor_start(STEPMOTOR2);
+      }
+      StepMotor_adjust_speed(STEPMOTOR2,step_count);
+    }
+    else
+    {
+      is_stop = 0;
+      if(is_stop != old_is_stop)
+      {//主轴速度为0时，停止步进电机
+        old_is_stop = is_stop;
+        StepMotor_stop(STEPMOTOR2);
+      }
+      Freq_value = 0;
+      Freq_ptr1 = 0;
+      Freq_ptr2 = 0;
     }
   }
 }
@@ -2302,6 +2317,12 @@ void AppTaskCreate (void)
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */
+  xTaskCreate( vTaskFreq,    		/* 任务函数  */
+              "vTaskFreq",  		/* 任务名    */
+              128,         		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,        		/* 任务参数  */
+              9,           		/* 任务优先级*/
+              &xHandleTaskFreq); /* 任务句柄  */
 }
 
 /*
@@ -2345,6 +2366,14 @@ void AppObjCreate (void)
   if(xSemaphore_encoder == NULL)
   {
     printf("xSemaphore_encoder fault\r\n");
+    /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
+  }
+  
+  xSemaphore_freq = xSemaphoreCreateBinary();
+  
+  if(xSemaphore_freq == NULL)
+  {
+    printf("xSemaphore_freq fault\r\n");
     /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
   }
   
@@ -2483,7 +2512,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-//  printf("speed is %d\r\n",get_main_speed(Freq_value));
+  printf("speed is %d\r\n",get_main_speed(Freq_value));
 }
 
 void Task_iwdg_refresh(u8 task)

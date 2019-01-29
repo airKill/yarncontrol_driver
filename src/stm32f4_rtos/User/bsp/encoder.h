@@ -15,6 +15,8 @@
 
 extern float Freq_value;
 extern u16 main_speed;
+extern u8 Freq_ptr1;      //滤波计数值1
+extern u8 Freq_ptr2;      //溢出计数值2
 
 void Encoder_Cap_Init(void);
 void Freq_Sample(void);
