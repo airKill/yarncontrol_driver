@@ -2,7 +2,7 @@
 
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
-
+u16 speed_zhu = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
@@ -40,7 +40,9 @@ void init_weimi_para(WEIMI_PARA *para)
   for(i=0;i<10;i++)
   {
     para->step1_speed[i] = 0;
+    para->step1_factor[i] = 0;
     para->step2_speed[i] = 0;
+    para->step2_factor[i] = 0;
   }
 }
 
@@ -50,13 +52,22 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->current_wei = info->weimi_info.count;
   motor->total_wei = para->total_wei_count[motor->current_seg];
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
-  motor->step1_speed = para->step1_speed[motor->current_seg / 2];
-  motor->step2_speed = para->step2_speed[motor->current_seg / 2];
+  motor->step1_factor = para->step1_factor[motor->current_seg / 2];
+  motor->step2_factor = para->step2_factor[motor->current_seg / 2];
 }
 
 u16 get_main_speed(float freq)
 {
   u16 speed;
-  speed = freq / 600.0 * 60;//编码器频率*线数600*60=主轴转速/分钟
+  speed = (u16)(freq / 600.0 * 60);//编码器频率*线数600*60=主轴转速/分钟
   return speed;
+}
+//将转速转换为步进电机步数
+//输入：speed 转/分钟
+//输出：count 步数
+u16 from_speed_step(u16 speed)
+{
+  u16 count;
+  count = speed * 60 * 360 / 1.8 * 8;
+  return count;
 }

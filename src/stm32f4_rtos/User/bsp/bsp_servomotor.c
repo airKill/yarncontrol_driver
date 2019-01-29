@@ -141,7 +141,7 @@ void TIM4_CH1_PWMDMA_Config(u16 period,u16 cnt)
   DMA_ITConfig(DMA1_Stream0,DMA_IT_TC,ENABLE);
   
   NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream0_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 7;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
@@ -219,7 +219,7 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   DMA_ITConfig(DMA1_Stream3,DMA_IT_TC,ENABLE);
   
   NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 8;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);

@@ -61,9 +61,9 @@ void TIM3_PWM_SETPMOTOR(void)
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);   //Open TIM3  Clock
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 3;          //定时器时钟42MHZ/(3+1)=15
+  TIM_TimeBaseStructure.TIM_Prescaler = 4 - 1;          //定时器时钟84MHZ/4=21
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
-  TIM_TimeBaseStructure.TIM_Period = 999;         //Fout_clk=Fclk_cnt/(ARR+1)=15000000/1500=10KHZ
+  TIM_TimeBaseStructure.TIM_Period = 1000 - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
   
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
@@ -159,5 +159,31 @@ void StepMotor_adjust_speed(u8 motor,u32 value)
   {
     TIM_SetCompare2(TIM1,value / 2);
     TIM_SetAutoreload(TIM1,value);
+  }
+}
+
+void StepMotor_stop(u8 motor)
+{
+  if(motor == 1)
+  {
+    TIM_Cmd(TIM3, DISABLE);
+  }
+  else if(motor == 2)
+  {
+    TIM_Cmd(TIM1, DISABLE);
+    TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加
+  }
+}
+
+void StepMotor_start(u8 motor)
+{
+  if(motor == 1)
+  {
+    TIM_Cmd(TIM3, ENABLE);
+  }
+  else if(motor == 2)
+  {
+    TIM_Cmd(TIM1, ENABLE);
+    TIM_CtrlPWMOutputs(TIM1, ENABLE);//高级定时器需要增加
   }
 }

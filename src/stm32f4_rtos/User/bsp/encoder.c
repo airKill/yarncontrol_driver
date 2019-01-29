@@ -33,30 +33,30 @@ void Encoder_Cap_Init(void)
   GPIO_Init(GPIO_PORT_ENCODER, &GPIO_InitStructure);					 //PA0 ??à-
   
   //初始化定时器3
-  TIM_TimeBaseStructure.TIM_Period = 0xffff; //éè?¨??êy?÷×??ˉ??×°?μ
-  TIM_TimeBaseStructure.TIM_Prescaler = 168 - 1; 	//?¤·??μ?÷
-  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //éè??ê±?ó·???:TDTS = Tck_tim
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM?òé???êy?￡ê?
-  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure); //?ù?YTIM_TimeBaseInitStruct?D???¨μ?2?êy3?ê??ˉTIMxμ?ê±???ùêyμ￥??
+  TIM_TimeBaseStructure.TIM_Period = 0xffff;
+  TIM_TimeBaseStructure.TIM_Prescaler = 168 - 1;//捕捉频率1MHZ
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
   
   //初始化定时器3捕获参数
-  TIM8_ICInitStructure.TIM_Channel = TIM_Channel_2; //CC1S=01 	????ê?è??? IC1ó3é?μ?TI1é?
-  TIM8_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;	//é?éy??2???
-  TIM8_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI; //ó3é?μ?TI1é?
-  TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;	 //????ê?è?·??μ,2?·??μ
-  TIM8_ICInitStructure.TIM_ICFilter = 0x00;//IC1F=0000 ????ê?è???2¨?÷ 2???2¨
+  TIM8_ICInitStructure.TIM_Channel = TIM_Channel_2; //CC1S=01 	
+  TIM8_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;	
+  TIM8_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM8_ICInitStructure.TIM_ICFilter = 0x02;//输入滤波
   TIM_ICInit(TIM8, &TIM8_ICInitStructure);
   
   //?D??·?×é3?ê??ˉ
-  NVIC_InitStructure.NVIC_IRQChannel = TIM8_CC_IRQn;  //TIM3?D??
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //?è??ó??è??2??
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //′óó??è??0??
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQí¨μà±?ê1?ü
-  NVIC_Init(&NVIC_InitStructure);  //?ù?YNVIC_InitStruct?D???¨μ?2?êy3?ê??ˉíaéèNVIC??′??÷
+  NVIC_InitStructure.NVIC_IRQChannel = TIM8_CC_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
   
-  TIM_ITConfig(TIM8,TIM_IT_CC2,ENABLE);//?êDí?üD??D?? ,?êDíCC1IE2????D??
-//  TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);//?êDí?üD??D?? ,?êDíCC1IE2????D??
-  TIM_Cmd(TIM8,ENABLE); 	//ê1?ü?¨ê±?÷5
+  TIM_ITConfig(TIM8,TIM_IT_CC2,ENABLE);
+//  TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);
+  TIM_Cmd(TIM8,ENABLE);
 }
 
 //频率采样滤波处理
