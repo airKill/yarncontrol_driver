@@ -3,6 +3,11 @@
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
 u16 speed_zhu = 0;
+u8 step_motor_adjust = 0;//步进电机过渡调速标志
+
+u8 servomotor_dir = FORWARD;
+u8 servomotor_mode = AUTO;
+u8 is_stop = 0,old_is_stop = 0xff;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
@@ -39,9 +44,7 @@ void init_weimi_para(WEIMI_PARA *para)
   }
   for(i=0;i<10;i++)
   {
-    para->step1_speed[i] = 0;
     para->step1_factor[i] = 0;
-    para->step2_speed[i] = 0;
     para->step2_factor[i] = 0;
   }
 }
@@ -65,7 +68,7 @@ u16 get_main_speed(float freq)
 //将转速转换为步进电机步数
 //输入：speed 转/分钟
 //输出：count 步数
-u16 from_speed_step(u16 speed)
+u16 from_speed_step(float speed)
 {
   u16 count;
   count = speed * 60 * 360 / 1.8 * 8;

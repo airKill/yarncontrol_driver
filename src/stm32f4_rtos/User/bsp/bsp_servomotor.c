@@ -67,7 +67,7 @@ void DIFF_G_init(void)
   DIFF_G0_L();
 }  
 
-void TIM4_PWM_Config(u32 period)
+void TIM4_PWM_Config(u32 period,u8 dir)
 {
   TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
   TIM_OCInitTypeDef    TIM_OCInitStructure;
@@ -97,7 +97,7 @@ void TIM4_PWM_Config(u32 period)
 
   //PP信号控制方向
   //TIM_OCMode_PWM1:逆时针 TIM_OCMode_PWM2:顺时针
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCInitStructure.TIM_OCMode = dir;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = period / 2;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
@@ -225,7 +225,7 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   NVIC_Init(&NVIC_InitStructure);
 }
 
-void ServoMotorRunning(u8 dir,u16 stepnum)
+void ServoMotorRunning(u16 stepnum)
 {
   TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
   TIM4_CH1_StartPwmOut();

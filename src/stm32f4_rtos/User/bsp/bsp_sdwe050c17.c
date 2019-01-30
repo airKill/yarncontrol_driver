@@ -418,38 +418,38 @@ void sdew_weimi_page2(WEIMI_PARA *para)
 
 void sdew_weisha_page1(WEIMI_PARA *para)
 {
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED,para->step1_speed[0],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED,para->step2_speed[0],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED,para->step1_factor[0],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED,para->step2_factor[0],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2,para->step1_speed[1],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2,para->step2_speed[1],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2,para->step1_factor[1],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2,para->step2_factor[1],2);
 
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 4,para->step1_speed[2],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 4,para->step2_speed[2],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 4,para->step1_factor[2],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 4,para->step2_factor[2],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 6,para->step1_speed[3],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 6,para->step2_speed[3],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 6,para->step1_factor[3],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 6,para->step2_factor[3],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 8,para->step1_speed[4],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 8,para->step2_speed[4],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 8,para->step1_factor[4],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 8,para->step2_factor[4],2);
 }
 
 void sdew_weisha_page2(WEIMI_PARA *para)
 {
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 10,para->step1_speed[5],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 10,para->step2_speed[5],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 10,para->step1_factor[5],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 10,para->step2_factor[5],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 12,para->step1_speed[6],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 12,para->step2_speed[6],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 12,para->step1_factor[6],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 12,para->step2_factor[6],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 14,para->step1_speed[7],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 14,para->step2_speed[7],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 14,para->step1_factor[7],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 14,para->step2_factor[7],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 16,para->step1_speed[8],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 16,para->step2_speed[8],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 16,para->step1_factor[8],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 16,para->step2_factor[8],2);
   
-  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 18,para->step1_speed[9],2);
-  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 18,para->step2_speed[9],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 18,para->step1_factor[9],2);
+  Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 18,para->step2_factor[9],2);
 }
 
 u8 get_valid_length(u8 *buf,u8 len)

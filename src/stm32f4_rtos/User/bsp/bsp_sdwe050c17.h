@@ -232,8 +232,16 @@
 #define PAGE_WEIMI_STEP1_SPEED  0x1078  //送纬电机速度
 #define PAGE_WEIMI_STEP2_SPEED  0x108C  //底线电机速度
 
+#define PAGE_WEIMI_FORWARD_1    0x1100  //向前按钮按下
+#define PAGE_WEIMI_FORWARD_2    0x1105  //向前按钮持续
+#define PAGE_WEIMI_FORWARD_3    0x110A  //向前按钮释放
+
+#define PAGE_WEIMI_BACKWARD_1    0x110F  //向前按钮按下
+#define PAGE_WEIMI_BACKWARD_2    0x1114  //向前按钮持续
+#define PAGE_WEIMI_BACKWARD_3    0x1119  //向前按钮释放
+
 #define PAGE_WEIMI_MANUAL_FORWARD       0x1200  //手动向前
-#define PAGE_WEIMI_MANUAL_BACKWARD      0x1201  //手动向前
+#define PAGE_WEIMI_MANUAL_BACKWARD      0x1201  //手动向后
 
 #define PAGE_WEIMI_STEP1_ADD1    0x1202         //送纬速度加1——10 
 #define PAGE_WEIMI_STEP1_SUB1    0x120C         //送纬速度减1——10 
