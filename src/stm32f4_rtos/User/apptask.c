@@ -1360,6 +1360,11 @@ void vTaskTaskLCD(void *pvParameters)
                 }
               }
             }
+            else if(var_addr == PAGE_WEIMI_RESET)
+            {
+              MotorProcess.current_seg = 0;
+              MotorProcess.current_wei = 0;
+            }
           }
         }
       }
@@ -2175,7 +2180,7 @@ static void vTaskMotorControl(void *pvParameters)
   BaseType_t xResult;
   u16 step;
   u16 pluse_step_src;
-  int pluse_step_diff;
+  int speed_diff;
   u16 step_speed;//步进电机转速，转/分钟
   u16 guodu;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
@@ -2208,7 +2213,10 @@ static void vTaskMotorControl(void *pvParameters)
         if(step_motor_adjust)
         {//过渡纬号，步进电机调速，每纬调节一次转速
           guodu++;
-          StepMotor_adjust_speed(STEPMOTOR2,pluse_step_src + pluse_step_diff / weimi_para.total_wei_count[MotorProcess.current_seg] * guodu);
+          step_speed = (pluse_step_src + speed_diff / MotorProcess.total_wei * guodu);
+          u16 sstep;
+          sstep = 30000 / step_speed;
+          StepMotor_adjust_speed(STEPMOTOR2,step_speed); 
         }
         if(MotorProcess.current_wei >= MotorProcess.total_wei)
         {//当前纬号超过纬循环
@@ -2234,11 +2242,9 @@ static void vTaskMotorControl(void *pvParameters)
               //计算步进电机每秒脉冲数
               //目标每分钟转速/60=每秒转速
               //每秒转速*360/1.8*8=步进电机每秒需要脉冲数
-  //            pluse_step_dst = from_speed_step(weimi_para.step1_speed[MotorProcess.current_seg / 2]);
-  //            pluse_step_src = step_speed / 60 * 360 / 1.8 * 8;
-              u8 ratio_diff;//相邻速比差
-              ratio_diff = weimi_para.step1_factor[(MotorProcess.current_seg + 1) / 2] - weimi_para.step1_factor[(MotorProcess.current_seg - 1) / 2];
-              pluse_step_diff = from_speed_step(speed_zhu * ratio_diff / 100.0);//计算相邻段号步进电机运行频率差
+              int ratio_diff;//相邻速比差
+              ratio_diff = (int)weimi_para.step1_factor[(MotorProcess.current_seg + 1) / 2] - (int)weimi_para.step1_factor[(MotorProcess.current_seg - 1) / 2];
+              speed_diff = speed_zhu * ratio_diff / 100.0;//计算相邻段号步进电机运行频率差
               pluse_step_src = speed_zhu * weimi_para.step1_factor[(MotorProcess.current_seg - 1) / 2] / 100.0;
               step_motor_adjust = 1;//步进电机过渡调速标志
               guodu = 0;
@@ -2264,17 +2270,23 @@ static void vTaskFreq(void *pvParameters)
     xResult = xSemaphoreTake(xSemaphore_freq, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
-      Freq_Sample();//计算编码器频率
-      speed_zhu = get_main_speed(Freq_value);//计算主轴速度
-      step_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
-      is_stop = 1;
-      if(is_stop != old_is_stop)
-      {//主轴速度大于0时，步进电机开始运行
-        old_is_stop = is_stop;
-        StepMotor_start(STEPMOTOR2);
+      u8 vaild;
+      vaild = Freq_Sample();//计算编码器频率
+      if(vaild == 1)
+      {
+        speed_zhu = get_main_speed(Freq_value);//计算主轴速度
+        is_stop = 1;
+        if(is_stop != old_is_stop)
+        {//主轴速度大于0时，步进电机开始运行
+          old_is_stop = is_stop;
+          StepMotor_start(STEPMOTOR2);
+        }
+        if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
+        {
+          step_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
+          StepMotor_adjust_speed(STEPMOTOR2,step_count);
+        }
       }
-      if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
-        StepMotor_adjust_speed(STEPMOTOR2,step_count);
     }
     else
     {
@@ -2351,7 +2363,7 @@ void AppTaskCreate (void)
               &xHandleTaskManageCapacity); /* 任务句柄  */
   xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
               "vTaskMotorControl",  		/* 任务名    */
-              128,         		/* 任务栈大小，单位word，也就是4字节 */
+              256,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */

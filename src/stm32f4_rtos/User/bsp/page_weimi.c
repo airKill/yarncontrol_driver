@@ -31,7 +31,7 @@ void init_weimi_para(WEIMI_PARA *para)
   {
     para->real_wei_count[i] = 0;
     if((i % 2) == 0)
-      para->total_wei_count[i] = 1000;//段号纬循环设置
+      para->total_wei_count[i] = 100;//段号纬循环设置
     else
       para->total_wei_count[i] = 20;//过渡纬循环设置
   }
@@ -44,8 +44,8 @@ void init_weimi_para(WEIMI_PARA *para)
   }
   for(i=0;i<10;i++)
   {
-    para->step1_factor[i] = 0;
-    para->step2_factor[i] = 0;
+    para->step1_factor[i] = 50;
+    para->step2_factor[i] = 50;
   }
 }
 
@@ -68,9 +68,11 @@ u16 get_main_speed(float freq)
 //将转速转换为步进电机步数
 //输入：speed 转/分钟
 //输出：count 步数
-u16 from_speed_step(float speed)
+u32 from_speed_step(float speed)
 {
-  u16 count;
-  count = speed * 60 * 360 / 1.8 * 8;
+  u16 freq;
+  u32 count;
+  freq = speed / 60 * 360 / 1.8 * 8;
+  count = 8000000 / freq;
   return count;
 }

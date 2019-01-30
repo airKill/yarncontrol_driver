@@ -45,5 +45,5 @@ u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para);
 void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor);
 u16 get_main_speed(float freq);
-u16 from_speed_step(float speed);
+u32 from_speed_step(float speed);
 #endif

@@ -41,7 +41,7 @@ void Encoder_Cap_Init(void)
   TIM8_ICInitStructure.TIM_Channel = TIM_Channel_2; //CC1S=01 	
   TIM8_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;	
   TIM8_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-  TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV4;
   TIM8_ICInitStructure.TIM_ICFilter = 0x10;//输入滤波
   TIM_ICInit(TIM8, &TIM8_ICInitStructure);
   
@@ -58,8 +58,9 @@ void Encoder_Cap_Init(void)
 }
 
 //频率采样滤波处理
-void Freq_Sample(void)
+u8 Freq_Sample(void)
 {
+  u8 valid = 0;
   u32 Dtemp=0; 
   u8 i;
   //捕捉了两次高电平
@@ -83,20 +84,13 @@ void Freq_Sample(void)
     {
       for(i=0;i<TempLen;i++)
         Dtemp += Freq[i];     
-      Freq_value = 10000000.0 / Dtemp;
+      Freq_value = 10000000.0 / Dtemp * 4;
       Freq_ptr2 = TempLen;
+      valid = 1;
     }
     TIM3CH2_CAPTURE_STA = 0;
   }
-//  else //?′2???μè′y??á?
-//  {
-//    Overflow_ptr++;
-//    if(Overflow_ptr > 720000)
-//    {
-//      Freq_value = Freq_value / 10;
-//      Overflow_ptr = 0;
-//    }
-//  }
+  return valid;
 }
 
 //void TIM8_UP_TIM13_IRQHandler(void)
@@ -149,7 +143,7 @@ void TIM8_CC_IRQHandler(void)
         TIM3CH2_CAPTURE_VAL = 0;
         TIM3CH2_CAPTURE_STA = 0X40;		//±ê??2???μ?á?é?éy??
       }
-      cnt++;
+      cnt = cnt + 4;
       if(cnt >= ENCODER_LINE)
       {//编码器一圈
         cnt = 0;
