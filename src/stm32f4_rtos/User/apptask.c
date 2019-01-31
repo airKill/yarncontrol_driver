@@ -1207,6 +1207,11 @@ void vTaskTaskLCD(void *pvParameters)
                   SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0");
                   Sdwe_disDigi(var_addr,weimi_para.total_wei_count[0],4);
                 }
+                else
+                {
+                  weimi_para.total_wei_count[(var_addr - PAGE_WEIMI_TOTALWEI_1)] = cnt;
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                }
               }
               else
               {
@@ -2214,9 +2219,11 @@ static void vTaskMotorControl(void *pvParameters)
         {//过渡纬号，步进电机调速，每纬调节一次转速
           guodu++;
           step_speed = (pluse_step_src + speed_diff / MotorProcess.total_wei * guodu);
-          u16 sstep;
-          sstep = 30000 / step_speed;
-          StepMotor_adjust_speed(STEPMOTOR2,step_speed); 
+//          printf("step_speed is %d\r\n",step_speed);
+          u32 sstep;
+          sstep = 300000 / step_speed;
+          printf("sstep is %d\r\n",sstep);
+          StepMotor_adjust_speed(STEPMOTOR2,sstep); 
         }
         if(MotorProcess.current_wei >= MotorProcess.total_wei)
         {//当前纬号超过纬循环
@@ -2253,6 +2260,7 @@ static void vTaskMotorControl(void *pvParameters)
           else
           {//下个段号纬循环等于0，前面所有的段号循环
             MotorProcess.current_seg = 0;
+            step_motor_adjust = 0;
           }
         }
       }

@@ -43,9 +43,6 @@ void bsp_Init(void)
   read_device_info();
   para_init(&SlavePara);
   mb_init(0);
-//  bsp_InitStepMotor();
-//  StepMotor_adjust_speed(STEPMOTOR2,1600);
-//  while(1);
 }
 
 /***************************** 安富莱电子 www.armfly.com (END OF FILE) *********************************/
