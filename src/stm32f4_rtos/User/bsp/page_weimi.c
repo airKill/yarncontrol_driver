@@ -8,6 +8,7 @@ u8 step_motor_adjust = 0;//步进电机过渡调速标志
 u8 servomotor_dir = FORWARD;
 u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
+u8 valid_seg = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
@@ -75,4 +76,18 @@ u32 from_speed_step(float speed)
   freq = speed / 60 * 360 / 1.8 * 8;
   count = 8000000 / freq;
   return count;
+}
+
+u8 get_valid_seg(WEIMI_PARA *para)
+{
+  u8 seg = 0;
+  u8 i;
+  for(i=0;i<20;i++)
+  {
+    if((weimi_para.total_wei_count[i] > 0) && (weimi_para.wei_cm_set[i / 2] > 0))
+    {//段号中纬循环和纬厘米都设置，则有效
+      seg++;
+    }
+  }
+  return seg;
 }

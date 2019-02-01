@@ -44,16 +44,18 @@
 #define PAGE_3_FILENAME     13
 #define PAGE_HISTORY        14
 #define PAGE_U              19
+#define PAGE_CHANNENG       20
 #define PAGE_REPAIR         22    
 #define PAGE_CONFIG         23  
 #define PAGE_HIDDEN         29  
 #define PAGE_PERIOD         30 
+#define PAGE_WEIMI          32
 
 #define MAIN_PAGE_KEY_JINGSHA   0x0100
 #define MAIN_PAGE_KEY_WEIMI     0x0101
 #define MAIN_PAGE_KEY_CHANNENG  0x0102
 #define MAIN_PAGE_KEY_SYS_CONFIG     0x0103
-#define MAIN_PAGE_WARNNING      0x1000
+#define MAIN_PAGE_WARNNING      0x099F
 
 #define PAGE_FILE_KEY           0x0104
 #define PAGE_START_STOP           0x0130

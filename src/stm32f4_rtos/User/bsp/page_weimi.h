@@ -40,10 +40,12 @@ extern u8 step_motor_adjust;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;
+extern u8 valid_seg;
 
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para);
 void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor);
 u16 get_main_speed(float freq);
 u32 from_speed_step(float speed);
+u8 get_valid_seg(WEIMI_PARA *para);
 #endif
