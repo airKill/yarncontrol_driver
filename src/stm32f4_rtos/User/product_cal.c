@@ -157,6 +157,8 @@ u8 get_class_time(RTC_TIME *time,DEVICE_INFO *para)
   return num;
 }
 
+//是否超过试用期
+//over：返回值，1：超期，0：未超期
 u8 get_period_state(RTC_TIME *current,DEVICE_INFO *set)
 {
   u8 over = 0;
