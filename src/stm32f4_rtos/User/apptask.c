@@ -2636,5 +2636,21 @@ void Task_iwdg_refresh(u8 task)
   {
     uxBits = IWDG_BIT_ReadDisk;
   }
+  else if(task == TASK_RFID)
+  {
+    uxBits = IWDG_BIT_RFID;
+  }
+  else if(task == TASK_MotorControl)
+  {
+    uxBits = IWDG_BIT_MotorControl;
+  }
+  else if(task == TASK_ManageCapacity)
+  {
+    uxBits = IWDG_BIT_ManageCapacity;
+  }
+  else if(task == TASK_Freq)
+  {
+    uxBits = IWDG_BIT_Freq;
+  }
   xEventGroupSetBits(idwgEventGroup,uxBits);
 }

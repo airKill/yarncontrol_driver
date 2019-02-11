@@ -14,7 +14,7 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 [DebugChecksum]
-Checksum=800510472
+Checksum=-1474070528
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -43,15 +43,11 @@ ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [struct_types]
 Fmt0=DEVICE_INFO-isfirst	4	0
-Fmt1=FILE_INFO-day	4	0
-Fmt2=FILE_INFO-month	4	0
-Fmt3=FILE_INFO-week	4	0
-Fmt4=FILE_INFO-year	4	0
-Fmt5=RTC_TIME-month	4	0
-Fmt6=RTC_TIME-year	4	0
-Fmt7=SLAVE-addr	4	0
-Fmt8=SLAVE-reg	4	0
-Fmt9=m_frame_typedef-datalen	4	0
+Fmt1=RTC_TIME-month	4	0
+Fmt2=RTC_TIME-year	4	0
+Fmt3=SLAVE-addr	4	0
+Fmt4=SLAVE-reg	4	0
+Fmt5=m_frame_typedef-datalen	4	0
 [array_types]
 Fmt0=u8[100]	4	0
 Fmt1=u8[10]	4	0
@@ -118,6 +114,10 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -125,6 +125,9 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Aliases]
+Count=0
+SuppressDialog=0
 [DriverProfiling]
 Enabled=0
 Mode=1
@@ -139,10 +142,3 @@ ShowTiming=1
 Frequency=10000
 Probe0=I0
 ProbeSetup0=2 1 1 2 0 0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
-[Aliases]
-Count=0
-SuppressDialog=0

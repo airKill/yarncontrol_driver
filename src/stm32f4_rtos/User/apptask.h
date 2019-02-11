@@ -25,7 +25,13 @@
 #define IWDG_BIT_MsgPro         (1<<3)
 #define IWDG_BIT_Rev485         (1<<4)
 #define IWDG_BIT_ReadDisk         (1<<5)
-#define IWDG_BIT_ALL   (IWDG_BIT_LED | IWDG_BIT_LCD | IWDG_BIT_MassStorage | IWDG_BIT_MsgPro | IWDG_BIT_Rev485 | IWDG_BIT_ReadDisk)
+#define IWDG_BIT_RFID         (1<<6)
+#define IWDG_BIT_MotorControl         (1<<7)
+#define IWDG_BIT_ManageCapacity         (1<<8)
+#define IWDG_BIT_Freq         (1<<9)
+#define IWDG_BIT_ALL   (IWDG_BIT_LED | IWDG_BIT_LCD | IWDG_BIT_MassStorage | IWDG_BIT_MsgPro | IWDG_BIT_Rev485  \
+                      | IWDG_BIT_ReadDisk | IWDG_BIT_RFID | IWDG_BIT_MotorControl | IWDG_BIT_ManageCapacity     \
+                        | IWDG_BIT_Freq)
 
 #define REG_START       0
 #define REG_ONOFF       1
