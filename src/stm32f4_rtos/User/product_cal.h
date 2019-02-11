@@ -9,6 +9,8 @@
 #define PLUSE_IDLE    1
 #define PLUSE_WORK    2
 
+#define PEILIAO_SIZE    50
+
 typedef enum 
 {
   CLASS_A = 0,       //A°à

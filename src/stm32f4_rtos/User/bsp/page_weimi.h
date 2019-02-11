@@ -12,14 +12,16 @@
 #define AUTO 0
 #define MANUAL 1
 
+#define WEIMI_SIZE      300
+
 typedef struct
 {
   u32 real_wei_count[20];//当前纬号
   float wei_cm_set[10];//纬厘米
   float wei_inch_set[10];//纬英寸
   u32 total_wei_count[20];//设置总纬号
-  u16 step1_factor[10];
-  u16 step2_factor[10];
+  u16 step1_factor[10];//送纬电机速度比
+  u16 step2_factor[10];//底线电机速度比
 }WEIMI_PARA;
 extern WEIMI_PARA weimi_para;
 

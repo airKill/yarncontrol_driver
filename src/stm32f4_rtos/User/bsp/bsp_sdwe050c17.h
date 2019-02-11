@@ -121,8 +121,7 @@
 #define PAGE_HISTORY_KEY_READ     0x011D
 #define PAGE_HISTORY_KEY_SELECT   0x011E
 #define PAGE_HISTORY_KEY_DOWNLOAD   0x011F
-#define PAGE_HISTORY_TEXT_FILENAME1 0x0500
-#define PAGE_HISTORY_TEXT_FILETIME  0x050A
+
 #define PAGE_HISTORY_TEXT_FILE_WARN  0x05C8
 #define PAGE_HISTORY_ICON_FILE1     0x0440
 #define PAGE_HISTORY_ICON_U_STATE   0x044A
@@ -257,6 +256,12 @@
 
 #define PAGE_WEIMI_RESET          0x122E
 
+#define PAGE_HISTORY_TEXT_FILENAME1     0x1230
+#define PAGE_HISTORY_FILETIME           0x12F8
+#define PAGE_HISTORY_TASKMETER          0x13C0
+#define PAGE_HISTORY_COMPLETE_METER     0x1424
+#define PAGE_HISTORY_COMPLETE_TIME      0x147E
+
 #define VGUS_ON   1
 #define VGUS_OFF   0
 
@@ -276,7 +281,7 @@ u8 array_compare(u8 *buf1,u8 *buf2,u8 len);
 void Sdwe_writeIcon(u16 addr,u16 state);
 void Sdwe_readIcon(u16 addr);
 void Sdwe_readRTC(void);
-void Sdwe_refresh_filename(FILE_INFO file,u8 file_count);
+void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count);
 void Sdwe_refresh_allname(u8 file_count);
 void Sdwe_clearString(u16 addr);
 void Sdwe_clear_filename(u8 file_count);

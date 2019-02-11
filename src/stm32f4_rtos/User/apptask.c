@@ -89,13 +89,9 @@ void vTaskTaskLCD(void *pvParameters)
             rtc_time.minute = hex_to_decimal(lcd_rev_buf[11]);
             rtc_time.second = hex_to_decimal(lcd_rev_buf[12]);
             if(device_info.period_para.period_enable_onoff == 1)
-            {
               isDevicePeriod = get_period_state(&rtc_time,&device_info); 
-            }
             else
-            {
               isDevicePeriod = 0;
-            }
           }
         }
         else if(lcd_rev_buf[3] == 0x83)
@@ -113,9 +109,7 @@ void vTaskTaskLCD(void *pvParameters)
                   Init_JINGSHA_GUI();
                 }
                 else
-                {
                   SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
-                }
               }
               else
                 SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
@@ -131,14 +125,10 @@ void vTaskTaskLCD(void *pvParameters)
                   sdew_weimi_page1(&weimi_para);
                 }
                 else
-                {
                   SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
-                }
               }
               else
-              {
                 SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
-              }
             }
             else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
             {//产能
@@ -151,14 +141,10 @@ void vTaskTaskLCD(void *pvParameters)
                   card_config = READ_PERMISSION;
                 }
                 else
-                {
                   SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
-                }
               }
               else
-              {
                 SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
-              }
             }
             else if(var_addr == MAIN_PAGE_KEY_SYS_CONFIG)
             {//系统配置
@@ -218,14 +204,12 @@ void vTaskTaskLCD(void *pvParameters)
               memset(input_password_buf,0,10);
               Sdwe_clearString(PAGE2_FILE_TEXT_DIS);
               Sdwe_clearString(PAGE2_FILE_TEXT_WARN);
-              //            Sdwe_readRTC();
             }
             else if(var_addr == PAGE3_KEY_SAVE)
             {//第三页保存
               memset(input_password_buf,0,10);
               Sdwe_clearString(PAGE3_FILE_TEXT_DIS);
               Sdwe_clearString(PAGE3_FILE_TEXT_WARN);
-              //            Sdwe_readRTC();
             }
             else if(var_addr == PAGE1_KEY_RIGHT)
             {//第一页向右
@@ -246,14 +230,14 @@ void vTaskTaskLCD(void *pvParameters)
                     || (var_addr == PAGE3_FILE_KEY_ENTER))
             {
               u8 i;
-              FILE_INFO file_write;
+              JINGSHA_FILE file_write;
               if(input_password_len > 0)
               {
                 u8 repeat = 0,j;
                 for(i=0;i<device_info.page_count_all;i++)
                 {
                   u8 name_buf[11];
-                  W25QXX_Read(name_buf,(u32)W25QXX_ADDR_JINGSHA + FILE_SIZE * i,11);
+                  W25QXX_Read(name_buf,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * i,11);
                   if(input_password_len == name_buf[0])
                   {//文件名长度相同
                     u8 tt = 0;
@@ -277,8 +261,8 @@ void vTaskTaskLCD(void *pvParameters)
                   if(device_info.page_count_all >= 10)
                   {//去掉第一个文件，后面文件依次上移
                     u8 file_read[1024];
-                    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + FILE_SIZE,FILE_SIZE * 9);//读出2-10文件的数据
-                    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,FILE_SIZE * 9);//再写进1-9文件地址
+                    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE,JINGSHA_SIZE * 9);//读出2-10文件的数据
+                    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,JINGSHA_SIZE * 9);//再写进1-9文件地址
                     file_write.filename_len = input_password_len;                //文件名长度               
                     memcpy(file_write.filename,input_password_buf,input_password_len);//文件名
                     file_write.year = rtc_time.year;          //日期时间      
@@ -291,7 +275,7 @@ void vTaskTaskLCD(void *pvParameters)
                     {
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
+                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
                     if(var_addr == PAGE1_FILE_KEY_ENTER)//按下第一页保存按钮
                       Sdwe_disPicture(PAGE_1);//跳转到页面1
                     else if(var_addr == PAGE2_FILE_KEY_ENTER)//按下第二页保存按钮
@@ -319,7 +303,7 @@ void vTaskTaskLCD(void *pvParameters)
                     {
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * device_info.page_count_all),sizeof(file_write));
+                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_all),sizeof(file_write));
                     device_info.page_count_all++;
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                     if(var_addr == PAGE1_FILE_KEY_ENTER)
@@ -456,8 +440,8 @@ void vTaskTaskLCD(void *pvParameters)
             {//设定值修改
               value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) * 1000 / 100;//串口数据为两位数小数，单位kg，转换为g
               SlavePara.value_set[var_addr - 0x0320] = value;
-              File_info.weight_value[var_addr - 0x0320] = value;
-              W25QXX_Write((u8 *)&File_info,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * device_info.page_count_select),sizeof(File_info));
+              JingSha_File.weight_value[var_addr - 0x0320] = value;
+              W25QXX_Write((u8 *)&JingSha_File,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_select),sizeof(JingSha_File));
               ptMsg->addr = var_addr - PAGE1_SET_VALUE1;
               ptMsg->func = FUNC_WRITE;
               ptMsg->reg = REG_SET_WEIGHT;
@@ -553,7 +537,7 @@ void vTaskTaskLCD(void *pvParameters)
               input_password_buf[input_password_len] = '\0';
               
               u8 i;
-              FILE_INFO file_write;
+              JINGSHA_FILE file_write;
               memset(file_write.filename,0,10);
               if(input_password_len > 0)
               {
@@ -561,7 +545,7 @@ void vTaskTaskLCD(void *pvParameters)
                 for(i=0;i<device_info.page_count_all;i++)
                 {
                   u8 name_buf[10];
-                  W25QXX_Read(name_buf,(u32)W25QXX_ADDR_JINGSHA + FILE_SIZE * i + 1,10);
+                  W25QXX_Read(name_buf,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * i + 1,10);
                   if(strcmp((char const*)input_password_buf,(char const*)name_buf) == 0)
                   {
                     repeat = 1;
@@ -574,8 +558,8 @@ void vTaskTaskLCD(void *pvParameters)
                   {//去掉第一个文件，后面文件依次上移
                     u8 *file_read;
                     file_read = mymalloc(SRAMIN,1024);
-                    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + FILE_SIZE,FILE_SIZE * 9);//读出2-10文件的数据
-                    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,FILE_SIZE * 9);//再写进1-9文件地址
+                    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE,JINGSHA_SIZE * 9);//读出2-10文件的数据
+                    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,JINGSHA_SIZE * 9);//再写进1-9文件地址
                     file_write.filename_len = input_password_len;                //文件名长度               
                     memcpy(file_write.filename,input_password_buf,input_password_len);//文件名
                     file_write.year = rtc_time.year;          //日期时间      
@@ -588,7 +572,7 @@ void vTaskTaskLCD(void *pvParameters)
                     {
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
+                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
                     if(var_addr == PAGE1_FILE_TEXT_IMPORT)//按下第一页保存按钮
                       Sdwe_disPicture(PAGE_1);//跳转到页面1
                     else if(var_addr == PAGE2_FILE_TEXT_IMPORT)//按下第二页保存按钮
@@ -617,7 +601,7 @@ void vTaskTaskLCD(void *pvParameters)
                     {
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * device_info.page_count_all),sizeof(file_write));
+                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_all),sizeof(file_write));
                     device_info.page_count_all++;
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                     if(var_addr == PAGE1_FILE_TEXT_IMPORT)
@@ -681,9 +665,9 @@ void vTaskTaskLCD(void *pvParameters)
                   {
                     if(var_addr == PAGE_HISTORY_KEY_SELECT)
                     {//调用文件
-                      FILE_INFO file_read;
+                      JINGSHA_FILE file_read;
                       u8 i;
-                      W25QXX_Read((u8 *)&file_read,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * num),sizeof(file_read));//读出num的数据
+                      W25QXX_Read((u8 *)&file_read,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * num),sizeof(file_read));//读出num的数据
                       device_info.page_count_select = num;
                       SlavePara.filename_len = file_read.filename_len;
                       for(i=0;i<file_read.filename_len;i++)
@@ -912,7 +896,6 @@ void vTaskTaskLCD(void *pvParameters)
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               plan_complete = 0;
               old_plan_complete = 0;
-              
               Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
             }
             else if(var_addr == PAGE_PRODUCT_KAIDU)
@@ -1392,7 +1375,7 @@ void vTaskTaskLCD(void *pvParameters)
 */
 static void vTaskMassStorage(void *pvParameters)
 {
-  FILE_INFO read_info;
+  JINGSHA_FILE read_info;
   FRESULT result;
   FATFS fs;
   FIL file;
@@ -1422,7 +1405,7 @@ static void vTaskMassStorage(void *pvParameters)
           printf("打开根目录失败  (%s)\r\n", FR_Table[result]);
           return;
         }
-        W25QXX_Read((u8 *)&read_info,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * download_num),sizeof(read_info));//读出num的数据
+        W25QXX_Read((u8 *)&read_info,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * download_num),sizeof(read_info));//读出num的数据
         u8 name_1[10],name_2[20];
         u8 id[10];
         memset(id,0,10);
@@ -1692,6 +1675,7 @@ static void vTaskTaskRFID(void *pvParameters)
         vTaskDelay(100);
       }
     }
+    Task_iwdg_refresh(TASK_RFID);
   }
 }
 
@@ -2040,8 +2024,8 @@ void vTaskManageCapacity(void *pvParameters)
   float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   
-  total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));
-  total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));
+  total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));//总米设置含损耗
+  total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
   if(total_meter_gross > 0)
   {
     if(product_para.product_complete >= total_meter_gross)
@@ -2186,6 +2170,7 @@ void vTaskManageCapacity(void *pvParameters)
         RELAY_CLOSE();
       }
     }
+    Task_iwdg_refresh(TASK_ManageCapacity);
   }
 }
 
@@ -2310,6 +2295,7 @@ static void vTaskMotorControl(void *pvParameters)
         }
       }
     }
+    Task_iwdg_refresh(TASK_MotorControl);
   }
 }
 
@@ -2324,7 +2310,7 @@ static void vTaskFreq(void *pvParameters)
     if(xResult == pdTRUE)
     {
       if(device_info.func_onoff.weimi)
-      {
+      {//纬密功能打开
         u8 vaild;
         vaild = Freq_Sample();//计算编码器频率
         if(vaild == 1)
@@ -2356,6 +2342,7 @@ static void vTaskFreq(void *pvParameters)
       Freq_ptr1 = 0;
       Freq_ptr2 = 0;
     }
+    Task_iwdg_refresh(TASK_Freq);
   }
 }
 
@@ -2379,55 +2366,55 @@ void AppTaskCreate (void)
               "vTaskTaskRFID",     	/* 任务名    */
               512,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              1,                 	/* 任务优先级*/
+              2,                 	/* 任务优先级*/
               &xHandleTaskRFID );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
               256,             		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              2,               		/* 任务优先级*/
+              3,               		/* 任务优先级*/
               &xHandleTaskMsgPro );  /* 任务句柄  */
   xTaskCreate( vTaskRev485,     		/* 任务函数  */
               "vTaskRev485",   		/* 任务名    */
               512,            		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              3,              		/* 任务优先级*/
+              4,              		/* 任务优先级*/
               &xHandleTaskRev485 );   /* 任务句柄  */
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */
               1024,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              4,                 	/* 任务优先级*/
+              5,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
   xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
               "vTaskMassStorage",  		/* 任务名    */
               1024,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              5,           		/* 任务优先级*/
+              6,           		/* 任务优先级*/
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              6,           		/* 任务优先级*/
+              7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              7,           		/* 任务优先级*/
+              8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
   xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
               "vTaskMotorControl",  		/* 任务名    */
               256,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              8,           		/* 任务优先级*/
+              9,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */
   xTaskCreate( vTaskFreq,    		/* 任务函数  */
               "vTaskFreq",  		/* 任务名    */
               128,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              9,           		/* 任务优先级*/
+              10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
 }
 
@@ -2554,9 +2541,9 @@ void UserTimerCallback(TimerHandle_t xTimer)
   }
   timefor10s++;
   if(timefor10s >= 10)
-  {
+  {//每10秒获取一次时间
     timefor10s = 0;
-    Sdwe_readRTC();//每秒获取一次时间
+    Sdwe_readRTC();
   }
   if(sample_time == 0)
   {

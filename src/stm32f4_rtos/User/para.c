@@ -7,8 +7,8 @@ void read_device_info(void)
   u8 i;
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-  W25QXX_Read((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-  W25QXX_Read((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+//  W25QXX_Read((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+//  W25QXX_Read((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
   if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
@@ -66,26 +66,28 @@ void read_device_info(void)
   }
   if(device_info.page_count_all == 0)
   {
-    File_info.filename_len = 0;
+    JingSha_File.filename_len = 0;
     for(i=0;i<10;i++)
     {
-      File_info.filename[i] = 0;
+      JingSha_File.filename[i] = 0;
     }
     for(i=0;i<30;i++)
     {
-      File_info.weight_value[i] = 0;
+      JingSha_File.weight_value[i] = 0;
     }
-    File_info.year = 18;
-    File_info.month = 1;
-    File_info.day = 1;
-    File_info.week = 1;
-    File_info.hour = 1;
-    File_info.minute = 1;
-    File_info.second = 1;
+    JingSha_File.year = 18;
+    JingSha_File.month = 1;
+    JingSha_File.day = 1;
+    JingSha_File.week = 1;
+    JingSha_File.hour = 1;
+    JingSha_File.minute = 1;
+    JingSha_File.second = 1;
   }
   else
   {
-    W25QXX_Read((u8 *)&File_info,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * device_info.page_count_select),sizeof(File_info));
+    W25QXX_Read((u8 *)&JingSha_File,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_select),sizeof(JingSha_File));//经纱保存数据
+    W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select),sizeof(peiliao_para));//胚料保存数据
+    W25QXX_Read((u8 *)&weimi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select),sizeof(weimi_para));//纬密保存数据
   }
 }
 
@@ -95,13 +97,13 @@ void para_init(SLAVE_PARA *para)
   for(i=0;i<30;i++)
   {
     para->onoff[i] = device_info.onoff[i];
-    para->value_set[i] = File_info.weight_value[i];
+    para->value_set[i] = JingSha_File.weight_value[i];
     para->value_sample[i] = 0;
   }
-  para->filename_len = File_info.filename_len;
-  for(i=0;i<File_info.filename_len;i++)
+  para->filename_len = JingSha_File.filename_len;
+  for(i=0;i<JingSha_File.filename_len;i++)
   {
-    para->filename[i] = File_info.filename[i];
+    para->filename[i] = JingSha_File.filename[i];
   }
   for(i=0;i<10;i++)
     file_select[i] = device_info.file_select[i];

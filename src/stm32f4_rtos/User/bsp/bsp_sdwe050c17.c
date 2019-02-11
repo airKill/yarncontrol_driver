@@ -195,10 +195,10 @@ void Sdwe_readRTC(void)
 void Sdwe_clear_filename(u8 file_count)
 {
   Sdwe_clearString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20);
-  Sdwe_clearString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20 + 10);
+  Sdwe_clearString(PAGE_HISTORY_FILETIME + file_count * 20);
 }
 
-void Sdwe_refresh_filename(FILE_INFO file,u8 file_count)
+void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
 {
   u8 time_buf[30];
   u8 len;
@@ -207,8 +207,8 @@ void Sdwe_refresh_filename(FILE_INFO file,u8 file_count)
   u8 id[10];
   memset(id,0,10);
   memset(time_buf,0,30);
-  len = sizeof(FILE_INFO);
-  W25QXX_Read((u8 *)&file,(u32)(W25QXX_ADDR_JINGSHA + FILE_SIZE * file_count),len);
+  len = sizeof(JINGSHA_FILE);
+  W25QXX_Read((u8 *)&file,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * file_count),len);
   if(file.filename_len <= 10)
   {
     memset(name,0,20);
@@ -218,17 +218,21 @@ void Sdwe_refresh_filename(FILE_INFO file,u8 file_count)
     memcpy(id,device_info.device_id,device_info.device_id_len);
     sprintf((char *)name,"%s-%s.CSV",id,name_1);
     name_len = strlen((char const*)name);
-    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20,name,name_len);//显示文件名
+    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20,name,name_len);//显示货号
     sprintf((char *)time_buf,"20%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
             file.hour,file.minute,file.second);
     len = strlen((char const*)time_buf);
-    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + 10 + file_count * 20,time_buf,strlen((char const*)time_buf));//显示日期时间
+    Sdwe_disString(PAGE_HISTORY_FILETIME + file_count * 20,time_buf,strlen((char const*)time_buf));//显示日期时间
+    
+//    Sdwe_disDigi(PAGE_HISTORY_TASKMETER,(int)(para->product_a * 10),4);//显示任务量
+//    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER,(int)(product_para.product_complete * 10),4);//显示完成量
+//    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME,product_para.total_work_time / 3600,4);//显示完成时间，单位：小时
   }
 }
 void Sdwe_refresh_allname(u8 file_count)
 {
   u8 i;
-  FILE_INFO file;
+  JINGSHA_FILE file;
   for(i=0;i<10;i++)
     Sdwe_clear_filename(i);
   for(i=0;i<file_count;i++)

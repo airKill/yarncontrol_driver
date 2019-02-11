@@ -13,7 +13,7 @@
 #define W25QXX_ADDR_RFID_B        0xB000  //班次B卡片保存数据
 #define W25QXX_ADDR_RFID_REPAIR   0xC000  //维修卡片保存数据
 //每次保存文件，占用空间（BYTE），即偏移量，实际所用空间为1（文件名长度）+ 10（文件名）+6（存储时间日期）+30（张力设定值） =47
-#define FILE_SIZE    100 
+#define JINGSHA_SIZE    100 
 #define FILE_COUNT_MAX  10
 /******************文件储存格式********************
 文件名长度                1byte   

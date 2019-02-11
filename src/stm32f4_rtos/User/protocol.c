@@ -5,7 +5,7 @@ u16 rs485_rev_len = 0;
 
 SLAVE_PARA SlavePara;
 RTC_TIME rtc_time;
-FILE_INFO File_info;
+JINGSHA_FILE JingSha_File;
 
 u8 input_password_buf[10];
 u8 input_password_len = 0;

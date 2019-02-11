@@ -12,8 +12,12 @@
 #define TASK_LCD                1
 #define TASK_MassStorage        2
 #define TASK_MsgPro             3
-#define TASK_Rev485         4
-#define TASK_ReadDisk         5
+#define TASK_Rev485             4
+#define TASK_ReadDisk           5
+#define TASK_RFID               6
+#define TASK_MotorControl       7
+#define TASK_ManageCapacity     8
+#define TASK_Freq               9
 
 #define IWDG_BIT_LED            (1<<0)  
 #define IWDG_BIT_LCD            (1<<1)

@@ -27,8 +27,8 @@ typedef struct
   u8 minute; 
   u8 second;
   u16 weight_value[30];
-}FILE_INFO;
-extern FILE_INFO File_info;
+}JINGSHA_FILE;
+extern JINGSHA_FILE JingSha_File;
 
 typedef struct
 {

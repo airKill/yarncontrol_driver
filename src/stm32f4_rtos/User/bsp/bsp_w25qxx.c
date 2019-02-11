@@ -187,7 +187,7 @@ void W25QXX_Write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite)
   u16 secoff;
   u16 secremain;	   
   u16 i;    
-  u8 * W25QXX_BUF;	  
+  u8 *W25QXX_BUF;	  
   W25QXX_BUF  = W25QXX_BUFFER;	     
   secpos = WriteAddr / 4096;//扇区地址  
   secoff = WriteAddr % 4096;//在扇区内的偏移
