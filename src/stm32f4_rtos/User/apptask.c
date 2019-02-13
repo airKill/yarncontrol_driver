@@ -959,6 +959,12 @@ void vTaskTaskLCD(void *pvParameters)
                 }
               }
             }
+            /****************************机器编号显示************************************/
+            else if(var_addr == PAGE_CONFIG_DEVICE_ID)
+            {//机器编号
+              Sdwe_disString(PAGE_DEVICE_ID,device_info.device_id,device_info.device_id_len);
+            }
+            /*********************************************************************************/
             /****************************A/B班换班时间设置************************************/
             else if(var_addr == PAGE_CONFIG_TIME)
             {//换班时间设置

@@ -224,9 +224,9 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
     len = strlen((char const*)time_buf);
     Sdwe_disString(PAGE_HISTORY_FILETIME + file_count * 20,time_buf,strlen((char const*)time_buf));//显示日期时间
     
-//    Sdwe_disDigi(PAGE_HISTORY_TASKMETER,(int)(para->product_a * 10),4);//显示任务量
-//    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER,(int)(product_para.product_complete * 10),4);//显示完成量
-//    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME,product_para.total_work_time / 3600,4);//显示完成时间，单位：小时
+    Sdwe_disDigi(PAGE_HISTORY_TASKMETER,(int)product_para.product_a,4);//显示任务量
+    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER,(int)product_para.product_a,4);//显示完成量
+    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME,product_para.total_work_time / 3600,2);//显示完成时间，单位：小时
   }
 }
 void Sdwe_refresh_allname(u8 file_count)
