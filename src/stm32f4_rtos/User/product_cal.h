@@ -72,6 +72,8 @@ typedef struct
   u8 loss;             //损耗
   u32 total_meter_set;   //总米设置
   u32 total_weitht_set;  //总重量设置
+  u32 complete_meter;
+  u32 complete_work_time;
   float kaidu_set;         //开度设置
   float weimi_set;         //纬密设置
   u32 add_meter_set;       //补单数量    

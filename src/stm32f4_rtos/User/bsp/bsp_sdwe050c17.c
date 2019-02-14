@@ -194,8 +194,11 @@ void Sdwe_readRTC(void)
 
 void Sdwe_clear_filename(u8 file_count)
 {
-  Sdwe_clearString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20);
-  Sdwe_clearString(PAGE_HISTORY_FILETIME + file_count * 20);
+  Sdwe_clearString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 10);
+  Sdwe_clearString(PAGE_HISTORY_FILETIME + file_count * 10);
+  Sdwe_clearString(PAGE_HISTORY_TASKMETER + file_count * 10);
+  Sdwe_clearString(PAGE_HISTORY_COMPLETE_METER + file_count * 10);
+  Sdwe_clearString(PAGE_HISTORY_COMPLETE_TIME + file_count * 10);
 }
 
 void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
@@ -218,15 +221,17 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
     memcpy(id,device_info.device_id,device_info.device_id_len);
     sprintf((char *)name,"%s-%s.CSV",id,name_1);
     name_len = strlen((char const*)name);
-    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 20,name,name_len);//显示货号
+    Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 10,name,name_len);//显示货号
     sprintf((char *)time_buf,"20%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
             file.hour,file.minute,file.second);
     len = strlen((char const*)time_buf);
-    Sdwe_disString(PAGE_HISTORY_FILETIME + file_count * 20,time_buf,strlen((char const*)time_buf));//显示日期时间
+    Sdwe_disString(PAGE_HISTORY_FILETIME + file_count * 10,time_buf,strlen((char const*)time_buf));//显示日期时间
     
-    Sdwe_disDigi(PAGE_HISTORY_TASKMETER,(int)product_para.product_a,4);//显示任务量
-    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER,(int)product_para.product_a,4);//显示完成量
-    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME,product_para.total_work_time / 3600,2);//显示完成时间，单位：小时
+    PEILIAO_PARA para;
+    W25QXX_Read((u8 *)&para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * file_count),sizeof(PEILIAO_PARA));
+    Sdwe_disDigi(PAGE_HISTORY_TASKMETER + file_count * 10,(int)para.total_meter_set,4);//显示任务量
+    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER + file_count * 10,(int)para.complete_meter,4);//显示完成量
+    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME + file_count * 10,para.complete_work_time / 3600,2);//显示完成时间，单位：小时
   }
 }
 void Sdwe_refresh_allname(u8 file_count)

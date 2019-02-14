@@ -226,114 +226,6 @@ void vTaskTaskLCD(void *pvParameters)
               vTaskDelay(100);
               Init_JINGSHA_GUI();
             }
-            else if((var_addr == PAGE1_FILE_KEY_ENTER) || (var_addr == PAGE2_FILE_KEY_ENTER) 
-                    || (var_addr == PAGE3_FILE_KEY_ENTER))
-            {
-              u8 i;
-              JINGSHA_FILE file_write;
-              if(input_password_len > 0)
-              {
-                u8 repeat = 0,j;
-                for(i=0;i<device_info.page_count_all;i++)
-                {
-                  u8 name_buf[11];
-                  W25QXX_Read(name_buf,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * i,11);
-                  if(input_password_len == name_buf[0])
-                  {//文件名长度相同
-                    u8 tt = 0;
-                    for(j=0;j<input_password_len;j++)
-                    {
-                      if(name_buf[j + 1] != input_password_buf[j])
-                      {
-                        tt = 1;
-                        break;
-                      }
-                    }
-                    if(tt == 0)
-                    {//每个字符相同
-                      repeat = 1;
-                      break;
-                    } 
-                  }
-                }
-                if(repeat == 0)
-                {//无重复文件
-                  if(device_info.page_count_all >= 10)
-                  {//去掉第一个文件，后面文件依次上移
-                    u8 file_read[1024];
-                    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE,JINGSHA_SIZE * 9);//读出2-10文件的数据
-                    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,JINGSHA_SIZE * 9);//再写进1-9文件地址
-                    file_write.filename_len = input_password_len;                //文件名长度               
-                    memcpy(file_write.filename,input_password_buf,input_password_len);//文件名
-                    file_write.year = rtc_time.year;          //日期时间      
-                    file_write.month = rtc_time.month;
-                    file_write.day = rtc_time.day;
-                    file_write.hour = rtc_time.hour;
-                    file_write.minute = rtc_time.minute;
-                    file_write.second = rtc_time.second;
-                    for(i=0;i<30;i++)
-                    {
-                      file_write.weight_value[i] = SlavePara.value_set[i];
-                    }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
-                    if(var_addr == PAGE1_FILE_KEY_ENTER)//按下第一页保存按钮
-                      Sdwe_disPicture(PAGE_1);//跳转到页面1
-                    else if(var_addr == PAGE2_FILE_KEY_ENTER)//按下第二页保存按钮
-                      Sdwe_disPicture(PAGE_2);//跳转到页面2
-                    else if(var_addr == PAGE3_FILE_KEY_ENTER)//按下第三页保存按钮
-                      Sdwe_disPicture(PAGE_3);//跳转到页面3
-                  }
-                  else
-                  {
-                    /******************文件储存格式********************
-                    文件名长度                1byte   
-                    文件名（最大10Byte）      10byte
-                    日期时间（YY MM DD HH MM SS） 6byte
-                    各驱动板张力设定值        30byte
-                    **************************************************/
-                    file_write.filename_len = input_password_len;                //文件名长度               
-                    memcpy(file_write.filename,input_password_buf,input_password_len);//文件名
-                    file_write.year = rtc_time.year;          //日期时间      
-                    file_write.month = rtc_time.month;
-                    file_write.day = rtc_time.day;
-                    file_write.hour = rtc_time.hour;
-                    file_write.minute = rtc_time.minute;
-                    file_write.second = rtc_time.second;
-                    for(i=0;i<30;i++)
-                    {
-                      file_write.weight_value[i] = SlavePara.value_set[i];
-                    }
-                    W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_all),sizeof(file_write));
-                    device_info.page_count_all++;
-                    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-                    if(var_addr == PAGE1_FILE_KEY_ENTER)
-                      Sdwe_disPicture(PAGE_1);
-                    else if(var_addr == PAGE2_FILE_KEY_ENTER)
-                      Sdwe_disPicture(PAGE_2);
-                    else if(var_addr == PAGE3_FILE_KEY_ENTER)
-                      Sdwe_disPicture(PAGE_3);
-                  }
-                }
-                else
-                {//有重复文件名
-                  if(var_addr == PAGE1_FILE_KEY_ENTER)
-                    Sdwe_disString(PAGE1_FILE_TEXT_WARN,"文件名重复",strlen("文件名重复"));
-                  else if(var_addr == PAGE2_FILE_KEY_ENTER)
-                    Sdwe_disString(PAGE2_FILE_TEXT_WARN,"文件名重复",strlen("文件名重复"));
-                  else if(var_addr == PAGE3_FILE_KEY_ENTER)
-                    Sdwe_disString(PAGE3_FILE_TEXT_WARN,"文件名重复",strlen("文件名重复"));
-                }
-              }
-              else
-              {
-                if(var_addr == PAGE1_FILE_KEY_ENTER)
-                  Sdwe_disString(PAGE1_FILE_TEXT_WARN,"文件名空",strlen("文件名空"));
-                else if(var_addr == PAGE2_FILE_KEY_ENTER)
-                  Sdwe_disString(PAGE2_FILE_TEXT_WARN,"文件名空",strlen("文件名空"));
-                else if(var_addr == PAGE3_FILE_KEY_ENTER)
-                  Sdwe_disString(PAGE3_FILE_TEXT_WARN,"文件名空",strlen("文件名空"));
-              }
-            }
             else if(var_addr == PAGE1_ICON1_10_ONOFF)
             {
               u8 i;
@@ -573,12 +465,20 @@ void vTaskTaskLCD(void *pvParameters)
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
                     W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * 9),sizeof(file_write));//写当前页面数据到文件10地址
-                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)//按下第一页保存按钮
-                      Sdwe_disPicture(PAGE_1);//跳转到页面1
-                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)//按下第二页保存按钮
-                      Sdwe_disPicture(PAGE_2);//跳转到页面2
-                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)//按下第三页保存按钮
-                      Sdwe_disPicture(PAGE_3);//跳转到页面3
+                    
+                    //产能数据保存
+                    peiliao_para.complete_meter = (u32)product_para.product_complete;
+                    peiliao_para.complete_work_time = product_para.total_work_time;
+                    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * 9,sizeof(peiliao_para));
+                    
+                    //纬密数据保存
+                    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * 9,sizeof(weimi_para));
+//                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)//按下第一页保存按钮
+//                      Sdwe_disPicture(PAGE_1);//跳转到页面1
+//                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)//按下第二页保存按钮
+//                      Sdwe_disPicture(PAGE_2);//跳转到页面2
+//                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)//按下第三页保存按钮
+//                      Sdwe_disPicture(PAGE_3);//跳转到页面3
                     myfree(SRAMIN,file_read);
                   }
                   else
@@ -602,14 +502,22 @@ void vTaskTaskLCD(void *pvParameters)
                       file_write.weight_value[i] = SlavePara.value_set[i];
                     }
                     W25QXX_Write((u8 *)&file_write,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_all),sizeof(file_write));
+                    //产能数据保存
+                    peiliao_para.complete_meter = (u32)product_para.product_complete;
+                    peiliao_para.complete_work_time = product_para.total_work_time;
+                    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * device_info.page_count_all,sizeof(peiliao_para));
+                    
+                    //纬密数据保存
+                    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_all,sizeof(weimi_para));
+                    
                     device_info.page_count_all++;
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)
-                      Sdwe_disPicture(PAGE_1);
-                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)
-                      Sdwe_disPicture(PAGE_2);
-                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
-                      Sdwe_disPicture(PAGE_3);
+//                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)
+//                      Sdwe_disPicture(PAGE_1);
+//                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)
+//                      Sdwe_disPicture(PAGE_2);
+//                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
+//                      Sdwe_disPicture(PAGE_3);
                   }
                 }
                 else
@@ -668,6 +576,8 @@ void vTaskTaskLCD(void *pvParameters)
                       JINGSHA_FILE file_read;
                       u8 i;
                       W25QXX_Read((u8 *)&file_read,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * num),sizeof(file_read));//读出num的数据
+                      W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * num),sizeof(peiliao_para));//读出num的数据
+                      W25QXX_Read((u8 *)&weimi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * num),sizeof(weimi_para));//读出num的数据
                       device_info.page_count_select = num;
                       SlavePara.filename_len = file_read.filename_len;
                       for(i=0;i<file_read.filename_len;i++)

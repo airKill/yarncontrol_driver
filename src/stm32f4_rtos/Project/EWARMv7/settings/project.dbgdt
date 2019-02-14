@@ -44,7 +44,7 @@
         <expressions>
           
           
-        <item>send_buf</item><item>DataBuf</item><item>period</item><item>peiliao_para</item><item>product_para</item><item>rfid_rev_buf</item><item>UART5_RX_BUF</item><item>var_addr</item><item>device_info</item><item>total_meter_gross</item><item>info</item><item>TIM3CH2_CAPTURE_STA</item><item>TIM3CH2_CAPTURE_VAL</item><item>Freq</item><item>ReadValue2</item><item>ReadValue1</item><item>speed_diff</item><item>weimi_para</item><item>MotorProcess</item><item>addr</item><item>valid_seg</item><item>ratio_diff</item><item></item></expressions>
+        <item>send_buf</item><item>DataBuf</item><item>period</item><item>peiliao_para</item><item>product_para</item><item>rfid_rev_buf</item><item>UART5_RX_BUF</item><item>var_addr</item><item>device_info</item><item>total_meter_gross</item><item>info</item><item>TIM3CH2_CAPTURE_STA</item><item>TIM3CH2_CAPTURE_VAL</item><item>Freq</item><item>ReadValue2</item><item>ReadValue1</item><item>speed_diff</item><item>weimi_para</item><item>MotorProcess</item><item>addr</item><item>valid_seg</item><item>ratio_diff</item><item/></expressions>
         <col-names>
           
           

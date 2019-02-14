@@ -15,6 +15,9 @@
 //每次保存文件，占用空间（BYTE），即偏移量，实际所用空间为1（文件名长度）+ 10（文件名）+6（存储时间日期）+30（张力设定值） =47
 #define JINGSHA_SIZE    100 
 #define FILE_COUNT_MAX  10
+
+#define CHANNENG_SIZE    50 
+#define WEIMI_SIZE    300 
 /******************文件储存格式********************
 文件名长度                1byte   
 文件名（最大10Byte）      10byte
