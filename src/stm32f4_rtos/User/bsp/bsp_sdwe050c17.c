@@ -31,12 +31,12 @@ void Init_JINGSHA_GUI(void)
   memset(name_1,0,20);
   memset(id,0,10);
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
-//  sprintf((char *)name,"%d号机-%s",device_info.master_id,name_1);
+
   memcpy(id,device_info.device_id,device_info.device_id_len);
   sprintf((char *)name,"%s-%s.CSV",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
-//  Sdwe_disString(PAGE1_SYSTEM_STATE,"系统正常...",strlen("系统正常..."));
+
   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
   
   for(i=0;i<30;i++)
@@ -222,16 +222,24 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
     sprintf((char *)name,"%s-%s.CSV",id,name_1);
     name_len = strlen((char const*)name);
     Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 10,name,name_len);//显示货号
-    sprintf((char *)time_buf,"20%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
-            file.hour,file.minute,file.second);
+//    sprintf((char *)time_buf,"%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
+//            file.hour,file.minute,file.second);
+    sprintf((char *)time_buf,"%02d/%02d/%02d",file.year,file.month,file.day);
     len = strlen((char const*)time_buf);
     Sdwe_disString(PAGE_HISTORY_FILETIME + file_count * 10,time_buf,strlen((char const*)time_buf));//显示日期时间
     
     PEILIAO_PARA para;
     W25QXX_Read((u8 *)&para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * file_count),sizeof(PEILIAO_PARA));
-    Sdwe_disDigi(PAGE_HISTORY_TASKMETER + file_count * 10,(int)para.total_meter_set,4);//显示任务量
-    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_METER + file_count * 10,(int)para.complete_meter,4);//显示完成量
-    Sdwe_disDigi(PAGE_HISTORY_COMPLETE_TIME + file_count * 10,para.complete_work_time / 3600,2);//显示完成时间，单位：小时
+    u8 buf[10];
+    memset(buf,0,10);
+    sprintf(buf,"%d",para.total_meter_set);
+    Sdwe_disString(PAGE_HISTORY_TASKMETER + file_count * 10,buf,strlen(buf));
+    memset(buf,0,10);
+    sprintf(buf,"%d",para.complete_meter);
+    Sdwe_disString(PAGE_HISTORY_COMPLETE_METER + file_count * 10,buf,strlen(buf));
+    memset(buf,0,10);
+    sprintf(buf,"%d",para.complete_work_time / 3600);
+    Sdwe_disString(PAGE_HISTORY_COMPLETE_TIME + file_count * 10,buf,strlen(buf));
   }
 }
 void Sdwe_refresh_allname(u8 file_count)
@@ -251,6 +259,20 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   u32 complete;
   u8 on_time_buf[10];
   u8 off_time_buf[10];
+  
+  u8 name[20],name_1[20];
+  u8 name_len;
+  u8 id[10];
+  memset(name,0,20);
+  memset(name_1,0,20);
+  memset(id,0,10);
+  memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
+
+  memcpy(id,device_info.device_id,device_info.device_id_len);
+  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  name_len = strlen((char const*)name);
+  Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
+  
   Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),4);
   uncomplete = para->product_uncomplete * 10.0;
@@ -272,6 +294,19 @@ void Sdwe_product_page(PRODUCT_PARA *para)
 //胚料页面
 void Sdwe_peiliao_page(PEILIAO_PARA *para)
 {
+  u8 name[20],name_1[20];
+  u8 name_len;
+  u8 id[10];
+  memset(name,0,20);
+  memset(name_1,0,20);
+  memset(id,0,10);
+  memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
+
+  memcpy(id,device_info.device_id,device_info.device_id_len);
+  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  name_len = strlen((char const*)name);
+  Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
+  
   Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,(int)(para->latitude_weight * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHA,(int)(para->longitude_weight * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_RUBBER,(int)(para->rubber_weight * 10),2);
@@ -351,6 +386,19 @@ void Sdwe_stop_page(DEVICE_INFO *para)
 
 void sdew_weimi_page1(WEIMI_PARA *para)
 {
+  u8 name[20],name_1[20];
+  u8 name_len;
+  u8 id[10];
+  memset(name,0,20);
+  memset(name_1,0,20);
+  memset(id,0,10);
+  memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
+
+  memcpy(id,device_info.device_id,device_info.device_id_len);
+  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  name_len = strlen((char const*)name);
+  Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
+  
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1,para->total_wei_count[0],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,(int)(para->wei_cm_set[0] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1,(int)(para->wei_inch_set[0] * 10),2);

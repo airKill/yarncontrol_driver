@@ -157,7 +157,7 @@ void vTaskTaskLCD(void *pvParameters)
               Sdwe_refresh_allname(device_info.page_count_all);
               for(i=0;i<10;i++)
               {
-                Sdwe_writeIcon(i + PAGE_HISTORY_ICON_FILE1,file_select[i]);
+                Sdwe_writeIcon(i + PAGE_HISTORY_SELECT,file_select[i]);
               }
             }
             else if(var_addr == PAGE1_KEY_SET_WEIGHT)
@@ -197,7 +197,6 @@ void vTaskTaskLCD(void *pvParameters)
               memset(input_password_buf,0,10);
               Sdwe_clearString(PAGE1_FILE_TEXT_DIS);
               Sdwe_clearString(PAGE1_FILE_TEXT_WARN);
-              //            Sdwe_readRTC();
             }
             else if(var_addr == PAGE2_KEY_SAVE)
             {//第二页保存
@@ -420,7 +419,7 @@ void vTaskTaskLCD(void *pvParameters)
                 Sdwe_disString(PAGE3_SECRET_TEXT_WARN,"密码错误",strlen("密码错误"));
               }
             }
-            else if((var_addr == PAGE1_FILE_TEXT_IMPORT) || (var_addr == PAGE2_FILE_TEXT_IMPORT) || (var_addr == PAGE3_FILE_TEXT_IMPORT))
+            else if((var_addr == PAGE1_FILE_TEXT_IMPORT) || (var_addr == PAGE2_FILE_TEXT_IMPORT) || (var_addr == PAGE3_FILE_TEXT_IMPORT) || (var_addr == PAGE_HISTORY2_IMPORT))
             {//文件名录入，去掉确认按钮，按OK后默认确认
               u8 llen;
               llen = lcd_rev_buf[6] * 2;
@@ -473,12 +472,21 @@ void vTaskTaskLCD(void *pvParameters)
                     
                     //纬密数据保存
                     W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * 9,sizeof(weimi_para));
-//                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)//按下第一页保存按钮
-//                      Sdwe_disPicture(PAGE_1);//跳转到页面1
-//                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)//按下第二页保存按钮
-//                      Sdwe_disPicture(PAGE_2);//跳转到页面2
-//                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)//按下第三页保存按钮
-//                      Sdwe_disPicture(PAGE_3);//跳转到页面3
+                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)//按下第一页保存按钮
+                      Sdwe_disPicture(PAGE_1);//跳转到页面1
+                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)//按下第二页保存按钮
+                      Sdwe_disPicture(PAGE_2);//跳转到页面2
+                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)//按下第三页保存按钮
+                      Sdwe_disPicture(PAGE_3);//跳转到页面3
+                    else if(var_addr == PAGE_HISTORY2_IMPORT)//按下第三页保存按钮
+                    {
+                      for(i=0;i<10;i++)
+                      {
+                        Sdwe_writeIcon(i + PAGE_HISTORY_SELECT,file_select[i]);
+                      }
+                      Sdwe_disPicture(PAGE_HISTORY);//跳转到页面3
+                      Sdwe_refresh_allname(device_info.page_count_all);
+                    }
                     myfree(SRAMIN,file_read);
                   }
                   else
@@ -512,12 +520,21 @@ void vTaskTaskLCD(void *pvParameters)
                     
                     device_info.page_count_all++;
                     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)
-//                      Sdwe_disPicture(PAGE_1);
-//                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)
-//                      Sdwe_disPicture(PAGE_2);
-//                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
-//                      Sdwe_disPicture(PAGE_3);
+                    if(var_addr == PAGE1_FILE_TEXT_IMPORT)
+                      Sdwe_disPicture(PAGE_1);
+                    else if(var_addr == PAGE2_FILE_TEXT_IMPORT)
+                      Sdwe_disPicture(PAGE_2);
+                    else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
+                      Sdwe_disPicture(PAGE_3);
+                    else if(var_addr == PAGE_HISTORY2_IMPORT)//按下第三页保存按钮
+                    {
+                      for(i=0;i<10;i++)
+                      {
+                        Sdwe_writeIcon(i + PAGE_HISTORY_SELECT,file_select[i]);
+                      }
+                      Sdwe_disPicture(PAGE_HISTORY);//跳转到页面3
+                      Sdwe_refresh_allname(device_info.page_count_all);
+                    }
                   }
                 }
                 else
@@ -528,6 +545,8 @@ void vTaskTaskLCD(void *pvParameters)
                     Sdwe_disString(PAGE2_FILE_TEXT_WARN,"文件名重复",strlen("文件名重复"));
                   else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
                     Sdwe_disString(PAGE3_FILE_TEXT_WARN,"文件名重复",strlen("文件名重复"));
+                  else if(var_addr == PAGE_HISTORY2_IMPORT)//按下第三页保存按钮
+                    Sdwe_disString(PAGE_HISTORY2_WARNNING,"文件名重复",strlen("文件名重复"));
                 }
               }
               else
@@ -538,6 +557,8 @@ void vTaskTaskLCD(void *pvParameters)
                   Sdwe_disString(PAGE2_FILE_TEXT_WARN,"文件名空",strlen("文件名空"));
                 else if(var_addr == PAGE3_FILE_TEXT_IMPORT)
                   Sdwe_disString(PAGE3_FILE_TEXT_WARN,"文件名空",strlen("文件名空"));
+                else if(var_addr == PAGE_HISTORY2_IMPORT)//按下第三页保存按钮
+                    Sdwe_disString(PAGE_HISTORY2_WARNNING,"文件名重复",strlen("文件名重复"));
               }
             }
             else if((var_addr == PAGE_HISTORY_KEY_SELECT) || (var_addr == PAGE_HISTORY_KEY_DOWNLOAD))
@@ -635,20 +656,24 @@ void vTaskTaskLCD(void *pvParameters)
                 printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
               }
             }
-            else if((var_addr >= PAGE_HISTORY_ICON_FILE1) && (var_addr <= (PAGE_HISTORY_ICON_FILE1 + 9)))
+            else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
             {//文件选择
               value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-              file_select[var_addr - PAGE_HISTORY_ICON_FILE1] = value;
-              device_info.file_select[var_addr - PAGE_HISTORY_ICON_FILE1] = file_select[var_addr - PAGE_HISTORY_ICON_FILE1];
+              file_select[var_addr - PAGE_HISTORY_SELECT] = value;
+              device_info.file_select[var_addr - PAGE_HISTORY_SELECT] = file_select[var_addr - PAGE_HISTORY_SELECT];
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               if(value == 0)
               {
-                printf("file %d off\r\n",var_addr - PAGE_HISTORY_ICON_FILE1 + 1);
+                printf("file %d off\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
               }
               else
               {
-                printf("file %d on\r\n",var_addr - PAGE_HISTORY_ICON_FILE1 + 1);
+                printf("file %d on\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
               }
+            }
+            else if(var_addr == PAGE_HISTORY_KEY_ADD)
+            {//
+              
             }
             else if(var_addr == PAGE_HISTORY_KEY_READ)
             {
@@ -658,7 +683,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//选择U盘文件
               value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               Disk_File.fileselect[var_addr - PAGE_U_ICON_SELECT1] = value;
-              printf("Disk file %d,%d\r\n",var_addr - PAGE_HISTORY_ICON_FILE1 + 1,value);
+              printf("Disk file %d,%d\r\n",var_addr - PAGE_HISTORY_SELECT + 1,value);
             }
             else if(var_addr == PAGE_U_KEY_READ)
             {//读取U盘文件
@@ -1023,6 +1048,16 @@ void vTaskTaskLCD(void *pvParameters)
                 SDWE_WARNNING(PAGE_CONFIG_WARNNING,"密码错误");
               }
             }
+            /******************************历史资料页面2***************************************/
+            else if(var_addr == PAGE_HISTORY2_CANCEL)
+            {
+              
+            }
+            else if(var_addr == PAGE_HISTORY2_IMPORT)
+            {
+              
+            }
+            
             /**************************页面使能开关**************************************/
             else if(var_addr == PAGE_HIDDEN_JINGSHA)
             {
