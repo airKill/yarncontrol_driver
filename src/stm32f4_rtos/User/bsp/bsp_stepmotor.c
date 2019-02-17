@@ -59,9 +59,9 @@ void TIM3_PWM_SETPMOTOR(void)
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);   //Open TIM3  Clock
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 4 - 1;          //定时器时钟84MHZ/4=21
+  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;          //定时器时钟84MHZ/4=21
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
-  TIM_TimeBaseStructure.TIM_Period = 2000 - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
+  TIM_TimeBaseStructure.TIM_Period = 400 - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
   
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
@@ -69,14 +69,14 @@ void TIM3_PWM_SETPMOTOR(void)
   /* PWM1 Mode configuration: TIM3_CH1 */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
-  TIM_OCInitStructure.TIM_Pulse = 500;                            //config TIM3_CCR1 vaule
+  TIM_OCInitStructure.TIM_Pulse = 200;                            //config TIM3_CCR1 vaule
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
   TIM_OC3Init(TIM3, &TIM_OCInitStructure);
   
   TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);         // turn on oc1 preload 
   TIM_ARRPreloadConfig(TIM3, ENABLE);
   /* TIM3 enable counter */
-  TIM_Cmd(TIM3, ENABLE);
+  TIM_Cmd(TIM3, DISABLE);
 }
 
 void TIM1_PWM_SETPMOTOR(void)
@@ -86,7 +86,7 @@ void TIM1_PWM_SETPMOTOR(void)
   
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);   //Open TIM3  Clock
 
-  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;          //定时器时钟168MHZ/21=8MHZ
+  TIM_TimeBaseStructure.TIM_Prescaler = 42 - 1;          //定时器时钟168MHZ/21=8MHZ
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
   TIM_TimeBaseStructure.TIM_Period = 400;         //8MHZ/400=20KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
@@ -112,12 +112,12 @@ void TIM1_PWM_SETPMOTOR(void)
 
 void StepMotor_adjust_speed(u8 motor,u32 value)
 {
-  if(motor == 1)
+  if(motor == STEPMOTOR1)
   {
     TIM_SetCompare2(TIM3,value / 2);
     TIM_SetAutoreload(TIM3,value);
   }
-  else if(motor == 2)
+  else if(motor == STEPMOTOR2)
   {
     TIM_SetCompare2(TIM1,value / 2);
     TIM_SetAutoreload(TIM1,value);
@@ -126,11 +126,11 @@ void StepMotor_adjust_speed(u8 motor,u32 value)
 
 void StepMotor_stop(u8 motor)
 {
-  if(motor == 1)
+  if(motor == STEPMOTOR1)
   {
     TIM_Cmd(TIM3, DISABLE);
   }
-  else if(motor == 2)
+  else if(motor == STEPMOTOR2)
   {
     TIM_Cmd(TIM1, DISABLE);
     TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加

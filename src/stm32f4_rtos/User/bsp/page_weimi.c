@@ -74,7 +74,7 @@ u32 from_speed_step(float speed)
   u16 freq;
   u32 count;
   freq = speed / 60 * 360 / 1.8 * 8;
-  count = 8000000 / freq;
+  count = 4000000 / freq;
   return count;
 }
 

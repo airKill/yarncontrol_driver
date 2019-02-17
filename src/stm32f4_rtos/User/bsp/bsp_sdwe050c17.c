@@ -198,7 +198,7 @@ void Sdwe_clear_filename(u8 file_count)
   Sdwe_clearString(PAGE_HISTORY_FILETIME + file_count * 10);
   Sdwe_clearString(PAGE_HISTORY_TASKMETER + file_count * 10);
   Sdwe_clearString(PAGE_HISTORY_COMPLETE_METER + file_count * 10);
-  Sdwe_clearString(PAGE_HISTORY_COMPLETE_TIME + file_count * 10);
+  Sdwe_clearString(PAGE_HISTORY_COMPLETE_TIME + file_count * 5);
 }
 
 void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)

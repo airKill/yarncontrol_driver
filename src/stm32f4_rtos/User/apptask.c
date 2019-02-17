@@ -528,11 +528,11 @@ void vTaskTaskLCD(void *pvParameters)
                       Sdwe_disPicture(PAGE_3);
                     else if(var_addr == PAGE_HISTORY2_IMPORT)//按下第三页保存按钮
                     {
+                      Sdwe_disPicture(PAGE_HISTORY);//跳转到页面3
                       for(i=0;i<10;i++)
                       {
                         Sdwe_writeIcon(i + PAGE_HISTORY_SELECT,file_select[i]);
                       }
-                      Sdwe_disPicture(PAGE_HISTORY);//跳转到页面3
                       Sdwe_refresh_allname(device_info.page_count_all);
                     }
                   }
@@ -654,21 +654,6 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 /* 发送失败，即使等待了10个时钟节拍 */
                 printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
-              }
-            }
-            else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
-            {//文件选择
-              value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-              file_select[var_addr - PAGE_HISTORY_SELECT] = value;
-              device_info.file_select[var_addr - PAGE_HISTORY_SELECT] = file_select[var_addr - PAGE_HISTORY_SELECT];
-              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-              if(value == 0)
-              {
-                printf("file %d off\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
-              }
-              else
-              {
-                printf("file %d on\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
               }
             }
             else if(var_addr == PAGE_HISTORY_KEY_ADD)
@@ -1306,6 +1291,21 @@ void vTaskTaskLCD(void *pvParameters)
             {
               MotorProcess.current_seg = 0;
               MotorProcess.current_wei = 0;
+            }
+            else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
+            {//文件选择
+              value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
+              file_select[var_addr - PAGE_HISTORY_SELECT] = value;
+              device_info.file_select[var_addr - PAGE_HISTORY_SELECT] = file_select[var_addr - PAGE_HISTORY_SELECT];
+              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+              if(value == 0)
+              {
+                printf("file %d off\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
+              }
+              else
+              {
+                printf("file %d on\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
+              }
             }
           }
         }
@@ -2252,7 +2252,8 @@ static void vTaskMotorControl(void *pvParameters)
 
 static void vTaskFreq(void *pvParameters)
 {
-  u32 step_count;
+  u32 step1_count;
+  u32 step2_count;
   BaseType_t xResult;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200);
   while(1)
@@ -2271,12 +2272,15 @@ static void vTaskFreq(void *pvParameters)
           if(is_stop != old_is_stop)
           {//主轴速度大于0时，步进电机开始运行
             old_is_stop = is_stop;
+            StepMotor_start(STEPMOTOR1);
             StepMotor_start(STEPMOTOR2);
           }
           if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
           {
-            step_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
-            StepMotor_adjust_speed(STEPMOTOR2,step_count);
+            step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
+            step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
+            StepMotor_adjust_speed(STEPMOTOR1,step1_count);
+            StepMotor_adjust_speed(STEPMOTOR2,step2_count);
           }
         }
       }
@@ -2287,6 +2291,7 @@ static void vTaskFreq(void *pvParameters)
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;
+        StepMotor_stop(STEPMOTOR1);
         StepMotor_stop(STEPMOTOR2);
       }
       Freq_value = 0;
