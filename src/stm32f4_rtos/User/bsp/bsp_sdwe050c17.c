@@ -33,7 +33,8 @@ void Init_JINGSHA_GUI(void)
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
 
   memcpy(id,device_info.device_id,device_info.device_id_len);
-  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+//  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  sprintf((char *)name,"%s-%s",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
 
@@ -219,7 +220,8 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
     memcpy(name_1,file.filename,file.filename_len);
 //    sprintf((char *)name,"%dºÅ»ú-%s",device_info.master_id,name_1);
     memcpy(id,device_info.device_id,device_info.device_id_len);
-    sprintf((char *)name,"%s-%s.CSV",id,name_1);
+//    sprintf((char *)name,"%s-%s.CSV",id,name_1);
+    sprintf((char *)name,"%s-%s",id,name_1);
     name_len = strlen((char const*)name);
     Sdwe_disString(PAGE_HISTORY_TEXT_FILENAME1 + file_count * 10,name,name_len);//ÏÔÊ¾»õºÅ
 //    sprintf((char *)time_buf,"%02d/%02d/%02d %02d:%02d:%02d",file.year,file.month,file.day,
@@ -239,7 +241,7 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
     Sdwe_disString(PAGE_HISTORY_COMPLETE_METER + file_count * 10,buf,strlen(buf));
     memset(buf,0,10);
     sprintf(buf,"%d",para.complete_work_time / 3600);
-    Sdwe_disString(PAGE_HISTORY_COMPLETE_TIME + file_count * 10,buf,strlen(buf));
+    Sdwe_disString(PAGE_HISTORY_COMPLETE_TIME + file_count * 5,buf,strlen(buf));
   }
 }
 void Sdwe_refresh_allname(u8 file_count)
@@ -269,7 +271,8 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
 
   memcpy(id,device_info.device_id,device_info.device_id_len);
-  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+//  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  sprintf((char *)name,"%s-%s",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
@@ -303,7 +306,8 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
 
   memcpy(id,device_info.device_id,device_info.device_id_len);
-  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+//  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  sprintf((char *)name,"%s-%s",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
@@ -395,7 +399,8 @@ void sdew_weimi_page1(WEIMI_PARA *para)
   memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
 
   memcpy(id,device_info.device_id,device_info.device_id_len);
-  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+//  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  sprintf((char *)name,"%s-%s",id,name_1);
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
