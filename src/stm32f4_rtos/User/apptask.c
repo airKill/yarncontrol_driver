@@ -1327,6 +1327,7 @@ void vTaskTaskLCD(void *pvParameters)
 static void vTaskMassStorage(void *pvParameters)
 {
   JINGSHA_FILE read_info;
+  
   FRESULT result;
   FATFS fs;
   FIL file;
@@ -1372,7 +1373,7 @@ static void vTaskMassStorage(void *pvParameters)
           printf("打开文件失败\r\n");
           return;
         }
-        char buf[500] = "位置,设定张力\n",buf1[20];
+        char buf[1024] = "位置,设定张力\n",buf1[20];
         u16 len,i;
         for(i=0;i<30;i++)
         {
@@ -1381,6 +1382,46 @@ static void vTaskMassStorage(void *pvParameters)
         }
         sprintf(buf,"%s时间日期,%02d/%02d/%02d,%02d:%02d:%02d",buf,read_info.year,
                 read_info.month,read_info.day,read_info.hour,read_info.minute,read_info.second);
+        
+        PEILIAO_PARA PeiLiao_para;
+        W25QXX_Read((u8 *)&PeiLiao_para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * download_num),sizeof(PeiLiao_para));
+        sprintf(buf,"%s\n\n经纱,%.1f\n",buf,PeiLiao_para.latitude_weight);
+        sprintf(buf,"%s纬纱,%.1f\n",buf,PeiLiao_para.longitude_weight);
+        sprintf(buf,"%s橡胶,%.1f\n",buf,PeiLiao_para.rubber_weight);
+        sprintf(buf,"%s成品,%.1f\n",buf,PeiLiao_para.final_weight);
+        sprintf(buf,"%s织机条数,%d\n",buf,PeiLiao_para.loom_num);
+        sprintf(buf,"%s损耗,%d\n",buf,PeiLiao_para.loss);
+        sprintf(buf,"%s米任务,%d\n",buf,PeiLiao_para.total_meter_set);
+        sprintf(buf,"%s重量任务,%.1f\n",buf,PeiLiao_para.total_weitht_set);
+        sprintf(buf,"%s开度,%.1f\n",buf,PeiLiao_para.kaidu_set);
+        sprintf(buf,"%s纬密,%.1f\n",buf,PeiLiao_para.weimi_set);
+        sprintf(buf,"%s纬密显示,%d\n",buf,PeiLiao_para.add_meter_set);
+        sprintf(buf,"%s补单数量,%d\n",buf,PeiLiao_para.weimi_dis_set);
+
+        WEIMI_PARA WeiMi_para;
+        W25QXX_Read((u8 *)&WeiMi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * download_num),sizeof(WeiMi_para));
+        sprintf(buf,"%s\n,纬循环,纬厘米,纬英寸,过渡,送纬电机,底线电机\n",buf);
+        sprintf(buf,"%s一段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[0],WeiMi_para.wei_cm_set[0],WeiMi_para.wei_inch_set[0],
+                WeiMi_para.total_wei_count[1],WeiMi_para.step1_factor[0],WeiMi_para.step2_factor[0]);
+        sprintf(buf,"%s二段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[2],WeiMi_para.wei_cm_set[1],WeiMi_para.wei_inch_set[1],
+                WeiMi_para.total_wei_count[3],WeiMi_para.step1_factor[1],WeiMi_para.step2_factor[1]);
+        sprintf(buf,"%s三段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[4],WeiMi_para.wei_cm_set[2],WeiMi_para.wei_inch_set[2],
+                WeiMi_para.total_wei_count[5],WeiMi_para.step1_factor[2],WeiMi_para.step2_factor[2]);
+        sprintf(buf,"%s四段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[6],WeiMi_para.wei_cm_set[3],WeiMi_para.wei_inch_set[3],
+                WeiMi_para.total_wei_count[7],WeiMi_para.step1_factor[3],WeiMi_para.step2_factor[3]);
+        sprintf(buf,"%s五段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[8],WeiMi_para.wei_cm_set[4],WeiMi_para.wei_inch_set[4],
+                WeiMi_para.total_wei_count[9],WeiMi_para.step1_factor[4],WeiMi_para.step2_factor[4]);
+        sprintf(buf,"%s六段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[10],WeiMi_para.wei_cm_set[5],WeiMi_para.wei_inch_set[5],
+                WeiMi_para.total_wei_count[11],WeiMi_para.step1_factor[5],WeiMi_para.step2_factor[5]);
+        sprintf(buf,"%s七段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[12],WeiMi_para.wei_cm_set[6],WeiMi_para.wei_inch_set[6],
+                WeiMi_para.total_wei_count[13],WeiMi_para.step1_factor[6],WeiMi_para.step2_factor[6]);
+        sprintf(buf,"%s八段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[14],WeiMi_para.wei_cm_set[7],WeiMi_para.wei_inch_set[7],
+                WeiMi_para.total_wei_count[15],WeiMi_para.step1_factor[7],WeiMi_para.step2_factor[7]);
+        sprintf(buf,"%s九段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[16],WeiMi_para.wei_cm_set[8],WeiMi_para.wei_inch_set[8],
+                WeiMi_para.total_wei_count[17],WeiMi_para.step1_factor[8],WeiMi_para.step2_factor[8]);
+        sprintf(buf,"%s十段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[18],WeiMi_para.wei_cm_set[9],WeiMi_para.wei_inch_set[9],
+                WeiMi_para.total_wei_count[19],WeiMi_para.step1_factor[9],WeiMi_para.step2_factor[9]);
+        
         len = strlen(buf);
         result = f_write(&file,buf,len,&bw);
         if(result == FR_OK)
@@ -1941,14 +1982,15 @@ static void vTaskReadDisk(void *pvParameters)
             else
             {
               printf("(0x%02d)文件  ", FileInf.fattrib);
-              if((strstr(FileInf.fname,".CSV")) && (strlen(FileInf.fname) <= 10))
-              {//文件为CSV表格，且文件名长度小于10字符
-                if(Disk_File.filenum < 10)
-                {
-                  memcpy(Disk_File.filename[Disk_File.filenum],FileInf.fname,10);
-                  Sdwe_disString(PAGE_U_TEXT_FILENAME1 + Disk_File.filenum * 10,(u8 *)FileInf.fname,10);
-                  Disk_File.filenum++;
-                }
+              u8 *fn;
+              //判断是长文件名还是短文件名如果是长文件名就取长文件名否则就去短文件名的信息
+              fn = (u8*)(*FileInf.lfname?FileInf.lfname:FileInf.fname);
+//              if((strstr(FileInf.fname,".CSV")) && (strlen(FileInf.fname) <= 10))
+              if(strstr(fn,".CSV"))
+              {//文件为CSV表格
+                memcpy(Disk_File.filename[Disk_File.filenum],fn,strlen(fn));
+                Sdwe_disString(PAGE_U_TEXT_FILENAME1 + Disk_File.filenum * 20,fn,strlen(fn));
+                Disk_File.filenum++;
               }
             }
             /* 打印文件大小, 最大4G */
