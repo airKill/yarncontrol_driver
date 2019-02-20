@@ -44,6 +44,10 @@
 
 #define BROADCAST       0xff
 
+#define DISK_IDLE       0
+#define DISK_FILENAME    1
+#define DISK_FILEDATA       2
+
 typedef struct Msg
 {
   u8 addr;
@@ -73,6 +77,8 @@ extern u8 working_stage;
 extern u8 isWork,old_isWork;
 extern u8 card_record,old_card_record;
 extern u8 page_num;
+extern u8 readDisk;
+extern u8 readFilenum;
 /*
 **********************************************************************************************************
 ±äÁ¿ÉùÃ÷

@@ -106,5 +106,6 @@ extern DEVICE_INFO device_info;
 
 void read_device_info(void);
 void para_init(SLAVE_PARA *para);
+void read_from_disk(char *diskbuf);
 #endif
 

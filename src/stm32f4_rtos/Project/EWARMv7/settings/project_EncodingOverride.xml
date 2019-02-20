@@ -138,6 +138,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>F:\work\YarnControl_Driver\src\stm32f4_rtos\User\usbh_mass_storage\usbh_usr.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\YarnControl_Driver\src\stm32f4_rtos_181102\User\bsp\bsp.c</path>
     <encoding>System</encoding>
   </override>

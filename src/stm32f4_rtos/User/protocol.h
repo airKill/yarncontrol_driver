@@ -44,9 +44,9 @@ extern RTC_TIME rtc_time;
 
 typedef struct
 {
-  u8 filenum;
-  u8 fileselect[10];
-  u8 filename[10][10];
+  u8 filenum;//U盘文件数量，最大10
+  u8 fileselect[10];//U盘文件选择标记
+  u8 filename[10][20];//U盘文件名
 }DISK_FILE;
 extern DISK_FILE Disk_File;
 

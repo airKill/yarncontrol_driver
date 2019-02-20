@@ -13,7 +13,7 @@ u8 input_password_len = 0;
 u8 file_select[10] = {0};
 u8 read_file_select[10] = {0};
 
-DISK_FILE Disk_File;
+DISK_FILE Disk_File;//Uелнд╪Ч
 
 void rs485_control_onoff(u8 num,u8 onoff)
 {
@@ -84,7 +84,7 @@ void DiskFile_init(void)
   for(i=0;i<10;i++)
   {
     Disk_File.fileselect[i] = 0;
-    for(j=0;j<10;j++)
+    for(j=0;j<20;j++)
         Disk_File.filename[i][j] = 0;
   }  
 }

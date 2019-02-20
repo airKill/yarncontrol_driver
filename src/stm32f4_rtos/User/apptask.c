@@ -43,6 +43,8 @@ extern u8 modbus_send_frame(m_frame_typedef * fx,SLAVE info);
 
 u8 pwm_flag = 0;
 
+u8 readDisk = DISK_IDLE;        //读取U盘功能，空闲/读文件名/读文件
+u8 readFilenum = 0;
 /*
 *********************************************************************************************************
 *	函 数 名: vTaskTaskLCD
@@ -663,6 +665,7 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_HISTORY_KEY_READ)
             {
               xSemaphoreGive(xSemaphore_readDisk);
+              readDisk = DISK_FILENAME;
             }
             else if((var_addr >= PAGE_U_ICON_SELECT1) && (var_addr <= PAGE_U_ICON_SELECT1 + 9))
             {//选择U盘文件
@@ -673,11 +676,13 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_U_KEY_READ)
             {//读取U盘文件
               u8 i;
+              u8 num;
               u16 cnt = 0;//文件选择标志，某个文件选择，对应的位置1
               for(i=0;i<10;i++)
               {
                 if(Disk_File.fileselect[i] == 1)
                 {
+                  num = i;
                   cnt++;
                 }
               }
@@ -685,16 +690,22 @@ void vTaskTaskLCD(void *pvParameters)
               {//未选择文件
                 SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"未选择文件");
               }
-              else
-              {
+              else if(cnt == 1)
+              {//只能选择一个文件
                 if(Disk_File.filenum == 0)
                 {//没有保存的文件
                   SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"无文件");
                 }
                 else
                 {
-                  
+                  xSemaphoreGive(xSemaphore_readDisk);
+                  readFilenum = num;
+                  readDisk = DISK_FILEDATA;
                 }
+              }
+              else
+              {//
+                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"只能选1个");
               }
             }
             else if(var_addr == PAGE1_KEY_RESET)
@@ -1380,12 +1391,12 @@ static void vTaskMassStorage(void *pvParameters)
           sprintf(buf1,"%d#,%.2f\n",i + 1,(float)read_info.weight_value[i] / 1000.0);
           strcat(buf,buf1);
         }
-        sprintf(buf,"%s时间日期,%02d/%02d/%02d,%02d:%02d:%02d",buf,read_info.year,
+        sprintf(buf,"%s时间日期,%02d/%02d/%02d,%02d:%02d:%02d\n\n",buf,read_info.year,
                 read_info.month,read_info.day,read_info.hour,read_info.minute,read_info.second);
         
         PEILIAO_PARA PeiLiao_para;
         W25QXX_Read((u8 *)&PeiLiao_para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * download_num),sizeof(PeiLiao_para));
-        sprintf(buf,"%s\n\n经纱,%.1f\n",buf,PeiLiao_para.latitude_weight);
+        sprintf(buf,"%s经纱,%.1f\n",buf,PeiLiao_para.latitude_weight);
         sprintf(buf,"%s纬纱,%.1f\n",buf,PeiLiao_para.longitude_weight);
         sprintf(buf,"%s橡胶,%.1f\n",buf,PeiLiao_para.rubber_weight);
         sprintf(buf,"%s成品,%.1f\n",buf,PeiLiao_para.final_weight);
@@ -1396,11 +1407,11 @@ static void vTaskMassStorage(void *pvParameters)
         sprintf(buf,"%s开度,%.1f\n",buf,PeiLiao_para.kaidu_set);
         sprintf(buf,"%s纬密,%.1f\n",buf,PeiLiao_para.weimi_set);
         sprintf(buf,"%s纬密显示,%d\n",buf,PeiLiao_para.add_meter_set);
-        sprintf(buf,"%s补单数量,%d\n",buf,PeiLiao_para.weimi_dis_set);
+        sprintf(buf,"%s补单数量,%d\n\n",buf,PeiLiao_para.weimi_dis_set);
 
         WEIMI_PARA WeiMi_para;
         W25QXX_Read((u8 *)&WeiMi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * download_num),sizeof(WeiMi_para));
-        sprintf(buf,"%s\n,纬循环,纬厘米,纬英寸,过渡,送纬电机,底线电机\n",buf);
+        sprintf(buf,"%s,纬循环,纬厘米,纬英寸,过渡,送纬电机,底线电机\n",buf);
         sprintf(buf,"%s一段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[0],WeiMi_para.wei_cm_set[0],WeiMi_para.wei_inch_set[0],
                 WeiMi_para.total_wei_count[1],WeiMi_para.step1_factor[0],WeiMi_para.step2_factor[0]);
         sprintf(buf,"%s二段,%d,%.1f,%.1f,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[2],WeiMi_para.wei_cm_set[1],WeiMi_para.wei_inch_set[1],
@@ -1928,6 +1939,8 @@ static void vTaskReadDisk(void *pvParameters)
   BaseType_t xResult;
   FRESULT result;
   FATFS fs;
+  FIL file;
+  uint32_t bw;
   DIR DirInf;
   FILINFO FileInf;
   uint32_t cnt = 0;
@@ -1939,11 +1952,7 @@ static void vTaskReadDisk(void *pvParameters)
     if(xResult == pdTRUE)
     {
       if(usb_disk_flag == 1)
-      {
-        DiskFile_init();
-        Sdwe_disPicture(PAGE_U);//跳转至U盘文件页面
-        memset(read_file_select,0,10);//清除文件选择Buff
-        Sdwe_ClearReadDisk();//清除文件选择图标
+      {//U盘存在
         /* 挂载文件系统 */
         result = f_mount(&fs, "2:", 0);			/* Mount a logical drive */
         if (result != FR_OK)
@@ -1957,6 +1966,14 @@ static void vTaskReadDisk(void *pvParameters)
           printf("打开根目录失败  (%s)\r\n", FR_Table[result]);
           return;
         }
+        
+        if(readDisk == DISK_FILENAME)
+        {//显示U盘文件名
+          DiskFile_init();
+          Sdwe_disPicture(PAGE_U);//跳转至U盘文件页面
+          memset(read_file_select,0,10);//清除文件选择Buff
+          Sdwe_ClearReadDisk();//清除文件选择图标
+          
           /* 读取当前文件夹下的文件和目录 */
         #if _USE_LFN
           FileInf.lfname = lfname;
@@ -1982,15 +1999,18 @@ static void vTaskReadDisk(void *pvParameters)
             else
             {
               printf("(0x%02d)文件  ", FileInf.fattrib);
-              u8 *fn;
-              //判断是长文件名还是短文件名如果是长文件名就取长文件名否则就去短文件名的信息
-              fn = (u8*)(*FileInf.lfname?FileInf.lfname:FileInf.fname);
-//              if((strstr(FileInf.fname,".CSV")) && (strlen(FileInf.fname) <= 10))
-              if(strstr(fn,".CSV"))
-              {//文件为CSV表格
-                memcpy(Disk_File.filename[Disk_File.filenum],fn,strlen(fn));
-                Sdwe_disString(PAGE_U_TEXT_FILENAME1 + Disk_File.filenum * 20,fn,strlen(fn));
-                Disk_File.filenum++;
+              if(Disk_File.filenum < 10)
+              {
+                char *fn;
+                //判断是长文件名还是短文件名如果是长文件名就取长文件名否则就去短文件名的信息
+                fn = (*FileInf.lfname?FileInf.lfname:FileInf.fname);
+                if(strstr(fn,".CSV"))
+                {//文件为CSV表格
+                  memcpy(Disk_File.filename[Disk_File.filenum],fn,strlen(fn));
+                  Disk_File.filename[Disk_File.filenum][strlen(fn) - 3] = '\0';
+                  Sdwe_disString(PAGE_U_TEXT_FILENAME1 + Disk_File.filenum * 20,fn,strlen(fn));
+                  Disk_File.filenum++;
+                }
               }
             }
             /* 打印文件大小, 最大4G */
@@ -1998,8 +2018,37 @@ static void vTaskReadDisk(void *pvParameters)
             printf("  %s |", FileInf.fname);	/* 短文件名 */
             printf("  %s\r\n", (char *)FileInf.lfname);	/* 长文件名 */
           }
-          /* 卸载文件系统 */
-          f_mount(NULL, "2:", 0);
+        }
+        else if(readDisk == DISK_FILEDATA)
+        {//读取U盘文件
+          char name[20];
+          u8 file_buf[1000];
+          sprintf(name,"2:/%s",Disk_File.filename[readFilenum]);
+          /* 打开文件 */
+          result = f_open(&file,name,FA_OPEN_EXISTING | FA_READ);
+          if (result !=  FR_OK)
+          {
+            printf("Don't Find File : %s\r\n",name);
+            return;
+          }
+          
+          /* 读取文件 */
+          result = f_read(&file, &file_buf, sizeof(file_buf) - 1, &bw);
+          if(result == FR_OK)
+          {
+            read_from_disk((char *)file_buf);
+            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取成功");
+          }
+          else
+          {
+            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取失败");
+          }
+          
+          /* 关闭文件*/
+          f_close(&file);
+        }
+        /* 卸载文件系统 */
+        f_mount(NULL, "2:", 0);
       }
       else
       {
@@ -2392,7 +2441,7 @@ void AppTaskCreate (void)
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
-              512,         		/* 任务栈大小，单位word，也就是4字节 */
+              1024,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
