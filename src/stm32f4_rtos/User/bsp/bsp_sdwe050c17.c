@@ -213,7 +213,7 @@ void Sdwe_refresh_filename(JINGSHA_FILE file,u8 file_count)
   memset(time_buf,0,30);
   len = sizeof(JINGSHA_FILE);
   W25QXX_Read((u8 *)&file,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * file_count),len);
-  if(file.filename_len <= 10)
+//  if(file.filename_len <= 10)
   {
     memset(name,0,20);
     memset(name_1,0,20);

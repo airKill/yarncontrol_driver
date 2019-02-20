@@ -116,13 +116,14 @@ void para_init(SLAVE_PARA *para)
 
 void read_from_disk(char *diskbuf)
 {
+  char *trx = 0;
   JINGSHA_FILE jingsha_file;
   WEIMI_PARA weimi_file;
   PEILIAO_PARA peiliao_file;
   
-  jingsha_file.filename_len = strlen(Disk_File.filename[readFilenum]);                //文件名长度  
+  jingsha_file.filename_len = strlen(Disk_File.filename[readFilenum]) - 4;                //文件名长度  
   memcpy(jingsha_file.filename,Disk_File.filename[readFilenum],jingsha_file.filename_len);//文件名
-  if(strstr(diskbuf,"位置,张力设定\n"))
+  if(check_cmd(diskbuf,"位置,设定张力"))
   {
     printf("格式正确\n");
     char *strx = 0;
@@ -539,4 +540,11 @@ void read_from_disk(char *diskbuf)
     device_info.page_count_all++;
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
   }
+}
+
+u8* check_cmd(char *str1,char *str2)
+{
+  char *strx = 0;
+  strx = strstr((const char*)str1,(const char*)str2);
+  return (u8*)strx;
 }

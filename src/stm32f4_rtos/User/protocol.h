@@ -18,7 +18,7 @@ extern SLAVE_PARA SlavePara;
 typedef struct
 {
   u8 filename_len;         
-  u8 filename[10];   
+  u8 filename[20];   
   u8 year;         //Äê
   u8 month;   
   u8 day; 

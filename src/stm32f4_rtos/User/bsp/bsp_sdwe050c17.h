@@ -61,10 +61,13 @@
 #define PAGE_FILE_KEY           0x0104
 #define PAGE_START_STOP           0x0130
 
-#define PAGE1_KEY_RESET         0x0131
-#define PAGE1_ICON1_10_ONOFF          0x0450
-#define PAGE2_ICON11_20_ONOFF         0x0451
-#define PAGE3_ICON21_30_ONOFF         0x0452
+#define PAGE1_KEY_RESET               0x0131
+#define PAGE1_ICON1_10_ONOFF          0x0132
+#define PAGE2_ICON11_20_ONOFF         0x0133
+#define PAGE3_ICON21_30_ONOFF         0x0134
+//#define PAGE1_ICON1_10_ONOFF          0x0450
+//#define PAGE2_ICON11_20_ONOFF         0x0451
+//#define PAGE3_ICON21_30_ONOFF         0x0452
 
 #define PAGE1_ECHO_WEIGHT       0x0700
 

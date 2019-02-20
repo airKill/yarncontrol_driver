@@ -2007,7 +2007,7 @@ static void vTaskReadDisk(void *pvParameters)
                 if(strstr(fn,".CSV"))
                 {//文件为CSV表格
                   memcpy(Disk_File.filename[Disk_File.filenum],fn,strlen(fn));
-                  Disk_File.filename[Disk_File.filenum][strlen(fn) - 3] = '\0';
+//                  Disk_File.filename[Disk_File.filenum][strlen(fn) - 3] = '\0';
                   Sdwe_disString(PAGE_U_TEXT_FILENAME1 + Disk_File.filenum * 20,fn,strlen(fn));
                   Disk_File.filenum++;
                 }
@@ -2036,7 +2036,9 @@ static void vTaskReadDisk(void *pvParameters)
           result = f_read(&file, &file_buf, sizeof(file_buf) - 1, &bw);
           if(result == FR_OK)
           {
+            __set_PRIMASK(1); 
             read_from_disk((char *)file_buf);
+            __set_PRIMASK(0); 
             SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取成功");
           }
           else
@@ -2441,7 +2443,7 @@ void AppTaskCreate (void)
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
-              1024,         		/* 任务栈大小，单位word，也就是4字节 */
+              1224,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
