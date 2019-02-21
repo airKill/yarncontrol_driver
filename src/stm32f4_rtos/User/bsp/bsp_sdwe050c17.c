@@ -259,9 +259,7 @@ void Sdwe_product_page(PRODUCT_PARA *para)
 {
   u32 uncomplete;
   u32 complete;
-  u8 on_time_buf[10];
-  u8 off_time_buf[10];
-  
+  u16 hour,min;
   u8 name[20],name_1[20];
   u8 name_len;
   u8 id[10];
@@ -284,12 +282,16 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,complete,4);
   Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->weicount_kilowei,4);
   Sdwe_disDigi(PAGE_PRODUCT_SPEED,para->speed,2);
-  memset(on_time_buf,0,10);
-  memset(off_time_buf,0,10);
-  sprintf((char *)on_time_buf,"%04d:%02d",para->total_work_time / 3600,para->total_work_time % 3600 / 60);
-  sprintf((char *)off_time_buf,"%04d:%02d",para->total_stop_time / 3600,para->total_stop_time % 3600 / 60);
-  Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen((char const*)on_time_buf));
-  Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen((char const*)off_time_buf));
+
+  hour = para->total_work_time / 3600;//计算开机时间小时
+  min = para->total_work_time % 3600 / 60;//计算开机时间小时
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_HOUR,hour,2);//显示开机时间小时
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_MIN,min,2);//显示开机时间分钟
+  hour = para->total_stop_time / 3600;//计算停机时间小时
+  min = para->total_stop_time % 3600 / 60;//计算停机时间分钟
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);//显示停机时间小时
+  Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);//显示停机时间分钟
+
   Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),4);
 }

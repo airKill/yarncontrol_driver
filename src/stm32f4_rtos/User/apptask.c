@@ -1206,34 +1206,54 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_ADD1) && (var_addr < PAGE_WEIMI_STEP1_ADD1 + 10))
             {//送纬速度加1——10
-              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] < 200)
-              {//送纬电机速度小于主轴速度才能加
-                weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] += 1;
+              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_ADD1] < 200)
+              {//送纬电机速度小于200才能减
+                u8 position;
+                u8 speed;
+                position = var_addr - PAGE_WEIMI_STEP1_ADD1;
+                weimi_para.step1_factor[position] += 1;
+                speed = weimi_para.step1_factor[position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SUB1) && (var_addr < PAGE_WEIMI_STEP1_SUB1 + 10))
             {//送纬速度减1——10
-              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] > 0)
-              {
-                weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SPEED] -= 1;
+              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SUB1] > 0)
+              {//送纬电机速度大于0
+                u8 position;
+                u8 speed;
+                position = var_addr - PAGE_WEIMI_STEP1_SUB1;
+                weimi_para.step1_factor[position] -= 1;
+                speed = weimi_para.step1_factor[position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_ADD1) && (var_addr < PAGE_WEIMI_STEP2_ADD1 + 10))
             {//底线速度加1——10
-              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SPEED] < 200)
-              {//送纬电机速度小于主轴速度才能加
-                weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SPEED] += 1;
+              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_ADD1] < 200)
+              {//送纬电机速度小于200才能减
+                u8 position;
+                u8 speed;
+                position = var_addr - PAGE_WEIMI_STEP2_ADD1;
+                weimi_para.step2_factor[position] += 1;
+                speed = weimi_para.step2_factor[position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SUB1) && (var_addr < PAGE_WEIMI_STEP2_SUB1 + 10))
             {//底线速度减1——10
-              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SPEED] > 0)
-              {
-                weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SPEED] -= 1;
+              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SUB1] > 0)
+              {//送纬电机速度大于0
+                u8 position;
+                u8 speed;
+                position = var_addr - PAGE_WEIMI_STEP2_SUB1;
+                weimi_para.step2_factor[position] -= 1;
+                speed = weimi_para.step2_factor[position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
               }
             }
             else if(var_addr == PAGE_WEIMI_WEIMI1)
@@ -1983,11 +2003,11 @@ static void vTaskReadDisk(void *pvParameters)
           for(cnt = 0; ;cnt++)
           {
             result = f_readdir(&DirInf,&FileInf); 		/* 读取目录项，索引会自动下移 */
-            if (result != FR_OK || FileInf.fname[0] == 0)
+            if(result != FR_OK || FileInf.fname[0] == 0)
             {
               break;
             }
-            if (FileInf.fname[0] == '.')
+            if(FileInf.fname[0] == '.')
             {
               continue;
             }
@@ -2564,14 +2584,14 @@ void AppObjCreate (void)
 
 void TIM_CallBack1(void)
 {
-  Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);
-  Sdwe_clearString(PAGE_U_TEXT_READ_STATE);
-  Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);
-  Sdwe_clearString(PAGE_STOP_WARNNING);
-  Sdwe_clearString(PAGE_CARD_WARNNING);
-  Sdwe_clearString(PAGE_DEVICE_WARNNING);
-  Sdwe_clearString(PAGE_WEIMI_WARNNING);
-  Sdwe_clearString(MAIN_PAGE_WARNNING);
+  Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);//清除历史资料页面显示提醒
+  Sdwe_clearString(PAGE_U_TEXT_READ_STATE);//清除U盘页面读取状态提醒
+  Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能页面RFID提醒
+  Sdwe_clearString(PAGE_STOP_WARNNING);//清除停机页面提醒
+  Sdwe_clearString(PAGE_CARD_WARNNING);//清除读卡提醒
+  Sdwe_clearString(PAGE_DEVICE_WARNNING);//清除设备ID修改提醒
+  Sdwe_clearString(PAGE_WEIMI_WARNNING);//清除纬密页面提醒
+  Sdwe_clearString(MAIN_PAGE_WARNNING);//清除主页提醒
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)
@@ -2600,7 +2620,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
     sample_time++;
   }
   else if(sample_time >= 2)
-  {//计算10s内的脉冲数
+  {//计算2s内的脉冲数
     sample_time = 0;
     speed_2 = pluse_count;
     pluse_count = 0;
@@ -2632,11 +2652,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
     {
       product_para.total_work_time++;
       if((product_para.total_work_time % 60) == 0)
-      {
-        u8 on_time_buf[10];
-        memset(on_time_buf,0,10);
-        sprintf((char *)on_time_buf,"%04d:%02d",product_para.total_work_time / 3600,product_para.total_work_time % 3600 / 60);
-        Sdwe_disString(PAGE_PRODUCT_TIME_ON,on_time_buf,strlen((char const*)on_time_buf));
+      {//每分钟刷新一次开机时间显示
+        u16 hour,min;
+        hour = product_para.total_work_time / 3600;
+        min = product_para.total_work_time % 3600 / 60;
+        Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_HOUR,hour,2);
+        Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_MIN,min,2);
       }
     }
     else
@@ -2646,11 +2667,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
       {
         device_info.stop_para.stop_time[device_info.system_state - 1]++;
         if((product_para.total_stop_time % 60) == 0)
-        {
-          u8 off_time_buf[10];
-          memset(off_time_buf,0,10);
-          sprintf((char *)off_time_buf,"%04d:%02d",product_para.total_stop_time / 3600,product_para.total_stop_time % 3600 / 60);
-          Sdwe_disString(PAGE_PRODUCT_TIME_OFF,off_time_buf,strlen((char const*)off_time_buf));
+        {//每分钟刷新一次停机时间显示
+          u16 hour,min;
+          hour = product_para.total_stop_time / 3600;
+          min = product_para.total_stop_time % 3600 / 60;
+          Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);
+          Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);
         }
       }
     }
