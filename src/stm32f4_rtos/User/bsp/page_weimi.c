@@ -9,6 +9,8 @@ u8 servomotor_dir = FORWARD;
 u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
 u8 valid_seg = 0;
+
+u16 servomotor_step = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比

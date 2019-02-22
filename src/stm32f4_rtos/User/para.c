@@ -30,6 +30,8 @@ void read_device_info(void)
     device_info.func_onoff.channeng = 1;
     device_info.func_onoff.weimi = 1;
     
+    device_info.ratio.GEAR1 = 35;
+    device_info.ratio.GEAR2 = 10;  
     for(i=0;i<30;i++)
     {
       device_info.onoff[i] = 0;
@@ -130,10 +132,10 @@ void read_from_disk(char *diskbuf)
   {
     printf("格式正确\n");
     char *strx = 0;
+    char da[50];
     strx = strstr(diskbuf,"1#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -142,7 +144,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"2#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -151,7 +152,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"3#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -160,7 +160,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"4#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -169,7 +168,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"5#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -178,7 +176,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"6#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -187,7 +184,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"7#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -196,7 +192,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"8#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -205,7 +200,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"9#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -214,7 +208,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"10#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -223,7 +216,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"11#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -232,7 +224,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"12#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -241,7 +232,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"13#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -250,7 +240,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"14#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -259,7 +248,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"15#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -268,7 +256,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"16#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -277,7 +264,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"17#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -286,7 +272,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"18#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -295,7 +280,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"19#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -304,7 +288,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"20#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -313,7 +296,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"21#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -322,7 +304,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"22#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -331,7 +312,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"23#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -340,7 +320,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"24#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -349,7 +328,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"25#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -358,7 +336,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"26#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -367,7 +344,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"27#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -376,7 +352,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"28#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -385,7 +360,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"29#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -394,7 +368,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"30#");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       float value;
       sscanf(da,"%f",&value);
@@ -409,91 +382,78 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"经纱");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.latitude_weight);
     }
     strx = strstr(diskbuf,"纬纱");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.longitude_weight);
     }
     strx = strstr(diskbuf,"橡胶");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.rubber_weight);
     }
     strx = strstr(diskbuf,"成品");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.final_weight);
     }
     strx = strstr(diskbuf,"织机条数");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d",&peiliao_para.loom_num);
     }
     strx = strstr(diskbuf,"损耗");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d",&peiliao_para.loss);
     }
     strx = strstr(diskbuf,"米任务");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%ld",&peiliao_para.total_meter_set);
     }
     strx = strstr(diskbuf,"重量任务");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%ld",&peiliao_para.total_weitht_set);
     }
     strx = strstr(diskbuf,"开度");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.kaidu_set);
     }
     strx = strstr(diskbuf,"纬密");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%f",&peiliao_para.weimi_set);
     }
     strx = strstr(diskbuf,"纬密显示");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d",&peiliao_para.weimi_dis_set);
     }
     strx = strstr(diskbuf,"补单数量");
     if(strx)
     {
-      char da[10];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d",&peiliao_para.add_meter_set);
     }
     strx = strstr(diskbuf,"一段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[0],&weimi_para.wei_cm_set[0],&weimi_para.wei_inch_set[0],
              &weimi_para.total_wei_count[1],&weimi_para.step1_factor[0],&weimi_para.step2_factor[0]);
@@ -501,7 +461,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"二段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[2],&weimi_para.wei_cm_set[1],&weimi_para.wei_inch_set[1],
              &weimi_para.total_wei_count[3],&weimi_para.step1_factor[1],&weimi_para.step2_factor[1]);
@@ -509,7 +468,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"三段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[4],&weimi_para.wei_cm_set[2],&weimi_para.wei_inch_set[2],
              &weimi_para.total_wei_count[5],&weimi_para.step1_factor[2],&weimi_para.step2_factor[2]);
@@ -517,7 +475,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"四段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[6],&weimi_para.wei_cm_set[3],&weimi_para.wei_inch_set[3],
              &weimi_para.total_wei_count[7],&weimi_para.step1_factor[3],&weimi_para.step2_factor[3]);
@@ -525,7 +482,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"五段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[8],&weimi_para.wei_cm_set[4],&weimi_para.wei_inch_set[4],
              &weimi_para.total_wei_count[9],&weimi_para.step1_factor[4],&weimi_para.step2_factor[4]);
@@ -533,7 +489,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"六段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[10],&weimi_para.wei_cm_set[5],&weimi_para.wei_inch_set[5],
              &weimi_para.total_wei_count[11],&weimi_para.step1_factor[5],&weimi_para.step2_factor[5]);
@@ -541,7 +496,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"七段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[12],&weimi_para.wei_cm_set[6],&weimi_para.wei_inch_set[6],
              &weimi_para.total_wei_count[13],&weimi_para.step1_factor[6],&weimi_para.step2_factor[6]);
@@ -549,7 +503,6 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"八段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[14],&weimi_para.wei_cm_set[7],&weimi_para.wei_inch_set[7],
              &weimi_para.total_wei_count[15],&weimi_para.step1_factor[7],&weimi_para.step2_factor[7]);
@@ -557,19 +510,17 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"九段");
     if(strx)
     {
-      char da[30];
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[16],&weimi_para.wei_cm_set[8],&weimi_para.wei_inch_set[8],
              &weimi_para.total_wei_count[17],&weimi_para.step1_factor[8],&weimi_para.step2_factor[8]);
     }
-    strx = strstr(diskbuf,"十段");
-    if(strx)
-    {
-      char da[30];
-      sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[18],&weimi_para.wei_cm_set[9],&weimi_para.wei_inch_set[9],
-             &weimi_para.total_wei_count[19],&weimi_para.step1_factor[9],&weimi_para.step2_factor[9]);
-    }
+//    strx = strstr(diskbuf,"十段");
+//    if(strx)
+//    {
+//      sscanf(strx,"%*[^,],%[^\n]",da);
+//      sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[18],&weimi_para.wei_cm_set[9],&weimi_para.wei_inch_set[9],
+//             &weimi_para.total_wei_count[19],&weimi_para.step1_factor[9],&weimi_para.step2_factor[9]);
+//    }
   }
   
 //  if(device_info.page_count_all >= 10)

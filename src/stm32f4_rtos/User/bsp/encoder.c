@@ -69,7 +69,7 @@ u8 Freq_Sample(void)
     Freq_ptr1++;
     Freq_ptr2++;
     if(Freq_ptr1 >= TempLen)
-      Freq_ptr1=0;    
+      Freq_ptr1 = 0;    
     Dtemp = TIM3CH2_CAPTURE_STA & 0X3F;
     Dtemp *= 65536;//溢出时间总和
     if(Dtemp <= 65536)  //溢出时间总和<2

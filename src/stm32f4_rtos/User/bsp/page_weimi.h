@@ -38,7 +38,7 @@ extern MOTOR_PROCESS MotorProcess;
 
 extern u16 speed_zhu;
 extern u8 step_motor_adjust;
-
+extern u16 servomotor_step;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;

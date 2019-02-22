@@ -70,6 +70,7 @@ typedef enum
 }WORK_STAGE;
 
 extern u8 usb_disk_flag;
+extern u8 old_usb_disk_flag;
 
 extern u8 download_num;
 extern SLAVE slave_info; /* 定义一个结构体用于消息队列 */

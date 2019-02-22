@@ -181,12 +181,16 @@
 #define PAGE_PRODUCT_QUIT       0x0142
 #define PAGE_PEILIAO_QUIT       0x0143
 
+#define PAGE_CONFIG_RATIO_DISPLAY        0x0144
 #define PAGE_CONFIG_TIME        0x0145
 #define PAGE_CONFIG_SECRET      0x0146
 #define PAGE_CONFIG_WIFI        0x0147
 #define PAGE_CONFIG_CHANGE      0x0148
 #define PAGE_CONFIG_DEVICE_ID   0x0149
 #define PAGE_CONFIG_CARD        0x014A
+#define PAGE_CONFIG_DEFAULT     0x014B
+#define PAGE_CONFIG_RATIO1        0x014C
+#define PAGE_CONFIG_RATIO2        0x014E
 
 #define PAGE_CARD_A_INC 0x0150
 #define PAGE_CARD_A_DEC 0x0151
@@ -310,4 +314,5 @@ void sdew_weimi_page1(WEIMI_PARA *para);
 void sdew_weimi_page2(WEIMI_PARA *para);
 void sdew_weisha_page1(WEIMI_PARA *para);
 void sdew_weisha_page2(WEIMI_PARA *para);
+void Sdwe_ratio_display(DEVICE_INFO *para);
 #endif

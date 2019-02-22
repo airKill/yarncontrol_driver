@@ -207,7 +207,7 @@ void USBH_USR_UnrecoveredError (void)
 void USBH_USR_DeviceDisconnected (void)
 {
   usb_disk_flag = 0;
-  Sdwe_writeIcon(PAGE_HISTORY_ICON_U_STATE,VGUS_OFF);
+//  Sdwe_writeIcon(PAGE_HISTORY_ICON_U_STATE,VGUS_OFF);
 //  bsp_StartHardTimer(1 ,500000, (void *)TIM_CallBack1);
   usb_printf((char *)MSG_DEV_DISCONNECTED);
 }
@@ -343,7 +343,7 @@ void USBH_USR_EnumerationDone(void)
 {
   /* Enumeration complete */
   usb_disk_flag = 1;
-  Sdwe_writeIcon(PAGE_HISTORY_ICON_U_STATE,VGUS_ON);
+//  Sdwe_writeIcon(PAGE_HISTORY_ICON_U_STATE,VGUS_ON);
   usb_printf((void *)MSG_DEV_ENUMERATED);
 }
 
