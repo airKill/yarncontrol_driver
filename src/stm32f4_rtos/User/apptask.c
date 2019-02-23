@@ -2316,6 +2316,9 @@ static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
   u16 pluse_step_src1,pluse_step_src2;
+  u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
+  u16 servo_diff;//伺服电机过渡期纬差
+  u8 symbol_servo = 0;
   u16 speed_diff1,speed_diff2;
   u8 symbol1 = 0,symbol2 = 0;
   u16 guodu;
@@ -2349,7 +2352,7 @@ static void vTaskMotorControl(void *pvParameters)
           {//奇数段号取过渡循环号
             Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.current_seg - 1,MotorProcess.current_wei,4);
           }
-          ServoMotorRunning(servomotor_step);//发送一纬对应的脉冲信号到伺服驱动器
+          
           if(step_motor_adjust)
           {//过渡纬号，步进电机调速，每纬调节一次转速
             guodu++;
@@ -2362,11 +2365,21 @@ static void vTaskMotorControl(void *pvParameters)
               step_speed2 = (pluse_step_src2 + speed_diff2 / MotorProcess.total_wei * guodu);
             else//速度减少
               step_speed2 = (pluse_step_src2 - speed_diff2 / MotorProcess.total_wei * guodu);
-            u16 sstep1,sstep2;
-            sstep1 = 300000 / step_speed1;
-            sstep2 = 300000 / step_speed2;
+            u16 sstep1,sstep2,sstep3;
+            sstep1 = from_speed_step(step_speed1);
+            sstep2 = from_speed_step(step_speed2);
             StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
             StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
+            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
+            if(symbol_servo == 0)
+              sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
+            else
+              sstep3 = servo_per_wei_src - servo_diff / MotorProcess.total_wei * guodu;
+            ServoMotorRunning(sstep3);
+          }
+          else
+          {
+            ServoMotorRunning(servomotor_step);//发送一纬对应的脉冲信号到伺服驱动器
           }
           if(MotorProcess.current_wei >= MotorProcess.total_wei)
           {//当前纬号超过纬循环
@@ -2417,6 +2430,20 @@ static void vTaskMotorControl(void *pvParameters)
                     symbol2 = 1;
                     ratio_diff2 = weimi_para.step2_factor[MotorProcess.current_seg / 2] - weimi_para.step2_factor[0];  
                   }
+                  
+                  u16 value1,value2;
+                  value1 = MotorStepCount(&device_info,&weimi_para,0);
+                  value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+                  if(value1 >= value2)
+                  {//计算第一段和最后一段纬号差
+                    symbol_servo = 0;
+                    servo_diff = value1 - value2;
+                  }
+                  else
+                  {
+                    symbol_servo = 1;
+                    servo_diff = value2 - value1;
+                  }
                 }
                 else
                 {
@@ -2440,11 +2467,26 @@ static void vTaskMotorControl(void *pvParameters)
                     symbol2 = 1;
                     ratio_diff2 = weimi_para.step2_factor[MotorProcess.current_seg / 2] - weimi_para.step2_factor[MotorProcess.current_seg / 2 + 1];
                   }
+                  
+                  u16 value1,value2;
+                  value1 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2 + 1);
+                  value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
+                  if(value1 >= value2)
+                  {//计算第一段和最后一段纬号差
+                    symbol_servo = 0;
+                    servo_diff = value1 - value2;
+                  }
+                  else
+                  {
+                    symbol_servo = 1;
+                    servo_diff = value2 - value1;
+                  }
                 }
                 speed_diff1 = speed_zhu * ratio_diff1 / 100.0;//计算相邻段号步进电机运行频率差
                 speed_diff2 = speed_zhu * ratio_diff2 / 100.0;//计算相邻段号步进电机运行频率差
                 pluse_step_src1 = speed_zhu * weimi_para.step1_factor[(MotorProcess.current_seg - 1) / 2] / 100.0;
                 pluse_step_src2 = speed_zhu * weimi_para.step2_factor[(MotorProcess.current_seg - 1) / 2] / 100.0;
+                servo_per_wei_src = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
                 step_motor_adjust = 1;//步进电机过渡调速标志
                 guodu = 0;
               }
@@ -2453,6 +2495,9 @@ static void vTaskMotorControl(void *pvParameters)
             {//下个段号纬循环等于0，前面所有的段号循环
               MotorProcess.current_seg = 0;
               MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+              MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
+              MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
+              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);//计算伺服电机脉冲数
               step_motor_adjust = 0;
             }
           }
@@ -2483,7 +2528,7 @@ static void vTaskFreq(void *pvParameters)
         if(vaild == 1)
         {
           speed_zhu = get_main_speed(Freq_value);//计算主轴速度
-          printf("speed is %d\r\n",speed_zhu);
+//          printf("speed is %d\r\n",speed_zhu);
           is_stop = 1;
           if(is_stop != old_is_stop)
           {//主轴速度大于0时，步进电机开始运行
@@ -2533,6 +2578,7 @@ static void vTaskFreq(void *pvParameters)
               }
               StepMotor_adjust_speed(STEPMOTOR2,step2_count);
             }
+            printf("step1_count %d,step2_count %d\r\n",step1_count,step2_count);
           }
         }
       }
@@ -2816,7 +2862,6 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-  printf("speed is %d\r\n",get_main_speed(Freq_value));
 }
 
 void Task_iwdg_refresh(u8 task)

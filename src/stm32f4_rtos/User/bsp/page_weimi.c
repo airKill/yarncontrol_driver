@@ -34,7 +34,7 @@ void init_weimi_para(WEIMI_PARA *para)
   {
     para->real_wei_count[i] = 0;
     if((i % 2) == 0)
-      para->total_wei_count[i] = 100;//段号纬循环设置
+      para->total_wei_count[i] = 50;//段号纬循环设置
     else
       para->total_wei_count[i] = 20;//过渡纬循环设置
   }
@@ -47,8 +47,8 @@ void init_weimi_para(WEIMI_PARA *para)
   }
   for(i=0;i<10;i++)
   {
-    para->step1_factor[i] = 50;
-    para->step2_factor[i] = 50;
+    para->step1_factor[i] = 0;
+    para->step2_factor[i] = 0;
   }
 }
 
