@@ -2370,7 +2370,7 @@ static void vTaskMotorControl(void *pvParameters)
             sstep2 = from_speed_step(step_speed2);
             StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
             StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
-            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
+//            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
             if(symbol_servo == 0)
               sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
             else
@@ -2525,61 +2525,59 @@ static void vTaskFreq(void *pvParameters)
       {//纬密功能打开
         u8 vaild;
         vaild = Freq_Sample();//计算编码器频率
-        if(vaild == 1)
+        speed_zhu = get_main_speed(Freq_value);
+//        speed_zhu = recursive_average_filter(get_main_speed(Freq_value));//计算主轴速度
+        printf("speed_zhu is %d\r\n",speed_zhu);
+        is_stop = 1;
+        if(is_stop != old_is_stop)
+        {//主轴速度大于0时，步进电机开始运行
+          old_is_stop = is_stop;
+          StepMotor_start(STEPMOTOR1);
+          StepMotor_start(STEPMOTOR2);
+        }
+        if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
         {
-          speed_zhu = get_main_speed(Freq_value);//计算主轴速度
-//          printf("speed is %d\r\n",speed_zhu);
-          is_stop = 1;
-          if(is_stop != old_is_stop)
-          {//主轴速度大于0时，步进电机开始运行
-            old_is_stop = is_stop;
-            StepMotor_start(STEPMOTOR1);
-            StepMotor_start(STEPMOTOR2);
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
+          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
+          if(step1_count == 0)
+          {//送纬电机速度设置为0
+            step1_stop = 0;
+            if(step1_stop != old_step1_stop)
+            {//停止送纬电机工作
+              old_step1_stop = step1_stop;
+              StepMotor_stop(STEPMOTOR1);
+            }
           }
-          if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
-          {
-            step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
-            step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
-            if(step1_count == 0)
-            {//送纬电机速度设置为0
-              step1_stop = 0;
-              if(step1_stop != old_step1_stop)
-              {//停止送纬电机工作
-                old_step1_stop = step1_stop;
-                StepMotor_stop(STEPMOTOR1);
-              }
+          else
+          {//送纬电机速度设置大于0
+            step1_stop = 0xff;
+            if(step1_stop != old_step1_stop)
+            {//开启送纬电机工作
+              old_step1_stop = step1_stop;
+              StepMotor_start(STEPMOTOR1);
             }
-            else
-            {//送纬电机速度设置大于0
-              step1_stop = 0xff;
-              if(step1_stop != old_step1_stop)
-              {//开启送纬电机工作
-                old_step1_stop = step1_stop;
-                StepMotor_start(STEPMOTOR1);
-              }
-              StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-            }
-            if(step2_count == 0)
-            {//送纬电机速度设置为0
-              step2_stop = 0;
-              if(step2_stop != old_step2_stop)
-              {//停止送纬电机工作
-                old_step2_stop = step2_stop;
-                StepMotor_stop(STEPMOTOR2);
-              }
-            }
-            else
-            {//送纬电机速度设置大于0
-              step2_stop = 0xff;
-              if(step2_stop != old_step2_stop)
-              {//开启送纬电机工作
-                old_step2_stop = step2_stop;
-                StepMotor_start(STEPMOTOR2);
-              }
-              StepMotor_adjust_speed(STEPMOTOR2,step2_count);
-            }
-            printf("step1_count %d,step2_count %d\r\n",step1_count,step2_count);
+            StepMotor_adjust_speed(STEPMOTOR1,step1_count);
           }
+          if(step2_count == 0)
+          {//送纬电机速度设置为0
+            step2_stop = 0;
+            if(step2_stop != old_step2_stop)
+            {//停止送纬电机工作
+              old_step2_stop = step2_stop;
+              StepMotor_stop(STEPMOTOR2);
+            }
+          }
+          else
+          {//送纬电机速度设置大于0
+            step2_stop = 0xff;
+            if(step2_stop != old_step2_stop)
+            {//开启送纬电机工作
+              old_step2_stop = step2_stop;
+              StepMotor_start(STEPMOTOR2);
+            }
+            StepMotor_adjust_speed(STEPMOTOR2,step2_count);
+          }
+//          printf("step1_count %d,step2_count %d\r\n",step1_count,step2_count);
         }
       }
     }
@@ -2593,8 +2591,6 @@ static void vTaskFreq(void *pvParameters)
         StepMotor_stop(STEPMOTOR2);
       }
       Freq_value = 0;
-      Freq_ptr1 = 0;
-      Freq_ptr2 = 0;
     }
     Task_iwdg_refresh(TASK_Freq);
   }

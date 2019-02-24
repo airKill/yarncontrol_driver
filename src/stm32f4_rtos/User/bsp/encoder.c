@@ -27,8 +27,11 @@ void Encoder_Cap_Init(void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
-  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODER;
-  GPIO_Init(GPIO_PORT_ENCODER, &GPIO_InitStructure);					 //PA0 ??à-
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODERA;
+  GPIO_Init(GPIO_PORT_ENCODERA, &GPIO_InitStructure);					 //PA0 ??à-
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODERB;
+  GPIO_Init(GPIO_PORT_ENCODERB, &GPIO_InitStructure);					 //PA0 ??à-
   
   //初始化定时器3
   TIM_TimeBaseStructure.TIM_Period = 0xffff;
@@ -215,4 +218,19 @@ void TIM3_IRQHandler(void)
     }
   }
   TIM_ClearITPendingBit(TIM3, TIM_IT_CC2 | TIM_IT_Update); //??3y?D??±ê????
+}
+
+u16 recursive_average_filter(u16 filter_object)
+{
+  u16 sum = 0;         
+  float temp = 0;	
+  static u16 filter_buf[filter_num + 1]; 
+  filter_buf[filter_num] = filter_object;
+  for(char i = 0; i < filter_num; i++)
+  {
+    filter_buf[i] = filter_buf[i + 1]; // 所有数据左移，低位扔掉
+    sum += filter_buf[i];
+  }
+  temp = sum / filter_num;
+  return temp;
 }

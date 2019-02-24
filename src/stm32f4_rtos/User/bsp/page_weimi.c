@@ -65,7 +65,7 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
 u16 get_main_speed(float freq)
 {
   u16 speed;
-  speed = (u16)(freq / 600.0 * 60);//编码器频率*线数600*60=主轴转速/分钟
+  speed = (u16)(freq / 600.0 * 60);//编码器频率/线数600*60=主轴转速/分钟
   return speed;
 }
 //将转速转换为步进电机步数
