@@ -49,7 +49,7 @@ void ENC_Init(void)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;		/* 设为输出口 */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;		/* 设为推挽模式 */
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODERA;
@@ -57,6 +57,9 @@ void ENC_Init(void)
   
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODERB;
   GPIO_Init(GPIO_PORT_ENCODERB, &GPIO_InitStructure);
+  
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM8);
   
   /* Enable the TIM3 Update Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
@@ -69,8 +72,8 @@ void ENC_Init(void)
   TIM_DeInit(ENCODER_TIMER);
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
   
-  TIM_TimeBaseStructure.TIM_Prescaler = 42 - 1;  // 42 prescaling 
-  TIM_TimeBaseStructure.TIM_Period = ENCODER_PPR - 1;  
+  TIM_TimeBaseStructure.TIM_Prescaler = 0;  // 42 prescaling 
+  TIM_TimeBaseStructure.TIM_Period = (4 * ENCODER_PPR) - 1;  
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   
   TIM_TimeBaseInit(ENCODER_TIMER, &TIM_TimeBaseStructure);
@@ -85,7 +88,7 @@ void ENC_Init(void)
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
   TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
   //Reset counter
-  TIM2->CNT = COUNTER_RESET;
+  TIM8->CNT = COUNTER_RESET;
   
   ENC_Clear_Speed_Buffer();
   
@@ -172,21 +175,21 @@ s16 ENC_Calc_Rot_Speed(void)
       hEnc_Timer_Overflow_sample_one = hEnc_Timer_Overflow_sample_two;
     }
     
-    if ( (ENCODER_TIMER->CR1 & TIM_CounterMode_Down) == TIM_CounterMode_Down)  
+    if((ENCODER_TIMER->CR1 & TIM_CounterMode_Down) == TIM_CounterMode_Down)  
     {// encoder timer down-counting
       wDelta_angle = (s32)(hCurrent_angle_sample_one - hPrevious_angle - 
-                    (hEnc_Timer_Overflow_sample_one) * ENCODER_PPR);
+                    (hEnc_Timer_Overflow_sample_one) * (4 * ENCODER_PPR));
     }
     else  
     {//encoder timer up-counting
       wDelta_angle = (s32)(hCurrent_angle_sample_one - hPrevious_angle + 
-                    (hEnc_Timer_Overflow_sample_one) * ENCODER_PPR);
+                    (hEnc_Timer_Overflow_sample_one) * (4 * ENCODER_PPR));
     }
     
     // speed computation as delta angle * 1/(speed sempling time)
     temp = (signed long long)(wDelta_angle * SPEED_SAMPLING_FREQ);
-    temp *= 10;  // 0.1 Hz resolution
-    temp /= ENCODER_PPR;
+//    temp *= 10;  // 0.1 Hz resolution
+    temp /= (4 * ENCODER_PPR);
         
   } //is first measurement, discard it
   else
@@ -253,7 +256,7 @@ u16 ENC_Calc_Average_Speed(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void TIM8_IRQHandler(void)
+void TIM8_UP_TIM13_IRQHandler(void)
 {  
   /* Clear the interrupt pending flag */
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);

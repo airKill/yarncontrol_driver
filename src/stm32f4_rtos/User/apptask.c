@@ -2512,6 +2512,7 @@ static void vTaskMotorControl(void *pvParameters)
 
 static void vTaskFreq(void *pvParameters)
 {
+//  u32 enc;
   //  Encoder_Cap_Init();
   ENC_Init();//±‡¬Î∆˜≤‚ÀŸ≥ı ºªØ
   while(1)
@@ -2519,6 +2520,8 @@ static void vTaskFreq(void *pvParameters)
     vTaskDelay(5);
     speed_zhu = ENC_Calc_Average_Speed();
     printf("speed_zhu is %d\r\n",speed_zhu);
+//    enc = TIM_GetCounter(ENCODER_TIMER);
+//    printf("enc is %d\r\n",enc);
     Task_iwdg_refresh(TASK_Freq);
   }
 }
