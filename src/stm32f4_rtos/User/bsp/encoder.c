@@ -22,6 +22,9 @@ void Encoder_Cap_Init(void)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
   
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
+//  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM8);
+  
+//  TIM_EncoderInterfaceConfig(TIM8,TIM_EncoderMode_TI12,TIM_ICPolarity_Rising,TIM_ICPolarity_Rising);//编码器模式，通道12，上升沿
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;		/* 设为输出口 */
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
@@ -39,6 +42,14 @@ void Encoder_Cap_Init(void)
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+  
+  //初始化定时器3捕获参数
+  TIM8_ICInitStructure.TIM_Channel = TIM_Channel_6; //CC1S=01 	
+  TIM8_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;	
+  TIM8_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM8_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV4;
+  TIM8_ICInitStructure.TIM_ICFilter = 0x10;//输入滤波
+  TIM_ICInit(TIM8, &TIM8_ICInitStructure);
   
   //初始化定时器3捕获参数
   TIM8_ICInitStructure.TIM_Channel = TIM_Channel_2; //CC1S=01 	

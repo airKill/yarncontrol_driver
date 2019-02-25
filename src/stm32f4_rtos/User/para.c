@@ -14,7 +14,7 @@ void read_device_info(void)
     device_info.isfirst = 0xaa;
     sprintf((char *)device_info.device_id,"%s","jx1234");
     device_info.device_id_len = 6;
-    device_info.system_state = 0;
+    device_info.system_state = SYS_NORMAL;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
     //换班默认参数设置

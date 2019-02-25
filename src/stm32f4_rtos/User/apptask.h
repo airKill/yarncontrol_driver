@@ -80,6 +80,8 @@ extern u8 card_record,old_card_record;
 extern u8 page_num;
 extern u8 readDisk;
 extern u8 readFilenum;
+
+extern u8 old_system_state;
 /*
 **********************************************************************************************************
 ±äÁ¿ÉùÃ÷
