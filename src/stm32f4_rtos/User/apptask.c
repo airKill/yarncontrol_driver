@@ -2514,16 +2514,79 @@ static void vTaskMotorControl(void *pvParameters)
 
 static void vTaskFreq(void *pvParameters)
 {
-//  u32 enc;
-  //  Encoder_Cap_Init();
+  u8 step1_stop = 0,old_step1_stop = 0xff;
+  u8 step2_stop = 0,old_step2_stop = 0xff;
+  u32 step1_count;
+  u32 step2_count;
   ENC_Init();//编码器测速初始化
   while(1)
   {
-    vTaskDelay(5);
+    vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
     printf("speed_zhu is %d\r\n",speed_zhu);
-//    enc = TIM_GetCounter(ENCODER_TIMER);
-//    printf("enc is %d\r\n",enc);
+    if(speed_zhu > 0)
+    {
+      is_stop = 1;
+      if(is_stop != old_is_stop)
+      {//主轴速度大于0时，步进电机开始运行
+        old_is_stop = is_stop;
+        StepMotor_start(STEPMOTOR1);
+        StepMotor_start(STEPMOTOR2);
+      }
+      if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
+      {
+        step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
+        step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
+        if(step1_count == 0)
+        {//送纬电机速度设置为0
+          step1_stop = 0;
+          if(step1_stop != old_step1_stop)
+          {//停止送纬电机工作
+            old_step1_stop = step1_stop;
+            StepMotor_stop(STEPMOTOR1);
+          }
+        }
+        else
+        {//送纬电机速度设置大于0
+          step1_stop = 0xff;
+          if(step1_stop != old_step1_stop)
+          {//开启送纬电机工作
+            old_step1_stop = step1_stop;
+            StepMotor_start(STEPMOTOR1);
+          }
+          StepMotor_adjust_speed(STEPMOTOR1,step1_count);
+        }
+        if(step2_count == 0)
+        {//送纬电机速度设置为0
+          step2_stop = 0;
+          if(step2_stop != old_step2_stop)
+          {//停止送纬电机工作
+            old_step2_stop = step2_stop;
+            StepMotor_stop(STEPMOTOR2);
+          }
+        }
+        else
+        {//送纬电机速度设置大于0
+          step2_stop = 0xff;
+          if(step2_stop != old_step2_stop)
+          {//开启送纬电机工作
+            old_step2_stop = step2_stop;
+            StepMotor_start(STEPMOTOR2);
+          }
+          StepMotor_adjust_speed(STEPMOTOR2,step2_count);
+        }
+      }
+    }
+    else
+    {
+      is_stop = 0;
+      if(is_stop != old_is_stop)
+      {//主轴速度为0时，停止步进电机
+        old_is_stop = is_stop;
+        StepMotor_stop(STEPMOTOR1);
+        StepMotor_stop(STEPMOTOR2);
+      }
+    }
     Task_iwdg_refresh(TASK_Freq);
   }
 }
@@ -2875,20 +2938,21 @@ void UserTimerCallback(TimerHandle_t xTimer)
     else
     {
       product_para.total_stop_time++;//停机总时间
+      if((product_para.total_stop_time % 60) == 0)
+      {//每分钟刷新一次停机时间显示
+        u16 hour,min;
+        hour = product_para.total_stop_time / 3600;
+        min = product_para.total_stop_time % 3600 / 60;
+        Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);
+        Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);
+      }
       if(device_info.system_state != SYS_STOP)
       {
         device_info.stop_para.stop_time[device_info.system_state - 1]++;
-        if((product_para.total_stop_time % 60) == 0)
-        {//每分钟刷新一次停机时间显示
-          u16 hour,min;
-          hour = product_para.total_stop_time / 3600;
-          min = product_para.total_stop_time % 3600 / 60;
-          Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);
-          Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);
-        }
       }
     }
   }
+  printf("speed_zhu is %d\r\n",speed_zhu);
 }
 
 void Task_iwdg_refresh(u8 task)

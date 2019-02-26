@@ -73,6 +73,7 @@ void ENC_Init(void)
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
   
   TIM_TimeBaseStructure.TIM_Prescaler = 0;  // 42 prescaling 
+//  TIM_TimeBaseStructure.TIM_Period = 3600;
   TIM_TimeBaseStructure.TIM_Period = (4 * ENCODER_PPR) - 1;  
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   
@@ -80,11 +81,11 @@ void ENC_Init(void)
  
   TIM_EncoderInterfaceConfig(ENCODER_TIMER, TIM_EncoderMode_TI12, 
                              TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
-//  TIM_ICStructInit(&TIM_ICInitStructure);
-  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
-  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
-  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM_ICStructInit(&TIM_ICInitStructure);
+//  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
+//  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
+//  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+//  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
   TIM_ICInitStructure.TIM_ICFilter = ICx_FILTER;
   TIM_ICInit(ENCODER_TIMER, &TIM_ICInitStructure);
   
@@ -92,8 +93,7 @@ void ENC_Init(void)
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
   TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
   //Reset counter
-  TIM8->CNT = COUNTER_RESET;
-  
+  TIM_SetCounter(TIM8,COUNTER_RESET);
   ENC_Clear_Speed_Buffer();
   
   TIM_Cmd(ENCODER_TIMER, ENABLE);  
@@ -191,7 +191,7 @@ s16 ENC_Calc_Rot_Speed(void)
     }
     
     // speed computation as delta angle * 1/(speed sempling time)
-    temp = (signed long long)(wDelta_angle * SPEED_SAMPLING_FREQ);
+    temp = (signed long long)(wDelta_angle * 100 * 60);
 //    temp *= 10;  // 0.1 Hz resolution
     temp /= (4 * ENCODER_PPR);
         
@@ -260,14 +260,21 @@ u16 ENC_Calc_Average_Speed(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
+
 void TIM8_UP_TIM13_IRQHandler(void)
 {  
-  /* Clear the interrupt pending flag */
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
-  
-  if(hEncoder_Timer_Overflow != 65535)  
+  /* Clear the interrupt pending flag */
+//  if(TIM_GetITStatus(ENCODER_TIMER,TIM_IT_Update) == SET)
   {
-    hEncoder_Timer_Overflow++;
+    if(hEncoder_Timer_Overflow != 65535)  
+    {
+      hEncoder_Timer_Overflow++;
+    }
+    xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+    /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 }
 
