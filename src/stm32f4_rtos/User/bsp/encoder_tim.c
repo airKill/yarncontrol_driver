@@ -80,7 +80,11 @@ void ENC_Init(void)
  
   TIM_EncoderInterfaceConfig(ENCODER_TIMER, TIM_EncoderMode_TI12, 
                              TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
-  TIM_ICStructInit(&TIM_ICInitStructure);
+//  TIM_ICStructInit(&TIM_ICInitStructure);
+  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
+  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
+  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
   TIM_ICInitStructure.TIM_ICFilter = ICx_FILTER;
   TIM_ICInit(ENCODER_TIMER, &TIM_ICInitStructure);
   
@@ -159,15 +163,15 @@ s16 ENC_Calc_Rot_Speed(void)
     // Reset hEncoder_Timer_Overflow and read the counter value for the next
     // measurement
     hEncoder_Timer_Overflow = 0;
-    haux = ENCODER_TIMER->CNT;   
+    haux = ENCODER_TIMER->CNT;
     
-    if (hEncoder_Timer_Overflow != 0) 
+    if(hEncoder_Timer_Overflow != 0)
     {
       haux = ENCODER_TIMER->CNT; 
       hEncoder_Timer_Overflow = 0;            
     }
      
-    if (hEnc_Timer_Overflow_sample_one != hEnc_Timer_Overflow_sample_two)
+    if(hEnc_Timer_Overflow_sample_one != hEnc_Timer_Overflow_sample_two)
     { //Compare sample 1 & 2 and check if an overflow has been generated right 
       //after the reading of encoder timer. If yes, copy sample 2 result in 
       //sample 1 for next process 
@@ -175,7 +179,7 @@ s16 ENC_Calc_Rot_Speed(void)
       hEnc_Timer_Overflow_sample_one = hEnc_Timer_Overflow_sample_two;
     }
     
-    if((ENCODER_TIMER->CR1 & TIM_CounterMode_Down) == TIM_CounterMode_Down)  
+    if((ENCODER_TIMER->CR1 & TIM_CounterMode_Down) == TIM_CounterMode_Down)
     {// encoder timer down-counting
       wDelta_angle = (s32)(hCurrent_angle_sample_one - hPrevious_angle - 
                     (hEnc_Timer_Overflow_sample_one) * (4 * ENCODER_PPR));

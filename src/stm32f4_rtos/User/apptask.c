@@ -851,7 +851,7 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 peiliao_para.weimi_set = cnt;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-                weimi_para.wei_cm_set[0] = (float)cnt;//胚料页面纬厘米和纬密页面段1纬厘米相同
+                weimi_para.wei_cm_set[0] = cnt;//胚料页面纬厘米和纬密页面段1纬厘米相同
                 weimi_para.wei_inch_set[0] = weimi_para.wei_cm_set[0] * 2.54;
                 //转换为纬/inch显示
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
@@ -1182,15 +1182,17 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
-              u16 cnt;
-              cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-              weimi_para.wei_cm_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] = (float)cnt / 10.0;
-              weimi_para.wei_inch_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] = weimi_para.wei_cm_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] * 2.54;
+              float cnt;
+              u8 seg_num;
+              cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10.0;
+              seg_num = (var_addr - PAGE_WEIMI_WEI_CM_1) / 2;
+              weimi_para.wei_cm_set[seg_num] = cnt;
+              weimi_para.wei_inch_set[seg_num] = weimi_para.wei_cm_set[seg_num] * 2.54;
               //转换为纬/inch显示
-              Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + var_addr - PAGE_WEIMI_WEI_CM_1,(int)(weimi_para.wei_inch_set[(var_addr - PAGE_WEIMI_WEI_CM_1) / 2] * 100),2);
+              Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + var_addr - PAGE_WEIMI_WEI_CM_1,(int)(weimi_para.wei_inch_set[seg_num] * 100),2);
               W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               
-              if(((var_addr - PAGE_WEIMI_WEI_CM_1) / 2) == (MotorProcess.current_seg / 2))
+              if((seg_num) == (MotorProcess.current_seg / 2))
               {//如果改变的纬密为当前段号纬密，立刻更新步数/纬
                 servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
               }
@@ -2373,9 +2375,9 @@ static void vTaskMotorControl(void *pvParameters)
             StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
             StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
 //            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
-            if(symbol_servo == 0)
+            if(symbol_servo == 0)//正数增加
               sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
-            else
+            else//负数减少
               sstep3 = servo_per_wei_src - servo_diff / MotorProcess.total_wei * guodu;
             ServoMotorRunning(sstep3);
           }
@@ -2437,7 +2439,7 @@ static void vTaskMotorControl(void *pvParameters)
                   value1 = MotorStepCount(&device_info,&weimi_para,0);
                   value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
                   if(value1 >= value2)
-                  {//计算第一段和最后一段纬号差
+                  {//第一段大于最后一段步数差
                     symbol_servo = 0;
                     servo_diff = value1 - value2;
                   }

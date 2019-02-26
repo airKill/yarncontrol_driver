@@ -88,9 +88,11 @@ u8 get_valid_seg(WEIMI_PARA *para)
   u8 i;
   for(i=0;i<20;i++)
   {
-    if((weimi_para.total_wei_count[i] > 0) && (weimi_para.wei_cm_set[i / 2] > 0))
+//    if((weimi_para.total_wei_count[i] > 0) && (weimi_para.wei_cm_set[i / 2] > 0))
+    if((weimi_para.total_wei_count[i] == 0) || (weimi_para.wei_cm_set[i / 2] == 0))
     {//段号中纬循环和纬厘米都设置，则有效
-      seg++;
+      seg = i;
+      break;
     }
   }
   return seg;
