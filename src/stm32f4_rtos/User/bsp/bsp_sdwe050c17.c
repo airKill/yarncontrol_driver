@@ -19,6 +19,7 @@ void bsp_InitSdwe050c17(void)
   
 //  LCD_POWER_OFF();
   LCD_POWER_ON();
+  bsp_DelayMS(2000);
 }
 
 void Init_JINGSHA_GUI(void)
@@ -294,6 +295,8 @@ void Sdwe_product_page(PRODUCT_PARA *para)
 
   Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),4);
   Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),4);
+  
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 //ÅßÁÏÒ³Ãæ
@@ -322,7 +325,7 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_WEIMI,(int)(para->weimi_set * 10),2);
+  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,(int)(para->weimi_set * 10),2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 
@@ -446,6 +449,8 @@ void sdew_weimi_page1(WEIMI_PARA *para)
   Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 8,para->real_wei_count[8],4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 8,para->total_wei_count[9],4);
   Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 8,para->real_wei_count[9],4);
+  
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 void sdew_weimi_page2(WEIMI_PARA *para)
@@ -484,6 +489,8 @@ void sdew_weimi_page2(WEIMI_PARA *para)
   Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 18,para->real_wei_count[18],4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 18,para->total_wei_count[19],4);
   Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 18,para->real_wei_count[19],4);
+  
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 void sdew_weisha_page1(WEIMI_PARA *para)
@@ -502,6 +509,8 @@ void sdew_weisha_page1(WEIMI_PARA *para)
   
   Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 8,para->step1_factor[4],2);
   Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 8,para->step2_factor[4],2);
+  
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 void sdew_weisha_page2(WEIMI_PARA *para)
@@ -520,6 +529,8 @@ void sdew_weisha_page2(WEIMI_PARA *para)
   
   Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 18,para->step1_factor[9],2);
   Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 18,para->step2_factor[9],2);
+  
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 u8 get_valid_length(u8 *buf,u8 len)

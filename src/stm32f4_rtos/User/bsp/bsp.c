@@ -32,14 +32,13 @@ void bsp_Init(void)
   my_mem_init(SRAMIN);
   bsp_InitUart(); 	/* 初始化串口 */
 //  bsp_InitKey();		/* 初始化按键变量 */
-  bsp_InitLed(); 		/* 初始LED指示灯端口 */
   bsp_Init_Relay();
   bsp_InitDWT();       /* 初始DWT */
   bsp_InitSdwe050c17();
   bsp_InitHardTimer(); /* 初始化TIM2定时器 */
-  bsp_InitCloseSW();
   bsp_Init_SW_ONOFF();
   W25QXX_Init();
+  bsp_InitLed(); 		/* 初始LED指示灯端口 */
   read_device_info();
   para_init(&SlavePara);
   mb_init(0);

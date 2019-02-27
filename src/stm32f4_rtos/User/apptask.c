@@ -70,7 +70,6 @@ void vTaskTaskLCD(void *pvParameters)
   BaseType_t xResult;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(300); /* 设置最大等待时间为300ms */
   //  LCD_POWER_ON();
-  vTaskDelay(500);
   
   while(1)
   {
@@ -727,6 +726,7 @@ void vTaskTaskLCD(void *pvParameters)
                 /* 发送失败，即使等待了10个时钟节拍 */
                 printf("复位队列发送成功\r\n");
               }
+              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"驱动板复位");
             }
             else if(var_addr == PAGE_PRODUCT_PEILIAO)
             {//
@@ -902,6 +902,7 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_CONFIG_DEFAULT)
             {
               default_device_para();
+              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"恢复默认");
             }
             /****************************齿轮比设置************************************/
             else if(var_addr == PAGE_CONFIG_RATIO_DISPLAY)
@@ -1205,7 +1206,7 @@ void vTaskTaskLCD(void *pvParameters)
                 
               if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
               {//第一段的纬密和胚料页面的纬密相同
-                peiliao_para.weimi_set = (float)cnt / 10.0;
+                peiliao_para.weimi_set = cnt;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               }
             }
@@ -2171,7 +2172,7 @@ void vTaskManageCapacity(void *pvParameters)
   BaseType_t xResult;
   float p_value = 0.0,old_p_value = 0.0;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
-  
+  bsp_InitCloseSW();
   total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));//总米设置含损耗
   total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
   if(total_meter_gross > 0)
@@ -2188,6 +2189,8 @@ void vTaskManageCapacity(void *pvParameters)
       plan_complete = 1;
     }
   }
+//  vTaskDelay(2000);//显示屏上电后需要大概2s启动
+  Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
@@ -2249,8 +2252,9 @@ void vTaskManageCapacity(void *pvParameters)
                       {
                         plan_complete = 2;
                       }
-                      Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                      Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产量完成",strlen("产量完成"));
                       device_info.system_state = SYS_STOP;
+                      Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
                     }
                   }
                   else
@@ -2277,8 +2281,9 @@ void vTaskManageCapacity(void *pvParameters)
                         plan_complete = 2;
                       }
                       RELAY_CLOSE();//产量完成后，继电器闭合
-                      Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                      Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产量完成",strlen("产量完成"));
                       device_info.system_state = SYS_STOP;//产能完成后系统停止运行
+                      Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
                     }
                   }
                   else
@@ -2527,7 +2532,7 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
-    printf("speed_zhu is %d\r\n",speed_zhu);
+//    printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
       if(device_info.func_onoff.weimi)

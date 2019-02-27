@@ -22,7 +22,8 @@ const char system_state_dis[20][20] = {
   {"织机调校"},
   {"维修"},
   {"待QAD处理"},
-  {"替换盘头"},        
+  {"替换盘头"},   
+  {"系统停止"},
 };
 
 void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
