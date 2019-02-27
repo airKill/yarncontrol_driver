@@ -100,7 +100,6 @@ extern TaskHandle_t xHandleTaskMotorControl;
 extern TaskHandle_t xHandleTaskFreq;
 
 extern SemaphoreHandle_t  xSemaphore_encoder;
-extern SemaphoreHandle_t  xSemaphore_freq;
 extern SemaphoreHandle_t  xSemaphore_pluse;
 extern SemaphoreHandle_t  xSemaphore_lcd;
 extern SemaphoreHandle_t  xSemaphore_rs485;

@@ -15,7 +15,6 @@ SemaphoreHandle_t  xSemaphore_lcd = NULL;
 SemaphoreHandle_t  xSemaphore_rs485 = NULL;
 SemaphoreHandle_t  xSemaphore_pluse = NULL;
 SemaphoreHandle_t  xSemaphore_encoder = NULL;
-SemaphoreHandle_t  xSemaphore_freq = NULL;
 
 SemaphoreHandle_t  xSemaphore_download = NULL;
 SemaphoreHandle_t  xSemaphore_readDisk = NULL;
@@ -737,6 +736,7 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_PRODUCT_CLEAR)
             {//产量清零，重新开始生产
               total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
+              total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
               init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
@@ -896,6 +896,12 @@ void vTaskTaskLCD(void *pvParameters)
                   SDWE_WARNNING(PAGE_STOP_WARNNING,"无效操作");
                 }
               }
+            }
+            
+            /****************************恢复出厂默认值************************************/
+            else if(var_addr == PAGE_CONFIG_DEFAULT)
+            {
+              default_device_para();
             }
             /****************************齿轮比设置************************************/
             else if(var_addr == PAGE_CONFIG_RATIO_DISPLAY)
@@ -2234,8 +2240,6 @@ void vTaskManageCapacity(void *pvParameters)
                     Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
                     if(product_para.product_uncomplete <= 0)
                     {//完成产量
-                      TIM_CtrlPWMOutputs(TIM1, DISABLE);
-                      TIM_Cmd(TIM1, DISABLE);
                       RELAY_CLOSE();//产量完成后，继电器闭合
                       if(old_plan_complete == 0)
                       {
@@ -2246,6 +2250,7 @@ void vTaskManageCapacity(void *pvParameters)
                         plan_complete = 2;
                       }
                       Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                      device_info.system_state = SYS_STOP;
                     }
                   }
                   else
@@ -2263,8 +2268,6 @@ void vTaskManageCapacity(void *pvParameters)
                     Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),4);
                     if(product_para.weight_uncomplete <= 0)
                     {//完成重量
-                      TIM_CtrlPWMOutputs(TIM1, DISABLE);
-                      TIM_Cmd(TIM1, DISABLE);
                       if(old_plan_complete == 0)
                       {
                         plan_complete = 1;
@@ -2275,6 +2278,7 @@ void vTaskManageCapacity(void *pvParameters)
                       }
                       RELAY_CLOSE();//产量完成后，继电器闭合
                       Sdwe_disString(PAGE_PRODUCT_RFID_WARNNING,"产能完成",strlen("产能完成"));
+                      device_info.system_state = SYS_STOP;//产能完成后系统停止运行
                     }
                   }
                   else
@@ -2526,54 +2530,57 @@ static void vTaskFreq(void *pvParameters)
     printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
-      is_stop = 1;
-      if(is_stop != old_is_stop)
-      {//主轴速度大于0时，步进电机开始运行
-        old_is_stop = is_stop;
-        StepMotor_start(STEPMOTOR1);
-        StepMotor_start(STEPMOTOR2);
-      }
-      if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
+      if(device_info.func_onoff.weimi)
       {
-        step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
-        step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
-        if(step1_count == 0)
-        {//送纬电机速度设置为0
-          step1_stop = 0;
-          if(step1_stop != old_step1_stop)
-          {//停止送纬电机工作
-            old_step1_stop = step1_stop;
-            StepMotor_stop(STEPMOTOR1);
-          }
+        is_stop = 1;
+        if(is_stop != old_is_stop)
+        {//主轴速度大于0时，步进电机开始运行
+          old_is_stop = is_stop;
+          StepMotor_start(STEPMOTOR1);
+          StepMotor_start(STEPMOTOR2);
         }
-        else
-        {//送纬电机速度设置大于0
-          step1_stop = 0xff;
-          if(step1_stop != old_step1_stop)
-          {//开启送纬电机工作
-            old_step1_stop = step1_stop;
-            StepMotor_start(STEPMOTOR1);
+        if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
+        {
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
+          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
+          if(step1_count == 0)
+          {//送纬电机速度设置为0
+            step1_stop = 0;
+            if(step1_stop != old_step1_stop)
+            {//停止送纬电机工作
+              old_step1_stop = step1_stop;
+              StepMotor_stop(STEPMOTOR1);
+            }
           }
-          StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-        }
-        if(step2_count == 0)
-        {//送纬电机速度设置为0
-          step2_stop = 0;
-          if(step2_stop != old_step2_stop)
-          {//停止送纬电机工作
-            old_step2_stop = step2_stop;
-            StepMotor_stop(STEPMOTOR2);
+          else
+          {//送纬电机速度设置大于0
+            step1_stop = 0xff;
+            if(step1_stop != old_step1_stop)
+            {//开启送纬电机工作
+              old_step1_stop = step1_stop;
+              StepMotor_start(STEPMOTOR1);
+            }
+            StepMotor_adjust_speed(STEPMOTOR1,step1_count);
           }
-        }
-        else
-        {//送纬电机速度设置大于0
-          step2_stop = 0xff;
-          if(step2_stop != old_step2_stop)
-          {//开启送纬电机工作
-            old_step2_stop = step2_stop;
-            StepMotor_start(STEPMOTOR2);
+          if(step2_count == 0)
+          {//送纬电机速度设置为0
+            step2_stop = 0;
+            if(step2_stop != old_step2_stop)
+            {//停止送纬电机工作
+              old_step2_stop = step2_stop;
+              StepMotor_stop(STEPMOTOR2);
+            }
           }
-          StepMotor_adjust_speed(STEPMOTOR2,step2_count);
+          else
+          {//送纬电机速度设置大于0
+            step2_stop = 0xff;
+            if(step2_stop != old_step2_stop)
+            {//开启送纬电机工作
+              old_step2_stop = step2_stop;
+              StepMotor_start(STEPMOTOR2);
+            }
+            StepMotor_adjust_speed(STEPMOTOR2,step2_count);
+          }
         }
       }
     }
@@ -2590,94 +2597,6 @@ static void vTaskFreq(void *pvParameters)
     Task_iwdg_refresh(TASK_Freq);
   }
 }
-
-//static void vTaskFreq(void *pvParameters)
-//{
-//  u8 step1_stop = 0,old_step1_stop = 0xff;
-//  u8 step2_stop = 0,old_step2_stop = 0xff;
-//  u32 step1_count;
-//  u32 step2_count;
-//  BaseType_t xResult;
-//  const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200);
-//  while(1)
-//  {
-//    xResult = xSemaphoreTake(xSemaphore_freq, (TickType_t)xMaxBlockTime);
-//    if(xResult == pdTRUE)
-//    {
-//      if(device_info.func_onoff.weimi)
-//      {//纬密功能打开
-//        u8 vaild;
-////        vaild = Freq_Sample();//计算编码器频率
-////        speed_zhu = get_main_speed(Freq_value);
-////        speed_zhu = recursive_average_filter(get_main_speed(Freq_value));//计算主轴速度
-//        printf("speed_zhu is %d\r\n",speed_zhu);
-//        is_stop = 1;
-//        if(is_stop != old_is_stop)
-//        {//主轴速度大于0时，步进电机开始运行
-//          old_is_stop = is_stop;
-//          StepMotor_start(STEPMOTOR1);
-//          StepMotor_start(STEPMOTOR2);
-//        }
-//        if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
-//        {
-//          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 100.0);//计算步进电机脉冲频率
-//          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 100.0);//计算步进电机脉冲频率
-//          if(step1_count == 0)
-//          {//送纬电机速度设置为0
-//            step1_stop = 0;
-//            if(step1_stop != old_step1_stop)
-//            {//停止送纬电机工作
-//              old_step1_stop = step1_stop;
-//              StepMotor_stop(STEPMOTOR1);
-//            }
-//          }
-//          else
-//          {//送纬电机速度设置大于0
-//            step1_stop = 0xff;
-//            if(step1_stop != old_step1_stop)
-//            {//开启送纬电机工作
-//              old_step1_stop = step1_stop;
-//              StepMotor_start(STEPMOTOR1);
-//            }
-//            StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-//          }
-//          if(step2_count == 0)
-//          {//送纬电机速度设置为0
-//            step2_stop = 0;
-//            if(step2_stop != old_step2_stop)
-//            {//停止送纬电机工作
-//              old_step2_stop = step2_stop;
-//              StepMotor_stop(STEPMOTOR2);
-//            }
-//          }
-//          else
-//          {//送纬电机速度设置大于0
-//            step2_stop = 0xff;
-//            if(step2_stop != old_step2_stop)
-//            {//开启送纬电机工作
-//              old_step2_stop = step2_stop;
-//              StepMotor_start(STEPMOTOR2);
-//            }
-//            StepMotor_adjust_speed(STEPMOTOR2,step2_count);
-//          }
-////          printf("step1_count %d,step2_count %d\r\n",step1_count,step2_count);
-//        }
-//      }
-//    }
-//    else
-//    {
-//      is_stop = 0;
-//      if(is_stop != old_is_stop)
-//      {//主轴速度为0时，停止步进电机
-//        old_is_stop = is_stop;
-//        StepMotor_stop(STEPMOTOR1);
-//        StepMotor_stop(STEPMOTOR2);
-//      }
-////      Freq_value = 0;
-//    }
-//    Task_iwdg_refresh(TASK_Freq);
-//  }
-//}
 
 /*
 *********************************************************************************************************
@@ -2792,14 +2711,6 @@ void AppObjCreate (void)
   if(xSemaphore_encoder == NULL)
   {
     printf("xSemaphore_encoder fault\r\n");
-    /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
-  }
-  
-  xSemaphore_freq = xSemaphoreCreateBinary();
-  
-  if(xSemaphore_freq == NULL)
-  {
-    printf("xSemaphore_freq fault\r\n");
     /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
   }
   

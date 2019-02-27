@@ -1039,12 +1039,6 @@
       <name>$PROJ_DIR$\..\..\User\bsp\bsp_watchdog.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\User\bsp\encoder.c</name>
-      <excluded>
-        <configuration>Flash</configuration>
-      </excluded>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\encoder_tim.c</name>
     </file>
     <file>

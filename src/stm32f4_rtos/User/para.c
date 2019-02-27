@@ -90,12 +90,79 @@ void read_device_info(void)
     JingSha_File.hour = 1;
     JingSha_File.minute = 1;
     JingSha_File.second = 1;
-    
-//    init_peiliao_para(&peiliao_para);
-//    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-//    init_weimi_para(&weimi_para);
-//    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
   }
+}
+
+void default_device_para(void)
+{
+  u8 i;
+  
+  device_info.isfirst = 0xaa;
+  sprintf((char *)device_info.device_id,"%s","jx1234");
+  device_info.device_id_len = 6;
+  device_info.system_state = SYS_NORMAL;
+  device_info.page_count_all = 0;
+  device_info.page_count_select = 0;
+  //换班默认参数设置
+  device_info.class_para.class_enable_onoff = 1;//默认开启A/B换班
+  device_info.class_para.class_time_hour = 8;//默认换班时间08:00:00
+  device_info.class_para.class_time_minute = 0;
+  //卡片录入默认参数设置
+  device_info.card_count.card_A_count = 0;
+  device_info.card_count.card_B_count = 0;
+  device_info.card_count.card_repair_count = 0;
+  //页面功能默认参数设置
+  device_info.func_onoff.jingsha = 1;
+  device_info.func_onoff.channeng = 1;
+  device_info.func_onoff.weimi = 1;
+  
+  device_info.ratio.GEAR1 = 35;
+  device_info.ratio.GEAR2 = 10;  
+  for(i=0;i<30;i++)
+  {
+    device_info.onoff[i] = 0;
+  }
+  for(i=0;i<10;i++)
+  {
+    device_info.file_select[i] = 0;
+  }
+  for(i=0;i<11;i++)
+  {
+    device_info.stop_para.stop_time[i] = 0;
+  }
+  device_info.weimi_info.reg = 0;
+  device_info.weimi_info.count = 0;
+  //试用期默认参数设置
+  device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
+  device_info.period_para.period_year = 20;//默认试用期限2020年
+  device_info.period_para.period_month = 1;//默认试用期限1月
+  device_info.period_para.period_day = 1;//默认试用期限1日
+  memset(device_info.period_para.period_password,0,10);
+  strcpy((char *)device_info.period_para.period_password,"232323");
+  device_info.period_para.period_password_len = strlen((char const *)device_info.period_para.period_password);
+  //系统登录密码默认设置
+  memset(device_info.regin_in.password,0,6);
+  strcpy((char *)device_info.regin_in.password,"111111");
+  device_info.regin_in.password_len = strlen((char const *)device_info.regin_in.password);;  
+  W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+  init_peiliao_para(&peiliao_para);
+  W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+  init_product_para(&product_para,&peiliao_para);
+  W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+  init_weimi_para(&weimi_para);
+  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+  
+  JingSha_File.filename_len = 0;
+  for(i=0;i<10;i++)
+  {
+    JingSha_File.filename[i] = 0;
+  }
+  for(i=0;i<30;i++)
+  {
+    JingSha_File.weight_value[i] = 0;
+  }
+  
+  para_init(&SlavePara);
 }
 
 void para_init(SLAVE_PARA *para)
@@ -119,15 +186,6 @@ void para_init(SLAVE_PARA *para)
 //读取U盘数据到系统
 void read_from_disk(char *diskbuf)
 {
-//  JINGSHA_FILE jingsha_file;
-//  WEIMI_PARA weimi_file;
-//  PEILIAO_PARA peiliao_file;
-  
-//  u8 namebuf[10];
-//  memset(namebuf,0,10);
-//  sscanf(Disk_File.filename[readFilenum],"%*[^-]-%[^.]",namebuf);//过滤掉文件名中ID和格式，如文件名为jx1234-1122.CSV，则过滤后为1122
-//  jingsha_file.filename_len = strlen(namebuf); //取文件名长度  
-//  memcpy(jingsha_file.filename,namebuf,jingsha_file.filename_len);//文件名
   if(check_cmd(diskbuf,"位置,设定张力"))
   {
     printf("格式正确\n");
@@ -522,38 +580,6 @@ void read_from_disk(char *diskbuf)
 //             &weimi_para.total_wei_count[19],&weimi_para.step1_factor[9],&weimi_para.step2_factor[9]);
 //    }
   }
-  
-//  if(device_info.page_count_all >= 10)
-//  {//去掉第一个文件，后面文件依次上移
-//    u8 *file_read;
-//    file_read = mymalloc(SRAMIN,1024);
-//    W25QXX_Read(file_read,(u32)W25QXX_ADDR_JINGSHA + JINGSHA_SIZE,JINGSHA_SIZE * 9);//读出2-10文件的数据
-//    W25QXX_Write(file_read,(u32)W25QXX_ADDR_JINGSHA,JINGSHA_SIZE * 9);//再写进1-9文件地址
-//    W25QXX_Write((u8 *)&jingsha_file,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * 9),sizeof(jingsha_file));//写当前页面数据到文件10地址
-//    
-//    //产能数据保存
-//    peiliao_file.complete_meter = 0;
-//    peiliao_file.complete_work_time = 0;
-//    W25QXX_Write((u8 *)&peiliao_file,(u32)W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * 9,sizeof(peiliao_file));
-//    
-//    //纬密数据保存
-//    W25QXX_Write((u8 *)&weimi_file,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * 9,sizeof(weimi_file));
-//    myfree(SRAMIN,file_read);
-//  }
-//  else
-//  {
-//    W25QXX_Write((u8 *)&jingsha_file,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_all),sizeof(jingsha_file));
-//    //产能数据保存
-//    peiliao_file.complete_meter = 0;
-//    peiliao_file.complete_work_time = 0;
-//    W25QXX_Write((u8 *)&peiliao_file,(u32)W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * device_info.page_count_all,sizeof(peiliao_file));
-//    
-//    //纬密数据保存
-//    W25QXX_Write((u8 *)&weimi_file,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_all,sizeof(weimi_file));
-//    
-//    device_info.page_count_all++;
-//    W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//  }
 }
 
 u8* check_cmd(char *str1,char *str2)

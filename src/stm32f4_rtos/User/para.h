@@ -108,5 +108,6 @@ void read_device_info(void);
 void para_init(SLAVE_PARA *para);
 void read_from_disk(char *diskbuf);
 u8* check_cmd(char *str1,char *str2);
+void default_device_para(void);
 #endif
 
