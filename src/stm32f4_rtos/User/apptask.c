@@ -2528,6 +2528,7 @@ static void vTaskMotorControl(void *pvParameters)
           }
         }
       }
+      xSemaphoreGive(xSemaphore_pluse);
     }
     Task_iwdg_refresh(TASK_MotorControl);
   }
@@ -2806,23 +2807,24 @@ void UserTimerCallback(TimerHandle_t xTimer)
     timefor10s = 0;
     Sdwe_readRTC();
   }
-  if(sample_time == 0)
-  {
-    speed_1 = pluse_count;
-    sample_time++;
-  }
-  else if(sample_time >= 2)
-  {//计算2s内的脉冲数
-    sample_time = 0;
-    speed_2 = pluse_count;
-    pluse_count = 0;
-    product_para.speed = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
-    Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
-  }
-  else
-  {
-    sample_time++;
-  }
+//  if(sample_time == 0)
+//  {
+//    speed_1 = pluse_count;
+//    sample_time++;
+//  }
+//  else if(sample_time >= 2)
+//  {//计算2s内的脉冲数
+//    sample_time = 0;
+//    speed_2 = pluse_count;
+//    pluse_count = 0;
+//    product_para.speed = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
+//    Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
+//  }
+//  else
+//  {
+//    sample_time++;
+//  }
+  Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu,2);//显示速度
   if(work_idle_time < 1000)
     work_idle_time++;
   if(work_idle_time < 10)
