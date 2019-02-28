@@ -236,14 +236,14 @@ u16 ENC_Calc_Average_Speed(void)
   hSpeed_Buffer[bSpeed_Buffer_Index] = (s16)wtemp;
   bSpeed_Buffer_Index++;
   
-  if (bSpeed_Buffer_Index == SPEED_BUFFER_SIZE) 
+  if(bSpeed_Buffer_Index == SPEED_BUFFER_SIZE)
   {
     bSpeed_Buffer_Index = 0;
   }
 
   wtemp=0;
 
-  for (i=0;i<SPEED_BUFFER_SIZE;i++)
+  for(i=0;i<SPEED_BUFFER_SIZE;i++)
   {
     wtemp += hSpeed_Buffer[i];
   }
@@ -268,7 +268,7 @@ void TIM8_UP_TIM13_IRQHandler(void)
   /* Clear the interrupt pending flag */
 //  if(TIM_GetITStatus(ENCODER_TIMER,TIM_IT_Update) == SET)
   {
-    if(hEncoder_Timer_Overflow != 65535)  
+    if(hEncoder_Timer_Overflow != 65535)
     {
       hEncoder_Timer_Overflow++;
     }

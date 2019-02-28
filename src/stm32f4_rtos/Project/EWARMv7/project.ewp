@@ -628,7 +628,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>MainBoard190227.bin</state>
+          <state>MainBoard190228.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -659,7 +659,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild></prebuild>
-        <postbuild>$PROJ_DIR$\CopyHex_Flash.bat</postbuild>
+        <postbuild></postbuild>
       </data>
     </settings>
     <settings>
