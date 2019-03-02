@@ -22,6 +22,7 @@ typedef struct
   u32 total_wei_count[20];//设置总纬号
   u16 step1_factor[10];//送纬电机速度比
   u16 step2_factor[10];//底线电机速度比
+  u16 step3_factor[10];//电机3速度比
 }WEIMI_PARA;
 extern WEIMI_PARA weimi_para;
 
@@ -33,6 +34,7 @@ typedef struct
   u32 real_wei_count;
   u16 step1_factor;
   u16 step2_factor;
+  u16 step3_factor;
 }MOTOR_PROCESS;
 extern MOTOR_PROCESS MotorProcess;
 

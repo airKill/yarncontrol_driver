@@ -9,7 +9,7 @@ void read_device_info(void)
   W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
 //  W25QXX_Read((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
 //  W25QXX_Read((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
-  if(device_info.isfirst != 0xaa)
+  if(device_info.isfirst != 0xab)
   {
     device_info.isfirst = 0xaa;
     sprintf((char *)device_info.device_id,"%s","jx1234");
@@ -514,70 +514,70 @@ void read_from_disk(char *diskbuf)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[0],&weimi_para.wei_cm_set[0],&weimi_para.wei_inch_set[0],
-             &weimi_para.total_wei_count[1],&weimi_para.step1_factor[0],&weimi_para.step2_factor[0]);
+             &weimi_para.total_wei_count[1],&weimi_para.step1_factor[0],&weimi_para.step2_factor[0],&weimi_para.step3_factor[0]);
     }
     strx = strstr(diskbuf,"¶þ¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[2],&weimi_para.wei_cm_set[1],&weimi_para.wei_inch_set[1],
-             &weimi_para.total_wei_count[3],&weimi_para.step1_factor[1],&weimi_para.step2_factor[1]);
+             &weimi_para.total_wei_count[3],&weimi_para.step1_factor[1],&weimi_para.step2_factor[1],&weimi_para.step3_factor[1]);
     }
     strx = strstr(diskbuf,"Èý¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[4],&weimi_para.wei_cm_set[2],&weimi_para.wei_inch_set[2],
-             &weimi_para.total_wei_count[5],&weimi_para.step1_factor[2],&weimi_para.step2_factor[2]);
+             &weimi_para.total_wei_count[5],&weimi_para.step1_factor[2],&weimi_para.step2_factor[2],&weimi_para.step3_factor[2]);
     }
     strx = strstr(diskbuf,"ËÄ¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[6],&weimi_para.wei_cm_set[3],&weimi_para.wei_inch_set[3],
-             &weimi_para.total_wei_count[7],&weimi_para.step1_factor[3],&weimi_para.step2_factor[3]);
+             &weimi_para.total_wei_count[7],&weimi_para.step1_factor[3],&weimi_para.step2_factor[3],&weimi_para.step3_factor[3]);
     }
     strx = strstr(diskbuf,"Îå¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[8],&weimi_para.wei_cm_set[4],&weimi_para.wei_inch_set[4],
-             &weimi_para.total_wei_count[9],&weimi_para.step1_factor[4],&weimi_para.step2_factor[4]);
+             &weimi_para.total_wei_count[9],&weimi_para.step1_factor[4],&weimi_para.step2_factor[4],&weimi_para.step3_factor[4]);
     }
     strx = strstr(diskbuf,"Áù¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[10],&weimi_para.wei_cm_set[5],&weimi_para.wei_inch_set[5],
-             &weimi_para.total_wei_count[11],&weimi_para.step1_factor[5],&weimi_para.step2_factor[5]);
+             &weimi_para.total_wei_count[11],&weimi_para.step1_factor[5],&weimi_para.step2_factor[5],&weimi_para.step3_factor[5]);
     }
     strx = strstr(diskbuf,"Æß¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[12],&weimi_para.wei_cm_set[6],&weimi_para.wei_inch_set[6],
-             &weimi_para.total_wei_count[13],&weimi_para.step1_factor[6],&weimi_para.step2_factor[6]);
+             &weimi_para.total_wei_count[13],&weimi_para.step1_factor[6],&weimi_para.step2_factor[6],&weimi_para.step3_factor[6]);
     }
     strx = strstr(diskbuf,"°Ë¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[14],&weimi_para.wei_cm_set[7],&weimi_para.wei_inch_set[7],
-             &weimi_para.total_wei_count[15],&weimi_para.step1_factor[7],&weimi_para.step2_factor[7]);
+             &weimi_para.total_wei_count[15],&weimi_para.step1_factor[7],&weimi_para.step2_factor[7],&weimi_para.step3_factor[7]);
     }
     strx = strstr(diskbuf,"¾Å¶Î");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[16],&weimi_para.wei_cm_set[8],&weimi_para.wei_inch_set[8],
-             &weimi_para.total_wei_count[17],&weimi_para.step1_factor[8],&weimi_para.step2_factor[8]);
+             &weimi_para.total_wei_count[17],&weimi_para.step1_factor[8],&weimi_para.step2_factor[8],&weimi_para.step3_factor[8]);
     }
 //    strx = strstr(diskbuf,"Ê®¶Î");
 //    if(strx)
 //    {
 //      sscanf(strx,"%*[^,],%[^\n]",da);
 //      sscanf(da,"%d,%f,%f,%d,%d,%d",&weimi_para.total_wei_count[18],&weimi_para.wei_cm_set[9],&weimi_para.wei_inch_set[9],
-//             &weimi_para.total_wei_count[19],&weimi_para.step1_factor[9],&weimi_para.step2_factor[9]);
+//             &weimi_para.total_wei_count[19],&weimi_para.step1_factor[9],&weimi_para.step2_factor[9],&weimi_para.step3_factor[9]);
 //    }
   }
 }

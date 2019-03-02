@@ -69,9 +69,12 @@ PG15/USART6_CTS
 //#define	UART6_FIFO_EN	0
 
 /* RS485Ð¾Æ¬·¢ËÍÊ¹ÄÜGPIO, PB2 */
-#define RCC_RS485_TXEN 	        RCC_AHB1Periph_GPIOA
-#define PORT_RS485_TXEN               GPIOA
-#define PIN_RS485_TXEN	        GPIO_Pin_1
+//#define RCC_RS485_TXEN 	        RCC_AHB1Periph_GPIOA
+//#define PORT_RS485_TXEN               GPIOA
+//#define PIN_RS485_TXEN	        GPIO_Pin_1
+#define RCC_RS485_TXEN 	        RCC_AHB1Periph_GPIOE
+#define PORT_RS485_TXEN               GPIOE
+#define PIN_RS485_TXEN	        GPIO_Pin_14
 
 #define RS485_RX_EN()	PORT_RS485_TXEN->BSRRH = PIN_RS485_TXEN
 #define RS485_TX_EN()	PORT_RS485_TXEN->BSRRL = PIN_RS485_TXEN

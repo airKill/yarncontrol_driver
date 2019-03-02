@@ -10,6 +10,7 @@ void bsp_InitStepMotor(void)
   
   GPIO_PinAFConfig(GPIOB,GPIO_PinSource0,GPIO_AF_TIM3);//步进电机1 PWM接口
   GPIO_PinAFConfig(GPIOE,GPIO_PinSource11,GPIO_AF_TIM1);//步进电机2 PWM接口
+  GPIO_PinAFConfig(GPIOA,GPIO_PinSource1,GPIO_AF_TIM5);//步进电机2 PWM接口
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		/* 设为输出口 */
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
@@ -47,8 +48,10 @@ void bsp_InitStepMotor(void)
   
   TIM3_PWM_SETPMOTOR();
   TIM1_PWM_SETPMOTOR();
+  TIM5_PWM_SETPMOTOR();
   
   STEPMOTOR1_DIR_L();
+  STEPMOTOR2_DIR_L();
   STEPMOTOR3_DIR_L();
 }
 
@@ -110,17 +113,49 @@ void TIM1_PWM_SETPMOTOR(void)
   TIM_Cmd(TIM1, DISABLE);
 }
 
+void TIM5_PWM_SETPMOTOR(void)
+{
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef TIM_OCInitStructure;
+  
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);   //Open TIM3  Clock
+
+  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;          //定时器时钟84MHZ/4=21
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
+  TIM_TimeBaseStructure.TIM_Period = 400 - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
+  
+  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+
+  /* PWM1 Mode configuration: TIM5_CH2 */
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
+  TIM_OCInitStructure.TIM_Pulse = 200;                            //config TIM3_CCR1 vaule
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
+  TIM_OC2Init(TIM5, &TIM_OCInitStructure);
+  
+  TIM_OC2PreloadConfig(TIM5, TIM_OCPreload_Enable);         // turn on oc1 preload 
+  TIM_ARRPreloadConfig(TIM5, ENABLE);
+  /* TIM3 enable counter */
+  TIM_Cmd(TIM5, DISABLE);
+}
+
 void StepMotor_adjust_speed(u8 motor,u32 value)
 {
   if(motor == STEPMOTOR1)
   {
-    TIM_SetCompare2(TIM3,value / 2);
+    TIM_SetCompare3(TIM3,value / 2);
     TIM_SetAutoreload(TIM3,value);
   }
   else if(motor == STEPMOTOR2)
   {
     TIM_SetCompare2(TIM1,value / 2);
     TIM_SetAutoreload(TIM1,value);
+  }
+  else if(motor == STEPMOTOR3)
+  {
+    TIM_SetCompare2(TIM5,value / 2);
+    TIM_SetAutoreload(TIM5,value);
   }
 }
 
@@ -135,17 +170,25 @@ void StepMotor_stop(u8 motor)
     TIM_Cmd(TIM1, DISABLE);
     TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加
   }
+  else if(motor == STEPMOTOR3)
+  {
+    TIM_Cmd(TIM5, DISABLE);
+  }
 }
 
 void StepMotor_start(u8 motor)
 {
-  if(motor == 1)
+  if(motor == STEPMOTOR1)
   {
     TIM_Cmd(TIM3, ENABLE);
   }
-  else if(motor == 2)
+  else if(motor == STEPMOTOR2)
   {
     TIM_Cmd(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, ENABLE);//高级定时器需要增加
+  }
+  else if(motor == STEPMOTOR3)
+  {
+    TIM_Cmd(TIM5, ENABLE);
   }
 }

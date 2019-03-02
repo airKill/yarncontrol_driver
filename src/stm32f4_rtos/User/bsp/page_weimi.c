@@ -47,10 +47,12 @@ void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA *peiliao)
   }
   para->step1_factor[i] = 50;
   para->step2_factor[i] = 50;
+  para->step3_factor[i] = 50;
   for(i=1;i<10;i++)
   {
     para->step1_factor[i] = 0;
     para->step2_factor[i] = 0;
+    para->step3_factor[i] = 0;
   }
 }
 
@@ -62,6 +64,7 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
   motor->step1_factor = para->step1_factor[motor->current_seg / 2];
   motor->step2_factor = para->step2_factor[motor->current_seg / 2];
+  motor->step3_factor = para->step3_factor[motor->current_seg / 2];
 }
 
 u16 get_main_speed(float freq)
