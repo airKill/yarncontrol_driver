@@ -2601,7 +2601,7 @@ static void vTaskMotorControl(void *pvParameters)
               MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
               MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
               MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
-              MotorProcess.step3_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
+              MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
               servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);//计算伺服电机脉冲数
               step_motor_adjust = 0;
             }
@@ -2627,7 +2627,7 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
-//    printf("speed_zhu is %d\r\n",speed_zhu);
+    printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
       if(device_info.func_onoff.weimi)
@@ -2713,6 +2713,7 @@ static void vTaskFreq(void *pvParameters)
         old_is_stop = is_stop;
         StepMotor_stop(STEPMOTOR1);
         StepMotor_stop(STEPMOTOR2);
+        StepMotor_stop(STEPMOTOR3);
       }
     }
     Task_iwdg_refresh(TASK_Freq);

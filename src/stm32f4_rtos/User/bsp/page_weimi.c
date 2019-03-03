@@ -45,9 +45,9 @@ void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA *peiliao)
     para->wei_cm_set[i] = 0;
     para->wei_inch_set[i] = 0;
   }
-  para->step1_factor[i] = 50;
-  para->step2_factor[i] = 50;
-  para->step3_factor[i] = 50;
+  para->step1_factor[0] = 50;
+  para->step2_factor[0] = 50;
+  para->step3_factor[0] = 50;
   for(i=1;i<10;i++)
   {
     para->step1_factor[i] = 0;

@@ -125,7 +125,7 @@ void TIM5_PWM_SETPMOTOR(void)
   TIM_TimeBaseStructure.TIM_Period = 400 - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
   
-  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
 
   /* PWM1 Mode configuration: TIM5_CH2 */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
