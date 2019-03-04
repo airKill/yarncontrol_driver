@@ -1427,7 +1427,7 @@ void vTaskTaskLCD(void *pvParameters)
                 else if(value == 0x0002)
                 {//持续按下
                   servomotor_mode = MANUAL;
-                  ServoMotorRunning(100);//一次发送100脉冲
+                  ServoMotorRunning(600);//一次发送100脉冲
                 }
                 else if(value == 0x0003)
                 {//抬起
@@ -1445,12 +1445,12 @@ void vTaskTaskLCD(void *pvParameters)
                 {//第一次按下
                   servomotor_mode = MANUAL;
                   TIM4_PWM_Config(FREQ_500KHZ,BACKWARD_PWM);//重新配置TIM4 CH2 PWM方向逆向
-                  ServoMotorRunning(100);//一次发送100脉冲
+                  ServoMotorRunning(600);//一次发送100脉冲
                 }
                 else if(value == 0x0002)
                 {//持续按下
                   servomotor_mode = MANUAL;
-                  ServoMotorRunning(100);//一次发送100脉冲
+                  ServoMotorRunning(600);//一次发送100脉冲
                 }
                 else if(value == 0x0003)
                 {//抬起
@@ -2911,24 +2911,24 @@ void UserTimerCallback(TimerHandle_t xTimer)
     timefor10s = 0;
     Sdwe_readRTC();
   }
-//  if(sample_time == 0)
-//  {
-//    speed_1 = pluse_count;
-//    sample_time++;
-//  }
-//  else if(sample_time >= 2)
-//  {//计算2s内的脉冲数
-//    sample_time = 0;
-//    speed_2 = pluse_count;
-//    pluse_count = 0;
-//    product_para.speed = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
-//    Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
-//  }
-//  else
-//  {
-//    sample_time++;
-//  }
-  Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu,2);//显示速度
+  if(sample_time == 0)
+  {
+    speed_1 = pluse_count;
+    sample_time++;
+  }
+  else if(sample_time >= 2)
+  {//计算2s内的脉冲数
+    sample_time = 0;
+    speed_2 = pluse_count;
+    pluse_count = 0;
+    product_para.speed = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
+    Sdwe_disDigi(PAGE_PRODUCT_SPEED,product_para.speed,2);//显示速度
+  }
+  else
+  {
+    sample_time++;
+  }
+//  Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu,2);//显示速度
   if(work_idle_time < 1000)
     work_idle_time++;
   if(work_idle_time < 10)
