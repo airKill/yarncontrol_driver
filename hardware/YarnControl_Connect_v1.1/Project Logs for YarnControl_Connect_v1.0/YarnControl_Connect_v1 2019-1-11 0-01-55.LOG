@@ -1,0 +1,4 @@
+Change Component DesignItemId : Designator=J9 Old DesignItemId=SH-2 New DesignItemId=SH-3
+Change Component Footprint: Designator=J9 Old Footprint=J508-2(1) New Footprint=J508-3
+Change Component Comment : Designator=J9 Old Comment=SH-2 New Comment=SH-3
+Added Pin To Net: NetName=+24V Pin=J9-3

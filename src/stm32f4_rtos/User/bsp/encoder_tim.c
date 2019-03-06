@@ -232,22 +232,22 @@ u16 ENC_Calc_Average_Speed(void)
   
   wtemp = ENC_Calc_Rot_Speed();
         
-/* Compute the average of the read speeds */  
-  hSpeed_Buffer[bSpeed_Buffer_Index] = (s16)wtemp;
-  bSpeed_Buffer_Index++;
-  
-  if(bSpeed_Buffer_Index == SPEED_BUFFER_SIZE)
-  {
-    bSpeed_Buffer_Index = 0;
-  }
-
-  wtemp=0;
-
-  for(i=0;i<SPEED_BUFFER_SIZE;i++)
-  {
-    wtemp += hSpeed_Buffer[i];
-  }
-  wtemp /= SPEED_BUFFER_SIZE;
+///* Compute the average of the read speeds */  
+//  hSpeed_Buffer[bSpeed_Buffer_Index] = (s16)wtemp;
+//  bSpeed_Buffer_Index++;
+//  
+//  if(bSpeed_Buffer_Index == SPEED_BUFFER_SIZE)
+//  {
+//    bSpeed_Buffer_Index = 0;
+//  }
+//
+//  wtemp=0;
+//
+//  for(i=0;i<SPEED_BUFFER_SIZE;i++)
+//  {
+//    wtemp += hSpeed_Buffer[i];
+//  }
+//  wtemp /= SPEED_BUFFER_SIZE;
   
   return ((u16)wtemp);
 }

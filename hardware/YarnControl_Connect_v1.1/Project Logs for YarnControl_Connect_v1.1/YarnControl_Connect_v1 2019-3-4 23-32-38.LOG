@@ -1,0 +1,13 @@
+Added Component: Designator=J12(PWR)
+Added Pin To Net: NetName=GND Pin=J12-1
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J3-11
+Added Pin To Net: NetName=STEP_MOTOR3_CP Pin=J12-4
+Added Net: Name=STEP_MOTOR3_CP
+Added Pin To Net: NetName=STEP_MOTOR3_DIR Pin=J3-4
+Added Pin To Net: NetName=STEP_MOTOR3_DIR Pin=J12-3
+Added Net: Name=STEP_MOTOR3_DIR
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J3-12
+Added Pin To Net: NetName=STEP_MOTOR3_EN Pin=J12-2
+Added Net: Name=STEP_MOTOR3_EN
+Change Class Name : Old Net Name=YarnControl_Connect_v1.0 New Net Name=YarnControl_Connect_v1.1
+Added Member To Class: ClassName=YarnControl_Connect_v1.1 Member=Component J12 SH-4

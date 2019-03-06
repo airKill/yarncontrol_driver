@@ -1640,6 +1640,7 @@ static void vTaskTaskLED(void *pvParameters)
     bsp_LedToggle(1);
     bsp_LedToggle(2);
     vTaskDelay(500);
+    ServoMotorRunning(20);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2406,9 +2407,10 @@ static void vTaskMotorControl(void *pvParameters)
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   bsp_InitStepMotor();
   vTaskDelay(200);
-  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
+  
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
+  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
   DIFF_G_init();
 
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数

@@ -36,7 +36,7 @@ void TIM4_CH1_GPIO_Configuration(void)
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;//PD
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOD,&GPIO_InitStructure);
@@ -51,15 +51,15 @@ void DIFF_G_init(void)
   
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIO_PORT_SERVOMOTOR_G,&GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIO_PORT_SERVOMOTOR_G0,&GPIO_InitStructure);
   
@@ -181,7 +181,7 @@ void TIM4_CH2_GPIO_Configuration(void)
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;//PP
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOD,&GPIO_InitStructure);

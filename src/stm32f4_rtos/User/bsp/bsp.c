@@ -31,7 +31,6 @@ void bsp_Init(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
   my_mem_init(SRAMIN);
   bsp_InitUart(); 	/* 初始化串口 */
-//  bsp_InitKey();		/* 初始化按键变量 */
   bsp_Init_Relay();
   bsp_InitDWT();       /* 初始DWT */
   bsp_InitSdwe050c17();
