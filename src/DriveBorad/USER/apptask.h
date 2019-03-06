@@ -5,6 +5,8 @@
 
 #define soft_version "SB.0.1181212"
 
+#define ZERO    200//零点，小于该值时，驱动板不工作
+
 typedef enum
 {
   PROCESS_STOP = 0,
