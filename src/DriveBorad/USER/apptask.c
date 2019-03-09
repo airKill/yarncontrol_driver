@@ -183,7 +183,7 @@ void vTaskSample(void *pvParameters)
     printf("%.3fkg,%.3fA\r\n",(float)load_value / 1000,value_current);
     if(value_current >= SAMPLE_CURRENT_MAX)
     {//过载
-      Device_Process = PROCESS_OVERCURRENTS;
+//      Device_Process = PROCESS_OVERCURRENTS;
     }
     switch(Device_Process)
     {
@@ -288,6 +288,7 @@ void vTaskSample(void *pvParameters)
       default:
         break;
     }
+//    printf("Device_Process is %d\r\n",Device_Process);
     vTaskDelay(100);
     IWDG_Feed();
   }
@@ -335,7 +336,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
   if(link_err >= 10)
   {//10s内未收到链接命令，重启
     link_err = 0;
-    NVIC_SystemReset();
+//    NVIC_SystemReset();
   }
 }
 

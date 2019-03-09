@@ -1226,7 +1226,7 @@ void vTaskTaskLCD(void *pvParameters)
               W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               if((var_addr - PAGE_WEIMI_MEDIANWEI_1 + 1) == MotorProcess.current_seg)
               {//如果修改的纬过渡刚好是当前段号，立刻更新当前循环纬
-                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg - 1];
+                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
               }
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_STEP1_SPEED + 20))

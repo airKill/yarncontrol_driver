@@ -16,19 +16,18 @@
 
 #define KEY_COUNT    3	   					/* 按键个数, 8个独立建 + 2个组合键 */
 
-#define KEY1_PIN          GPIO_Pin_15
-#define KEY1_PORT         GPIOB
-#define KEY2_PIN          GPIO_Pin_14
-#define KEY2_PORT         GPIOB
-//#define KEY1_PIN          GPIO_Pin_6
+//#define KEY1_PIN          GPIO_Pin_15
 //#define KEY1_PORT         GPIOB
-//#define KEY2_PIN          GPIO_Pin_7
+//#define KEY2_PIN          GPIO_Pin_14
 //#define KEY2_PORT         GPIOB
-#define KEY3_PIN          GPIO_Pin_7
-#define KEY3_PORT         GPIOA
-
-//#define KEY3_PIN          GPIO_Pin_9
-//#define KEY3_PORT         GPIOB
+//#define KEY3_PIN          GPIO_Pin_7
+//#define KEY3_PORT         GPIOA
+#define KEY1_PIN          GPIO_Pin_6
+#define KEY1_PORT         GPIOB
+#define KEY2_PIN          GPIO_Pin_7
+#define KEY2_PORT         GPIOB
+#define KEY3_PIN          GPIO_Pin_9
+#define KEY3_PORT         GPIOB
 
 #define READ_KEY1()        GPIO_ReadInputDataBit(KEY1_PORT,KEY1_PIN)  //KEY0°′?üPH3
 #define READ_KEY2()        GPIO_ReadInputDataBit(KEY2_PORT,KEY2_PIN)  //KEY1°′?üPH2
