@@ -2770,7 +2770,7 @@ void AppTaskCreate (void)
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
-              1234,         		/* 任务栈大小，单位word，也就是4字节 */
+              768,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
