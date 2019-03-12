@@ -1076,18 +1076,6 @@
     </file>
   </group>
   <group>
-    <name>ESP8266</name>
-    <excluded>
-      <configuration>Flash</configuration>
-    </excluded>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\esp8266\esp8266_handler.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\esp8266\esp8266_init.c</name>
-    </file>
-  </group>
-  <group>
     <name>FatFS</name>
     <file>
       <name>$PROJ_DIR$\..\..\User\fatfs\src\option\cc936.c</name>
@@ -1148,15 +1136,6 @@
     </file>
   </group>
   <group>
-    <name>JSON</name>
-    <excluded>
-      <configuration>Flash</configuration>
-    </excluded>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\JSON\cJSON.c</name>
-    </file>
-  </group>
-  <group>
     <name>Malloc</name>
     <file>
       <name>$PROJ_DIR$\..\..\User\malloc\malloc.c</name>
@@ -1175,78 +1154,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\modbus\modbus.c</name>
-    </file>
-  </group>
-  <group>
-    <name>MQTT</name>
-    <excluded>
-      <configuration>Flash</configuration>
-    </excluded>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnect.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnectClient.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnectServer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTDeserializePublish.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTFormat.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTFormat.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPacket.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPacket.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPublish.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSerializePublish.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribe.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribeClient.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribeServer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribe.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribeClient.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribeServer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\StackTrace.h</name>
-    </file>
-  </group>
-  <group>
-    <name>MQTT/DEMO</name>
-    <excluded>
-      <configuration>Flash</configuration>
-    </excluded>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\mqtt.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\samples\pub0sub1.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\User\MQTTPacket\samples\transport.c</name>
     </file>
   </group>
   <group>
@@ -1485,6 +1392,93 @@
     <file>
       <name>$PROJ_DIR$\..\..\User\SysInfoTest.c</name>
     </file>
+  </group>
+  <group>
+    <name>WIFI</name>
+    <group>
+      <name>ESP8266</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\esp8266\esp8266_handler.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\esp8266\esp8266_init.c</name>
+      </file>
+    </group>
+    <group>
+      <name>JSON</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\JSON\cJSON.c</name>
+      </file>
+    </group>
+    <group>
+      <name>MQTT</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnect.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnectClient.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTConnectServer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTDeserializePublish.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTFormat.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTFormat.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPacket.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPacket.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTPublish.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSerializePublish.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribe.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribeClient.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTSubscribeServer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribe.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribeClient.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\MQTTUnsubscribeServer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\src\StackTrace.h</name>
+      </file>
+    </group>
+    <group>
+      <name>MQTT/DEMO</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\mqtt.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\samples\pub0sub1.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\timer_platform.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\User\MQTTPacket\samples\transport.c</name>
+      </file>
+    </group>
   </group>
 </project>
 

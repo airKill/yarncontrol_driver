@@ -105,9 +105,9 @@ typedef enum
 #endif
 
 #if UART3_FIFO_EN == 1
-#define UART3_BAUD			9600
-#define UART3_TX_BUF_SIZE	100
-#define UART3_RX_BUF_SIZE	100
+#define UART3_BAUD			115200
+#define UART3_TX_BUF_SIZE	512
+#define UART3_RX_BUF_SIZE	512
 #endif
 
 #if UART4_FIFO_EN == 1
@@ -128,7 +128,7 @@ typedef enum
 #define UART6_RX_BUF_SIZE	1*1024
 #endif
 
-extern u8 UART5_RX_BUF[UART5_RX_BUF_SIZE];
+extern u8 UART3_RX_BUF[UART3_RX_BUF_SIZE];
 extern u8 UART4_RX_BUF[UART4_RX_BUF_SIZE];
 extern u8 UART2_RX_BUF[UART2_RX_BUF_SIZE];
 

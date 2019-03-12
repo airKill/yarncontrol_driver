@@ -68,8 +68,10 @@
 
 #include  "bsp.h"
 
+#include <stdbool.h>
 #include "esp8266_init.h"
 #include "esp8266_handler.h"
+#include "timer_platform.h"
 
 #include "pub0sub1.h"
 #include "mqtt.h"

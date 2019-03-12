@@ -8,7 +8,7 @@
 #define MQTT_SERVER_HOST            "ithaozi.imwork.net"		//实际代码请修改成自己的服务器域名
 //#define MQTT_SERVER_HOST            "igmfrvb.mqtt.iot.bj.baidubce.com"		//实际代码请修改成自己的服务器域名
 #define MQTT_SERVER_PORT            1883				//实际代码请修改成自己的服务器端口
-#define MQTT_ALIVE_INTERVAL         30					//实际代码请修改成自己的心跳时间（秒）
+#define MQTT_ALIVE_INTERVAL         60					//实际代码请修改成自己的心跳时间（秒）
 //#define MQTT_USER                   "admin"				//实际代码请修改成自己的用户名
 //#define MQTT_PASSWORD               "password"				//实际代码请修改成自己的密码
 #define MQTT_USER                   "igmfrvb/device0"				//百度天工物接入用户名
@@ -37,9 +37,6 @@ typedef struct
   int socket;
 }MqttSta_E;
 extern MqttSta_E mqtt_status;
-
-extern uint32_t pingRespTickCount;
-extern u8 pingRespFlag;
 
 void MQTT_Init(void);
 int MQTT_Connect(void);

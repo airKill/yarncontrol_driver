@@ -109,6 +109,8 @@ extern SemaphoreHandle_t  xSemaphore_debug;
 extern QueueHandle_t xQueue_message;
 extern EventGroupHandle_t idwgEventGroup;
 extern TimerHandle_t xTimerUser;
+
+extern xQueueHandle xQueue_esp8266_Cmd;
 /*
 **********************************************************************************************************
 º¯ÊýÉùÃ÷

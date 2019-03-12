@@ -81,6 +81,7 @@ int transport_sendPacketBuffer(int sock, unsigned char* buf, int buflen)
   if(Esp8266_GetTcpStatus())
   {
     rc = Esp8266_Tcp_Send(sock, buf, buflen);
+    TimerCountdown(&last_ping,MQTT_ALIVE_INTERVAL);
   }
   else
   {

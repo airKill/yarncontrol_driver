@@ -22,6 +22,8 @@ SemaphoreHandle_t  xSemaphore_debug = NULL;
 EventGroupHandle_t idwgEventGroup = NULL;
 TimerHandle_t xTimerUser = NULL;
 
+xQueueHandle xQueue_esp8266_Cmd;
+
 SLAVE slave_info;
 SLAVE readSlave;
 QueueHandle_t xQueue_message = NULL;
@@ -2629,7 +2631,7 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
-    printf("speed_zhu is %d\r\n",speed_zhu);
+//    printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
       if(device_info.func_onoff.weimi)
@@ -2722,6 +2724,230 @@ static void vTaskFreq(void *pvParameters)
   }
 }
 
+/**
+******************************************************************************
+* @brief  主处理线程
+******************************************************************************
+**/
+void vEsp8266_Main_Task(void *ptr)
+{
+  esp8266_gpio_init();
+  vTaskDelay(3000 / portTICK_RATE_MS);
+  while(net_device_send_cmd("AT\r\n", "OK"))
+  {
+    vTaskDelay(500);
+    printf("WIFI DEVICE LOST\r\n");
+  }
+  while(net_device_send_cmd("ATE0\r\n", "OK"));
+  {
+    vTaskDelay(500);
+    printf("CLOSE ECHO FAILURE\r\n");
+  }
+  while(1)
+  {
+    if((g_esp_status_t.esp_hw_status_e != ESP_HW_CONNECT_OK) && (g_esp_status_t.esp_hw_status_e != ESP_HW_RECONFIG))
+    {
+      g_esp_status_t.esp_hw_status_e = check_esp8266_status();
+    }
+    switch(g_esp_status_t.esp_hw_status_e)
+    {
+    case ESP_HW_RESERVE_0:
+    case ESP_HW_RESERVE_1:
+    case ESP_HW_CONNECT_OK:
+      break;
+      
+      /* 获得IP */
+    case ESP_HW_GET_IPADDR:
+      getTcpConnect();
+      break;
+      
+      /* 失去连接，断开tcp连接 */
+    case ESP_HW_DISCONNECT:
+      esp_error_t.err_esp_disconnect++;
+      g_esp_status_t.esp_net_work_e = ESP_NETWORK_FAILED;
+      //            SetLedConnectNet(LED_NETWORK_OK);
+      printf("TCP CLOSEED\r\n");
+      vTaskDelay(3000);//3秒后重新连接服务器
+      /* 重新连接TCP服务器 */
+      if(g_esp_status_t.esp_hw_status_e != ESP_HW_RECONFIG)	//如果不是配置状态，则断线重新连接
+      {
+        getTcpConnect();
+      }
+      break;
+    case ESP_HW_LOST_WIFI:
+      esp_error_t.err_esp_lostwifi++;
+      printf("ESP8266 Lost\r\n");			//设备丢失
+      
+      break;
+    case ESP_HW_BUSY_STUS:
+      printf("--%s",netDeviceInfo_t.cmd_resp);
+      break;
+    case ESP_HW_NOT_RESP:
+      esp_error_t.err_esp_notresp++;
+      printf("Esp8266 send timeOut!\r\n");			//设备丢失
+      break;
+    default:
+      break;
+    }
+    if(g_esp_status_t.esp_net_work_e == 0 )
+    {
+      esp_error_t.err_esp_network++;
+    }
+    if(esp_error_t.err_esp_disconnect > ESP_ERROR_CNT || esp_error_t.err_esp_lostwifi >
+       ESP_ERROR_CNT || esp_error_t.err_esp_notresp > ESP_ERROR_CNT || esp_error_t.err_esp_network > ESP_ERROR_CNT )
+    {
+      //RESTART SYSTEM;
+      Mqtt_status_step = MQTT_IDLE;
+      esp_error_t.err_esp_disconnect = 0;
+      esp_error_t.err_esp_lostwifi = 0;
+      esp_error_t.err_esp_notresp = 0;
+      esp_error_t.err_esp_network = 0;
+      //						ReconfigWIFI();
+    }
+    
+    printf("esp_hw_status_e=%d,esp_net_work_e=%d",g_esp_status_t.esp_hw_status_e,g_esp_status_t.esp_net_work_e);
+    vTaskDelay(2000);
+  }
+}
+
+void vMQTT_Handler_Task(void *ptr)
+{
+  int rc = -1;
+  while(1)
+  {
+    switch(Mqtt_status_step)
+    {
+    case MQTT_IDLE:
+      {
+        MqttHandle();
+        memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
+        Mqtt_status_step = MQTT_CONNECT;
+        g_transmit = 0;
+        printf("mqtt satus is idle");
+      }
+      break;
+    case MQTT_CONNECT:
+      {
+        if(g_esp_status_t.esp_hw_status_e ==ESP_HW_CONNECT_OK )
+        {
+          lastSendOutTime =  xTaskGetTickCount();
+          rc = MQTT_Connect();
+          if(rc == -1)
+          {
+            vTaskDelay(200 / portTICK_RATE_MS);
+            continue;
+          }
+          else
+          {
+            /* 如果连接成功，则进入订阅状态*/
+            g_esp_status_t.esp_net_work_e = ESP_NETWORK_SUCCESS;
+            Mqtt_status_step = MQTT_SUBSCRB;
+            memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
+          }
+        }
+        vTaskDelay(200 / portTICK_RATE_MS);
+      }
+      break;
+    case MQTT_SUBSCRB:
+      {
+        lastSendOutTime =  xTaskGetTickCount();
+        rc = MQTT_Subscribe(MQTT_TOPIC);
+        if(rc != -1)
+        {
+          /* 如果订阅成功，则进入发布状态*/
+          Mqtt_status_step = MQTT_PUBLSH;
+          memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
+        }
+        else
+        {
+          printf("MQTT Subscribe Error");
+        }
+        vTaskDelay(200 / portTICK_RATE_MS);
+      }
+      break;
+    case MQTT_PUBLSH:
+      {
+        g_transmit = 1;
+        MQTT_Read();
+        if(g_esp_status_t.esp_net_work_e != ESP_NETWORK_SUCCESS)
+        {
+          printf("mqtt connect is failed");
+        }
+      }
+      break;
+    default:
+      break;
+    }
+    vTaskDelay(1000);
+  }
+}
+
+/**
+******************************************************************************
+* @brief  解析ESP8266串口返回数据线程
+******************************************************************************
+**/
+void vAnalysisUartData(void *ptr)
+{
+  signed portBASE_TYPE pd;
+  //    xSemaphore_CmdLine = xSemaphoreCreateMutex();
+  while(1)
+  {
+    pd = xQueueReceive(xQueue_esp8266_Cmd, gUsartReciveLineBuf, portMAX_DELAY);
+    if(pd != pdTRUE)
+    {
+      printf("pd != pdTRUE\r\n");
+      break;
+    }
+    if(strstr(gUsartReciveLineBuf,"CLOSED") != NULL)
+    {
+      g_esp_status_t.esp_hw_status_e = ESP_HW_DISCONNECT;
+      g_esp_status_t.esp_net_work_e = ESP_NETWORK_FAILED;
+      printf("TCP CLOSED!");
+    }
+    else if(strstr(gUsartReciveLineBuf,"+IPD") != NULL)
+    {
+      /* 处理网络数据 */
+      Handle_Internet_Data(gUsartReciveLineBuf);
+    }
+    else
+    {
+      if(g_esp_status_t.esp_hw_status_e != ESP_HW_CONNECT_OK || g_esp_status_t.esp_hw_status_e != ESP_HW_RECONFIG)
+      {
+        /* ESP8266指令数据 */
+        esp8266_cmd_handle(gUsartReciveLineBuf);
+      }
+      else
+      {
+        printf("MCU unknown how prosess!\r\n");
+        netDeviceInfo_t.cmd_hdl = NULL;
+        memset(gUsartReciveLineBuf,0,sizeof(gUsartReciveLineBuf));
+      }
+    }
+    memset(gUsartReciveLineBuf,0,sizeof(gUsartReciveLineBuf));
+//    vTaskDelay(20 / portTICK_RATE_MS);
+  }
+}
+
+void vMQTT_Recive_Task(void *ptr)
+{
+  MQTT_Recv_t mqtt_recv_t;
+  signed portBASE_TYPE pd;
+  while(1)
+  {
+    pd = xQueueReceive(xQueue_MQTT_Recv, &mqtt_recv_t, 20 / portTICK_RATE_MS);
+    if(pd != NULL)
+    {
+      u8 buf[50];
+      memset(buf,0,50);
+      memcpy(buf,mqtt_recv_t.receivedTopic.lenstring.data,mqtt_recv_t.receivedTopic.lenstring.len);
+      printf("mqtt recv topic:%s\r\n",buf);
+      printf("length:%d,data:%s\r\n",mqtt_recv_t.payloadlen_in,mqtt_recv_t.payload_in);
+    }
+    vTaskDelay(20 / portTICK_PERIOD_MS);
+  }
+}
+
 /*
 *********************************************************************************************************
 *	函 数 名: AppTaskCreate
@@ -2792,6 +3018,10 @@ void AppTaskCreate (void)
               NULL,        		/* 任务参数  */
               10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
+  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
+  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
+  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
+  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
 }
 
 /*
@@ -2804,6 +3034,8 @@ void AppTaskCreate (void)
 */
 void AppObjCreate (void)
 {
+  xQueue_esp8266_Cmd = xQueueCreate(1, 512);
+  xQueue_MQTT_Recv = xQueueCreate(5, sizeof(MQTT_Recv_t));
   /* 创建二值信号量，首次创建信号量计数值是0 */
   xSemaphore_lcd = xSemaphoreCreateBinary();
   
@@ -2988,7 +3220,9 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-  printf("speed_zhu is %d\r\n",speed_zhu);
+  if(Mqtt_status_step == MQTT_PUBLSH)
+    MQTT_Package_Publish("hello world",strlen("hello world"));
+//  printf("speed_zhu is %d\r\n",speed_zhu);
 }
 
 void Task_iwdg_refresh(u8 task)

@@ -56,8 +56,8 @@ typedef struct
 
 extern ESP_STATUS_T g_esp_status_t;		//定义esp8266模块工作状态全局变量
 
-
-extern uint8_t mqttSubscribeData[200];
+extern char gUsartReciveLineBuf[512];
+extern uint8_t mqttSubscribeData[512];
 
 typedef enum
 {
@@ -69,7 +69,6 @@ typedef enum
 extern ESP_ERROR_T esp_error_t;
 extern MQTT_STATUS_E Mqtt_status_step;	//MQTT工作状态机
 extern TickType_t lastSendOutTime;
-extern char gUsartReciveLineBuf[200];
 
 int MQTT_RB_Read(uint8_t *buf, uint16_t len);
 void ReconfigWIFI(void);

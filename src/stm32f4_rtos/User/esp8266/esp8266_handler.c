@@ -7,7 +7,7 @@
 #define SendDataCmd	("AT+CIPSEND=%d\r\n")
 
 /* MQTT订阅数据缓存 */
-uint8_t mqttSubscribeData[200] = {0};
+uint8_t mqttSubscribeData[512] = {0};
 
 /* MCU ID */
 //static char LONG_CLIENT_ID[32]= {0};
@@ -22,24 +22,7 @@ ESP_STATUS_T g_esp_status_t = {ESP_HW_RESERVE_0,ESP_NETWORK_FAILED};
 ESP_ERROR_T esp_error_t= {0,0,0,0};
 
 /* 串口接收数据缓冲区 */
-char gUsartReciveLineBuf[200] = {0};
-
-//void printf_buf(const uint8_t *bufAddr, uint16_t bufLen)
-//{
-//  uint16_t i;
-//  for(i = 0; i<bufLen; i++)
-//  {
-//    printf("buf[%d] = 0x%02x ",i,bufAddr[i]);
-//  }
-//}
-//void printf_buf_char(uint8_t *bufAddr, uint16_t bufLen)
-//{
-//  uint16_t i;
-//  for(i = 0; i<bufLen; i++)
-//  {
-//    USART1_Send(bufAddr,bufLen);
-//  }
-//}
+char gUsartReciveLineBuf[512] = {0};
 
 //==========================================================
 //	函数名称：	net_device_send_cmd
@@ -56,7 +39,7 @@ char gUsartReciveLineBuf[200] = {0};
 uint8_t net_device_send_cmd(char *cmd, char *res)
 {
   uint8_t timeout = SEND_TIMEOUT_TIME;
-  USART2_Send(cmd,strlen(cmd));
+  UART3ToPC(cmd,strlen(cmd));
   netDeviceInfo_t.cmd_hdl = res;
   if(res == NULL)
   {
@@ -241,11 +224,15 @@ int MQTT_RB_Read(uint8_t *buf, uint16_t len)
         esp_error_t.err_esp_network = 0;
         return 0;
       }
-      vTaskDelay(20 / portTICK_RATE_MS);
+      vTaskDelay(20);
     }
     else
     {
       break;
+    }
+    if(Mqtt_status_step == MQTT_PUBLSH)
+    {
+      keepalive();
     }
   }
 //  printf("---------read len = %d",len);
@@ -281,44 +268,17 @@ uint8_t Handle_Internet_Data(char *Dataptr)
   return tmp;
 }
 
-/**
-******************************************************************************
-* @brief  上传数据到服务器
-* @param  无
-* @return 无
-******************************************************************************
-**/
-//static void updata_senosr_data(void)
-//{
-//    char buf[140];
-//    float sbuf[2];
-//    sbuf[0] = sht20Info.tempreture;
-//    sbuf[1] = sht20Info.humidity;
-//    char sendData[20];
-
-//    sprintf(sendData,(char *)SendDataCmd,strlen(buf));
-////    printf("%s",buf);
-//    if(netDeviceInfo_t.netWork)
-//    {
-//        if(net_device_send_cmd(sendData,">") == 0)
-//        {
-//            USART2_Send(buf,strlen(buf));
-//        }
-//    }
-
-//}
-
 void SendDataServer(uint8_t *data,int len)
 {
   char sendDataCmdBuf[20];
   sprintf(sendDataCmdBuf,(char *)SendDataCmd,len);
-  //    if(netDeviceInfo_t.netWork)
+
   if(g_esp_status_t.esp_net_work_e == ESP_NETWORK_SUCCESS)
   {
     if(net_device_send_cmd(sendDataCmdBuf,">") == 0)
     {
       printf("Send to esp8266 data len = %d",len);
-      USART2_SendData(data,len);
+      UART3ToPC(data,len);
     }
   }
 }
@@ -349,7 +309,7 @@ int Esp8266_Tcp_Send(int socket, uint8_t *data, uint16_t len)
   //    printf("cmd :%s",cmd);
   if(net_device_send_cmd(cmd,">") == 0)
   {
-    USART2_SendData(data,len);
+    UART3ToPC(data,len);
     ret = 0;
   }
   else

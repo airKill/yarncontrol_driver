@@ -32,8 +32,6 @@ char CLIENT_ID[32]= {0};
 
 xQueueHandle xQueue_MQTT_Recv;  /**< MQTT接收消息队列 */
 
-uint32_t pingRespTickCount = 0;
-u8 pingRespFlag = 0;
 /**
 ******************************************************************************
 * @brief  Sign接收函数
@@ -125,9 +123,9 @@ int MQTT_Connect(void)
   
   len = MQTTSerialize_connect(buf, buflen, &data);
   
-  for(uint8_t i=0;i<len;i++)
-    printf("%02x ",buf[i]);
-  printf("\r\n");
+//  for(uint8_t i=0;i<len;i++)
+//    printf("%02x ",buf[i]);
+//  printf("\r\n");
   transport_sendPacketBuffer(mqtt_status.socket, buf, len);
   
   /* wait for connack */
@@ -145,6 +143,7 @@ int MQTT_Connect(void)
     goto exit;
   
   printf("Connected to MQTT server\r\n");
+  TimerCountdown(&last_ping,MQTT_ALIVE_INTERVAL);
   return mqtt_status.socket;
   
 exit:
@@ -180,7 +179,7 @@ int MQTT_Subscribe(char* topic_str)
     unsigned short submsgid;
     int subcount;
     int granted_qos;
-    
+    printf("MQTT_Subscribe Success!\r\n");
     rc = MQTTDeserialize_suback(&submsgid, 1, &subcount, &granted_qos, buf, buflen);
     if (granted_qos != 0)
     {
@@ -220,13 +219,13 @@ int MQTT_Read(void)
       MQTTDeserialize_publish(&mqtt_recv_t.dup, &mqtt_recv_t.qos, &mqtt_recv_t.retained, &mqtt_recv_t.msgid, &mqtt_recv_t.receivedTopic,
                               &mqtt_recv_t.payload_in, &mqtt_recv_t.payloadlen_in, buf, buflen);
       xQueueSend(xQueue_MQTT_Recv,  &mqtt_recv_t,  5);
+      TimerCountdown(&last_ping,MQTT_ALIVE_INTERVAL);
       //            printf("\r\nmessage arrived %d, %s", mqtt_recv_t.payloadlen_in, mqtt_recv_t.payload_in);
     }
     else if(rc == PINGRESP)
     {
       printf("Recv MQTT PINGRESP\r\n");
-      pingRespFlag = 0;
-      pingRespTickCount = 0;
+      TimerCountdown(&last_ping,MQTT_ALIVE_INTERVAL);
     }
     else if(rc == DISCONNECT)
     {
@@ -243,7 +242,8 @@ int MQTT_Read(void)
       printf("MQTT %d\r\n", rc);
     }
     memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
-    vTaskDelay(20 / portTICK_RATE_MS);
+    
+    vTaskDelay(20);
   }
 exit:
   return rc;
@@ -255,6 +255,27 @@ int MQTT_Package_Publish(u8 *buf,u16 len)
   rc = MQTT_Publish(0, 0, 0, 0, pub_topicString, buf, len);
   return rc;
 }
+
+int keepalive(void)
+{
+  int rc = 0;
+  unsigned char buf[200];
+  int buflen = sizeof(buf);
+  int len;
+  if(MQTT_GetConnected())
+  {
+//    if (TimerIsExpired(&last_sent) || TimerIsExpired(&last_received))
+    if(TimerIsExpired(&last_ping))
+    {
+      printf("PING REQ\r\n");
+      int len = MQTTSerialize_pingreq(buf, buflen);
+      rc = transport_sendPacketBuffer(mqtt_status.socket, buf, len);
+      TimerCountdown(&last_ping,MQTT_ALIVE_INTERVAL);
+    }
+  }
+  return rc;
+}
+
 
 /**
 ******************************************************************************
@@ -350,25 +371,11 @@ uint8_t MQTT_GetConnected(void)
   }
   return i;
 }
-/**
-******************************************************************************
-* @brief  MQTT??????????
-* @retval None.
-******************************************************************************/
-void MqttXqueueGreat(void)
-{
-  xQueue_MQTT_Recv = xQueueCreate(5, sizeof(MQTT_Recv_t));
-  if(xQueue_MQTT_Recv == NULL)
-  {
-    printf("xQueue_MQTT_Recv ERROR\r\n");
-    while(1);
-  }
-}
 
 void MqttHandle(void)
 {
   MQTT_Init();
-//  MqttXqueueGreat();
+  TimerInit(&last_ping);
 }
 
 

@@ -17,4 +17,5 @@ void MQTT_PingREQ(void);
 void MQTT_Disconnect(void);
 void ReadChipID(char* cpId, int len);
 int MQTT_Package_Publish(u8 *buf,u16 len);
+int keepalive(void);
 #endif
