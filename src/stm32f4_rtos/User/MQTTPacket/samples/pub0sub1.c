@@ -205,7 +205,7 @@ exit:
 int MQTT_Read(void)
 {
   int rc;
-  static unsigned char buf[200] = {0};
+  static unsigned char buf[1000] = {0};
   int buflen = sizeof(buf);
   while (!toStop)
   {

@@ -56,8 +56,8 @@ typedef struct
 
 extern ESP_STATUS_T g_esp_status_t;		//定义esp8266模块工作状态全局变量
 
-extern char gUsartReciveLineBuf[512];
-extern uint8_t mqttSubscribeData[512];
+extern char gUsartReciveLineBuf[1000];
+extern uint8_t mqttSubscribeData[1000];
 
 typedef enum
 {

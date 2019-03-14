@@ -2828,9 +2828,9 @@ void vMQTT_Handler_Task(void *ptr)
       break;
     case MQTT_CONNECT:
       {
-        if(g_esp_status_t.esp_hw_status_e ==ESP_HW_CONNECT_OK )
+        if(g_esp_status_t.esp_hw_status_e == ESP_HW_CONNECT_OK)
         {
-          lastSendOutTime =  xTaskGetTickCount();
+          lastSendOutTime = xTaskGetTickCount();
           rc = MQTT_Connect();
           if(rc == -1)
           {
@@ -2872,6 +2872,7 @@ void vMQTT_Handler_Task(void *ptr)
         if(g_esp_status_t.esp_net_work_e != ESP_NETWORK_SUCCESS)
         {
           printf("mqtt connect is failed");
+          Mqtt_status_step = MQTT_IDLE;
         }
       }
       break;
@@ -2933,6 +2934,7 @@ void vMQTT_Recive_Task(void *ptr)
 {
   MQTT_Recv_t mqtt_recv_t;
   signed portBASE_TYPE pd;
+  u16 i;
   while(1)
   {
     pd = xQueueReceive(xQueue_MQTT_Recv, &mqtt_recv_t, 20 / portTICK_RATE_MS);
@@ -2941,10 +2943,12 @@ void vMQTT_Recive_Task(void *ptr)
       u8 buf[50];
       memset(buf,0,50);
       memcpy(buf,mqtt_recv_t.receivedTopic.lenstring.data,mqtt_recv_t.receivedTopic.lenstring.len);
-      printf("mqtt recv topic:%s\r\n",buf);
-      printf("length:%d,data:%s\r\n",mqtt_recv_t.payloadlen_in,mqtt_recv_t.payload_in);
+      printf("mqtt recv topic:%s,length:%d\r\n",buf,mqtt_recv_t.payloadlen_in);
+      for(i=0;i<mqtt_recv_t.payloadlen_in;i++)
+        printf("%c",mqtt_recv_t.payload_in[i]);
+      printf("\r\n");
     }
-    vTaskDelay(20 / portTICK_PERIOD_MS);
+    vTaskDelay(20);
   }
 }
 
@@ -3034,7 +3038,7 @@ void AppTaskCreate (void)
 */
 void AppObjCreate (void)
 {
-  xQueue_esp8266_Cmd = xQueueCreate(1, 512);
+  xQueue_esp8266_Cmd = xQueueCreate(1, 1000);
   xQueue_MQTT_Recv = xQueueCreate(5, sizeof(MQTT_Recv_t));
   /* 创建二值信号量，首次创建信号量计数值是0 */
   xSemaphore_lcd = xSemaphoreCreateBinary();
@@ -3220,8 +3224,8 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-  if(Mqtt_status_step == MQTT_PUBLSH)
-    MQTT_Package_Publish("hello world",strlen("hello world"));
+//  if(Mqtt_status_step == MQTT_PUBLSH)
+//    MQTT_Package_Publish("hello world",strlen("hello world"));
 //  printf("speed_zhu is %d\r\n",speed_zhu);
 }
 

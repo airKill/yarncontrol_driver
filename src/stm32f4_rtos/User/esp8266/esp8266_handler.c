@@ -7,7 +7,7 @@
 #define SendDataCmd	("AT+CIPSEND=%d\r\n")
 
 /* MQTT订阅数据缓存 */
-uint8_t mqttSubscribeData[512] = {0};
+uint8_t mqttSubscribeData[1000] = {0};
 
 /* MCU ID */
 //static char LONG_CLIENT_ID[32]= {0};
@@ -22,7 +22,7 @@ ESP_STATUS_T g_esp_status_t = {ESP_HW_RESERVE_0,ESP_NETWORK_FAILED};
 ESP_ERROR_T esp_error_t= {0,0,0,0};
 
 /* 串口接收数据缓冲区 */
-char gUsartReciveLineBuf[512] = {0};
+char gUsartReciveLineBuf[1000] = {0};
 
 //==========================================================
 //	函数名称：	net_device_send_cmd
@@ -208,7 +208,7 @@ ESP_HW_STATUS_E check_esp8266_status(void)
 
 int MQTT_RB_Read(uint8_t *buf, uint16_t len)
 {
-  uint8_t i;
+  u16 i;
   static uint8_t oldlen;
   //    printf("read data lenth = %d",len);
   while(1)
@@ -241,7 +241,7 @@ int MQTT_RB_Read(uint8_t *buf, uint16_t len)
     *(buf + i) = mqttSubscribeData[i+oldlen];
 //    printf("%02x",mqttSubscribeData[i+oldlen]);
   }
-  oldlen+=len;
+  oldlen += len;
   return i;
 }
 
