@@ -20,11 +20,25 @@ typedef struct
   float wei_cm_set[10];//纬厘米
   float wei_inch_set[10];//纬英寸
   u32 total_wei_count[20];//设置总纬号
-  u16 step1_factor[10];//送纬电机速度比
-  u16 step2_factor[10];//底线电机速度比
-  u16 step3_factor[10];//电机3速度比
+  u16 step1_factor[10];//送纬1速度比
+  u16 step2_factor[10];//送纬2速度比
+  u16 step3_factor[10];//底线速度比
 }WEIMI_PARA;
 extern WEIMI_PARA weimi_para;
+
+typedef struct
+{
+  u32 wei_circle[10];//纬循环
+  float wei_cm[10];//纬厘米
+  u32 wei_guodu[10];//纬过渡
+}WEIMI_MQTT;
+
+typedef struct
+{
+  u16 step1_factor[10];//送纬1速度比
+  u16 step2_factor[10];//送纬2速度比
+  u16 step3_factor[10];//底线速度比
+}WEISHA_MQTT;
 
 typedef struct
 {
@@ -52,4 +66,6 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor);
 u16 get_main_speed(float freq);
 u32 from_speed_step(float speed);
 u8 get_valid_seg(WEIMI_PARA *para);
+u16 WeimiMQTTPackage(u8 *buf);
+u16 WeishaMQTTPackage(u8 *buf);
 #endif

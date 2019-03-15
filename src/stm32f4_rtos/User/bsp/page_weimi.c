@@ -100,3 +100,54 @@ u8 get_valid_seg(WEIMI_PARA *para)
   }
   return seg;
 }
+
+u16 WeimiMQTTPackage(u8 *buf)
+{
+  u8 i;
+  u16 length = 0;
+  WEIMI_MQTT weimi_mqtt;
+  u8 name_len;
+  name_len = device_info.device_id_len + SlavePara.filename_len;
+  buf[0] = name_len;//第一字节为货号长度
+  length = 1;
+  memcpy(buf + length,device_info.device_id,device_info.device_id_len);//设备ID放在最前面
+  length = length + device_info.device_id_len;
+  memcpy(buf + length,SlavePara.filename,SlavePara.filename_len);//货号名称放在中间
+  length = length + SlavePara.filename_len;
+  
+  for(i=0;i<10;i++)
+  {
+    weimi_mqtt.wei_circle[i] = weimi_para.total_wei_count[i * 2];
+    weimi_mqtt.wei_cm[i] = weimi_para.wei_cm_set[i];
+    weimi_mqtt.wei_guodu[i] = weimi_para.total_wei_count[i * 2 + 1];
+  }
+  memcpy(buf + length,(u8 *)&weimi_mqtt,sizeof(WEIMI_MQTT));
+  length = length + sizeof(WEIMI_MQTT);
+  return length;
+}
+
+u16 WeishaMQTTPackage(u8 *buf)
+{
+  u8 i;
+  u16 length = 0;
+  WEISHA_MQTT weisha_mqtt;
+  u8 name_len;
+  name_len = device_info.device_id_len + SlavePara.filename_len;
+  buf[0] = name_len;//第一字节为货号长度
+  length = 1;
+  memcpy(buf + length,device_info.device_id,device_info.device_id_len);//设备ID放在最前面
+  length = length + device_info.device_id_len;
+  memcpy(buf + length,SlavePara.filename,SlavePara.filename_len);//货号名称放在中间
+  length = length + SlavePara.filename_len;
+  
+  for(i=0;i<10;i++)
+  {
+    weisha_mqtt.step1_factor[i] = weimi_para.step1_factor[i];
+    weisha_mqtt.step2_factor[i] = weimi_para.step2_factor[i];
+    weisha_mqtt.step3_factor[i] = weimi_para.step3_factor[i];
+  }
+  memcpy(buf + length,(u8 *)&weisha_mqtt,sizeof(WEISHA_MQTT));
+  length = length + sizeof(WEISHA_MQTT);
+  return length;
+}
+

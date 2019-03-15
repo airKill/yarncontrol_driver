@@ -72,11 +72,12 @@ void read_device_info(void)
   }
   if(device_info.page_count_all == 0)
   {
-    JingSha_File.filename_len = 0;
-    for(i=0;i<10;i++)
-    {
-      JingSha_File.filename[i] = 0;
-    }
+//    for(i=0;i<10;i++)
+//    {
+//      JingSha_File.filename[i] = 0;
+//    }
+    strcpy((char *)JingSha_File.filename,"0001");
+    JingSha_File.filename_len = 4;
     for(i=0;i<30;i++)
     {
       JingSha_File.weight_value[i] = 0;

@@ -30,8 +30,6 @@ MQTTString pub_topicString = MQTTString_initializer;
 char MQTT_TOPIC[64] = {0};
 char CLIENT_ID[32]= {0};
 
-xQueueHandle xQueue_MQTT_Recv;  /**< MQTT接收消息队列 */
-
 /**
 ******************************************************************************
 * @brief  Sign接收函数
@@ -91,9 +89,9 @@ void MQTT_Init(void)
   //    MQTT_RB_Init();
   
   //    snprintf(MQTT_TOPIC_PUB,sizeof(MQTT_TOPIC_PUB),"%s%s",MQTT_TOPIC_PUBLISH,CLIENT_ID);
-  sprintf(MQTT_TOPIC_PUB,"%s",MQTT_TOPIC_PUBLISH);
-  pub_topicString.cstring = MQTT_TOPIC_PUB;
-  printf("publish topic: %s\r\n",pub_topicString.cstring);
+//  sprintf(MQTT_TOPIC_PUB,"%s",MQTT_TOPIC_PUBLISH);
+//  pub_topicString.cstring = MQTT_TOPIC_PUB;
+//  printf("publish topic: %s\r\n",pub_topicString.cstring);
   stop_init();
 }
 
@@ -249,10 +247,15 @@ exit:
   return rc;
 }
 
-int MQTT_Package_Publish(u8 *buf,u16 len)
+int MQTT_Package_Publish(char *topicName,u8 *buf,u16 len)
 {
-  int rc;
-  rc = MQTT_Publish(0, 0, 0, 0, pub_topicString, buf, len);
+  int rc = 0;
+  if(Mqtt_status_step == MQTT_PUBLSH)
+  {
+    pub_topicString.cstring = topicName;
+    pub_topicString.cstring[strlen(topicName)] = '\0';
+    rc = MQTT_Publish(0, 0, 0, 0, pub_topicString, buf, len);
+  }
   return rc;
 }
 

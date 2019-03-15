@@ -111,6 +111,8 @@ extern EventGroupHandle_t idwgEventGroup;
 extern TimerHandle_t xTimerUser;
 
 extern xQueueHandle xQueue_esp8266_Cmd;
+extern xQueueHandle xQueue_MQTT_Recv;
+extern xQueueHandle xQueue_MQTT_Transmit;
 /*
 **********************************************************************************************************
 º¯ÊýÉùÃ÷
@@ -128,4 +130,5 @@ void TIM_CallBack2(void);
 void UserTimerCallback(TimerHandle_t xTimer);
 void Task_iwdg_refresh(u8 task);
 void vTaskManageCapacity(void *pvParameters);
+void vMQTT_Tranmit_Task(void *ptr);
 #endif

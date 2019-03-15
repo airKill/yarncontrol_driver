@@ -34,7 +34,7 @@ typedef enum {DISPLAY_TIMCNT = 0,DISPLAY_THETA,DISPLAY_W} DisplayType;
 #define SPEED_BUFFER_SIZE 8
 
 #define COUNTER_RESET   (u16)0
-#define ICx_FILTER      (u8) 6 // 6<-> 670nsec
+#define ICx_FILTER      (u8) 10 // 6<-> 670nsec
 
 #define TIMx_PRE_EMPTION_PRIORITY 1
 #define TIMx_SUB_PRIORITY 0

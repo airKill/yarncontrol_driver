@@ -22,6 +22,8 @@ SemaphoreHandle_t  xSemaphore_debug = NULL;
 EventGroupHandle_t idwgEventGroup = NULL;
 TimerHandle_t xTimerUser = NULL;
 
+xQueueHandle xQueue_MQTT_Recv;  /**< MQTT鎺ユ敹娑堟伅闃熷垪 */
+xQueueHandle xQueue_MQTT_Transmit;
 xQueueHandle xQueue_esp8266_Cmd;
 
 SLAVE slave_info;
@@ -766,6 +768,9 @@ void vTaskTaskLCD(void *pvParameters)
               peiliao_para.final_weight = final_per_meter(&peiliao_para);
               Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_WEISHA)
             {//纬纱设置
@@ -775,6 +780,9 @@ void vTaskTaskLCD(void *pvParameters)
               peiliao_para.final_weight = final_per_meter(&peiliao_para);
               Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_RUBBER)
             {//橡胶设置
@@ -784,6 +792,9 @@ void vTaskTaskLCD(void *pvParameters)
               peiliao_para.final_weight = final_per_meter(&peiliao_para);
               Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_ZHIJI)
             {//织机条数
@@ -791,6 +802,9 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               peiliao_para.loom_num = cnt;
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_LOSS)
             {//损耗
@@ -800,6 +814,9 @@ void vTaskTaskLCD(void *pvParameters)
               total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + peiliao_para.loss / 100.0));
               total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_TOTAL_METER)
             {//生产任务米设置
@@ -819,6 +836,9 @@ void vTaskTaskLCD(void *pvParameters)
               old_plan_complete = 0;
               
               Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_TOTAL_WEIGHT)
             {//生产任务重量设置
@@ -837,6 +857,9 @@ void vTaskTaskLCD(void *pvParameters)
               plan_complete = 0;
               old_plan_complete = 0;
               Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_KAIDU)
             {//开度设置
@@ -844,6 +867,9 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
               peiliao_para.kaidu_set = cnt;
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_WEIMI)
             {//纬密设置
@@ -858,6 +884,9 @@ void vTaskTaskLCD(void *pvParameters)
                 //转换为纬/inch显示
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_ADD_METER)
             {//补单设置
@@ -865,6 +894,9 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               peiliao_para.add_meter_set = cnt;
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_PRODUCT_WEISHU_DIS)
             {//纬密显示设置
@@ -872,6 +904,9 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               peiliao_para.weimi_dis_set = cnt;
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+              u8 publish_topic;
+              publish_topic = TOPIC_PEILIAO;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_STOP_OFF) && (var_addr <= PAGE_STOP_OFF + 11))
             {//停机原因选择
@@ -898,6 +933,9 @@ void vTaskTaskLCD(void *pvParameters)
                   SDWE_WARNNING(PAGE_STOP_WARNNING,"无效操作");
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_STOP;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             
             /****************************恢复出厂默认值************************************/
@@ -1171,7 +1209,7 @@ void vTaskTaskLCD(void *pvParameters)
               u32 cnt;
               cnt = (lcd_rev_buf[7] << 24) + (lcd_rev_buf[8] << 16) + (lcd_rev_buf[9] << 8) + lcd_rev_buf[10];
               if((var_addr - PAGE_WEIMI_TOTALWEI_1) == 0)
-              {
+              {//修改第一段纬循环
                 if(cnt == 0)
                 {//段1纬循环不能为0
                   SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0");
@@ -1196,6 +1234,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEIMI;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
@@ -1219,6 +1260,9 @@ void vTaskTaskLCD(void *pvParameters)
                 peiliao_para.weimi_set = cnt;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEIMI;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_MEDIANWEI_1) && (var_addr < PAGE_WEIMI_MEDIANWEI_1 + 20))
             {//纬过渡设置
@@ -1230,6 +1274,9 @@ void vTaskTaskLCD(void *pvParameters)
               {//如果修改的纬过渡刚好是当前段号，立刻更新当前循环纬
                 MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEIMI;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SPEED) && (var_addr < PAGE_WEIMI_STEP1_SPEED + 20))
             {//送纬电机速度设置
@@ -1250,6 +1297,9 @@ void vTaskTaskLCD(void *pvParameters)
                 Sdwe_disDigi(var_addr,weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SPEED) && (var_addr < PAGE_WEIMI_STEP2_SPEED + 20))
             {//底线电机速度设置
@@ -1270,6 +1320,9 @@ void vTaskTaskLCD(void *pvParameters)
                 Sdwe_disDigi(var_addr,weimi_para.step2_factor[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP3_SPEED) && (var_addr < PAGE_WEIMI_STEP3_SPEED + 20))
             {//电机3速度设置
@@ -1290,6 +1343,9 @@ void vTaskTaskLCD(void *pvParameters)
                 Sdwe_disDigi(var_addr,weimi_para.step3_factor[(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_ADD1) && (var_addr < PAGE_WEIMI_STEP1_ADD1 + 10))
             {//送纬速度加1——10
@@ -1308,6 +1364,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SUB1) && (var_addr < PAGE_WEIMI_STEP1_SUB1 + 10))
             {//送纬速度减1——10
@@ -1326,6 +1385,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_ADD1) && (var_addr < PAGE_WEIMI_STEP2_ADD1 + 10))
             {//底线速度加1——10
@@ -1344,6 +1406,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SUB1) && (var_addr < PAGE_WEIMI_STEP2_SUB1 + 10))
             {//底线速度减1——10
@@ -1362,6 +1427,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP3_ADD1) && (var_addr < PAGE_WEIMI_STEP3_ADD1 + 10))
             {//电机3速度加1——10
@@ -1380,6 +1448,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP3_SUB1) && (var_addr < PAGE_WEIMI_STEP3_SUB1 + 10))
             {//电机3速度减1——10
@@ -1398,6 +1469,9 @@ void vTaskTaskLCD(void *pvParameters)
                   MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
                 }
               }
+              u8 publish_topic;
+              publish_topic = TOPIC_WEISHA;
+              xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if(var_addr == PAGE_WEIMI_WEIMI1)
             {
@@ -2952,6 +3026,46 @@ void vMQTT_Recive_Task(void *ptr)
   }
 }
 
+void vMQTT_Tranmit_Task(void *ptr)
+{
+  u8 sendbuf[200],sendlen = 0;
+  u8 func;
+  signed portBASE_TYPE pd;
+  while(1)
+  {
+    pd = xQueueReceive(xQueue_MQTT_Transmit, &func, 200);
+    if(pd != NULL)
+    {
+      if(func == TOPIC_WEIMI)
+      {
+        sendlen = WeimiMQTTPackage(sendbuf);
+        MQTT_Package_Publish(MQTT_TOPIC_WEIMI,sendbuf,sendlen);
+      }
+      else if(func == TOPIC_WEISHA)
+      {
+        sendlen = WeishaMQTTPackage(sendbuf);
+        MQTT_Package_Publish(MQTT_TOPIC_WEISHA,sendbuf,sendlen);
+      }
+      else if(func == TOPIC_CHANNENG)
+      {
+        sendlen = ChannengMQTTPackage(sendbuf);
+        MQTT_Package_Publish(MQTT_TOPIC_CHANNENG,sendbuf,sendlen);
+      }
+      else if(func == TOPIC_PEILIAO)
+      {
+        sendlen = PeiliaoMQTTPackage(sendbuf);
+        MQTT_Package_Publish(MQTT_TOPIC_PEILIAO,sendbuf,sendlen);
+      }
+      else if(func == TOPIC_STOP)
+      {
+        sendlen = SystemStateMQTTPackage(sendbuf);
+        MQTT_Package_Publish(MQTT_TOPIC_STOP,sendbuf,sendlen);
+      }
+    }
+    vTaskDelay(1000);
+  }
+}
+
 /*
 *********************************************************************************************************
 *	函 数 名: AppTaskCreate
@@ -3026,6 +3140,7 @@ void AppTaskCreate (void)
   xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
   xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
   xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
+  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
 }
 
 /*
@@ -3040,6 +3155,7 @@ void AppObjCreate (void)
 {
   xQueue_esp8266_Cmd = xQueueCreate(1, 1000);
   xQueue_MQTT_Recv = xQueueCreate(5, sizeof(MQTT_Recv_t));
+  xQueue_MQTT_Transmit = xQueueCreate(5, sizeof(char));
   /* 创建二值信号量，首次创建信号量计数值是0 */
   xSemaphore_lcd = xSemaphoreCreateBinary();
   
@@ -3133,6 +3249,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
 {//定时时间1s
   static u16 speed_1 = 0,speed_2 = 0;
   static u8 timefor10s = 0;
+  static u16 timefor5min = 0;
   EventBits_t uxBits;
   uxBits = xEventGroupWaitBits(idwgEventGroup, /* 事件标志组句柄 */
                                IWDG_BIT_ALL,            /* 等待bit0和bit1被设置 */
@@ -3148,6 +3265,14 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {//每10秒获取一次时间
     timefor10s = 0;
     Sdwe_readRTC();
+  }
+  timefor5min++;
+  if(timefor5min >= 300)
+  {
+    timefor5min = 0;
+    u8 publish_topic;
+    publish_topic = TOPIC_CHANNENG;
+    xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
   }
   if(sample_time == 0)
   {
@@ -3177,9 +3302,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
     {
       old_system_state = device_info.system_state;
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
+      u8 publish_topic;
+      publish_topic = TOPIC_STOP;
+      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
-  else if(work_idle_time < 300)
+  else if(work_idle_time < 310)
   {//10~300s无脉冲认为是空闲时间，不计入工作时间
     work_idle = PLUSE_IDLE;
   }
@@ -3191,6 +3319,9 @@ void UserTimerCallback(TimerHandle_t xTimer)
     {
       old_system_state = device_info.system_state;
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
+      u8 publish_topic;
+      publish_topic = TOPIC_STOP;
+      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
   if(work_idle != PLUSE_IDLE)
@@ -3224,8 +3355,6 @@ void UserTimerCallback(TimerHandle_t xTimer)
       }
     }
   }
-//  if(Mqtt_status_step == MQTT_PUBLSH)
-//    MQTT_Package_Publish("hello world",strlen("hello world"));
 //  printf("speed_zhu is %d\r\n",speed_zhu);
 }
 

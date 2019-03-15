@@ -260,4 +260,54 @@ void inc_card_type(u32 id,u8 type)
   myfree(SRAMIN,card_buf);
 }
 
+u16 ChannengMQTTPackage(u8 *buf)
+{
+  u8 i;
+  u16 length = 0;
+  u8 name_len;
+  name_len = device_info.device_id_len + SlavePara.filename_len;
+  buf[0] = name_len;//第一字节为货号长度
+  length = 1;
+  memcpy(buf + length,device_info.device_id,device_info.device_id_len);//设备ID放在最前面
+  length = length + device_info.device_id_len;
+  memcpy(buf + length,SlavePara.filename,SlavePara.filename_len);//货号名称放在中间
+  length = length + SlavePara.filename_len;
+  
+  memcpy(buf + length,(u8 *)&product_para,sizeof(product_para));
+  length = length + sizeof(product_para);
+  return length;
+}
 
+u16 PeiliaoMQTTPackage(u8 *buf)
+{
+  u8 i;
+  u16 length = 0;
+  u8 name_len;
+  name_len = device_info.device_id_len + SlavePara.filename_len;
+  buf[0] = name_len;//第一字节为货号长度
+  length = 1;
+  memcpy(buf + length,device_info.device_id,device_info.device_id_len);//设备ID放在最前面
+  length = length + device_info.device_id_len;
+  memcpy(buf + length,SlavePara.filename,SlavePara.filename_len);//货号名称放在中间
+  length = length + SlavePara.filename_len;
+  
+  memcpy(buf + length,(u8 *)&peiliao_para,sizeof(peiliao_para));
+  length = length + sizeof(peiliao_para);
+  return length;
+}
+
+u16 SystemStateMQTTPackage(u8 *buf)
+{
+  u16 length = 0;
+  u8 name_len;
+  name_len = device_info.device_id_len + SlavePara.filename_len;
+  buf[0] = name_len;//第一字节为货号长度
+  length = 1;
+  memcpy(buf + length,device_info.device_id,device_info.device_id_len);//设备ID放在最前面
+  length = length + device_info.device_id_len;
+  memcpy(buf + length,SlavePara.filename,SlavePara.filename_len);//货号名称放在中间
+  length = length + SlavePara.filename_len;
+  buf[length] = device_info.system_state;
+  length = length + 1;
+  return length;
+}

@@ -16,6 +16,18 @@
 #define MQTT_TOPIC_BASE             "topic/+"		//实际代码请修改成自己的订阅主题
 #define MQTT_TOPIC_PUBLISH	     "topic22"	//实际代码请修改成自己的发布主题
 
+#define MQTT_TOPIC_WEIMI      "PUBLISH/WEIMI"
+#define MQTT_TOPIC_WEISHA     "PUBLISH/WEISHA"
+#define MQTT_TOPIC_CHANNENG   "PUBLISH/CHANNENG"
+#define MQTT_TOPIC_PEILIAO    "PUBLISH/PEILIAO"
+#define MQTT_TOPIC_STOP       "PUBLISH/STOP"
+
+#define TOPIC_WEIMI      1
+#define TOPIC_WEISHA     2
+#define TOPIC_CHANNENG   3
+#define TOPIC_PEILIAO    4
+#define TOPIC_STOP       5
+
 static char MQTT_TOPIC_PUB[64] = {0};
 typedef struct
 {
@@ -27,8 +39,6 @@ typedef struct
   unsigned char* payload_in;
   MQTTString receivedTopic;
 } MQTT_Recv_t;
-
-extern xQueueHandle xQueue_MQTT_Recv;
 
 /*Mqtt状态结构体*/
 typedef struct

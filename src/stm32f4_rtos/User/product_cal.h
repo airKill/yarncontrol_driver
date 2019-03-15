@@ -104,5 +104,7 @@ u8 is_same_data(u32 card,u32 *buf_lib,u16 buf_len);
 u8 get_card_type(u32 id);
 void inc_card_type(u32 id,u8 type);
 u8 get_period_state(RTC_TIME *current,DEVICE_INFO *set);
-
+u16 ChannengMQTTPackage(u8 *buf);
+u16 PeiliaoMQTTPackage(u8 *buf);
+u16 SystemStateMQTTPackage(u8 *buf);
 #endif
