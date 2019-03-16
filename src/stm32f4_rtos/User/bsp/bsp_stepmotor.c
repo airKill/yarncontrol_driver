@@ -142,6 +142,8 @@ void TIM5_PWM_SETPMOTOR(void)
 
 void StepMotor_adjust_speed(u8 motor,u32 value)
 {
+  DIFF_G_H();
+  DIFF_G0_L();
   if(motor == STEPMOTOR1)
   {
     TIM_SetCompare3(TIM3,value / 2);

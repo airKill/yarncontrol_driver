@@ -1716,7 +1716,7 @@ static void vTaskTaskLED(void *pvParameters)
     bsp_LedToggle(1);
     bsp_LedToggle(2);
     vTaskDelay(500);
-    ServoMotorRunning(20);
+//    ServoMotorRunning(20);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2515,7 +2515,7 @@ static void vTaskMotorControl(void *pvParameters)
           if(step_motor_adjust)
           {//过渡纬号，步进电机调速，每纬调节一次转速
             guodu++;
-            u16 step_speed1,step_speed2;//步进电机转速，转/分钟
+            u16 step_speed1,step_speed2,step_speed3;//步进电机转速，转/分钟
             if(symbol1 == 0)//速度增加
               step_speed1 = (pluse_step_src1 + speed_diff1 / MotorProcess.total_wei * guodu);
             else//速度减少
@@ -2524,11 +2524,17 @@ static void vTaskMotorControl(void *pvParameters)
               step_speed2 = (pluse_step_src2 + speed_diff2 / MotorProcess.total_wei * guodu);
             else//速度减少
               step_speed2 = (pluse_step_src2 - speed_diff2 / MotorProcess.total_wei * guodu);
+            if(symbol3 == 0)//速度增加
+              step_speed3 = (pluse_step_src3 + speed_diff3 / MotorProcess.total_wei * guodu);
+            else//速度减少
+              step_speed3 = (pluse_step_src3 - speed_diff3 / MotorProcess.total_wei * guodu);
             u16 sstep1,sstep2,sstep3;
             sstep1 = from_speed_step(step_speed1);
             sstep2 = from_speed_step(step_speed2);
-            StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
+            sstep3 = from_speed_step(step_speed3);
             StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
+            StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
+            StepMotor_adjust_speed(STEPMOTOR3,(u32)sstep3);
 //            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
             if(symbol_servo == 0)//正数增加
               sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
@@ -2705,7 +2711,7 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
-//    printf("speed_zhu is %d\r\n",speed_zhu);
+    printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
       if(device_info.func_onoff.weimi)
@@ -2786,6 +2792,8 @@ static void vTaskFreq(void *pvParameters)
     else
     {
       is_stop = 0;
+      DIFF_G_L();
+      DIFF_G0_H();
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;
@@ -2810,7 +2818,7 @@ void vEsp8266_Main_Task(void *ptr)
   while(net_device_send_cmd("AT\r\n", "OK"))
   {
     vTaskDelay(500);
-    printf("WIFI DEVICE LOST\r\n");
+//    printf("WIFI DEVICE LOST\r\n");
   }
   while(net_device_send_cmd("ATE0\r\n", "OK"));
   {
@@ -3136,11 +3144,11 @@ void AppTaskCreate (void)
               NULL,        		/* 任务参数  */
               10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
-  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
-  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
-  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
-  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
-  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
+//  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
+//  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
+//  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
+//  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
+//  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
 }
 
 /*
