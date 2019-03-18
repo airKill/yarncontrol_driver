@@ -1498,16 +1498,20 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
-                  ServoMotorRunning(100);//一次发送100脉冲
+                  SERVO_FORWARD();
+//                  ServoMotorRunning(4000);//一次发送100脉冲
+                  TIM4_MANUAL_PWM_Config(FREQ_7_5KHZ);
                 }
                 else if(value == 0x0002)
                 {//持续按下
                   servomotor_mode = MANUAL;
-                  ServoMotorRunning(600);//一次发送100脉冲
+//                  ServoMotorRunning(4000);//一次发送100脉冲
                 }
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
+                  SERVO_FORWARD();
+                  TIM4_MANUAL_PWM_Stop();
                 }
               }
             }
@@ -1520,18 +1524,20 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
-                  TIM4_PWM_Config(FREQ_500KHZ,BACKWARD_PWM);//重新配置TIM4 CH2 PWM方向逆向
-                  ServoMotorRunning(600);//一次发送100脉冲
+                  SERVO_BACKWARD();
+                  TIM4_MANUAL_PWM_Config(FREQ_7_5KHZ);
+//                  ServoMotorRunning(4000);//一次发送100脉冲
                 }
                 else if(value == 0x0002)
                 {//持续按下
                   servomotor_mode = MANUAL;
-                  ServoMotorRunning(600);//一次发送100脉冲
+//                  ServoMotorRunning(4000);//一次发送100脉冲
                 }
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
-                  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);//重新配置TIM4 CH2 PWM方向正向
+                  SERVO_FORWARD();
+                  TIM4_MANUAL_PWM_Stop();
                 }
               }
             }
@@ -2485,8 +2491,7 @@ static void vTaskMotorControl(void *pvParameters)
   vTaskDelay(200);
   
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
-  TIM4_CH2_ConfigPwmOut(FREQ_500KHZ,10);
-  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
+//  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
   DIFF_G_init();
 
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
@@ -2792,8 +2797,6 @@ static void vTaskFreq(void *pvParameters)
     else
     {
       is_stop = 0;
-      DIFF_G_L();
-      DIFF_G0_H();
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;

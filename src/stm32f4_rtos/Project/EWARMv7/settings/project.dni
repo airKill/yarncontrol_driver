@@ -14,7 +14,7 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 [DebugChecksum]
-Checksum=-1591889380
+Checksum=328535701
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -139,10 +139,7 @@ ProbeSetup0=2 1 1 2 0 0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\User\apptask.c}.2547.13" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\User\apptask.c}.2500.7" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\User\apptask.c}.2543.13" 0 0 1 "" 0 "" 0
-Count=3
+Count=0
 [Aliases]
 Count=0
 SuppressDialog=0

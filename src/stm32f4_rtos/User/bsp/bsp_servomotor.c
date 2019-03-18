@@ -15,7 +15,7 @@ void TIM4_CH1_StartPwmOut(void)
 {
   TIM_DMACmd(TIM4,TIM_DMA_CC1,ENABLE);
   TIM4->CCER |= 1<<0; //?aTME4 PWMê?3?
-//  TIM_Cmd(TIM4,ENABLE);
+  TIM_Cmd(TIM4,ENABLE);
   DMA_Cmd(DMA1_Stream0,ENABLE); 
 }
 
@@ -23,7 +23,7 @@ void TIM4_CH1_StopPwmOut(void)
 {
   TIM_DMACmd(TIM4,TIM_DMA_CC1,DISABLE);
   TIM4 -> CCER &= ~(1<<0); //?aTME4 PWMê?3?
-//  TIM_Cmd(TIM4,DISABLE);
+  TIM_Cmd(TIM4,DISABLE);
   DMA_Cmd(DMA1_Stream0,DISABLE);
 }
 
@@ -36,6 +36,13 @@ void TIM4_CH1_GPIO_Configuration(void)
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;//PD
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOD,&GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;//PP
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
@@ -64,7 +71,7 @@ void DIFF_G_init(void)
   GPIO_Init(GPIO_PORT_SERVOMOTOR_G0,&GPIO_InitStructure);
   
   DIFF_G_H();
-  DIFF_G0_L();
+  DIFF_G0_H();
 }  
 
 void TIM4_PWM_Config(u32 period,u8 dir)
@@ -97,15 +104,51 @@ void TIM4_PWM_Config(u32 period,u8 dir)
 
   //PP信号控制方向
   //TIM_OCMode_PWM1:逆时针 TIM_OCMode_PWM2:顺时针
-  TIM_OCInitStructure.TIM_OCMode = dir;
+//  TIM_OCInitStructure.TIM_OCMode = dir;
+//  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+//  TIM_OCInitStructure.TIM_Pulse = period / 2;
+//  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+//  TIM_OC2Init(TIM4, &TIM_OCInitStructure);
+//
+//  TIM_DMACmd(TIM4,TIM_DMA_CC2,DISABLE);
+//  TIM4 -> CCER &= ~(1<<4); //
+  
+  TIM_Cmd(TIM4,DISABLE);
+}
+
+void TIM4_MANUAL_PWM_Config(u32 period)
+{
+  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef    TIM_OCInitStructure;
+  
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  
+  //------------------------------------------------------------------------------------	
+  TIM_DeInit(TIM4);
+  TIM_TimeBaseStructure.TIM_Prescaler = 1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = period - 1;
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0x0000;
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+  
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;////
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = period / 2;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-
-  TIM_DMACmd(TIM4,TIM_DMA_CC2,DISABLE);
-  TIM4 -> CCER &= ~(1<<4); //
+  TIM_OC1Init(TIM4, &TIM_OCInitStructure);
   
+  TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);         // turn on oc1 preload 
+  
+  TIM_ARRPreloadConfig(TIM4, ENABLE);
+  
+  TIM_Cmd(TIM4,ENABLE);
+}
+
+void TIM4_MANUAL_PWM_Stop(void)
+{
   TIM_Cmd(TIM4,DISABLE);
 }
 
@@ -227,10 +270,9 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
 
 void ServoMotorRunning(u16 stepnum)
 {
+  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
   TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
   TIM4_CH1_StartPwmOut();
-  TIM4_CH2_PWMDMA_Config(FREQ_500KHZ,stepnum);
-  TIM4_CH2_StartPwmOut();
 }
 
 void DMA1_Stream0_IRQHandler(void)
