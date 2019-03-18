@@ -6,6 +6,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_sdwe050c17.c</path>
     <encoding>System</encoding>
   </override>
@@ -26,7 +30,23 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_sw_onoff.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_w25qxx.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_w25qxx.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\encoder_tim.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\inc\bsp_uart_fifo.h</path>
     <encoding>System</encoding>
   </override>
   <override>

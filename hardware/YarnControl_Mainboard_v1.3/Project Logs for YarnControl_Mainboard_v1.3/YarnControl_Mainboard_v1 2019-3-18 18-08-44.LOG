@@ -1,0 +1,30 @@
+Removed Pin From Net: NetName=+5V Pin=U10-4
+Added Component: Designator=Q4(MOS-N_SOT-23)
+Added Component: Designator=Q5(901X_SOT-23)
+Added Component: Designator=R41(0805)
+Added Component: Designator=R43(0805)
+Added Component: Designator=R44(0805)
+Added Pin To Net: NetName=+5V Pin=Q4-S
+Added Pin To Net: NetName=GND Pin=Q5-3
+Added Pin To Net: NetName=+5V Pin=R41-1
+Added Pin To Net: NetName=NetQ4_G Pin=Q4-G
+Added Pin To Net: NetName=NetQ4_G Pin=R41-2
+Added Pin To Net: NetName=NetQ4_G Pin=R43-2
+Added Net: Name=NetQ4_G
+Added Pin To Net: NetName=NetQ5_1 Pin=Q5-1
+Added Pin To Net: NetName=NetQ5_1 Pin=R43-1
+Added Net: Name=NetQ5_1
+Added Pin To Net: NetName=NetQ5_2 Pin=Q5-2
+Added Pin To Net: NetName=NetQ5_2 Pin=R44-2
+Added Net: Name=NetQ5_2
+Added Pin To Net: NetName=RFID_5V Pin=Q4-D
+Added Pin To Net: NetName=RFID_5V Pin=U10-4
+Added Net: Name=RFID_5V
+Added Pin To Net: NetName=RFID_POWER Pin=R44-1
+Added Pin To Net: NetName=RFID_POWER Pin=U1-67
+Added Net: Name=RFID_POWER
+Added Member To Class: ClassName=mainboard_interface.v1.3 Member=Component Q4 SI2301
+Added Member To Class: ClassName=mainboard_interface.v1.3 Member=Component Q5 S9014
+Added Member To Class: ClassName=mainboard_interface.v1.3 Member=Component R41 10K
+Added Member To Class: ClassName=mainboard_interface.v1.3 Member=Component R43 10K
+Added Member To Class: ClassName=mainboard_interface.v1.3 Member=Component R44 10K

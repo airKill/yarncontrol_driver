@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=OUT_SERVO_PD- Pin=J5-2
+Removed Pin From Net: NetName=OUT_SERVO_PP+ Pin=J5-3
+Removed Pin From Net: NetName=OUT_SERVO_PD+ Pin=J5-9
+Removed Pin From Net: NetName=OUT_SERVO_PP- Pin=J5-10
+Added Pin To Net: NetName=OUT_SERVO_PP- Pin=J5-2
+Added Pin To Net: NetName=OUT_SERVO_PD+ Pin=J5-3
+Added Pin To Net: NetName=OUT_SERVO_PP+ Pin=J5-9
+Added Pin To Net: NetName=OUT_SERVO_PD- Pin=J5-10

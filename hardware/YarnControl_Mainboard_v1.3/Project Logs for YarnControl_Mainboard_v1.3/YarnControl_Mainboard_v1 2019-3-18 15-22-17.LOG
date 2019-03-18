@@ -1,0 +1,12 @@
+Removed Pin From Net: NetName=+5V Pin=R48-1
+Removed Pin From Net: NetName=NetJ5_3 Pin=R48-2
+Removed Pin From Net: NetName=+5V Pin=R49-1
+Removed Pin From Net: NetName=NetJ5_10 Pin=R49-2
+Removed Pin From Net: NetName=+5V Pin=R50-1
+Removed Pin From Net: NetName=NetJ5_2 Pin=R50-2
+Removed Pin From Net: NetName=+5V Pin=R51-1
+Removed Pin From Net: NetName=NetJ5_9 Pin=R51-2
+Removed Member From Class: ClassName=mainboard_motor.v1.3 Member=R48
+Removed Member From Class: ClassName=mainboard_motor.v1.3 Member=R49
+Removed Member From Class: ClassName=mainboard_motor.v1.3 Member=R50
+Removed Member From Class: ClassName=mainboard_motor.v1.3 Member=R51

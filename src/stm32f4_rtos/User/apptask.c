@@ -2492,7 +2492,7 @@ static void vTaskMotorControl(void *pvParameters)
   
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
 //  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
-  DIFF_G_init();
+//  DIFF_G_init();
 
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
   servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬

@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=GND Pin=J4-10
+Removed Pin From Net: NetName=GND Pin=J4-11
+Removed Pin From Net: NetName=GND Pin=J5-16
+Removed Pin From Net: NetName=GND Pin=J5-17
+Change Class Name : Old Net Name=mainboard_interface.v1.2 New Net Name=mainboard_interface.v1.3
+Change Class Name : Old Net Name=mainboard_mcu.v1.2 New Net Name=mainboard_mcu.v1.3
+Change Class Name : Old Net Name=mainboard_motor.v1.2 New Net Name=mainboard_motor.v1.3
+Change Class Name : Old Net Name=mainboard_rs485.v1.2 New Net Name=mainboard_rs485.v1.3
+Change Class Name : Old Net Name=mainboard_wifi.v1.2 New Net Name=mainboard_wifi.v1.3

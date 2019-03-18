@@ -1,0 +1,30 @@
+Removed Pin From Net: NetName=OUT_SERVO_PD+ Pin=R17-1
+Removed Pin From Net: NetName=OUT_SERVO_PD- Pin=R36-1
+Removed Pin From Net: NetName=OUT_SERVO_PD+ Pin=U9-2
+Removed Pin From Net: NetName=OUT_SERVO_PD- Pin=U9-3
+Removed Pin From Net: NetName=OUT_SERVO_PP- Pin=U9-5
+Removed Pin From Net: NetName=OUT_SERVO_PP+ Pin=U9-6
+Change Component Comment : Designator=R17 Old Comment=100R New Comment=33R
+Change Component Comment : Designator=R36 Old Comment=100R New Comment=33R
+Change Component Comment : Designator=R38 Old Comment=100R New Comment=33R
+Change Component Comment : Designator=R39 Old Comment=100R New Comment=33R
+Added Pin To Net: NetName=OUT_SERVO_PD- Pin=J5-2
+Added Pin To Net: NetName=OUT_SERVO_PP+ Pin=J5-3
+Added Pin To Net: NetName=OUT_SERVO_PD+ Pin=J5-9
+Added Pin To Net: NetName=OUT_SERVO_PP- Pin=J5-10
+Added Pin To Net: NetName=OUT_SERVO_PP+ Pin=R17-2
+Added Pin To Net: NetName=OUT_SERVO_PP- Pin=R36-2
+Added Pin To Net: NetName=OUT_SERVO_PD+ Pin=R38-2
+Added Pin To Net: NetName=OUT_SERVO_PD- Pin=R39-2
+Added Pin To Net: NetName=NetR17_1 Pin=R17-1
+Added Pin To Net: NetName=NetR17_1 Pin=U9-6
+Added Net: Name=NetR17_1
+Added Pin To Net: NetName=NetR36_1 Pin=R36-1
+Added Pin To Net: NetName=NetR36_1 Pin=U9-5
+Added Net: Name=NetR36_1
+Added Pin To Net: NetName=NetR38_1 Pin=R38-1
+Added Pin To Net: NetName=NetR38_1 Pin=U9-2
+Added Net: Name=NetR38_1
+Added Pin To Net: NetName=NetR39_1 Pin=R39-1
+Added Pin To Net: NetName=NetR39_1 Pin=U9-3
+Added Net: Name=NetR39_1

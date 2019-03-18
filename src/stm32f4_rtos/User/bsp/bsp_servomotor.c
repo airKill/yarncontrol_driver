@@ -49,30 +49,30 @@ void TIM4_CH1_GPIO_Configuration(void)
   GPIO_Init(GPIOD,&GPIO_InitStructure);
 }
 
-void DIFF_G_init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
-  
-  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIO_PORT_SERVOMOTOR_G,&GPIO_InitStructure);
-  
-  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G0;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIO_PORT_SERVOMOTOR_G0,&GPIO_InitStructure);
-  
-  DIFF_G_H();
-  DIFF_G0_H();
-}  
+//void DIFF_G_init(void)
+//{
+//  GPIO_InitTypeDef GPIO_InitStructure;
+//  
+//  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
+//  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
+//  
+//  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+//  GPIO_Init(GPIO_PORT_SERVOMOTOR_G,&GPIO_InitStructure);
+//  
+//  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G0;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+//  GPIO_Init(GPIO_PORT_SERVOMOTOR_G0,&GPIO_InitStructure);
+//  
+//  DIFF_G_H();
+//  DIFF_G0_H();
+//}  
 
 void TIM4_PWM_Config(u32 period,u8 dir)
 {

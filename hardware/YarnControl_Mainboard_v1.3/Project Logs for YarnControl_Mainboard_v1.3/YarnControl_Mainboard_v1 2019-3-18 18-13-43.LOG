@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=RFID_POWER Pin=U1-67
+Added Pin To Net: NetName=RFID_POWER Pin=U1-84
