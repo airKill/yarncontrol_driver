@@ -56,7 +56,7 @@ void init_peiliao_para(PEILIAO_PARA *para)
   para->kaidu_set = 10;
   para->weimi_set = 10;
   para->add_meter_set = 0;
-  para->weimi_dis_set = 500;
+  para->weimi_dis_set = 1000;
 }
 
 //¼ÆËã²úÁ¿

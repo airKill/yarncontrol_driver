@@ -14,6 +14,30 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\apptask.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\apptask.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\bsp_key.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\bsp_key.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\modbus\mcheck.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\modbus\modbus.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>F:\work\DischargeBox\src\20180411\USER\24cxx.c</path>
     <encoding>System</encoding>
   </override>

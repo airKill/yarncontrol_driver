@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.general.xcl" --backend -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\work\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.general.xcl" --backend -f "E:\work\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.general.xcl" "--debug_file=%~1" --backend -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\work\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.general.xcl" "--debug_file=%~1" --backend -f "E:\work\YarnControl_Driver\src\DriveBorad\settings\stm32F10x.Debug.driver.xcl" 
 
 @echo off 
 :end

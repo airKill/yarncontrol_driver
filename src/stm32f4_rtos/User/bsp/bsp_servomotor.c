@@ -34,14 +34,14 @@ void TIM4_CH1_GPIO_Configuration(void)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;//PD
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;//PP
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOD,&GPIO_InitStructure);
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;//PP
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;//PD
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;

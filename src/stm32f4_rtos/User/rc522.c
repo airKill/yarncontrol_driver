@@ -5,6 +5,24 @@ u8 rfid_rev_flag = 0;
 u8 rfid_rev_buf[20];
 u8 rfid_rev_cnt = 0;
 
+void bsp_Init_RFID(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  
+  /* 打开GPIO时钟 */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		/* 设为输出口 */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;		/* 设为推挽模式 */
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_RFID_POWER;
+  GPIO_Init(GPIO_PORT_RFID_POWER, &GPIO_InitStructure);
+  
+  RFID_POWER_ON();
+}
+
 void rc522_cmd_request(u8 mode)
 {
   u8 sendbuf[20],i;

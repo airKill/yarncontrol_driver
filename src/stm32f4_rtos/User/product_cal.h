@@ -54,11 +54,11 @@ typedef struct
   float product_uncomplete;        //未完成产量       
   float product_complete;          //已完成产量
   u32 weicount_kilowei;         //纬数/千纬
-  u16 speed;            //机器速度   
   u32 total_work_time;      //总开机时间
   u32 total_stop_time;         //总停机时间
   float weight_uncomplete;        //未完成重量       
   float weight_complete;          //已完成重量
+  u16 speed;            //机器速度   
 }PRODUCT_PARA;
 extern PRODUCT_PARA product_para;
 
@@ -68,8 +68,6 @@ typedef struct
   float longitude_weight;  //纬纱重量/米
   float rubber_weight;     //橡胶重量/米
   float final_weight;    //成品重量/米
-  u8 loom_num;          //织机条数
-  u8 loss;             //损耗
   u32 total_meter_set;   //总米设置
   u32 total_weitht_set;  //总重量设置
   u32 complete_meter;
@@ -78,6 +76,8 @@ typedef struct
   float weimi_set;         //纬密设置
   u32 add_meter_set;       //补单数量    
   u16 weimi_dis_set;       //纬密显示设置
+  u8 loom_num;          //织机条数
+  u8 loss;             //损耗
 }PEILIAO_PARA;
 extern PEILIAO_PARA peiliao_para;
 

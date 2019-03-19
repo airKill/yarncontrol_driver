@@ -42,15 +42,17 @@ void vTaskTaskKey(void *pvParameters)
           __set_PRIMASK(0);
           LED1_ON();
 //          bsp_StartHardTimer(1,50000,(void *)TIM_CallBack1);
-          if((device_info.onoff == 0) || (start_stop == 0))
-          {//复位到上限位无开机信号，开始正转一分钟
-            Device_Process = PROCESS_RESET_2;
-            key_reset = 0;
-          }
-          else
-          {
-            Device_Process = PROCESS_RUNNING;
-          }
+          Device_Process = PROCESS_RESET_2;
+          key_reset = 0;
+//          if((device_info.onoff == 0) || (start_stop == 0))
+//          {//复位到上限位无开机信号，开始正转一分钟
+//            Device_Process = PROCESS_RESET_2;
+//            key_reset = 0;
+//          }
+//          else
+//          {
+//            Device_Process = PROCESS_RUNNING;
+//          }
           printf("上限位校准零点\r\n");
           break;
         case KEY_LONG_K1:
@@ -251,13 +253,13 @@ void vTaskSample(void *pvParameters)
 //      case PROCESS_RESET_1:
 //        break; 
       case PROCESS_RESET_2:
-        if((device_info.onoff == 1) && (start_stop == 1))
-        {
-          Device_Process = PROCESS_RUNNING;
-          key_reset = 0;
-          key_reset_time = 0;
-        }
-        else
+//        if((device_info.onoff == 1) && (start_stop == 1))
+//        {
+//          Device_Process = PROCESS_RUNNING;
+//          key_reset = 0;
+//          key_reset_time = 0;
+//        }
+//        else
         {
           motor_dir = MOTOR_FORWARD;
           motor_control(motor_dir);
@@ -336,7 +338,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
   if(link_err >= 10)
   {//10s内未收到链接命令，重启
     link_err = 0;
-//    NVIC_SystemReset();
+    NVIC_SystemReset();
   }
 }
 

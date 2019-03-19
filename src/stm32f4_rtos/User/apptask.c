@@ -1732,6 +1732,8 @@ static void vTaskTaskRFID(void *pvParameters)
   u16 isCard;
   u32 card_id;
   u8 card_type = FUNC_IDLE;
+  bsp_Init_RFID();
+  vTaskDelay(200);
   while(1)
   {
     if(card_config == CARD_DISABLE)
@@ -2347,10 +2349,13 @@ void vTaskManageCapacity(void *pvParameters)
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
+      __set_PRIMASK(1);
       if((device_info.func_onoff.channeng == 1) && (isDevicePeriod == 0))
       {//产能使能、无试用期限
         pluse_count++;
         work_idle_time = 0;
+        __set_PRIMASK(1);
+        __disable_irq();
         if(device_info.system_state == SYS_NORMAL)
         {//系统正常时进行产能计算
           switch(plan_complete)
@@ -2471,6 +2476,8 @@ void vTaskManageCapacity(void *pvParameters)
       {
         RELAY_CLOSE();
       }
+      __set_PRIMASK(0);
+      __enable_irq();
     }
     Task_iwdg_refresh(TASK_ManageCapacity);
   }
@@ -3131,13 +3138,13 @@ void AppTaskCreate (void)
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
-              512,         		/* 任务栈大小，单位word，也就是4字节 */
+              1024,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
   xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
               "vTaskMotorControl",  		/* 任务名    */
-              256,         		/* 任务栈大小，单位word，也就是4字节 */
+              512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               9,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */
