@@ -27,7 +27,7 @@ u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
   return stepcount;
 }
 
-void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA *peiliao)
+void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
 {
   u8 i;
   for(i=0;i<20;i++)
@@ -38,7 +38,7 @@ void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA *peiliao)
     else
       para->total_wei_count[i] = 20;//¹ý¶ÉÎ³Ñ­»·ÉèÖÃ
   }
-  para->wei_cm_set[0] = peiliao->weimi_set;
+  para->wei_cm_set[0] = peiliao.weimi_set;
   para->wei_inch_set[0] = para->wei_cm_set[0] * 2.54;
   for(i=1;i<10;i++)
   {

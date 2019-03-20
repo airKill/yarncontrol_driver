@@ -14,7 +14,7 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 [DebugChecksum]
-Checksum=-706331278
+Checksum=-815168802
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -45,12 +45,11 @@ ITMlogFile=$PROJ_DIR$\ITM.log
 Fmt0=DEVICE_INFO-isfirst	4	0
 Fmt1=GEAR_RATIO-GEAR1	3	0
 Fmt2=GEAR_RATIO-GEAR2	3	0
-Fmt3=PRODUCT_PARA-product_a	4	0
-Fmt4=RTC_TIME-month	4	0
-Fmt5=RTC_TIME-year	4	0
-Fmt6=SLAVE-addr	4	0
-Fmt7=SLAVE-reg	4	0
-Fmt8=m_frame_typedef-datalen	4	0
+Fmt3=RTC_TIME-month	4	0
+Fmt4=RTC_TIME-year	4	0
+Fmt5=SLAVE-addr	4	0
+Fmt6=SLAVE-reg	4	0
+Fmt7=m_frame_typedef-datalen	4	0
 [array_types]
 Fmt0=float[10]	4	0
 Fmt1=u8[100]	4	0
@@ -115,10 +114,6 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -126,9 +121,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-Count=0
-SuppressDialog=0
 [DriverProfiling]
 Enabled=0
 Mode=1
@@ -143,3 +135,12 @@ ShowTiming=1
 Frequency=10000
 Probe0=I0
 ProbeSetup0=2 1 1 2 0 0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\User\apptask.c}.2399.23" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\User\apptask.c}.2428.23" 0 0 1 "" 0 "" 0
+Count=2
+[Aliases]
+Count=0
+SuppressDialog=0

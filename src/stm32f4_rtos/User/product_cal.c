@@ -1,7 +1,7 @@
 #include "includes.h"
 
-PRODUCT_PARA product_para;
-PEILIAO_PARA peiliao_para;
+volatile PRODUCT_PARA product_para;
+volatile PEILIAO_PARA peiliao_para;
 
 u32 total_meter_gross = 0;
 u32 total_weight_gross = 0;
@@ -26,11 +26,11 @@ const char system_state_dis[20][20] = {
   {"系统停止"},
 };
 
-void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
+void init_product_para(volatile PRODUCT_PARA *para,volatile PEILIAO_PARA peiliao)
 {
   u32 meter,weight;
-  meter = (u32)(peiliao->total_meter_set * (1 + peiliao->loss / 100.0));
-  weight = (u32)(peiliao->total_weitht_set * (1 + peiliao->loss / 100.0));
+  meter = (u32)(peiliao.total_meter_set * 10 * (1 + peiliao.loss / 100.0));
+  weight = (u32)(peiliao.total_weitht_set * 10 * (1 + peiliao.loss / 100.0));
   para->product_a = 0;
   para->product_b = 0;
   para->product_complete = 0;
@@ -43,60 +43,62 @@ void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
   para->weight_uncomplete = weight - para->weight_complete;
 }
 
-void init_peiliao_para(PEILIAO_PARA *para)
+void init_peiliao_para(volatile PEILIAO_PARA *para)
 {
-  para->latitude_weight = 100;
-  para->longitude_weight = 100;
-  para->rubber_weight = 100;
+  para->latitude_weight = 1000;
+  para->longitude_weight = 1000;
+  para->rubber_weight = 1000;
   para->final_weight = para->latitude_weight + para->longitude_weight + para->rubber_weight;
   para->loom_num = 1;
   para->loss = 10;
   para->total_meter_set = 10000;
   para->total_weitht_set = 10000;
-  para->kaidu_set = 10;
-  para->weimi_set = 10;
+  para->kaidu_set = 100;
+  para->weimi_set = 100;
   para->add_meter_set = 0;
   para->weimi_dis_set = 1000;
 }
 
 //计算产量
-float product_per_meter(PEILIAO_PARA *para,u32 pluse)
+float product_per_meter(volatile PEILIAO_PARA para,u32 pluse)
 {
   float meter;
-  if(para->kaidu_set > 0)
+  if(para.kaidu_set > 0)
   {
-    meter = (pluse / para->weimi_set / 100 / para->kaidu_set) * para->loom_num;
+//    meter = (pluse / para->weimi_set / 100 / para->kaidu_set) * para->loom_num;
+    meter = ((float)pluse / para.weimi_set / para.kaidu_set) * para.loom_num;
   }
-  else if(para->kaidu_set == 0)
+  else if(para.kaidu_set == 0)
   {
-    meter = pluse / para->weimi_set / 100 * para->loom_num;
+    meter = (float)pluse / para.weimi_set / 10 * para.loom_num;
+//    meter = pluse / para->weimi_set / 100 * para->loom_num;
   }
   return meter;
 }
 
 //计算每米成品重量
-float final_per_meter(PEILIAO_PARA *para)
+u32 final_per_meter(volatile PEILIAO_PARA para)
 {
-  float weight;
-  weight = para->latitude_weight + para->longitude_weight + para->rubber_weight;
+  u32 weight;
+  weight = para.latitude_weight + para.longitude_weight + para.rubber_weight;
   return weight;
 }
 
 //计算已完成产量
-float product_complete_meter(PRODUCT_PARA *para)
+u32 product_complete_meter(volatile PRODUCT_PARA para)
 {
-  float complete_meter;
-  complete_meter = para->product_a + para->product_b;//已完成产量=A班产量+B班产量
+  u32 complete_meter;
+  complete_meter = para.product_a + para.product_b;//已完成产量=A班产量+B班产量
   return complete_meter;
 }
 
 //计算未完成产量
-float product_uncomplete_meter(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
+u32 product_uncomplete_meter(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
 {
-  float uncomplete_meter;
-  float complete_meter;
-  complete_meter = para->product_a + para->product_b;//已完成产量=A班产量+B班产量
-  uncomplete_meter = peiliao->total_meter_set - complete_meter;//未完成产量=总产量-已完成产量
+  u32 uncomplete_meter;
+  u32 complete_meter;
+  complete_meter = para.product_a + para.product_b;//已完成产量=A班产量+B班产量
+  uncomplete_meter = peiliao.total_meter_set - complete_meter;//未完成产量=总产量-已完成产量
   return uncomplete_meter;
 }
 
@@ -109,7 +111,7 @@ u32 count_per_kilo(u32 pluse)
 }
 
 //计算已完成重量
-float product_complete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
+u32 product_complete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
 {
   float weight;
   weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para);//已完成重量=每米成品重量*完成产量
@@ -117,10 +119,10 @@ float product_complete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
 }
 
 //计算未完成重量
-float product_uncomplete_kilo(PRODUCT_PARA *para,PEILIAO_PARA *peiliao)
+u32 product_uncomplete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
 {
   float weight;
-  weight = peiliao->total_weitht_set - product_complete_kilo(para,peiliao);
+  weight = peiliao.total_weitht_set - product_complete_kilo(para,peiliao);
   return weight;
 }
 

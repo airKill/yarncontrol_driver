@@ -64,6 +64,7 @@ void Sdwe_disPicture(u8 picture)
   sendbuf[6] = picture;
   lcd_busy = 1;
   UART4ToPC(sendbuf,7);
+  vTaskDelay(10);
   lcd_busy = 0;
 }
 
@@ -83,6 +84,7 @@ void Sdwe_disDigi(u16 addr,u32 data,u8 bytes)
     sendbuf[6] = (data & 0xff00) >> 8;
     sendbuf[7] = data & 0x00ff;
     UART4ToPC(sendbuf,8);
+    vTaskDelay(10);
   }
   else if(bytes == 4)
   {
@@ -95,6 +97,7 @@ void Sdwe_disDigi(u16 addr,u32 data,u8 bytes)
     sendbuf[8] = (data & 0xff00) >> 8;
     sendbuf[9] = data & 0xff;
     UART4ToPC(sendbuf,10);
+    vTaskDelay(10);
   }
   lcd_busy = 0;
 }
@@ -118,6 +121,7 @@ void Sdwe_disString(u16 addr,u8 *str,u16 len)
   sendbuf[7 + len] = 0xFF;
   lcd_busy = 1;
   UART4ToPC(sendbuf,8 + len);
+  vTaskDelay(10);
   lcd_busy = 0;
 }
 
@@ -140,6 +144,7 @@ void Sdwe_clearString(u16 addr)
   sendbuf[7] = 0xFF;
   lcd_busy = 1;
   UART4ToPC(sendbuf,8);
+  vTaskDelay(10);
   lcd_busy = 0;
 }
 
@@ -156,6 +161,7 @@ void Sdwe_writeIcon(u16 addr,u16 state)
   sendbuf[7] = state & 0x00ff;
   lcd_busy = 1;
   UART4ToPC(sendbuf,8);
+  vTaskDelay(10);
   lcd_busy = 0;
 }
 
@@ -178,6 +184,7 @@ void Sdwe_readIcon(u16 addr)
   sendbuf[6] = 1;
   lcd_busy = 1;
   UART4ToPC(sendbuf,7);
+  vTaskDelay(10);
   lcd_busy = 0;
 }
 
@@ -192,6 +199,7 @@ void Sdwe_readRTC(void)
   sendbuf[5] = 7;
 //  while(lcd_busy);
   UART4ToPC(sendbuf,6);
+  vTaskDelay(10);
 }
 
 void Sdwe_clear_filename(u8 file_count)
@@ -256,7 +264,7 @@ void Sdwe_refresh_allname(u8 file_count)
 }
 
 //产量页面
-void Sdwe_product_page(PRODUCT_PARA *para)
+void Sdwe_product_page(volatile PRODUCT_PARA *para)
 {
   u32 uncomplete;
   u32 complete;
@@ -275,10 +283,10 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
-  Sdwe_disDigi(PAGE_PRODUCT_A,(int)(para->product_a * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_B,(int)(para->product_b * 10),4);
-  uncomplete = para->product_uncomplete * 10.0;
-  complete = para->product_complete * 10.0;
+  Sdwe_disDigi(PAGE_PRODUCT_A,para->product_a,4);
+  Sdwe_disDigi(PAGE_PRODUCT_B,para->product_b,4);
+  uncomplete = para->product_uncomplete;
+  complete = para->product_complete;
   Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,uncomplete,4);
   Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,complete,4);
   Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,para->weicount_kilowei,4);
@@ -293,14 +301,14 @@ void Sdwe_product_page(PRODUCT_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);//显示停机时间小时
   Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);//显示停机时间分钟
 
-  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(para->weight_uncomplete * 10),4);
-  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(para->weight_complete * 10),4);
+  Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,para->weight_uncomplete,4);
+  Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,para->weight_complete,4);
   
   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
 
 //胚料页面
-void Sdwe_peiliao_page(PEILIAO_PARA *para)
+void Sdwe_peiliao_page(volatile PEILIAO_PARA *para)
 {
   u8 name[20],name_1[20];
   u8 name_len;
@@ -316,16 +324,16 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
-  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,(int)(para->latitude_weight * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,(int)(para->longitude_weight * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,(int)(para->rubber_weight * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(para->final_weight * 10),2);
-  Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,(int)(para->loom_num),2);
-  Sdwe_disDigi(PAGE_PRODUCT_LOSS,(int)(para->loss),2);
+  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,para->latitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,para->longitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,para->rubber_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_FINAL,para->final_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,para->loom_num,2);
+  Sdwe_disDigi(PAGE_PRODUCT_LOSS,para->loss,2);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),4);
-  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,(int)(para->kaidu_set * 10),2);
-  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,(int)(para->weimi_set * 10),2);
+  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para->kaidu_set,2);
+  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para->weimi_set,2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 

@@ -741,7 +741,7 @@ void vTaskTaskLCD(void *pvParameters)
             {//产量清零，重新开始生产
               total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
               total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
-              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
               Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
               Sdwe_product_page(&product_para);
@@ -762,11 +762,11 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_JINGSHA)
             {//经纱设置
-              float meter;
-              meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+              u32 meter;
+              meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]);
               peiliao_para.latitude_weight = meter;
-              peiliao_para.final_weight = final_per_meter(&peiliao_para);
-              Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+              peiliao_para.final_weight = final_per_meter(peiliao_para);
+              Sdwe_disDigi(PAGE_PRODUCT_FINAL,peiliao_para.final_weight,2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
@@ -774,11 +774,11 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_WEISHA)
             {//纬纱设置
-              float meter;
-              meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+              u32 meter;
+              meter = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               peiliao_para.longitude_weight = meter;
-              peiliao_para.final_weight = final_per_meter(&peiliao_para);
-              Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+              peiliao_para.final_weight = final_per_meter(peiliao_para);
+              Sdwe_disDigi(PAGE_PRODUCT_FINAL,peiliao_para.final_weight,2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
@@ -786,11 +786,11 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_RUBBER)
             {//橡胶设置
-              float meter;
-              meter = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+              u32 meter;
+              meter = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               peiliao_para.rubber_weight = meter;
-              peiliao_para.final_weight = final_per_meter(&peiliao_para);
-              Sdwe_disDigi(PAGE_PRODUCT_FINAL,(int)(peiliao_para.final_weight * 10),2);
+              peiliao_para.final_weight = final_per_meter(peiliao_para);
+              Sdwe_disDigi(PAGE_PRODUCT_FINAL,peiliao_para.final_weight,2);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
@@ -826,9 +826,9 @@ void vTaskTaskLCD(void *pvParameters)
               peiliao_para.total_meter_set = cnt;
               percent = 1 + (float)peiliao_para.loss / 100.0;
               total_meter_gross = (u32)(peiliao_para.total_meter_set * percent);
-              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
-              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
+              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
               Sdwe_product_page(&product_para);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
@@ -848,9 +848,9 @@ void vTaskTaskLCD(void *pvParameters)
               peiliao_para.total_weitht_set = cnt;
               percent = 1 + (float)peiliao_para.loss / 100.0;
               total_weight_gross = (u32)(peiliao_para.total_weitht_set * percent);
-              init_product_para(&product_para,&peiliao_para);//重新设置生产任务后，产能清零
+              init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
-              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
+              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
               Sdwe_product_page(&product_para);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
@@ -863,8 +863,8 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_KAIDU)
             {//开度设置
-              float cnt;
-              cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+              u16 cnt;
+              cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               peiliao_para.kaidu_set = cnt;
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               u8 publish_topic;
@@ -873,8 +873,8 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_WEIMI)
             {//纬密设置
-              float cnt;
-              cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10;
+              u16 cnt;
+              cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               if(cnt > 0)
               {
                 peiliao_para.weimi_set = cnt;
@@ -2342,20 +2342,17 @@ void vTaskManageCapacity(void *pvParameters)
       plan_complete = 1;
     }
   }
-//  vTaskDelay(2000);//显示屏上电后需要大概2s启动
   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_pluse, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
-      __set_PRIMASK(1);
       if((device_info.func_onoff.channeng == 1) && (isDevicePeriod == 0))
       {//产能使能、无试用期限
         pluse_count++;
         work_idle_time = 0;
-        __set_PRIMASK(1);
-        __disable_irq();
+//        __set_PRIMASK(1);
         if(device_info.system_state == SYS_NORMAL)
         {//系统正常时进行产能计算
           switch(plan_complete)
@@ -2368,7 +2365,7 @@ void vTaskManageCapacity(void *pvParameters)
               {//纬纱/千纬
                 count = 0;
                 Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               }
               if((total_meter_gross == 0) && (total_weight_gross == 0))
               {
@@ -2378,26 +2375,26 @@ void vTaskManageCapacity(void *pvParameters)
               {
                 if(card_record == 2)
                 {//B班
-                  product_para.product_b = product_para.product_b + product_per_meter(&peiliao_para,1);//b班产量
+                  product_para.product_b = product_para.product_b + product_per_meter(peiliao_para,1) * 10;//b班产量
                   p_value = get_float_1bit(product_para.product_b);
                 }
                 else
                 {//A班
-                  product_para.product_a = product_para.product_a + product_per_meter(&peiliao_para,1);//b班产量
+                  product_para.product_a = product_para.product_a + product_per_meter(peiliao_para,1) * 10;//b班产量
                   p_value = get_float_1bit(product_para.product_a);
                 }
                 if(p_value != old_p_value)
                 {//产量数据变化大于=0.1时，显示更新
                   old_p_value = p_value;
-                  Sdwe_disDigi(PAGE_PRODUCT_B,(int)(product_para.product_b * 10),4);
-                  Sdwe_disDigi(PAGE_PRODUCT_A,(int)(product_para.product_a * 10),4);
+                  Sdwe_disDigi(PAGE_PRODUCT_B,product_para.product_b,4);
+                  Sdwe_disDigi(PAGE_PRODUCT_A,product_para.product_a,4);
                   if(total_meter_gross > 0)
                   {
-                    product_para.product_complete = product_complete_meter(&product_para);//已完成产量
-                    product_para.product_uncomplete = total_meter_gross - product_para.product_complete;//未完成产量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(product_para.product_complete * 10),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
-                    if(product_para.product_uncomplete <= 0)
+                    product_para.product_complete = product_complete_meter(product_para);//已完成产量
+                    product_para.product_uncomplete = total_meter_gross * 10 - product_para.product_complete;//未完成产量
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,product_para.product_complete,4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,product_para.product_uncomplete,4);
+                    if((product_para.product_uncomplete <= 0) || (product_para.product_complete >= total_meter_gross * 10))
                     {//完成产量
                       RELAY_CLOSE();//产量完成后，继电器闭合
                       if(old_plan_complete == 0)
@@ -2417,16 +2414,16 @@ void vTaskManageCapacity(void *pvParameters)
                   {
                     product_para.product_complete = 0;//已完成产量
                     product_para.product_uncomplete = 0;//未完成产量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,(int)(product_para.product_complete * 10),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,(int)(product_para.product_uncomplete * 10),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE,product_para.product_complete,4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE,product_para.product_uncomplete,4);
                   }
                   if(total_weight_gross > 0)
                   {
-                    product_para.weight_complete = product_complete_kilo(&product_para,&peiliao_para);//已完成重量
-                    product_para.weight_uncomplete = total_weight_gross - product_para.weight_complete;//未完成重量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 10),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),4);
-                    if(product_para.weight_uncomplete <= 0)
+                    product_para.weight_complete = product_complete_kilo(product_para,peiliao_para);//已完成重量
+                    product_para.weight_uncomplete = total_weight_gross * 10 - product_para.weight_complete;//未完成重量
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,product_para.weight_complete,4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,product_para.weight_uncomplete,4);
+                    if((product_para.weight_uncomplete <= 0) || (product_para.weight_complete >= total_weight_gross * 10))
                     {//完成重量
                       if(old_plan_complete == 0)
                       {
@@ -2446,8 +2443,8 @@ void vTaskManageCapacity(void *pvParameters)
                   {
                     product_para.weight_complete = 0;//已完成重量
                     product_para.weight_uncomplete = 0;//未完成重量
-                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,(int)(product_para.weight_complete * 10),4);
-                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,(int)(product_para.weight_uncomplete * 10),4);
+                    Sdwe_disDigi(PAGE_PRODUCT_COMPLETE_W,product_para.weight_complete,4);
+                    Sdwe_disDigi(PAGE_PRODUCT_UNCOMPLETE_W,product_para.weight_uncomplete,4);
                   }
                 }
               }
@@ -2476,8 +2473,6 @@ void vTaskManageCapacity(void *pvParameters)
       {
         RELAY_CLOSE();
       }
-      __set_PRIMASK(0);
-      __enable_irq();
     }
     Task_iwdg_refresh(TASK_ManageCapacity);
   }
@@ -3100,45 +3095,45 @@ void AppTaskCreate (void)
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskLED );  /* 任务句柄  */
-  xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
-              "vTaskTaskRFID",     	/* 任务名    */
-              512,               	/* 任务栈大小，单位word，也就是4字节 */
-              NULL,              	/* 任务参数  */
-              2,                 	/* 任务优先级*/
-              &xHandleTaskRFID );  /* 任务句柄  */
-  xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
-              "vTaskMsgPro",   		/* 任务名    */
-              256,             		/* 任务栈大小，单位word，也就是4字节 */
-              NULL,           		/* 任务参数  */
-              3,               		/* 任务优先级*/
-              &xHandleTaskMsgPro );  /* 任务句柄  */
-  xTaskCreate( vTaskRev485,     		/* 任务函数  */
-              "vTaskRev485",   		/* 任务名    */
-              512,            		/* 任务栈大小，单位word，也就是4字节 */
-              NULL,           		/* 任务参数  */
-              4,              		/* 任务优先级*/
-              &xHandleTaskRev485 );   /* 任务句柄  */
+//  xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
+//              "vTaskTaskRFID",     	/* 任务名    */
+//              512,               	/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,              	/* 任务参数  */
+//              2,                 	/* 任务优先级*/
+//              &xHandleTaskRFID );  /* 任务句柄  */
+//  xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
+//              "vTaskMsgPro",   		/* 任务名    */
+//              256,             		/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,           		/* 任务参数  */
+//              3,               		/* 任务优先级*/
+//              &xHandleTaskMsgPro );  /* 任务句柄  */
+//  xTaskCreate( vTaskRev485,     		/* 任务函数  */
+//              "vTaskRev485",   		/* 任务名    */
+//              512,            		/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,           		/* 任务参数  */
+//              4,              		/* 任务优先级*/
+//              &xHandleTaskRev485 );   /* 任务句柄  */
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */
               1024,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
               5,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
-  xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
-              "vTaskMassStorage",  		/* 任务名    */
-              1024,         		/* 任务栈大小，单位word，也就是4字节 */
-              NULL,        		/* 任务参数  */
-              6,           		/* 任务优先级*/
-              &xHandleTaskMassStorage ); /* 任务句柄  */
-  xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
-              "vTaskReadDisk",  		/* 任务名    */
-              768,         		/* 任务栈大小，单位word，也就是4字节 */
-              NULL,        		/* 任务参数  */
-              7,           		/* 任务优先级*/
-              &xHandleTaskReadDisk); /* 任务句柄  */
+//  xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
+//              "vTaskMassStorage",  		/* 任务名    */
+//              1024,         		/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,        		/* 任务参数  */
+//              6,           		/* 任务优先级*/
+//              &xHandleTaskMassStorage ); /* 任务句柄  */
+//  xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
+//              "vTaskReadDisk",  		/* 任务名    */
+//              768,         		/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,        		/* 任务参数  */
+//              7,           		/* 任务优先级*/
+//              &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
-              1024,         		/* 任务栈大小，单位word，也就是4字节 */
+              512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */

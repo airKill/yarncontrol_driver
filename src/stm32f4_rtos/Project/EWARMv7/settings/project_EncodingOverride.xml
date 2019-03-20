@@ -42,6 +42,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_spi.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_stepmotor.c</path>
     <encoding>System</encoding>
   </override>
@@ -78,6 +82,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\system_stm32f4xx.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\main.c</path>
     <encoding>System</encoding>
   </override>
@@ -95,6 +103,10 @@
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\product_cal.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\rc522.c</path>
     <encoding>System</encoding>
   </override>
   <override>
