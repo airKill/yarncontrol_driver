@@ -60,7 +60,7 @@ typedef struct
   u32 weight_complete;          //已完成重量
   u16 speed;            //机器速度   
 }PRODUCT_PARA;
-extern volatile PRODUCT_PARA product_para;
+extern PRODUCT_PARA product_para;
 
 typedef struct
 {
@@ -79,7 +79,7 @@ typedef struct
   u8 loom_num;          //织机条数
   u8 loss;             //损耗
 }PEILIAO_PARA;
-extern volatile PEILIAO_PARA peiliao_para;
+extern PEILIAO_PARA peiliao_para;
 
 extern u8 work_idle;
 extern u16 work_idle_time;
@@ -89,15 +89,15 @@ extern u32 total_weight_gross;
 extern u8 plan_complete,old_plan_complete;
 extern const char system_state_dis[20][20];
 
-void init_product_para(volatile PRODUCT_PARA *para,volatile PEILIAO_PARA peiliao);
-void init_peiliao_para(volatile PEILIAO_PARA *para);
-float product_per_meter(volatile PEILIAO_PARA para,u32 pluse);
-u32 final_per_meter(volatile PEILIAO_PARA para);
-u32 product_complete_meter(volatile PRODUCT_PARA para);
-u32 product_uncomplete_meter(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao);
+void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA peiliao);
+void init_peiliao_para(PEILIAO_PARA *para);
+float product_per_meter(PEILIAO_PARA para,u32 pluse);
+u32 final_per_meter(PEILIAO_PARA para);
+u32 product_complete_meter(PRODUCT_PARA para);
+u32 product_uncomplete_meter(PRODUCT_PARA para,PEILIAO_PARA peiliao);
 u32 count_per_kilo(u32 pluse);
-u32 product_complete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao);
-u32 product_uncomplete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao);
+u32 product_complete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao);
+u32 product_uncomplete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao);
 float get_float_1bit(float data);
 u8 get_class_time(RTC_TIME *time,DEVICE_INFO *para);
 u8 is_same_data(u32 card,u32 *buf_lib,u16 buf_len);

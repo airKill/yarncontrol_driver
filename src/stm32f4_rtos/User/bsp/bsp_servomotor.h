@@ -29,6 +29,7 @@
 
 #define FREQ_500KHZ         84      //PWM频率=84MHZ/2/84=500KHZ
 #define FREQ_7_5KHZ         5600      //PWM频率=84MHZ/2/5600=7.5KHZ
+#define FREQ_37_5KHZ         1120      //PWM频率=84MHZ/2/1120=37.5KHZ
 #define FREQ_75KHZ         560      //PWM频率=84MHZ/2/560=75KHZ
 
 #define FORWARD_PWM TIM_OCMode_PWM2         //伺服电机正向

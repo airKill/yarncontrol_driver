@@ -1,7 +1,7 @@
 #include "includes.h"
 
-volatile PRODUCT_PARA product_para;
-volatile PEILIAO_PARA peiliao_para;
+PRODUCT_PARA product_para;
+PEILIAO_PARA peiliao_para;
 
 u32 total_meter_gross = 0;
 u32 total_weight_gross = 0;
@@ -26,7 +26,7 @@ const char system_state_dis[20][20] = {
   {"系统停止"},
 };
 
-void init_product_para(volatile PRODUCT_PARA *para,volatile PEILIAO_PARA peiliao)
+void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA peiliao)
 {
   u32 meter,weight;
   meter = (u32)(peiliao.total_meter_set * 10 * (1 + peiliao.loss / 100.0));
@@ -43,7 +43,7 @@ void init_product_para(volatile PRODUCT_PARA *para,volatile PEILIAO_PARA peiliao
   para->weight_uncomplete = weight - para->weight_complete;
 }
 
-void init_peiliao_para(volatile PEILIAO_PARA *para)
+void init_peiliao_para(PEILIAO_PARA *para)
 {
   para->latitude_weight = 1000;
   para->longitude_weight = 1000;
@@ -60,7 +60,7 @@ void init_peiliao_para(volatile PEILIAO_PARA *para)
 }
 
 //计算产量
-float product_per_meter(volatile PEILIAO_PARA para,u32 pluse)
+float product_per_meter(PEILIAO_PARA para,u32 pluse)
 {
   float meter;
   if(para.kaidu_set > 0)
@@ -77,7 +77,7 @@ float product_per_meter(volatile PEILIAO_PARA para,u32 pluse)
 }
 
 //计算每米成品重量
-u32 final_per_meter(volatile PEILIAO_PARA para)
+u32 final_per_meter(PEILIAO_PARA para)
 {
   u32 weight;
   weight = para.latitude_weight + para.longitude_weight + para.rubber_weight;
@@ -85,7 +85,7 @@ u32 final_per_meter(volatile PEILIAO_PARA para)
 }
 
 //计算已完成产量
-u32 product_complete_meter(volatile PRODUCT_PARA para)
+u32 product_complete_meter(PRODUCT_PARA para)
 {
   u32 complete_meter;
   complete_meter = para.product_a + para.product_b;//已完成产量=A班产量+B班产量
@@ -93,7 +93,7 @@ u32 product_complete_meter(volatile PRODUCT_PARA para)
 }
 
 //计算未完成产量
-u32 product_uncomplete_meter(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
+u32 product_uncomplete_meter(PRODUCT_PARA para,PEILIAO_PARA peiliao)
 {
   u32 uncomplete_meter;
   u32 complete_meter;
@@ -111,7 +111,7 @@ u32 count_per_kilo(u32 pluse)
 }
 
 //计算已完成重量
-u32 product_complete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
+u32 product_complete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao)
 {
   float weight;
   weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para);//已完成重量=每米成品重量*完成产量
@@ -119,7 +119,7 @@ u32 product_complete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peili
 }
 
 //计算未完成重量
-u32 product_uncomplete_kilo(volatile PRODUCT_PARA para,volatile PEILIAO_PARA peiliao)
+u32 product_uncomplete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao)
 {
   float weight;
   weight = peiliao.total_weitht_set - product_complete_kilo(para,peiliao);

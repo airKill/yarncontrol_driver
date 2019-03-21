@@ -18,6 +18,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_closeSW.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_relay.c</path>
     <encoding>System</encoding>
   </override>
@@ -107,6 +111,10 @@
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\rc522.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\usbh_mass_storage\usb_bsp.c</path>
     <encoding>System</encoding>
   </override>
   <override>

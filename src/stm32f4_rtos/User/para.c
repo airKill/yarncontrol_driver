@@ -71,26 +71,6 @@ void read_device_info(void)
     W25QXX_Read((u8 *)&weimi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select),sizeof(weimi_para));//Î³ÃÜ±£´æÊý¾Ý
     W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   }
-//  if(device_info.page_count_all == 0)
-//  {
-////    for(i=0;i<10;i++)
-////    {
-////      JingSha_File.filename[i] = 0;
-////    }
-//    strcpy((char *)JingSha_File.filename,"0001");
-//    JingSha_File.filename_len = 4;
-//    for(i=0;i<30;i++)
-//    {
-//      JingSha_File.weight_value[i] = 0;
-//    }
-//    JingSha_File.year = 18;
-//    JingSha_File.month = 1;
-//    JingSha_File.day = 1;
-//    JingSha_File.week = 1;
-//    JingSha_File.hour = 1;
-//    JingSha_File.minute = 1;
-//    JingSha_File.second = 1;
-//  }
 }
 
 void default_device_para(void)

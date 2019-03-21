@@ -1500,7 +1500,7 @@ void vTaskTaskLCD(void *pvParameters)
                   servomotor_mode = MANUAL;
                   SERVO_FORWARD();
 //                  ServoMotorRunning(4000);//一次发送100脉冲
-                  TIM4_MANUAL_PWM_Config(FREQ_7_5KHZ);
+                  TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
                 }
                 else if(value == 0x0002)
                 {//持续按下
@@ -1510,8 +1510,8 @@ void vTaskTaskLCD(void *pvParameters)
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
-                  SERVO_FORWARD();
                   TIM4_MANUAL_PWM_Stop();
+                  SERVO_FORWARD();
                 }
               }
             }
@@ -1525,7 +1525,7 @@ void vTaskTaskLCD(void *pvParameters)
                 {//第一次按下
                   servomotor_mode = MANUAL;
                   SERVO_BACKWARD();
-                  TIM4_MANUAL_PWM_Config(FREQ_7_5KHZ);
+                  TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
 //                  ServoMotorRunning(4000);//一次发送100脉冲
                 }
                 else if(value == 0x0002)
@@ -1536,8 +1536,8 @@ void vTaskTaskLCD(void *pvParameters)
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
-                  SERVO_FORWARD();
                   TIM4_MANUAL_PWM_Stop();
+                  SERVO_FORWARD();
                 }
               }
             }
@@ -2352,7 +2352,6 @@ void vTaskManageCapacity(void *pvParameters)
       {//产能使能、无试用期限
         pluse_count++;
         work_idle_time = 0;
-//        __set_PRIMASK(1);
         if(device_info.system_state == SYS_NORMAL)
         {//系统正常时进行产能计算
           switch(plan_complete)
@@ -2504,6 +2503,7 @@ static void vTaskMotorControl(void *pvParameters)
     xResult = xSemaphoreTake(xSemaphore_encoder, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
+//      xSemaphoreGive(xSemaphore_pluse);
       if(device_info.func_onoff.channeng)
       {
         if(servomotor_mode == AUTO)
@@ -2733,7 +2733,7 @@ static void vTaskFreq(void *pvParameters)
         }
         if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
         {
-          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 1000.0);//计算步进电机脉冲频率
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 1000.0);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
           step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 1000.0);//计算步进电机脉冲频率
           step3_count = from_speed_step((float)speed_zhu * MotorProcess.step3_factor / 1000.0);//计算步进电机脉冲频率
           if(step1_count == 0)
@@ -3095,42 +3095,42 @@ void AppTaskCreate (void)
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskLED );  /* 任务句柄  */
-//  xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
-//              "vTaskTaskRFID",     	/* 任务名    */
-//              512,               	/* 任务栈大小，单位word，也就是4字节 */
-//              NULL,              	/* 任务参数  */
-//              2,                 	/* 任务优先级*/
-//              &xHandleTaskRFID );  /* 任务句柄  */
-//  xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
-//              "vTaskMsgPro",   		/* 任务名    */
-//              256,             		/* 任务栈大小，单位word，也就是4字节 */
-//              NULL,           		/* 任务参数  */
-//              3,               		/* 任务优先级*/
-//              &xHandleTaskMsgPro );  /* 任务句柄  */
-//  xTaskCreate( vTaskRev485,     		/* 任务函数  */
-//              "vTaskRev485",   		/* 任务名    */
-//              512,            		/* 任务栈大小，单位word，也就是4字节 */
-//              NULL,           		/* 任务参数  */
-//              4,              		/* 任务优先级*/
-//              &xHandleTaskRev485 );   /* 任务句柄  */
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */
               1024,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              5,                 	/* 任务优先级*/
+              2,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
-//  xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
-//              "vTaskMassStorage",  		/* 任务名    */
-//              1024,         		/* 任务栈大小，单位word，也就是4字节 */
-//              NULL,        		/* 任务参数  */
-//              6,           		/* 任务优先级*/
-//              &xHandleTaskMassStorage ); /* 任务句柄  */
-//  xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
-//              "vTaskReadDisk",  		/* 任务名    */
-//              768,         		/* 任务栈大小，单位word，也就是4字节 */
-//              NULL,        		/* 任务参数  */
-//              7,           		/* 任务优先级*/
-//              &xHandleTaskReadDisk); /* 任务句柄  */
+  xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
+              "vTaskMsgPro",   		/* 任务名    */
+              256,             		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,           		/* 任务参数  */
+              3,               		/* 任务优先级*/
+              &xHandleTaskMsgPro );  /* 任务句柄  */
+  xTaskCreate( vTaskRev485,     		/* 任务函数  */
+              "vTaskRev485",   		/* 任务名    */
+              512,            		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,           		/* 任务参数  */
+              4,              		/* 任务优先级*/
+              &xHandleTaskRev485 );   /* 任务句柄  */
+  xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
+              "vTaskTaskRFID",     	/* 任务名    */
+              512,               	/* 任务栈大小，单位word，也就是4字节 */
+              NULL,              	/* 任务参数  */
+              5,                 	/* 任务优先级*/
+              &xHandleTaskRFID );  /* 任务句柄  */
+  xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
+              "vTaskMassStorage",  		/* 任务名    */
+              1024,         		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,        		/* 任务参数  */
+              6,           		/* 任务优先级*/
+              &xHandleTaskMassStorage ); /* 任务句柄  */
+  xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
+              "vTaskReadDisk",  		/* 任务名    */
+              768,         		/* 任务栈大小，单位word，也就是4字节 */
+              NULL,        		/* 任务参数  */
+              7,           		/* 任务优先级*/
+              &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
@@ -3149,11 +3149,11 @@ void AppTaskCreate (void)
               NULL,        		/* 任务参数  */
               10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
-//  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
-//  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
-//  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
-//  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
-//  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
+  //  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
+  //  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
+  //  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
+  //  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
+  //  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
 }
 
 /*
