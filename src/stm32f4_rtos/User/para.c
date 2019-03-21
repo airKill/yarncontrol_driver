@@ -43,6 +43,9 @@ void read_device_info(void)
       device_info.stop_para.stop_time[i] = 0;
     }
     device_info.weimi_info.reg = 0;
+    device_info.weimi_info.songwei_seg[0] = 0;
+    device_info.weimi_info.songwei_seg[1] = 0;
+    device_info.weimi_info.songwei_seg[2] = 0;
     device_info.weimi_info.count = 0;
     //试用期默认参数设置
     device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
@@ -496,63 +499,63 @@ void read_from_disk(char *diskbuf)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[0],&weimi_para.wei_cm_set[0],&weimi_para.wei_inch_set[0],
-             &weimi_para.total_wei_count[1],&weimi_para.step1_factor[0],&weimi_para.step2_factor[0],&weimi_para.step3_factor[0]);
+             &weimi_para.total_wei_count[1],&weimi_para.step_factor[0][0],&weimi_para.step_factor[1][0],&weimi_para.step_factor[2][0]);
     }
     strx = strstr(diskbuf,"二段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[2],&weimi_para.wei_cm_set[1],&weimi_para.wei_inch_set[1],
-             &weimi_para.total_wei_count[3],&weimi_para.step1_factor[1],&weimi_para.step2_factor[1],&weimi_para.step3_factor[1]);
+             &weimi_para.total_wei_count[3],&weimi_para.step_factor[0][1],&weimi_para.step_factor[1][1],&weimi_para.step_factor[2][1]);
     }
     strx = strstr(diskbuf,"三段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[4],&weimi_para.wei_cm_set[2],&weimi_para.wei_inch_set[2],
-             &weimi_para.total_wei_count[5],&weimi_para.step1_factor[2],&weimi_para.step2_factor[2],&weimi_para.step3_factor[2]);
+             &weimi_para.total_wei_count[5],&weimi_para.step_factor[0][2],&weimi_para.step_factor[1][2],&weimi_para.step_factor[2][2]);
     }
     strx = strstr(diskbuf,"四段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[6],&weimi_para.wei_cm_set[3],&weimi_para.wei_inch_set[3],
-             &weimi_para.total_wei_count[7],&weimi_para.step1_factor[3],&weimi_para.step2_factor[3],&weimi_para.step3_factor[3]);
+             &weimi_para.total_wei_count[7],&weimi_para.step_factor[0][3],&weimi_para.step_factor[1][3],&weimi_para.step_factor[2][3]);
     }
     strx = strstr(diskbuf,"五段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[8],&weimi_para.wei_cm_set[4],&weimi_para.wei_inch_set[4],
-             &weimi_para.total_wei_count[9],&weimi_para.step1_factor[4],&weimi_para.step2_factor[4],&weimi_para.step3_factor[4]);
+             &weimi_para.total_wei_count[9],&weimi_para.step_factor[0][4],&weimi_para.step_factor[1][4],&weimi_para.step_factor[2][4]);
     }
     strx = strstr(diskbuf,"六段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[10],&weimi_para.wei_cm_set[5],&weimi_para.wei_inch_set[5],
-             &weimi_para.total_wei_count[11],&weimi_para.step1_factor[5],&weimi_para.step2_factor[5],&weimi_para.step3_factor[5]);
+             &weimi_para.total_wei_count[11],&weimi_para.step_factor[0][5],&weimi_para.step_factor[1][5],&weimi_para.step_factor[2][5]);
     }
     strx = strstr(diskbuf,"七段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[12],&weimi_para.wei_cm_set[6],&weimi_para.wei_inch_set[6],
-             &weimi_para.total_wei_count[13],&weimi_para.step1_factor[6],&weimi_para.step2_factor[6],&weimi_para.step3_factor[6]);
+             &weimi_para.total_wei_count[13],&weimi_para.step_factor[0][6],&weimi_para.step_factor[1][6],&weimi_para.step_factor[2][6]);
     }
     strx = strstr(diskbuf,"八段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[14],&weimi_para.wei_cm_set[7],&weimi_para.wei_inch_set[7],
-             &weimi_para.total_wei_count[15],&weimi_para.step1_factor[7],&weimi_para.step2_factor[7],&weimi_para.step3_factor[7]);
+             &weimi_para.total_wei_count[15],&weimi_para.step_factor[0][7],&weimi_para.step_factor[1][7],&weimi_para.step_factor[2][7]);
     }
     strx = strstr(diskbuf,"九段");
     if(strx)
     {
       sscanf(strx,"%*[^,],%[^\n]",da);
       sscanf(da,"%d,%f,%f,%d,%d,%d,%d",&weimi_para.total_wei_count[16],&weimi_para.wei_cm_set[8],&weimi_para.wei_inch_set[8],
-             &weimi_para.total_wei_count[17],&weimi_para.step1_factor[8],&weimi_para.step2_factor[8],&weimi_para.step3_factor[8]);
+             &weimi_para.total_wei_count[17],&weimi_para.step_factor[0][8],&weimi_para.step_factor[1][8],&weimi_para.step_factor[2][8]);
     }
     strx = strstr(diskbuf,"十段");
     if(strx)
@@ -568,9 +571,9 @@ void read_from_disk(char *diskbuf)
       weimi_para.total_wei_count[19] = total_wei[1];
       weimi_para.wei_cm_set[9] = wei_cm;
       weimi_para.wei_inch_set[9] = wei_inch;
-      weimi_para.step1_factor[9] = step[0];
-      weimi_para.step2_factor[9] = step[1];
-      weimi_para.step3_factor[9] = step[2];
+      weimi_para.step_factor[0][9] = step[0];
+      weimi_para.step_factor[1][9] = step[1];
+      weimi_para.step_factor[2][9] = step[2];
     }
   }
 }

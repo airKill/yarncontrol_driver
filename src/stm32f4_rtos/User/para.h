@@ -79,6 +79,7 @@ typedef struct
 typedef struct
 {
   u8 reg;
+  u8 songwei_seg[3];
   u32 count;
 }WEIMI_INFO;
 

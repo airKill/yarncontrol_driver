@@ -1284,17 +1284,17 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               if(cnt <= 300)
               {//当前电机速度小于主轴速度，为有效值
-                weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = cnt;
+                weimi_para.step_factor[0][(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2] = cnt;
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_SPEED) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
                 }
               }
               else
               {
-                Sdwe_disDigi(var_addr,weimi_para.step1_factor[(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2],2);
+                Sdwe_disDigi(var_addr,weimi_para.step_factor[0][(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
               u8 publish_topic;
@@ -1307,17 +1307,17 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               if(cnt <= 300)
               {
-                weimi_para.step2_factor[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = cnt;
+                weimi_para.step_factor[3][(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2] = cnt;
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SPEED) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[3] = weimi_para.step_factor[3][MotorProcess.current_seg / 2];
                 }
               }
               else
               {
-                Sdwe_disDigi(var_addr,weimi_para.step2_factor[(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2],2);
+                Sdwe_disDigi(var_addr,weimi_para.step_factor[3][(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
               u8 publish_topic;
@@ -1330,17 +1330,17 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               if(cnt <= 300)
               {
-                weimi_para.step3_factor[(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2] = cnt;
+                weimi_para.step_factor[2][(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2] = cnt;
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SPEED) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
                 }
               }
               else
               {
-                Sdwe_disDigi(var_addr,weimi_para.step3_factor[(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2],2);
+                Sdwe_disDigi(var_addr,weimi_para.step_factor[2][(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2],2);
                 SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
               }
               u8 publish_topic;
@@ -1349,19 +1349,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_ADD1) && (var_addr < PAGE_WEIMI_STEP1_ADD1 + 10))
             {//送纬速度加1——10
-              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_ADD1] < 300)
+              if(weimi_para.step_factor[0][var_addr - PAGE_WEIMI_STEP1_ADD1] < 300)
               {//送纬电机速度小于200才能加
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP1_ADD1;
-                weimi_para.step1_factor[position] += 1;
-                speed = weimi_para.step1_factor[position];
+                weimi_para.step_factor[0][position] += 1;
+                speed = weimi_para.step_factor[0][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1370,19 +1370,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SUB1) && (var_addr < PAGE_WEIMI_STEP1_SUB1 + 10))
             {//送纬速度减1——10
-              if(weimi_para.step1_factor[var_addr - PAGE_WEIMI_STEP1_SUB1] > 0)
+              if(weimi_para.step_factor[0][var_addr - PAGE_WEIMI_STEP1_SUB1] > 0)
               {//送纬电机速度大于0
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP1_SUB1;
-                weimi_para.step1_factor[position] -= 1;
-                speed = weimi_para.step1_factor[position];
+                weimi_para.step_factor[0][position] -= 1;
+                speed = weimi_para.step_factor[0][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1391,19 +1391,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_ADD1) && (var_addr < PAGE_WEIMI_STEP2_ADD1 + 10))
             {//底线速度加1——10
-              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_ADD1] < 300)
+              if(weimi_para.step_factor[3][var_addr - PAGE_WEIMI_STEP2_ADD1] < 300)
               {//送纬电机速度小于200才能减
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP2_ADD1;
-                weimi_para.step2_factor[position] += 1;
-                speed = weimi_para.step2_factor[position];
+                weimi_para.step_factor[3][position] += 1;
+                speed = weimi_para.step_factor[3][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[3] = weimi_para.step_factor[3][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1412,19 +1412,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SUB1) && (var_addr < PAGE_WEIMI_STEP2_SUB1 + 10))
             {//底线速度减1——10
-              if(weimi_para.step2_factor[var_addr - PAGE_WEIMI_STEP2_SUB1] > 0)
+              if(weimi_para.step_factor[3][var_addr - PAGE_WEIMI_STEP2_SUB1] > 0)
               {//送纬电机速度大于0
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP2_SUB1;
-                weimi_para.step2_factor[position] -= 1;
-                speed = weimi_para.step2_factor[position];
+                weimi_para.step_factor[3][position] -= 1;
+                speed = weimi_para.step_factor[3][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[3] = weimi_para.step_factor[3][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1433,19 +1433,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP3_ADD1) && (var_addr < PAGE_WEIMI_STEP3_ADD1 + 10))
             {//电机3速度加1——10
-              if(weimi_para.step3_factor[var_addr - PAGE_WEIMI_STEP3_ADD1] < 200)
+              if(weimi_para.step_factor[2][var_addr - PAGE_WEIMI_STEP3_ADD1] < 200)
               {//电机3速度小于200才能减
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP3_ADD1;
-                weimi_para.step3_factor[position] += 1;
-                speed = weimi_para.step3_factor[position];
+                weimi_para.step_factor[2][position] += 1;
+                speed = weimi_para.step_factor[2][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP3_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的电机3号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1454,19 +1454,19 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_WEIMI_STEP3_SUB1) && (var_addr < PAGE_WEIMI_STEP3_SUB1 + 10))
             {//电机3速度减1——10
-              if(weimi_para.step3_factor[var_addr - PAGE_WEIMI_STEP3_SUB1] > 0)
+              if(weimi_para.step_factor[2][var_addr - PAGE_WEIMI_STEP3_SUB1] > 0)
               {//电机3电机速度大于0
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP3_SUB1;
-                weimi_para.step3_factor[position] -= 1;
-                speed = weimi_para.step3_factor[position];
+                weimi_para.step_factor[2][position] -= 1;
+                speed = weimi_para.step_factor[2][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP3_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的电机3号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1656,25 +1656,25 @@ static void vTaskMassStorage(void *pvParameters)
         W25QXX_Read((u8 *)&WeiMi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * download_num),sizeof(WeiMi_para));
         sprintf(buf,"%s,纬循环,纬厘米,纬英寸,过渡,送纬电机,底线电机\n",buf);
         sprintf(buf,"%s一段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[0],WeiMi_para.wei_cm_set[0],WeiMi_para.wei_inch_set[0],
-                WeiMi_para.total_wei_count[1],WeiMi_para.step1_factor[0],WeiMi_para.step2_factor[0],WeiMi_para.step3_factor[0]);
+                WeiMi_para.total_wei_count[1],WeiMi_para.step_factor[0][0],WeiMi_para.step_factor[1][0],WeiMi_para.step_factor[2][0]);
         sprintf(buf,"%s二段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[2],WeiMi_para.wei_cm_set[1],WeiMi_para.wei_inch_set[1],
-                WeiMi_para.total_wei_count[3],WeiMi_para.step1_factor[1],WeiMi_para.step2_factor[1],WeiMi_para.step3_factor[1]);
+                WeiMi_para.total_wei_count[3],WeiMi_para.step_factor[0][1],WeiMi_para.step_factor[1][1],WeiMi_para.step_factor[2][1]);
         sprintf(buf,"%s三段,%d,%.1f,%.1f,%d,%d,%dv\n",buf,WeiMi_para.total_wei_count[4],WeiMi_para.wei_cm_set[2],WeiMi_para.wei_inch_set[2],
-                WeiMi_para.total_wei_count[5],WeiMi_para.step1_factor[2],WeiMi_para.step2_factor[2],WeiMi_para.step3_factor[2]);
+                WeiMi_para.total_wei_count[5],WeiMi_para.step_factor[0][2],WeiMi_para.step_factor[1][2],WeiMi_para.step_factor[2][2]);
         sprintf(buf,"%s四段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[6],WeiMi_para.wei_cm_set[3],WeiMi_para.wei_inch_set[3],
-                WeiMi_para.total_wei_count[7],WeiMi_para.step1_factor[3],WeiMi_para.step2_factor[3],WeiMi_para.step3_factor[3]);
+                WeiMi_para.total_wei_count[7],WeiMi_para.step_factor[0][3],WeiMi_para.step_factor[1][3],WeiMi_para.step_factor[2][3]);
         sprintf(buf,"%s五段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[8],WeiMi_para.wei_cm_set[4],WeiMi_para.wei_inch_set[4],
-                WeiMi_para.total_wei_count[9],WeiMi_para.step1_factor[4],WeiMi_para.step2_factor[4],WeiMi_para.step3_factor[4]);
+                WeiMi_para.total_wei_count[9],WeiMi_para.step_factor[0][4],WeiMi_para.step_factor[1][4],WeiMi_para.step_factor[2][4]);
         sprintf(buf,"%s六段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[10],WeiMi_para.wei_cm_set[5],WeiMi_para.wei_inch_set[5],
-                WeiMi_para.total_wei_count[11],WeiMi_para.step1_factor[5],WeiMi_para.step2_factor[5],WeiMi_para.step3_factor[5]);
+                WeiMi_para.total_wei_count[11],WeiMi_para.step_factor[0][5],WeiMi_para.step_factor[1][5],WeiMi_para.step_factor[2][5]);
         sprintf(buf,"%s七段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[12],WeiMi_para.wei_cm_set[6],WeiMi_para.wei_inch_set[6],
-                WeiMi_para.total_wei_count[13],WeiMi_para.step1_factor[6],WeiMi_para.step2_factor[6],WeiMi_para.step3_factor[6]);
+                WeiMi_para.total_wei_count[13],WeiMi_para.step_factor[0][6],WeiMi_para.step_factor[1][6],WeiMi_para.step_factor[2][6]);
         sprintf(buf,"%s八段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[14],WeiMi_para.wei_cm_set[7],WeiMi_para.wei_inch_set[7],
-                WeiMi_para.total_wei_count[15],WeiMi_para.step1_factor[7],WeiMi_para.step2_factor[7],WeiMi_para.step3_factor[7]);
+                WeiMi_para.total_wei_count[15],WeiMi_para.step_factor[0][7],WeiMi_para.step_factor[1][7],WeiMi_para.step_factor[2][7]);
         sprintf(buf,"%s九段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[16],WeiMi_para.wei_cm_set[8],WeiMi_para.wei_inch_set[8],
-                WeiMi_para.total_wei_count[17],WeiMi_para.step1_factor[8],WeiMi_para.step2_factor[8],WeiMi_para.step3_factor[8]);
+                WeiMi_para.total_wei_count[17],WeiMi_para.step_factor[0][8],WeiMi_para.step_factor[1][8],WeiMi_para.step_factor[2][8]);
         sprintf(buf,"%s十段,%d,%.1f,%.1f,%d,%d,%d,%d\n",buf,WeiMi_para.total_wei_count[18],WeiMi_para.wei_cm_set[9],WeiMi_para.wei_inch_set[9],
-                WeiMi_para.total_wei_count[19],WeiMi_para.step1_factor[9],WeiMi_para.step2_factor[9],WeiMi_para.step3_factor[9]);
+                WeiMi_para.total_wei_count[19],WeiMi_para.step_factor[0][9],WeiMi_para.step_factor[1][9],WeiMi_para.step_factor[2][9]);
         
         len = strlen(buf);
         result = f_write(&file,buf,len,&bw);
@@ -2480,12 +2480,13 @@ void vTaskManageCapacity(void *pvParameters)
 static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
-  u16 pluse_step_src1,pluse_step_src2,pluse_step_src3;
+  
   u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
   u16 servo_diff;//伺服电机过渡期纬差
   u8 symbol_servo = 0;
-  u16 speed_diff1,speed_diff2,speed_diff3;
-  u8 symbol1 = 0,symbol2 = 0,symbol3 = 0;
+  u16 speed_diff[3] = {0,0,0};
+  u8 symbol[3] = {0,0,0};
+  u16 pluse_step_src[3] = {0,0,0};
   u16 guodu;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   bsp_InitStepMotor();
@@ -2497,7 +2498,7 @@ static void vTaskMotorControl(void *pvParameters)
 
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
   servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
-  valid_seg = get_valid_seg(&weimi_para);
+  valid_seg = get_valid_seg(weimi_para);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_encoder, (TickType_t)xMaxBlockTime);
@@ -2509,6 +2510,9 @@ static void vTaskMotorControl(void *pvParameters)
         if(servomotor_mode == AUTO)
         {//自动模式下，才会增加纬号
           MotorProcess.current_wei++;//纬号增加
+          MotorProcess.song_current_wei[0]++;
+          MotorProcess.song_current_wei[1]++;
+          MotorProcess.song_current_wei[2]++;
           weimi_para.real_wei_count[MotorProcess.current_seg] = MotorProcess.current_wei;
           if((MotorProcess.current_seg % 2) == 0)
           {//偶数段号取纬循环
@@ -2519,40 +2523,39 @@ static void vTaskMotorControl(void *pvParameters)
             Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.current_seg - 1,MotorProcess.current_wei,4);
           }
           
-          if(step_motor_adjust)
-          {//过渡纬号，步进电机调速，每纬调节一次转速
-            guodu++;
-            u16 step_speed1,step_speed2,step_speed3;//步进电机转速，转/分钟
-            if(symbol1 == 0)//速度增加
-              step_speed1 = (pluse_step_src1 + speed_diff1 / MotorProcess.total_wei * guodu);
-            else//速度减少
-              step_speed1 = (pluse_step_src1 - speed_diff1 / MotorProcess.total_wei * guodu);
-            if(symbol2 == 0)//速度增加
-              step_speed2 = (pluse_step_src2 + speed_diff2 / MotorProcess.total_wei * guodu);
-            else//速度减少
-              step_speed2 = (pluse_step_src2 - speed_diff2 / MotorProcess.total_wei * guodu);
-            if(symbol3 == 0)//速度增加
-              step_speed3 = (pluse_step_src3 + speed_diff3 / MotorProcess.total_wei * guodu);
-            else//速度减少
-              step_speed3 = (pluse_step_src3 - speed_diff3 / MotorProcess.total_wei * guodu);
-            u16 sstep1,sstep2,sstep3;
-            sstep1 = from_speed_step(step_speed1);
-            sstep2 = from_speed_step(step_speed2);
-            sstep3 = from_speed_step(step_speed3);
-            StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
-            StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
-            StepMotor_adjust_speed(STEPMOTOR3,(u32)sstep3);
-//            printf("sstep1 %d,sstep2 %d\r\n",sstep1,sstep2);
-            if(symbol_servo == 0)//正数增加
-              sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
-            else//负数减少
-              sstep3 = servo_per_wei_src - servo_diff / MotorProcess.total_wei * guodu;
-            ServoMotorRunning(sstep3);
-          }
-          else
-          {
-            ServoMotorRunning(servomotor_step);//发送一纬对应的脉冲信号到伺服驱动器
-          }
+//          if(step_motor_adjust)
+//          {//过渡纬号，步进电机调速，每纬调节一次转速
+//            guodu++;
+//            u16 step_speed1,step_speed2,step_speed3;//步进电机转速，转/分钟
+//            if(symbol1 == 0)//速度增加
+//              step_speed1 = (pluse_step_src1 + speed_diff1 / MotorProcess.total_wei * guodu);
+//            else//速度减少
+//              step_speed1 = (pluse_step_src1 - speed_diff1 / MotorProcess.total_wei * guodu);
+//            if(symbol2 == 0)//速度增加
+//              step_speed2 = (pluse_step_src2 + speed_diff2 / MotorProcess.total_wei * guodu);
+//            else//速度减少
+//              step_speed2 = (pluse_step_src2 - speed_diff2 / MotorProcess.total_wei * guodu);
+//            if(symbol3 == 0)//速度增加
+//              step_speed3 = (pluse_step_src3 + speed_diff3 / MotorProcess.total_wei * guodu);
+//            else//速度减少
+//              step_speed3 = (pluse_step_src3 - speed_diff3 / MotorProcess.total_wei * guodu);
+//            u16 sstep1,sstep2,sstep3;
+//            sstep1 = from_speed_step(step_speed1);
+//            sstep2 = from_speed_step(step_speed2);
+//            sstep3 = from_speed_step(step_speed3);
+//            StepMotor_adjust_speed(STEPMOTOR1,(u32)sstep1); 
+//            StepMotor_adjust_speed(STEPMOTOR2,(u32)sstep2);
+//            StepMotor_adjust_speed(STEPMOTOR3,(u32)sstep3);
+//            if(symbol_servo == 0)//正数增加
+//              sstep3 = servo_per_wei_src + servo_diff / MotorProcess.total_wei * guodu;
+//            else//负数减少
+//              sstep3 = servo_per_wei_src - servo_diff / MotorProcess.total_wei * guodu;
+//            ServoMotorRunning(sstep3);
+//          }
+//          else
+//          {
+//            ServoMotorRunning(servomotor_step);//发送一纬对应的脉冲信号到伺服驱动器
+//          }
           if(MotorProcess.current_wei >= MotorProcess.total_wei)
           {//当前纬号超过纬循环
             MotorProcess.current_wei = 0;
@@ -2570,50 +2573,15 @@ static void vTaskMotorControl(void *pvParameters)
               {//到下个段号，改变脉冲/纬
                 servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);//计算伺服电机脉冲数
                 step_motor_adjust = 0;
-                MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
-                MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
-                MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
               }
               else
               {//到过渡号
                 //计算步进电机每秒脉冲数
                 //目标每分钟转速/60=每秒转速
                 //每秒转速*360/1.8*8=步进电机每秒需要脉冲数
-                int ratio_diff1,ratio_diff2,ratio_diff3;//相邻速比差
-                valid_seg = get_valid_seg(&weimi_para);
+                valid_seg = get_valid_seg(weimi_para);
                 if(MotorProcess.current_seg == (valid_seg - 1))
                 {//到达最大有效段
-                  if(weimi_para.step1_factor[0] >= weimi_para.step1_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol1 = 0;//正数
-                    ratio_diff1 = weimi_para.step1_factor[0] - weimi_para.step1_factor[MotorProcess.current_seg / 2];  
-                  }
-                  else
-                  {
-                    symbol1 = 1;
-                    ratio_diff1 = weimi_para.step1_factor[MotorProcess.current_seg / 2] - weimi_para.step1_factor[0];  
-                  }
-                  if(weimi_para.step2_factor[0] >= weimi_para.step2_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol2 = 0;//正数
-                    ratio_diff2 = weimi_para.step2_factor[0] - weimi_para.step2_factor[MotorProcess.current_seg / 2];  
-                  }
-                  else
-                  {
-                    symbol2 = 1;
-                    ratio_diff2 = weimi_para.step2_factor[MotorProcess.current_seg / 2] - weimi_para.step2_factor[0];  
-                  }
-                  if(weimi_para.step3_factor[0] >= weimi_para.step3_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol3 = 0;//正数
-                    ratio_diff3 = weimi_para.step3_factor[0] - weimi_para.step3_factor[MotorProcess.current_seg / 2];  
-                  }
-                  else
-                  {
-                    symbol3 = 1;
-                    ratio_diff3 = weimi_para.step3_factor[MotorProcess.current_seg / 2] - weimi_para.step3_factor[0];  
-                  }
-                  
                   u16 value1,value2;
                   value1 = MotorStepCount(&device_info,&weimi_para,0);
                   value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
@@ -2630,37 +2598,6 @@ static void vTaskMotorControl(void *pvParameters)
                 }
                 else
                 {
-                  if(weimi_para.step1_factor[MotorProcess.current_seg / 2 + 1] >= weimi_para.step1_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol1 = 0;
-                    ratio_diff1 = weimi_para.step1_factor[MotorProcess.current_seg / 2 + 1] - weimi_para.step1_factor[MotorProcess.current_seg / 2];
-                  }
-                  else
-                  {
-                    symbol1 = 1;
-                    ratio_diff1 = weimi_para.step1_factor[MotorProcess.current_seg / 2] - weimi_para.step1_factor[MotorProcess.current_seg / 2 + 1];
-                  }
-                  if(weimi_para.step2_factor[MotorProcess.current_seg / 2 + 1] >= weimi_para.step2_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol2 = 0;
-                    ratio_diff2 = weimi_para.step2_factor[MotorProcess.current_seg / 2 + 1] - weimi_para.step2_factor[MotorProcess.current_seg / 2];
-                  }
-                  else
-                  {
-                    symbol2 = 1;
-                    ratio_diff2 = weimi_para.step2_factor[MotorProcess.current_seg / 2] - weimi_para.step2_factor[MotorProcess.current_seg / 2 + 1];
-                  }
-                  if(weimi_para.step3_factor[MotorProcess.current_seg / 2 + 1] >= weimi_para.step3_factor[MotorProcess.current_seg / 2])
-                  {
-                    symbol3 = 0;
-                    ratio_diff3 = weimi_para.step3_factor[MotorProcess.current_seg / 2 + 1] - weimi_para.step3_factor[MotorProcess.current_seg / 2];
-                  }
-                  else
-                  {
-                    symbol3 = 1;
-                    ratio_diff3 = weimi_para.step3_factor[MotorProcess.current_seg / 2] - weimi_para.step3_factor[MotorProcess.current_seg / 2 + 1];
-                  }
-                  
                   u16 value1,value2;
                   value1 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2 + 1);
                   value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
@@ -2675,12 +2612,6 @@ static void vTaskMotorControl(void *pvParameters)
                     servo_diff = value2 - value1;
                   }
                 }
-                speed_diff1 = speed_zhu * ratio_diff1 / 1000.0;//计算相邻段号步进电机运行频率差
-                speed_diff2 = speed_zhu * ratio_diff2 / 1000.0;//计算相邻段号步进电机运行频率差
-                speed_diff3 = speed_zhu * ratio_diff3 / 1000.0;//计算相邻段号步进电机运行频率差
-                pluse_step_src1 = speed_zhu * weimi_para.step1_factor[(MotorProcess.current_seg - 1) / 2] / 1000.0;
-                pluse_step_src2 = speed_zhu * weimi_para.step2_factor[(MotorProcess.current_seg - 1) / 2] / 1000.0;
-                pluse_step_src3 = speed_zhu * weimi_para.step3_factor[(MotorProcess.current_seg - 1) / 2] / 1000.0;
                 servo_per_wei_src = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);
                 step_motor_adjust = 1;//步进电机过渡调速标志
                 guodu = 0;
@@ -2690,11 +2621,59 @@ static void vTaskMotorControl(void *pvParameters)
             {//下个段号纬循环等于0，前面所有的段号循环
               MotorProcess.current_seg = 0;
               MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
-              MotorProcess.step1_factor = weimi_para.step1_factor[MotorProcess.current_seg / 2];
-              MotorProcess.step2_factor = weimi_para.step2_factor[MotorProcess.current_seg / 2];
-              MotorProcess.step3_factor = weimi_para.step3_factor[MotorProcess.current_seg / 2];
               servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg / 2);//计算伺服电机脉冲数
               step_motor_adjust = 0;
+            }
+          }
+          u8 i;
+          for(i=0;i<3;i++)
+          {
+            if(MotorProcess.song_current_wei[i] >= MotorProcess.song_total_wei[i])
+            {
+              MotorProcess.song_current_wei[i] = 0;
+              MotorProcess.songwei_seg[i]++;//进入下一段号
+              if(MotorProcess.songwei_seg[i] >= 10)
+              {
+                MotorProcess.songwei_seg[i] = 0;
+              }
+              MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2];
+              MotorProcess.step_factor[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+              if(MotorProcess.song_total_wei[i] > 0)
+              {
+                u16 ratio_diff[3];
+                if(MotorProcess.step_factor[i] > 0)
+                {//下个段号速比不为0，计算速比差，进行过渡
+                  if(weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] >= weimi_para.step_factor[0][MotorProcess.songwei_seg[i] - 1])
+                  {
+                    symbol[i] = 0;
+                    ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i] - 1];
+                  }
+                  else
+                  {
+                    symbol[i] = 1;
+                    ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i] - 1] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                  }
+                }
+                else
+                {//下个段号速比等于0，前面所有的段号循环
+                  if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[0][MotorProcess.songwei_seg[i]])
+                  {
+                    symbol[i] = 0;
+                    ratio_diff[i] = weimi_para.step_factor[i][0] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                  }
+                  else
+                  {
+                    symbol[i] = 1;
+                    ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][0];
+                  }
+                }
+                speed_diff[i] = speed_zhu * ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
+                pluse_step_src[i] = speed_zhu * weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
+              }
+              else
+              {
+                MotorProcess.songwei_seg[i] = 0;
+              }
             }
           }
         }
@@ -2739,9 +2718,9 @@ static void vTaskFreq(void *pvParameters)
         }
         if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
         {
-          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 500.0 * 3.0);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
-          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 500.0 * 3.0);//计算步进电机脉冲频率
-          step3_count = from_speed_step((float)speed_zhu * MotorProcess.step3_factor / 500.0 * 3.0 / 2);//计算步进电机脉冲频率
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[0] * SPEED_RADIO[0]);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
+          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[1] * SPEED_RADIO[1]);//计算步进电机脉冲频率
+          step3_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[2] * SPEED_RADIO[2]);//计算步进电机脉冲频率
           if(step1_count == 0)
           {//送纬电机速度设置为0
             step1_stop = 0;

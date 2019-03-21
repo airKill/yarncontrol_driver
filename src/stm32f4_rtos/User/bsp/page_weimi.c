@@ -10,6 +10,8 @@ u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
 u8 valid_seg = 0;
 
+const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
+
 u16 servomotor_step = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
@@ -45,26 +47,29 @@ void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
     para->wei_cm_set[i] = 0;
     para->wei_inch_set[i] = 0;
   }
-  para->step1_factor[0] = 50;
-  para->step2_factor[0] = 50;
-  para->step3_factor[0] = 50;
+  para->step_factor[0][0] = 50;
+  para->step_factor[1][0] = 50;
+  para->step_factor[2][0] = 50;
   for(i=1;i<10;i++)
   {
-    para->step1_factor[i] = 0;
-    para->step2_factor[i] = 0;
-    para->step3_factor[i] = 0;
+    para->step_factor[0][i] = 0;
+    para->step_factor[1][i] = 0;
+    para->step_factor[2][i] = 0;
   }
 }
 
 void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
 {
   motor->current_seg = info->weimi_info.reg;
+  motor->songwei_seg[0] = info->weimi_info.songwei_seg[0];
+  motor->songwei_seg[1] = info->weimi_info.songwei_seg[1];
+  motor->songwei_seg[2] = info->weimi_info.songwei_seg[2];
   motor->current_wei = info->weimi_info.count;
   motor->total_wei = para->total_wei_count[motor->current_seg];
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
-  motor->step1_factor = para->step1_factor[motor->current_seg / 2];
-  motor->step2_factor = para->step2_factor[motor->current_seg / 2];
-  motor->step3_factor = para->step3_factor[motor->current_seg / 2];
+  motor->step_factor[0] = para->step_factor[0][motor->current_seg / 2];
+  motor->step_factor[1] = para->step_factor[1][motor->current_seg / 2];
+  motor->step_factor[2] = para->step_factor[2][motor->current_seg / 2];
 }
 
 u16 get_main_speed(float freq)
@@ -85,7 +90,7 @@ u32 from_speed_step(float speed)
   return count;
 }
 
-u8 get_valid_seg(WEIMI_PARA *para)
+u8 get_valid_seg(WEIMI_PARA para)
 {
   u8 seg = 0;
   u8 i;
@@ -94,6 +99,51 @@ u8 get_valid_seg(WEIMI_PARA *para)
 //    if((weimi_para.total_wei_count[i] > 0) && (weimi_para.wei_cm_set[i / 2] > 0))
     if((weimi_para.total_wei_count[i] == 0) || (weimi_para.wei_cm_set[i / 2] == 0))
     {//段号中纬循环和纬厘米都设置，则有效
+      seg = i;
+      break;
+    }
+  }
+  return seg;
+}
+
+u8 get_songwei0_maxseg(WEIMI_PARA para)
+{
+  u8 seg = 0;
+  u8 i;
+  for(i=0;i<10;i++)
+  {
+    if(weimi_para.step_factor[0][i] == 0)
+    {//段号中速比设置不为0则有效
+      seg = i;
+      break;
+    }
+  }
+  return seg;
+}
+
+u8 get_songwei1_maxseg(WEIMI_PARA para)
+{
+  u8 seg = 0;
+  u8 i;
+  for(i=0;i<10;i++)
+  {
+    if(weimi_para.step_factor[1][i] == 0)
+    {//段号中速比设置不为0则有效
+      seg = i;
+      break;
+    }
+  }
+  return seg;
+}
+
+u8 get_songwei2_maxseg(WEIMI_PARA para)
+{
+  u8 seg = 0;
+  u8 i;
+  for(i=0;i<10;i++)
+  {
+    if(weimi_para.step_factor[2][i] == 0)
+    {//段号中速比设置不为0则有效
       seg = i;
       break;
     }
@@ -142,9 +192,9 @@ u16 WeishaMQTTPackage(u8 *buf)
   
   for(i=0;i<10;i++)
   {
-    weisha_mqtt.step1_factor[i] = weimi_para.step1_factor[i];
-    weisha_mqtt.step2_factor[i] = weimi_para.step2_factor[i];
-    weisha_mqtt.step3_factor[i] = weimi_para.step3_factor[i];
+    weisha_mqtt.step_factor[0][i] = weimi_para.step_factor[0][i];
+    weisha_mqtt.step_factor[1][i] = weimi_para.step_factor[1][i];
+    weisha_mqtt.step_factor[2][i] = weimi_para.step_factor[2][i];
   }
   memcpy(buf + length,(u8 *)&weisha_mqtt,sizeof(WEISHA_MQTT));
   length = length + sizeof(WEISHA_MQTT);
