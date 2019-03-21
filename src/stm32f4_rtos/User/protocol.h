@@ -66,5 +66,6 @@ void rs485_get_weight(u8 num);
 void rs485_start_stop(u8 num,u16 state);
 u8 get_alive_num(u8 *value,u8 *index_num);
 void DiskFile_init(void);
+void init_jingsha_para(JINGSHA_FILE *para);
 #endif
 

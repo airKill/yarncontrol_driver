@@ -7,7 +7,7 @@ void read_device_info(void)
   u8 i;
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
 //  W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-  if(device_info.isfirst != 0xab)
+  if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
     sprintf((char *)device_info.device_id,"%s","jx1234");
@@ -57,6 +57,9 @@ void read_device_info(void)
     strcpy((char *)device_info.regin_in.password,"111111");
     device_info.regin_in.password_len = strlen((char const *)device_info.regin_in.password);;  
     W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+    
+    init_jingsha_para(&JingSha_File);
+    W25QXX_Write((u8 *)&JingSha_File,(u32)W25QXX_ADDR_JINGSHA,sizeof(JingSha_File));
     init_peiliao_para(&peiliao_para);
     W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
     init_product_para(&product_para,peiliao_para);
@@ -141,7 +144,6 @@ void default_device_para(void)
   {
     JingSha_File.weight_value[i] = 0;
   }
-  
   para_init(&SlavePara);
 }
 

@@ -102,11 +102,23 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\para.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\product_cal.c</path>
     <encoding>System</encoding>
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\product_cal.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\protocol.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\protocol.h</path>
     <encoding>System</encoding>
   </override>
   <override>

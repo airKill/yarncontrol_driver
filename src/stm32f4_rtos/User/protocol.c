@@ -89,4 +89,13 @@ void DiskFile_init(void)
   }  
 }
 
+void init_jingsha_para(JINGSHA_FILE *para)
+{
+  u8 i;
+  para->filename_len = 3;
+  memcpy(para->filename,"123",strlen("123"));
+  for(i=0;i<30;i++)
+    para->weight_value[i] = 0;
+}
+
  
