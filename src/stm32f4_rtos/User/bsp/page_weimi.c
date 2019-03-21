@@ -2,7 +2,7 @@
 
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
-u16 speed_zhu = 0;
+u16 speed_zhu = 0,old_speed_zhu = 0;
 u8 step_motor_adjust = 0;//步进电机过渡调速标志
 
 u8 servomotor_dir = FORWARD;
@@ -80,7 +80,7 @@ u32 from_speed_step(float speed)
 {
   u16 freq;
   u32 count;
-  freq = speed / 60 * 360 / 1.8 * 8;
+  freq = speed / 60 * 360 / 1.8 * 16;
   count = 4000000 / freq;
   return count;
 }

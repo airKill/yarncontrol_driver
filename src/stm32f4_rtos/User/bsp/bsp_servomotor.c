@@ -13,6 +13,7 @@ void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num)
 
 void TIM4_CH1_StartPwmOut(void)
 {
+  SERVO_FORWARD();
   TIM_DMACmd(TIM4,TIM_DMA_CC1,ENABLE);
   TIM4->CCER |= 1<<0; //?aTME4 PWM¨º?3?
   TIM_Cmd(TIM4,ENABLE);

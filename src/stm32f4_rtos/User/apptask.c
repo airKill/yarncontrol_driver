@@ -2718,9 +2718,15 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelay(10);
     speed_zhu = ENC_Calc_Average_Speed();
+    if(speed_zhu > 1600)
+    {
+      speed_zhu = old_speed_zhu;
+    }
     printf("speed_zhu is %d\r\n",speed_zhu);
+
     if(speed_zhu > 0)
     {
+      old_speed_zhu = speed_zhu;
       if(device_info.func_onoff.weimi)
       {
         is_stop = 1;
@@ -2733,9 +2739,9 @@ static void vTaskFreq(void *pvParameters)
         }
         if(step_motor_adjust == 0)//过渡期不按照速比控制步进电机
         {
-          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 1000.0);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
-          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 1000.0);//计算步进电机脉冲频率
-          step3_count = from_speed_step((float)speed_zhu * MotorProcess.step3_factor / 1000.0);//计算步进电机脉冲频率
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step1_factor / 500.0 * 3.0);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
+          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step2_factor / 500.0 * 3.0);//计算步进电机脉冲频率
+          step3_count = from_speed_step((float)speed_zhu * MotorProcess.step3_factor / 500.0 * 3.0 / 2);//计算步进电机脉冲频率
           if(step1_count == 0)
           {//送纬电机速度设置为0
             step1_stop = 0;
