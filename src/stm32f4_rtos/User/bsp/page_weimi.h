@@ -7,7 +7,7 @@
 #define SERVOMOTOR_DIV  1000
 
 #define SPEED_RADIO12   (3.0 / 500.0)
-#define SPEED_RADIO3    (1.5 / 500.0)
+#define SPEED_RADIO3    (1.5 / 1000)
 
 #define FORWARD 0
 #define BACKWARD 1
@@ -54,13 +54,15 @@ typedef struct
 extern MOTOR_PROCESS MotorProcess;
 
 extern u16 speed_zhu,old_speed_zhu;
-extern u8 step_motor_adjust;
+extern u8 servomotor_guodu;
+extern u8 stepmotor_guodu[3];
 extern u16 servomotor_step;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;
 extern u8 valid_seg;
 extern const float SPEED_RADIO[3];
+extern u8 fault_weimi_flag;
 
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao);

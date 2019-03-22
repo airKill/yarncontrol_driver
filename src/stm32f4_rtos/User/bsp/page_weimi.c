@@ -3,12 +3,15 @@
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
 u16 speed_zhu = 0,old_speed_zhu = 0;
-u8 step_motor_adjust = 0;//步进电机过渡调速标志
+u8 servomotor_guodu = 0;//伺服电机过渡调速标志
+u8 stepmotor_guodu[3] = {0,0,0};
 
 u8 servomotor_dir = FORWARD;
 u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
 u8 valid_seg = 0;
+
+u8 fault_weimi_flag = 0;
 
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
@@ -65,8 +68,14 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->songwei_seg[1] = info->weimi_info.songwei_seg[1];
   motor->songwei_seg[2] = info->weimi_info.songwei_seg[2];
   motor->current_wei = info->weimi_info.count;
+  motor->song_current_wei[0] = info->weimi_info.count;
+  motor->song_current_wei[1] = info->weimi_info.count;
+  motor->song_current_wei[2] = info->weimi_info.count;
   motor->total_wei = para->total_wei_count[motor->current_seg];
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
+  motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2];
+  motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2];
+  motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2];
   motor->step_factor[0] = para->step_factor[0][motor->current_seg / 2];
   motor->step_factor[1] = para->step_factor[1][motor->current_seg / 2];
   motor->step_factor[2] = para->step_factor[2][motor->current_seg / 2];
