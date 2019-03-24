@@ -60,7 +60,7 @@ extern u16 servomotor_step;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;
-extern u8 valid_seg;
+extern u8 max_seg,valid_seg[4];
 extern const float SPEED_RADIO[3];
 extern u8 fault_weimi_flag;
 
@@ -75,4 +75,5 @@ u8 get_songwei1_maxseg(WEIMI_PARA para);
 u8 get_songwei2_maxseg(WEIMI_PARA para);
 u16 WeimiMQTTPackage(u8 *buf);
 u16 WeishaMQTTPackage(u8 *buf);
+u8 get_max_type(u8 *buf);
 #endif

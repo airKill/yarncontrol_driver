@@ -9,7 +9,7 @@ u8 stepmotor_guodu[3] = {0,0,0};
 u8 servomotor_dir = FORWARD;
 u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
-u8 valid_seg = 0;
+u8 max_seg = 0,valid_seg[4] = 0;
 
 u8 fault_weimi_flag = 0;
 
@@ -105,20 +105,22 @@ u8 get_valid_seg(WEIMI_PARA para)
   u8 i;
   for(i=0;i<20;i++)
   {
-//    if((weimi_para.total_wei_count[i] > 0) && (weimi_para.wei_cm_set[i / 2] > 0))
-    if((weimi_para.total_wei_count[i] == 0) || (weimi_para.wei_cm_set[i / 2] == 0))
+//    if((weimi_para.total_wei_count[i] == 0) || (weimi_para.wei_cm_set[i / 2] == 0))
+    if((weimi_para.wei_cm_set[i / 2] == 0))
     {//段号中纬循环和纬厘米都设置，则有效
       seg = i;
       break;
     }
   }
-  return seg;
+  return seg / 2;
 }
 
 u8 get_songwei0_maxseg(WEIMI_PARA para)
 {
   u8 seg = 0;
   u8 i;
+  if(weimi_para.step_factor[0][0] == 0)
+    return 0;
   for(i=0;i<10;i++)
   {
     if(weimi_para.step_factor[0][i] == 0)
@@ -134,6 +136,8 @@ u8 get_songwei1_maxseg(WEIMI_PARA para)
 {
   u8 seg = 0;
   u8 i;
+  if(weimi_para.step_factor[1][0] == 0)
+    return 0;
   for(i=0;i<10;i++)
   {
     if(weimi_para.step_factor[1][i] == 0)
@@ -149,6 +153,8 @@ u8 get_songwei2_maxseg(WEIMI_PARA para)
 {
   u8 seg = 0;
   u8 i;
+  if(weimi_para.step_factor[2][0] == 0)
+    return 0;
   for(i=0;i<10;i++)
   {
     if(weimi_para.step_factor[2][i] == 0)
@@ -208,5 +214,28 @@ u16 WeishaMQTTPackage(u8 *buf)
   memcpy(buf + length,(u8 *)&weisha_mqtt,sizeof(WEISHA_MQTT));
   length = length + sizeof(WEISHA_MQTT);
   return length;
+}
+
+u8 get_max_type(u8 *buf)
+{
+  u8 i;
+  u8 index = 0;
+  u8 max = 0;
+  for(i=0;i<4;i++)
+  {
+    if(buf[i] > max)
+    {
+      max = buf[i];
+    }
+  }
+  for(i=0;i<4;i++)
+  {
+    if(max == buf[i])
+    {
+      index = i;
+      break;
+    }
+  }
+  return index;
 }
 
