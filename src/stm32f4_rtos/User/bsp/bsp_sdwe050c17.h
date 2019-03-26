@@ -191,6 +191,8 @@
 #define PAGE_CONFIG_DEFAULT     0x014B
 #define PAGE_CONFIG_RATIO1        0x014C
 #define PAGE_CONFIG_RATIO2        0x014E
+#define PAGE_CONFIG_SEVRO_PLUSE_PAGE        0x014F
+#define PAGE_CONFIG_SEVRO_PLUSE        0x0160
 
 #define PAGE_CARD_A_INC 0x0150
 #define PAGE_CARD_A_DEC 0x0151
@@ -318,4 +320,5 @@ void sdew_weimi_page2(WEIMI_PARA *para);
 void sdew_weisha_page1(WEIMI_PARA *para);
 void sdew_weisha_page2(WEIMI_PARA *para);
 void Sdwe_ratio_display(DEVICE_INFO *para);
+void Sdwe_sevro_pulse_display(DEVICE_INFO *para);
 #endif

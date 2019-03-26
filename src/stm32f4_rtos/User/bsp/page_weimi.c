@@ -76,6 +76,7 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2];
   motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2];
   motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2];
+  motor->wei_cm_set = para->wei_cm_set[motor->current_seg];
   motor->step_factor[0] = para->step_factor[0][motor->current_seg / 2];
   motor->step_factor[1] = para->step_factor[1][motor->current_seg / 2];
   motor->step_factor[2] = para->step_factor[2][motor->current_seg / 2];

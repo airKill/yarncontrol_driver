@@ -50,7 +50,7 @@ void ENC_Init(void)
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;		/* 设为输出口 */
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;		/* 设为推挽模式 */
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_ENCODERA;
   GPIO_Init(GPIO_PORT_ENCODERA, &GPIO_InitStructure);					 //PA0 ??à-

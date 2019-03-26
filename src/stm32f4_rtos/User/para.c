@@ -15,6 +15,7 @@ void read_device_info(void)
     device_info.system_state = SYS_NORMAL;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
+    device_info.sevro_stop_pluse = 1000;
     //换班默认参数设置
     device_info.class_para.class_enable_onoff = 1;//默认开启A/B换班
     device_info.class_para.class_time_hour = 8;//默认换班时间08:00:00

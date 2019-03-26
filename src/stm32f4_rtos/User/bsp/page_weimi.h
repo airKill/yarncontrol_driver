@@ -49,6 +49,7 @@ typedef struct
   u32 song_total_wei[3];
   u32 real_wei_count;
   u32 song_real_wei[3];
+  float wei_cm_set;
   u16 step_factor[3];
 }MOTOR_PROCESS;
 extern MOTOR_PROCESS MotorProcess;

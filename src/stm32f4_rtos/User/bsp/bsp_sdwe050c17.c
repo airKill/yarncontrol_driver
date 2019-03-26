@@ -343,6 +343,11 @@ void Sdwe_ratio_display(DEVICE_INFO *para)
   Sdwe_disDigi(PAGE_CONFIG_RATIO2,(int)(para->ratio.GEAR2),2);
 }
 
+void Sdwe_sevro_pulse_display(DEVICE_INFO *para)
+{
+  Sdwe_disDigi(PAGE_CONFIG_SEVRO_PLUSE,(int)(para->sevro_stop_pluse),2);
+}
+
 void Sdwe_change_class_time(DEVICE_INFO *para)
 {
   Sdwe_disDigi(PAGE_CHANGE_HOUR,(int)(para->class_para.class_time_hour),2);
