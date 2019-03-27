@@ -191,7 +191,7 @@ s16 ENC_Calc_Rot_Speed(void)
     }
     
     // speed computation as delta angle * 1/(speed sempling time)
-    temp = (signed long long)(wDelta_angle * 100 * 60);
+    temp = (signed long long)(wDelta_angle * 6000);
 //    temp *= 10;  // 0.1 Hz resolution
     temp /= (4 * ENCODER_PPR);
         
@@ -229,39 +229,18 @@ u16 ENC_Calc_Average_Speed(void)
 {   
   u16 wtemp,temp;
   u8 i,j;
-  
+  u16 sum = 0;
   wtemp = ENC_Calc_Rot_Speed();
         
-///* Compute the average of the read speeds */  
-//  hSpeed_Buffer[bSpeed_Buffer_Index] = (s16)wtemp;
-//  bSpeed_Buffer_Index++;
-//  
-//  if(bSpeed_Buffer_Index == SPEED_BUFFER_SIZE)
-//  {
-//    bSpeed_Buffer_Index = 0;
-//  }
-//
-//  wtemp=0;
-//  //中位值平均滤波算法
-//  for(j=0;j<SPEED_BUFFER_SIZE-1;j++)  
-//  {  
-//    for(i=0;i<SPEED_BUFFER_SIZE-j;i++)  
-//    {  
-//      if(hSpeed_Buffer[i] > hSpeed_Buffer[i+1])  
-//      {
-//        temp = hSpeed_Buffer[i];  
-//        hSpeed_Buffer[i] = hSpeed_Buffer[i+1];   
-//        hSpeed_Buffer[i+1] = temp;  
-//      }  
-//    }  
-//  }
-//  for(i=1;i<SPEED_BUFFER_SIZE - 1;i++)
-//  {
-//    wtemp += hSpeed_Buffer[i];
-//  }
-//  wtemp /= (SPEED_BUFFER_SIZE - 2);
+  if(wtemp < 1600)
+    hSpeed_Buffer[bSpeed_Buffer_Index++] = (s16)wtemp;
+  if(bSpeed_Buffer_Index >= SPEED_BUFFER_SIZE)
+    bSpeed_Buffer_Index = 0;
   
-  return ((u16)wtemp);
+  //递推平均滤波（滑动平均滤波法）
+  for(i=0;i<SPEED_BUFFER_SIZE;i++)
+    sum = sum + hSpeed_Buffer[i];
+  return (sum / SPEED_BUFFER_SIZE);
 }
 
 /*******************************************************************************
@@ -284,7 +263,10 @@ void TIM8_UP_TIM13_IRQHandler(void)
     {
       hEncoder_Timer_Overflow++;
     }
+    if(first_circle < 10)
+      first_circle++;
     xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+//    xSemaphoreGiveFromISR(xSemaphore_pluse, &xHigherPriorityTaskWoken);
     /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }

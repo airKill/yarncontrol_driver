@@ -92,7 +92,7 @@ void bsp_InitUart(void)
   UART1ToPC('\0',1);
   UART2ToPC('\0',1);
   UART3ToPC('\0',1);
-  UART4ToPC('\0',1);
+//  UART4ToPC('\0',1);
 //  UART5ToPC('\0',1);
 }
 
@@ -1494,12 +1494,14 @@ void UART3ToPC(u8 *buf,u8 len)
 void UART4ToPC(u8 *buf,u8 len)
 {
   unsigned char i;
+  __set_PRIMASK(1);  
   for(i = 0; i < len; i++) 
   {
 //    while(USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET);
     USART_SendData(UART4, buf[i]);
     while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET);
   }
+  __set_PRIMASK(0);  
 }
 
 void UART5ToPC(u8 *buf,u8 len)

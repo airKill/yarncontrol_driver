@@ -13,7 +13,6 @@ void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num)
 
 void TIM4_CH1_StartPwmOut(void)
 {
-  SERVO_FORWARD();
   TIM_DMACmd(TIM4,TIM_DMA_CC1,ENABLE);
   TIM4->CCER |= 1<<0; //?aTME4 PWM¨º?3?
   TIM_Cmd(TIM4,ENABLE);
@@ -269,8 +268,12 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   NVIC_Init(&NVIC_InitStructure);
 }
 
-void ServoMotorRunning(u16 stepnum)
+void ServoMotorRunning(u16 stepnum,u8 dir)
 {
+  if(dir == FORWARD)
+    SERVO_FORWARD();
+  else
+    SERVO_BACKWARD();
   TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
   TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
   TIM4_CH1_StartPwmOut();

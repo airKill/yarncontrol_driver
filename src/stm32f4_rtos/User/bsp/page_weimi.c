@@ -2,16 +2,18 @@
 
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
-u16 speed_zhu = 0,old_speed_zhu = 0;
+u16 speed_zhu = 0;
 u8 servomotor_guodu = 0;//伺服电机过渡调速标志
 u8 stepmotor_guodu[3] = {0,0,0};
 
 u8 servomotor_dir = FORWARD;
 u8 servomotor_mode = AUTO;
 u8 is_stop = 0,old_is_stop = 0xff;
-u8 max_seg = 0,valid_seg[4] = 0;
+u8 max_seg = 0,valid_seg[4] = {0,0,0,0};
 
 u8 fault_weimi_flag = 0;
+
+u8 first_circle = 0;
 
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
@@ -95,8 +97,15 @@ u32 from_speed_step(float speed)
 {
   u16 freq;
   u32 count;
-  freq = speed / 60 * 360 / 1.8 * 16;
-  count = 4000000 / freq;
+  if(speed > 0)
+  {
+//    freq = speed / 60 * 360 / 1.8 * 16;
+//    freq = speed * 3200 / 60;//步进电机细分数3200
+//    count = 4000000 / freq;
+    count = 75000 / speed;
+  }
+  else
+    count = 0;
   return count;
 }
 
@@ -104,16 +113,18 @@ u8 get_valid_seg(WEIMI_PARA para)
 {
   u8 seg = 0;
   u8 i;
-  for(i=0;i<20;i++)
+  for(i=0;i<10;i++)
   {
 //    if((weimi_para.total_wei_count[i] == 0) || (weimi_para.wei_cm_set[i / 2] == 0))
-    if((weimi_para.wei_cm_set[i / 2] == 0))
+    if((weimi_para.wei_cm_set[i] == 0))
     {//段号中纬循环和纬厘米都设置，则有效
       seg = i;
       break;
     }
   }
-  return seg / 2;
+  if(i >= 10)
+    seg = 10;
+  return seg;
 }
 
 u8 get_songwei0_maxseg(WEIMI_PARA para)

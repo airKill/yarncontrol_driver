@@ -6,7 +6,7 @@
 #define CIRCLE_LENGTH   (PI * ROLLER_D)
 #define SERVOMOTOR_DIV  1000
 
-#define SPEED_RADIO12   (3.0 / 500.0)
+#define SPEED_RADIO12   (3.6 / 500.0)
 #define SPEED_RADIO3    (1.5 / 1000)
 
 #define FORWARD 0
@@ -54,7 +54,7 @@ typedef struct
 }MOTOR_PROCESS;
 extern MOTOR_PROCESS MotorProcess;
 
-extern u16 speed_zhu,old_speed_zhu;
+extern u16 speed_zhu;
 extern u8 servomotor_guodu;
 extern u8 stepmotor_guodu[3];
 extern u16 servomotor_step;
@@ -64,6 +64,7 @@ extern u8 is_stop,old_is_stop;
 extern u8 max_seg,valid_seg[4];
 extern const float SPEED_RADIO[3];
 extern u8 fault_weimi_flag;
+extern u8 first_circle;
 
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao);
@@ -77,4 +78,5 @@ u8 get_songwei2_maxseg(WEIMI_PARA para);
 u16 WeimiMQTTPackage(u8 *buf);
 u16 WeishaMQTTPackage(u8 *buf);
 u8 get_max_type(u8 *buf);
+
 #endif

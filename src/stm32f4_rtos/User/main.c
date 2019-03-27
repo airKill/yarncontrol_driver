@@ -81,7 +81,7 @@ int main(void)
   目中不要使用，因为这个功能比较影响系统实时性。
   2. 为了正确获取FreeRTOS的调试信息，可以考虑将上面的关闭中断指令__set_PRIMASK(1); 注释掉。 
   */
-  vSetupSysInfoTest();
+//  vSetupSysInfoTest();
   /* 创建任务 */
   AppTaskCreate();
   /* 创建任务通信机制 */

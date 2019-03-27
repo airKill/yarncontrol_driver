@@ -324,16 +324,16 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
-  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,para->latitude_weight / 10,2);
-  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,para->longitude_weight / 10,2);
-  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,para->rubber_weight / 10,2);
-  Sdwe_disDigi(PAGE_PRODUCT_FINAL,para->final_weight / 10,2);
+  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,para->latitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,para->longitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,para->rubber_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_FINAL,para->final_weight,2);
   Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,para->loom_num,2);
   Sdwe_disDigi(PAGE_PRODUCT_LOSS,para->loss,2);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
   Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),4);
-  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para->kaidu_set / 10,2);
-  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para->weimi_set / 10,2);
+  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para->kaidu_set,2);
+  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para->weimi_set,2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
 }
 
@@ -431,37 +431,47 @@ void sdew_weimi_page1(WEIMI_PARA *para)
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1,para->total_wei_count[0],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,(int)(para->wei_cm_set[0] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1,(int)(para->wei_inch_set[0] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,para->real_wei_count[0],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,para->real_wei_count[0],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1,para->total_wei_count[1],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1,para->real_wei_count[1],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1,para->real_wei_count[1],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 2,para->total_wei_count[2],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 2,(int)(para->wei_cm_set[1] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 2,(int)(para->wei_inch_set[1] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 2,para->real_wei_count[2],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 2,para->real_wei_count[2],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 2,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 2,para->total_wei_count[3],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 2,para->real_wei_count[3],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 2,para->real_wei_count[3],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 2,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 4,para->total_wei_count[4],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 4,(int)(para->wei_cm_set[2] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 4,(int)(para->wei_inch_set[2] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 4,para->real_wei_count[4],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 4,para->real_wei_count[4],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 4,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 4,para->total_wei_count[5],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 4,para->real_wei_count[5],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 4,para->real_wei_count[5],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 4,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 6,para->total_wei_count[6],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 6,(int)(para->wei_cm_set[3] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 6,(int)(para->wei_inch_set[3] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 6,para->real_wei_count[6],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 6,para->real_wei_count[6],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 6,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 6,para->total_wei_count[7],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 6,para->real_wei_count[7],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 6,para->real_wei_count[7],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 6,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 8,para->total_wei_count[8],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 8,(int)(para->wei_cm_set[4] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 8,(int)(para->wei_inch_set[4] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 8,para->real_wei_count[8],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 8,para->real_wei_count[8],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 8,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 8,para->total_wei_count[9],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 8,para->real_wei_count[9],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 8,para->real_wei_count[9],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 8,0,4);
   
   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }
@@ -471,37 +481,47 @@ void sdew_weimi_page2(WEIMI_PARA *para)
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 10,para->total_wei_count[10],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 10,(int)(para->wei_cm_set[5] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 10,(int)(para->wei_inch_set[5] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 10,para->real_wei_count[10],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 10,para->real_wei_count[10],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 10,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 10,para->total_wei_count[11],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 10,para->real_wei_count[11],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 10,para->real_wei_count[11],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 10,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 12,para->total_wei_count[12],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 12,(int)(para->wei_cm_set[6] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 12,(int)(para->wei_inch_set[6] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 12,para->real_wei_count[12],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 12,para->real_wei_count[12],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 12,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 12,para->total_wei_count[13],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 12,para->real_wei_count[13],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 12,para->real_wei_count[13],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 12,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 14,para->total_wei_count[14],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 14,(int)(para->wei_cm_set[7] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 14,(int)(para->wei_inch_set[7] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 14,para->real_wei_count[14],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 14,para->real_wei_count[14],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 14,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 14,para->total_wei_count[15],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 14,para->real_wei_count[15],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 14,para->real_wei_count[15],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 14,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 16,para->total_wei_count[16],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 16,(int)(para->wei_cm_set[8] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 16,(int)(para->wei_inch_set[8] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 16,para->real_wei_count[16],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 16,para->real_wei_count[16],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 16,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 16,para->total_wei_count[17],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 16,para->real_wei_count[17],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 16,para->real_wei_count[17],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 16,0,4);
   
   Sdwe_disDigi(PAGE_WEIMI_TOTALWEI_1 + 18,para->total_wei_count[18],4);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1 + 18,(int)(para->wei_cm_set[9] * 10),2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_INCH_1 + 18,(int)(para->wei_inch_set[9] * 100),2);
-  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 18,para->real_wei_count[18],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 18,para->real_wei_count[18],4);
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + 18,0,4);
   Sdwe_disDigi(PAGE_WEIMI_MEDIANWEI_1 + 18,para->total_wei_count[19],4);
-  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 18,para->real_wei_count[19],4);
+//  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 18,para->real_wei_count[19],4);
+  Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + 18,0,4);
   
   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
 }

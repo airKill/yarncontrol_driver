@@ -112,10 +112,10 @@ u32 count_per_kilo(u32 pluse)
 
 //计算已完成重量
 u32 product_complete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao)
-{
+{//输出为0.1kg
   float weight;
-  weight = final_per_meter(peiliao) / 1000 * product_complete_meter(para);//已完成重量=每米成品重量*完成产量
-  return weight;
+  weight = (float)final_per_meter(peiliao) / 10000.0 * product_complete_meter(para);//已完成重量=每米成品重量*完成产量
+  return (u32)weight;
 }
 
 //计算未完成重量
@@ -126,10 +126,10 @@ u32 product_uncomplete_kilo(PRODUCT_PARA para,PEILIAO_PARA peiliao)
   return weight;
 }
 
-float get_float_1bit(float data)
+u16 get_float_1bit(float data)
 {
-  float tmp;
-  tmp = (float)((int)(data * 10)) / 10;
+  u16 tmp;
+  tmp = (u16)(data);
   return tmp;
 }
 
