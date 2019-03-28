@@ -368,7 +368,7 @@ void vPortEnterCritical( void )
 	if( uxCriticalNesting == 1 )
 	{
 		configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
-	}
+	} 
 }
 /*-----------------------------------------------------------*/
 

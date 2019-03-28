@@ -311,7 +311,7 @@ void Sdwe_ClearReadDisk(void);
 void Sdwe_product_page(PRODUCT_PARA *para);
 void Sdwe_peiliao_page(PEILIAO_PARA *para);
 void Sdwe_stop_page(DEVICE_INFO *para);
-void SDWE_WARNNING(u16 addr,u8 *str);
+void SDWE_WARNNING(u16 addr,u8 *str,u8 text);
 void Sdwe_change_class_time(DEVICE_INFO *para);
 void Sdwe_period_page(DEVICE_INFO *para);
 void Sdwe_hidden_page(DEVICE_INFO *para);

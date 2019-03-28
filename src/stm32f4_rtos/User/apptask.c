@@ -15,7 +15,6 @@ SemaphoreHandle_t  xSemaphore_lcd = NULL;
 SemaphoreHandle_t  xSemaphore_rs485 = NULL;
 SemaphoreHandle_t  xSemaphore_pluse = NULL;
 SemaphoreHandle_t  xSemaphore_encoder = NULL;
-
 SemaphoreHandle_t  xSemaphore_download = NULL;
 SemaphoreHandle_t  xSemaphore_readDisk = NULL;
 SemaphoreHandle_t  xSemaphore_debug = NULL;
@@ -54,6 +53,7 @@ u8 old_system_state = 0xff;
 float pluse_step_src[3] = {0,0,0};
 float speed_diff[3] = {0,0,0};
 u8 symbol[3] = {0,0,0};
+u8 clear_text_flag = 0;
 /*
 *********************************************************************************************************
 *	函 数 名: vTaskTaskLCD
@@ -119,10 +119,10 @@ void vTaskTaskLCD(void *pvParameters)
                   Init_JINGSHA_GUI();
                 }
                 else
-                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
+                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商",1);
               }
               else
-                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
+                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束",1);
             }
             else if(var_addr == MAIN_PAGE_KEY_WEIMI)
             {//纬密
@@ -135,10 +135,10 @@ void vTaskTaskLCD(void *pvParameters)
                   sdew_weimi_page1(&weimi_para);
                 }
                 else
-                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
+                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商",1);
               }
               else
-                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
+                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束",1);
             }
             else if(var_addr == MAIN_PAGE_KEY_CHANNENG)
             {//产能
@@ -151,10 +151,10 @@ void vTaskTaskLCD(void *pvParameters)
                   card_config = READ_PERMISSION;
                 }
                 else
-                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商");
+                  SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商",1);
               }
               else
-                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束");
+                SDWE_WARNNING(MAIN_PAGE_WARNNING,"试用期结束",1);
             }
             else if(var_addr == MAIN_PAGE_KEY_SYS_CONFIG)
             {//系统配置
@@ -590,19 +590,19 @@ void vTaskTaskLCD(void *pvParameters)
               }
               if(ison == 0)
               {//未选择文件
-                SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"未选择文件");
+                SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"未选择文件",2);
               }
               else
               {
                 if(device_info.page_count_all == 0)
                 {//没有保存的文件
-                  SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无文件");
+                  SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无文件",2);
                 }
                 else
                 {
                   if(cnt > 1)
                   {//选择文件超过1个
-                    SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"只能选一个");
+                    SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"只能选一个",2);
                   }
                   else
                   {
@@ -625,7 +625,7 @@ void vTaskTaskLCD(void *pvParameters)
                       }
                       W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                       Init_JINGSHA_GUI();
-                      SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"调用成功");
+                      SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"调用成功",2);
                       ptMsg->addr = 0xff;
                       ptMsg->func = FUNC_WRITE;
                       ptMsg->reg = REG_SET_WEIGHT;
@@ -635,7 +635,7 @@ void vTaskTaskLCD(void *pvParameters)
                                     (TickType_t)10) == pdPASS )
                       {
                         /* 发送失败，即使等待了10个时钟节拍 */
-                        printf("%d# value %.2f 队列发送成功\r\n",var_addr - 0x0320 + 1,(float)value / 1000);
+//                        printf("%d# value %.2f 队列发送成功\r\n",var_addr - 0x0320 + 1,(float)value / 1000);
                       }
                     }
                     else
@@ -667,7 +667,7 @@ void vTaskTaskLCD(void *pvParameters)
                             (TickType_t)10) == pdPASS )
               {
                 /* 发送失败，即使等待了10个时钟节拍 */
-                printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
+//                printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
               }
             }
             else if(var_addr == PAGE_HISTORY_KEY_ADD)
@@ -700,13 +700,13 @@ void vTaskTaskLCD(void *pvParameters)
               }
               if(cnt == 0)
               {//未选择文件
-                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"未选择文件");
+                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"未选择文件",3);
               }
               else if(cnt == 1)
               {//只能选择一个文件
                 if(Disk_File.filenum == 0)
                 {//没有保存的文件
-                  SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"无文件");
+                  SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"无文件",3);
                 }
                 else
                 {
@@ -717,7 +717,7 @@ void vTaskTaskLCD(void *pvParameters)
               }
               else
               {//
-                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"只能选1个");
+                SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"只能选1个",3);
               }
             }
             else if(var_addr == PAGE1_KEY_RESET)
@@ -733,7 +733,7 @@ void vTaskTaskLCD(void *pvParameters)
                 /* 发送失败，即使等待了10个时钟节拍 */
                 printf("复位队列发送成功\r\n");
               }
-              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"驱动板复位");
+              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"驱动板复位",4);
             }
             else if(var_addr == PAGE_PRODUCT_PEILIAO)
             {//
@@ -882,7 +882,7 @@ void vTaskTaskLCD(void *pvParameters)
               {
                 peiliao_para.weimi_set = cnt;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-                weimi_para.wei_cm_set[0] = cnt;//胚料页面纬厘米和纬密页面段1纬厘米相同
+                weimi_para.wei_cm_set[0] = cnt / 10;//胚料页面纬厘米和纬密页面段1纬厘米相同
                 weimi_para.wei_inch_set[0] = weimi_para.wei_cm_set[0] * 2.54;
                 //转换为纬/inch显示
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
@@ -933,7 +933,7 @@ void vTaskTaskLCD(void *pvParameters)
                 }
                 else
                 {
-                  SDWE_WARNNING(PAGE_STOP_WARNNING,"无效操作");
+                  SDWE_WARNNING(PAGE_STOP_WARNNING,"无效操作",6);
                 }
               }
               u8 publish_topic;
@@ -945,7 +945,7 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_CONFIG_DEFAULT)
             {
               default_device_para();
-              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"恢复默认");
+              SDWE_WARNNING(PAGE_DEVICE_WARNNING,"恢复默认",4);
             }
             /****************************齿轮比设置************************************/
             else if(var_addr == PAGE_CONFIG_RATIO_DISPLAY)
@@ -1001,7 +1001,7 @@ void vTaskTaskLCD(void *pvParameters)
               }
               else
               {
-                SDWE_WARNNING(PAGE_CHANGE_WARNNING,"超出范围");
+                SDWE_WARNNING(PAGE_CHANGE_WARNNING,"超出范围",7);
               }
             }
             else if(var_addr == PAGE_CHANGE_MINUTE)
@@ -1014,7 +1014,7 @@ void vTaskTaskLCD(void *pvParameters)
               }
               else
               {
-                SDWE_WARNNING(PAGE_CHANGE_WARNNING,"超出范围");
+                SDWE_WARNNING(PAGE_CHANGE_WARNNING,"超出范围",7);
               }
             }
             else if(var_addr == PAGE_CHANGE_SWITCH)
@@ -1074,12 +1074,12 @@ void vTaskTaskLCD(void *pvParameters)
                   buf[i] = '*';
                 Sdwe_disString(PAGE_PASSWORD_DIS,buf,input_password_len);//密码显示为*
                 memcpy(device_info.regin_in.password,input_password_buf,input_password_len);//保存密码
-                SDWE_WARNNING(PAGE_PASSWORD_WARNNING,"修改成功");
+                SDWE_WARNNING(PAGE_PASSWORD_WARNNING,"修改成功",8);
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               }
               else
               {
-                SDWE_WARNNING(PAGE_PASSWORD_WARNNING,"输入不能空");
+                SDWE_WARNNING(PAGE_PASSWORD_WARNNING,"输入不能空",8);
               }
             }
             else if(var_addr == PAGE_DEVICE_ID)
@@ -1094,12 +1094,12 @@ void vTaskTaskLCD(void *pvParameters)
                 input_password_buf[input_password_len] = '\0';
                 memcpy(device_info.device_id,input_password_buf,input_password_len);
                 device_info.device_id_len = input_password_len;
-                SDWE_WARNNING(PAGE_DEVICE_WARNNING,"修改成功");
+                SDWE_WARNNING(PAGE_DEVICE_WARNNING,"修改成功",4);
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               }
               else
               {
-                SDWE_WARNNING(PAGE_DEVICE_WARNNING,"输入不能空");
+                SDWE_WARNNING(PAGE_DEVICE_WARNNING,"输入不能空",4);
               }
             }
             else if(var_addr == PAGE_CONFIG_PASSWORD)
@@ -1120,7 +1120,7 @@ void vTaskTaskLCD(void *pvParameters)
                 Sdwe_disPicture(PAGE_PERIOD);
                 Sdwe_period_page(&device_info);
               }
-              else if(strcmp((char const*)input_password_buf,"138992") == 0)
+              else if(strcmp((char const*)input_password_buf,"102608") == 0)
               {//特殊密码进入隐藏页面
                 Sdwe_disPicture(PAGE_HIDDEN);
                 Sdwe_hidden_page(&device_info);
@@ -1131,7 +1131,7 @@ void vTaskTaskLCD(void *pvParameters)
               }
               else
               {//密码错误
-                SDWE_WARNNING(PAGE_CONFIG_WARNNING,"密码错误");
+                SDWE_WARNNING(PAGE_CONFIG_WARNNING,"密码错误",5);
               }
             }
             /******************************历史资料页面2***************************************/
@@ -1186,7 +1186,7 @@ void vTaskTaskLCD(void *pvParameters)
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               }
               else
-                SDWE_WARNNING(PAGE_PERIOD_WARNNING,"超出范围");
+                SDWE_WARNNING(PAGE_PERIOD_WARNNING,"超出范围",9);
             }
             else if(var_addr == PAGE_PERIOD_DAY)
             {
@@ -1197,7 +1197,7 @@ void vTaskTaskLCD(void *pvParameters)
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
               }
               else
-                SDWE_WARNNING(PAGE_PERIOD_WARNNING,"超出范围");
+                SDWE_WARNNING(PAGE_PERIOD_WARNNING,"超出范围",9);
             }
             else if(var_addr == PAGE_PERIOD_PASSWORD_IMPORT)
             {
@@ -1227,7 +1227,7 @@ void vTaskTaskLCD(void *pvParameters)
               {//修改第一段纬循环
                 if(cnt == 0)
                 {//段1纬循环不能为0
-                  SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0");
+                  SDWE_WARNNING(PAGE_WEIMI_WARNNING,"不能为0",10);
                   Sdwe_disDigi(var_addr,weimi_para.total_wei_count[0],4);
                 }
                 else
@@ -1278,7 +1278,7 @@ void vTaskTaskLCD(void *pvParameters)
                 
               if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
               {//第一段的纬密和胚料页面的纬密相同
-                peiliao_para.weimi_set = cnt;
+                peiliao_para.weimi_set = cnt * 10;
                 W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               }
               valid_seg[0] = get_valid_seg(weimi_para);
@@ -1320,7 +1320,7 @@ void vTaskTaskLCD(void *pvParameters)
               else
               {
                 Sdwe_disDigi(var_addr,weimi_para.step_factor[0][(var_addr - PAGE_WEIMI_STEP1_SPEED) / 2],2);
-                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
+                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大",10);
               }
               u8 publish_topic;
               publish_topic = TOPIC_WEISHA;
@@ -1345,7 +1345,7 @@ void vTaskTaskLCD(void *pvParameters)
               else
               {
                 Sdwe_disDigi(var_addr,weimi_para.step_factor[1][(var_addr - PAGE_WEIMI_STEP2_SPEED) / 2],2);
-                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
+                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大",10);
               }
               u8 publish_topic;
               publish_topic = TOPIC_WEISHA;
@@ -1370,14 +1370,14 @@ void vTaskTaskLCD(void *pvParameters)
               else
               {
                 Sdwe_disDigi(var_addr,weimi_para.step_factor[2][(var_addr - PAGE_WEIMI_STEP3_SPEED) / 2],2);
-                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大");
+                SDWE_WARNNING(PAGE_WEIMI_WARNNING,"速比太大",10);
               }
               u8 publish_topic;
               publish_topic = TOPIC_WEISHA;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_ADD1) && (var_addr < PAGE_WEIMI_STEP1_ADD1 + 10))
-            {//送纬速度加1——10
+            {//送纬1速度加1——10
               if(weimi_para.step_factor[0][var_addr - PAGE_WEIMI_STEP1_ADD1] < 300)
               {//送纬电机速度小于200才能加
                 u8 position;
@@ -1398,7 +1398,7 @@ void vTaskTaskLCD(void *pvParameters)
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP1_SUB1) && (var_addr < PAGE_WEIMI_STEP1_SUB1 + 10))
-            {//送纬速度减1——10
+            {//送纬1速度减1——10
               if(weimi_para.step_factor[0][var_addr - PAGE_WEIMI_STEP1_SUB1] > 0)
               {//送纬电机速度大于0
                 u8 position;
@@ -1419,20 +1419,20 @@ void vTaskTaskLCD(void *pvParameters)
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_ADD1) && (var_addr < PAGE_WEIMI_STEP2_ADD1 + 10))
-            {//底线速度加1——10
-              if(weimi_para.step_factor[3][var_addr - PAGE_WEIMI_STEP2_ADD1] < 300)
+            {//送纬2速度加1——10
+              if(weimi_para.step_factor[1][var_addr - PAGE_WEIMI_STEP2_ADD1] < 300)
               {//送纬电机速度小于200才能减
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP2_ADD1;
-                weimi_para.step_factor[3][position] += 1;
-                speed = weimi_para.step_factor[3][position];
+                weimi_para.step_factor[1][position] += 1;
+                speed = weimi_para.step_factor[1][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1440,20 +1440,20 @@ void vTaskTaskLCD(void *pvParameters)
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
             else if((var_addr >= PAGE_WEIMI_STEP2_SUB1) && (var_addr < PAGE_WEIMI_STEP2_SUB1 + 10))
-            {//底线速度减1——10
-              if(weimi_para.step_factor[3][var_addr - PAGE_WEIMI_STEP2_SUB1] > 0)
+            {//送纬2速度减1——10
+              if(weimi_para.step_factor[1][var_addr - PAGE_WEIMI_STEP2_SUB1] > 0)
               {//送纬电机速度大于0
                 u8 position;
                 u8 speed;
                 position = var_addr - PAGE_WEIMI_STEP2_SUB1;
-                weimi_para.step_factor[3][position] -= 1;
-                speed = weimi_para.step_factor[3][position];
+                weimi_para.step_factor[1][position] -= 1;
+                speed = weimi_para.step_factor[1][position];
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[3] = weimi_para.step_factor[3][MotorProcess.current_seg / 2];
+                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
                 }
               }
               u8 publish_topic;
@@ -1720,12 +1720,12 @@ static void vTaskMassStorage(void *pvParameters)
         result = f_write(&file,buf,len,&bw);
         if(result == FR_OK)
         {
-          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入成功");
+          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入成功",2);
           printf("%s.CSV文件写入成功\r\n",name_1);
         }
         else
         {
-          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入失败");
+          SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"写入失败",2);
           printf("%s.CSV文件写入失败\r\n",name_1);
         }
         /* 关闭文件*/
@@ -1736,7 +1736,7 @@ static void vTaskMassStorage(void *pvParameters)
       }
       else
       {
-        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘");
+        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘",2);
         printf("U盘未插入\r\n");
       }
     }
@@ -1821,7 +1821,7 @@ static void vTaskTaskRFID(void *pvParameters)
                     if(device_info.class_para.class_enable_onoff == 0)
                     {//如果换班功能未启用，则产量一直记在A班
                       card_record = 1;//A班
-                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班");
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
                     }
                     else
                     {
@@ -1831,16 +1831,16 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(old_card_record != card_record)
                         {
                           old_card_record = card_record;
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"A班卡");
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"A班卡",11);
                         }
                         else
                         {
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡");
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
                         }
                       }
                       else
                       {//A班卡打在B时间段
-                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作");
+                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
                       }
                     }
                   }
@@ -1849,7 +1849,7 @@ static void vTaskTaskRFID(void *pvParameters)
                     if(device_info.class_para.class_enable_onoff == 0)
                     {//如果换班功能未启用，则产量一直记在A班
                       card_record = 1;//A班
-                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班");
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
                     }
                     else
                     {
@@ -1859,23 +1859,23 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(old_card_record != card_record)
                         {
                           old_card_record = card_record;
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"B班卡");
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"B班卡",11);
                         }
                         else
                         {
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡");
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
                         }
                       }
                       else
                       {//A班卡打在B时间段
-                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作");
+                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
                       }
                     }
                     
                   }
                   else
                   {//未注册卡
-                    SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未注册卡");
+                    SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未注册卡",11);
                   }
                 }
               }
@@ -1917,11 +1917,11 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_CLASS_A);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
                         }
                         else
                         {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
                         }
                       }
                       else if(card_config == WRITE_DEC_A)
@@ -1936,11 +1936,11 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_CLASS_B);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
                         }
                         else
                         {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
                         }
                       }
                       else if(card_config == WRITE_DEC_B)
@@ -1952,11 +1952,11 @@ static void vTaskTaskRFID(void *pvParameters)
                         if(card_type == FUNC_IDLE)
                         {//卡片不存在，添加到数据库
                           inc_card_type(card_id,FUNC_REPAIR);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
                         }
                         else
                         {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在");
+                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
                         }
                       }
                       else if(card_config == WRITE_DEC_REPAIR)
@@ -2336,11 +2336,11 @@ static void vTaskReadDisk(void *pvParameters)
             __set_PRIMASK(1); 
             read_from_disk((char *)file_buf);
             __set_PRIMASK(0); 
-            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取成功");
+            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取成功",3);
           }
           else
           {
-            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取失败");
+            SDWE_WARNNING(PAGE_U_TEXT_READ_STATE,"读取失败",3);
           }
 //          myfree(SRAMIN,file_buf);
           /* 关闭文件*/
@@ -2351,7 +2351,7 @@ static void vTaskReadDisk(void *pvParameters)
       }
       else
       {
-        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘");
+        SDWE_WARNNING(PAGE_HISTORY_TEXT_FILE_WARN,"无U盘",2);
       }
     }
     Task_iwdg_refresh(TASK_ReadDisk);
@@ -2403,7 +2403,7 @@ void vTaskManageCapacity(void *pvParameters)
               {//纬纱/千纬
                 count = 0;
                 Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-//                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               }
               if((total_meter_gross == 0) && (total_weight_gross == 0))
               {
@@ -3307,7 +3307,7 @@ void AppTaskCreate (void)
               &xHandleTaskLCD );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
-              256,             		/* 任务栈大小，单位word，也就是4字节 */
+              512,             		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
               3,               		/* 任务优先级*/
               &xHandleTaskMsgPro );  /* 任务句柄  */
@@ -3427,7 +3427,7 @@ void AppObjCreate (void)
     printf("idwgEventGroup fault\r\n");
   }
   /* 创建10个uint8_t型消息队列 */
-  xQueue_message = xQueueCreate(10, sizeof(struct SLAVE *));
+  xQueue_message = xQueueCreate(1, sizeof(struct SLAVE *));
   if(xQueue_message == NULL)
   {
     printf("xQueue_message fault\r\n");
@@ -3452,14 +3452,30 @@ void AppObjCreate (void)
 
 void TIM_CallBack1(void)
 {
-  Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);//清除历史资料页面显示提醒
-  Sdwe_clearString(PAGE_U_TEXT_READ_STATE);//清除U盘页面读取状态提醒
-  Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能页面RFID提醒
-  Sdwe_clearString(PAGE_STOP_WARNNING);//清除停机页面提醒
-  Sdwe_clearString(PAGE_CARD_WARNNING);//清除读卡提醒
-  Sdwe_clearString(PAGE_DEVICE_WARNNING);//清除设备ID修改提醒
-  Sdwe_clearString(PAGE_WEIMI_WARNNING);//清除纬密页面提醒
-  Sdwe_clearString(MAIN_PAGE_WARNNING);//清除主页提醒
+  if(clear_text_flag == 1)
+    Sdwe_clearString(MAIN_PAGE_WARNNING);//清除主页提醒
+  else if(clear_text_flag == 2)
+    Sdwe_clearString(PAGE_HISTORY_TEXT_FILE_WARN);//清除历史资料页面显示提醒
+  else if(clear_text_flag == 3)
+    Sdwe_clearString(PAGE_U_TEXT_READ_STATE);//清除U盘页面读取状态提醒
+  else if(clear_text_flag == 4)
+    Sdwe_clearString(PAGE_DEVICE_WARNNING);//清除设备ID修改提醒
+  else if(clear_text_flag == 5)
+    Sdwe_clearString(PAGE_CONFIG_WARNNING);
+  else if(clear_text_flag == 6)
+    Sdwe_clearString(PAGE_STOP_WARNNING);//清除停机页面提醒
+  else if(clear_text_flag == 7)
+    Sdwe_clearString(PAGE_CHANGE_WARNNING);
+  else if(clear_text_flag == 8)
+    Sdwe_clearString(PAGE_PASSWORD_WARNNING);
+  else if(clear_text_flag == 9)
+    Sdwe_clearString(PAGE_PERIOD_WARNNING);
+  else if(clear_text_flag == 10)
+    Sdwe_clearString(PAGE_WEIMI_WARNNING);
+  else if(clear_text_flag == 11)
+    Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能页面RFID提醒
+  else if(clear_text_flag == 12)
+    Sdwe_clearString(PAGE_CARD_WARNNING);//清除读卡提醒
 }
 
 void UserTimerCallback(TimerHandle_t xTimer)

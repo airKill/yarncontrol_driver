@@ -82,6 +82,7 @@ extern u8 readDisk;
 extern u8 readFilenum;
 
 extern u8 old_system_state;
+extern u8 clear_text_flag;
 /*
 **********************************************************************************************************
 ±äÁ¿ÉùÃ÷
@@ -98,7 +99,6 @@ extern TaskHandle_t xHandleTaskManageCapacity;
 extern TaskHandle_t xHandleTaskPluseCount;
 extern TaskHandle_t xHandleTaskMotorControl;
 extern TaskHandle_t xHandleTaskFreq;
-
 extern SemaphoreHandle_t  xSemaphore_encoder;
 extern SemaphoreHandle_t  xSemaphore_pluse;
 extern SemaphoreHandle_t  xSemaphore_lcd;
