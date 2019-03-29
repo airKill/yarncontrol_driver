@@ -2896,7 +2896,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR1);
               }
               StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-              printf("step1_count %d\r\n",step1_count);
+//              printf("step1_count %d\r\n",step1_count);
             }
           }
           else
@@ -2929,7 +2929,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR2);
               }
               StepMotor_adjust_speed(STEPMOTOR2,step2_count);
-              printf("step2_count %d\r\n",step2_count);
+//              printf("step2_count %d\r\n",step2_count);
             }
           }
           else
@@ -2962,7 +2962,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR3);
               }
               StepMotor_adjust_speed(STEPMOTOR3,step3_count);
-              printf("step3_count %d\r\n",step3_count);
+//              printf("step3_count %d\r\n",step3_count);
             }
           }
           else

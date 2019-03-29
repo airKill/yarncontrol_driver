@@ -41,7 +41,7 @@ void RS485_TO_PC(u8 *buf,u16 len)
     USART_SendData(USART2,(u16)buf[i]);
     while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
   }
-    vTaskDelay(1);
+//    vTaskDelay(1);
   RS485_RX();
 }
 
@@ -72,7 +72,7 @@ void Printf_Init(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(USART1, &USART_InitStructure);	/* USART configuration */ 
   
-  USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);
+//  USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);
   USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);
   
   USART_Cmd(USART1, ENABLE); /* Enable USART */

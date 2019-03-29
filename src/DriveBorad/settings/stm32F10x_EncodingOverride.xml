@@ -22,6 +22,10 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\bsp_config.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\bsp_key.c</path>
     <encoding>System</encoding>
   </override>
@@ -35,6 +39,10 @@
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\modbus\modbus.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\stm32f10x_it.c</path>
     <encoding>System</encoding>
   </override>
   <override>

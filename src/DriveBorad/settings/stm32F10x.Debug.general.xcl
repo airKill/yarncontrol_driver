@@ -2,7 +2,7 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\arm\bin\armjlink2.dll" 
 
-"E:\WORK\YarnControl_Driver\YarnControl_Driver\src\DriveBorad\Debug\Exe\stm32F10x.out" 
+"E:\work\YarnControl_Driver\src\DriveBorad\Debug\Exe\stm32F10x.out" 
 
 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\arm\bin\armbat.dll" 
 
