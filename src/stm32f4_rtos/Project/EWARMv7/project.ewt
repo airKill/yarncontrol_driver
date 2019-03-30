@@ -1060,6 +1060,9 @@
       <name>$PROJ_DIR$\..\..\User\bsp\bsp_closeSW.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\bsp_dac.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\src\bsp_dwt.c</name>
     </file>
     <file>

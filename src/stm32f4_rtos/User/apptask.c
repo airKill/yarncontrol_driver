@@ -1216,6 +1216,26 @@ void vTaskTaskLCD(void *pvParameters)
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
             /***********************************************************************/
+            /*****************************机器速度DAC输出设置*********************************/
+            else if(var_addr == PAGE_MAIN_DACOUT_ADD)
+            {
+              if(device_info.dac_volate < 10000)
+              {
+                device_info.dac_volate = device_info.dac_volate + 200;//一次递增200mV输出
+                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+                Dac1_Set_Vol(device_info.dac_volate);
+              }
+            }
+            else if(var_addr == PAGE_MAIN_DACOUT_SUB)
+            {
+              if(device_info.dac_volate > 200)
+              {
+                device_info.dac_volate = device_info.dac_volate - 200;//一次递增200mV输出
+                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+                Dac1_Set_Vol(device_info.dac_volate);
+              }
+            }
+            /***********************************************************************/
           }
           else
           {

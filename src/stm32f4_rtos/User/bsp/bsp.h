@@ -75,7 +75,7 @@
 #include "bsp_timer.h"
 #include "bsp_key.h"
 //#include "bsp_msg.h"
-
+#include "bsp_dac.h"
 #include "bsp_tim_pwm.h"
 #include "bsp_sdwe050c17.h"
 #include "bsp_closeSW.h"

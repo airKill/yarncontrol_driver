@@ -34,6 +34,14 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\filter.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\hx711.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\DriveBorad\USER\modbus\mcheck.c</path>
     <encoding>System</encoding>
   </override>

@@ -40,6 +40,7 @@ void bsp_Init(void)
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
   read_device_info();
   para_init(&SlavePara);
+  Dac1_Init();
   mb_init(0);
 }
 

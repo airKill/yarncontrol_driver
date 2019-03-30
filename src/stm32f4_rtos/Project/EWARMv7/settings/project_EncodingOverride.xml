@@ -22,6 +22,14 @@
     <encoding>System</encoding>
   </override>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_dac.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_dac.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_relay.c</path>
     <encoding>System</encoding>
   </override>
