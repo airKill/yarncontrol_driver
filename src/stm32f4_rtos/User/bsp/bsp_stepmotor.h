@@ -51,6 +51,9 @@ void TIM1_PWM_SETPMOTOR(void);
 void TIM5_PWM_SETPMOTOR(void);
 void StepMotor_adjust_speed(u8 motor,u32 value);
 void TIM8_PWM_SETPMOTOR(void);
-void StepMotor_start(u8 motor);
+void StepMotor_start(u8 motor,u32 per);
 void StepMotor_stop(u8 motor);
+void STEP1_PWM_START(u32 per);
+void STEP2_PWM_START(u32 per);
+void STEP3_PWM_START(u32 per);
 #endif

@@ -2896,10 +2896,13 @@ static void vTaskFreq(void *pvParameters)
 //            StepMotor_start(STEPMOTOR2);
 //            StepMotor_start(STEPMOTOR3);
 //          }
-          
+          __set_PRIMASK(1);
+          step1_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[0] * SPEED_RADIO[0]);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
+          step2_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[1] * SPEED_RADIO[1]);//计算步进电机脉冲频率
+          step3_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[2] * SPEED_RADIO[2]);//计算步进电机脉冲频率
           if(stepmotor_guodu[0] == 0)
           {
-            step1_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[0] * SPEED_RADIO[0]);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
+//            step1_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[0] * SPEED_RADIO[0]);//计算步进电机脉冲频率（实际速比需要除10再除百分比，即除1000）
             if(step1_count == 0)
             {//送纬电机速度设置为0
               step1_stop = 0;
@@ -2915,10 +2918,10 @@ static void vTaskFreq(void *pvParameters)
               if(step1_stop != old_step1_stop)
               {//开启送纬电机工作
                 old_step1_stop = step1_stop;
-                StepMotor_start(STEPMOTOR1);
+                StepMotor_start(STEPMOTOR1,step1_count);
               }
               StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-              printf("step1_count %d\r\n",step1_count);
+//              printf("step1_count %d\r\n",step1_count);
             }
           }
           else
@@ -2932,7 +2935,7 @@ static void vTaskFreq(void *pvParameters)
           }
           if(stepmotor_guodu[1] == 0)
           {
-            step2_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[1] * SPEED_RADIO[1]);//计算步进电机脉冲频率
+//            step2_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[1] * SPEED_RADIO[1]);//计算步进电机脉冲频率
             if(step2_count == 0)
             {//送纬电机速度设置为0
               step2_stop = 0;
@@ -2948,10 +2951,10 @@ static void vTaskFreq(void *pvParameters)
               if(step2_stop != old_step2_stop)
               {//开启送纬电机工作
                 old_step2_stop = step2_stop;
-                StepMotor_start(STEPMOTOR2);
+                StepMotor_start(STEPMOTOR2,step2_count);
               }
               StepMotor_adjust_speed(STEPMOTOR2,step2_count);
-              printf("step2_count %d\r\n",step2_count);
+//              printf("step2_count %d\r\n",step2_count);
             }
           }
           else
@@ -2965,7 +2968,7 @@ static void vTaskFreq(void *pvParameters)
           }
           if(stepmotor_guodu[2] == 0)
           {
-            step3_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[2] * SPEED_RADIO[2]);//计算步进电机脉冲频率
+//            step3_count = from_speed_step((float)speed_zhu * MotorProcess.step_factor[2] * SPEED_RADIO[2]);//计算步进电机脉冲频率
             if(step3_count == 0)
             {//电机3速度设置为0
               step3_stop = 0;
@@ -2981,10 +2984,10 @@ static void vTaskFreq(void *pvParameters)
               if(step3_stop != old_step3_stop)
               {//开启电机3工作
                 old_step3_stop = step3_stop;
-                StepMotor_start(STEPMOTOR3);
+                StepMotor_start(STEPMOTOR3,step3_count);
               }
               StepMotor_adjust_speed(STEPMOTOR3,step3_count);
-              printf("step3_count %d\r\n",step3_count);
+//              printf("step3_count %d\r\n",step3_count);
             }
           }
           else
@@ -2999,10 +3002,11 @@ static void vTaskFreq(void *pvParameters)
           if(is_stop != old_is_stop)
           {//主轴速度大于0时，步进电机开始运行
             old_is_stop = is_stop;
-            StepMotor_start(STEPMOTOR1);
-            StepMotor_start(STEPMOTOR2);
-            StepMotor_start(STEPMOTOR3);
+            StepMotor_start(STEPMOTOR2,step2_count);
+            StepMotor_start(STEPMOTOR3,step3_count);
+            StepMotor_start(STEPMOTOR1,step1_count);
           }
+          __set_PRIMASK(0);
         }
         else
         {
@@ -3010,9 +3014,9 @@ static void vTaskFreq(void *pvParameters)
           if(is_stop != old_is_stop)
           {//主轴速度为0时，停止步进电机
             old_is_stop = is_stop;
-            StepMotor_stop(STEPMOTOR1);
             StepMotor_stop(STEPMOTOR2);
             StepMotor_stop(STEPMOTOR3);
+            StepMotor_stop(STEPMOTOR1);
           }
         }
       }
@@ -3022,9 +3026,9 @@ static void vTaskFreq(void *pvParameters)
         if(is_stop != old_is_stop)
         {//主轴速度为0时，停止步进电机
           old_is_stop = is_stop;
-          StepMotor_stop(STEPMOTOR1);
           StepMotor_stop(STEPMOTOR2);
           StepMotor_stop(STEPMOTOR3);
+          StepMotor_stop(STEPMOTOR1);
         }
       }
     }
@@ -3035,9 +3039,9 @@ static void vTaskFreq(void *pvParameters)
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;
-        StepMotor_stop(STEPMOTOR1);
         StepMotor_stop(STEPMOTOR2);
         StepMotor_stop(STEPMOTOR3);
+        StepMotor_stop(STEPMOTOR1);
       }
     }
     Task_iwdg_refresh(TASK_Freq);
