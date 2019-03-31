@@ -109,7 +109,7 @@ void TIM1_PWM_SETPMOTOR(void)
 //  TIM_SetAutoreload(TIM1,400);
 //  TIM_CtrlPWMOutputs(TIM1, ENABLE);
 //  TIM_Cmd(TIM1, ENABLE);
-  TIM_CtrlPWMOutputs(TIM1, DISABLE);
+  TIM_CtrlPWMOutputs(TIM1, ENABLE);
   TIM_Cmd(TIM1, DISABLE);
 }
 
@@ -168,7 +168,7 @@ void StepMotor_stop(u8 motor)
   else if(motor == STEPMOTOR2)
   {
     TIM_Cmd(TIM1, DISABLE);
-    TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加
+//    TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加
   }
   else if(motor == STEPMOTOR3)
   {
@@ -185,7 +185,7 @@ void StepMotor_start(u8 motor)
   else if(motor == STEPMOTOR2)
   {
     TIM_Cmd(TIM1, ENABLE);
-    TIM_CtrlPWMOutputs(TIM1, ENABLE);//高级定时器需要增加
+//    TIM_CtrlPWMOutputs(TIM1, ENABLE);//高级定时器需要增加
   }
   else if(motor == STEPMOTOR3)
   {

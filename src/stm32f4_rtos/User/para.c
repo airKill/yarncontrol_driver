@@ -15,7 +15,7 @@ void read_device_info(void)
     device_info.system_state = SYS_NORMAL;
     device_info.page_count_all = 0;
     device_info.page_count_select = 0;
-    device_info.sevro_stop_pluse = 1000;
+    device_info.sevro_stop_pluse = 0;
     
     device_info.dac_volate = 0;//dac输出电压默认0V
     
@@ -93,6 +93,10 @@ void default_device_para(void)
   device_info.system_state = SYS_NORMAL;
   device_info.page_count_all = 0;
   device_info.page_count_select = 0;
+  device_info.sevro_stop_pluse = 0;
+  
+  device_info.dac_volate = 0;//dac输出电压默认0V
+  
   //换班默认参数设置
   device_info.class_para.class_enable_onoff = 1;//默认开启A/B换班
   device_info.class_para.class_time_hour = 8;//默认换班时间08:00:00
@@ -105,11 +109,9 @@ void default_device_para(void)
   device_info.func_onoff.jingsha = 1;
   device_info.func_onoff.channeng = 1;
   device_info.func_onoff.weimi = 1;
-  device_info.sevro_stop_pluse = 1000;
-    
-  device_info.dac_volate = 0;//dac输出电压默认0V
-  device_info.ratio.GEAR1 = 35;
-  device_info.ratio.GEAR2 = 10;  
+  
+  device_info.ratio.GEAR1 = 60;
+  device_info.ratio.GEAR2 = 30;  
   for(i=0;i<30;i++)
   {
     device_info.onoff[i] = 0;
@@ -123,6 +125,9 @@ void default_device_para(void)
     device_info.stop_para.stop_time[i] = 0;
   }
   device_info.weimi_info.reg = 0;
+  device_info.weimi_info.songwei_seg[0] = 0;
+  device_info.weimi_info.songwei_seg[1] = 0;
+  device_info.weimi_info.songwei_seg[2] = 0;
   device_info.weimi_info.count = 0;
   //试用期默认参数设置
   device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
@@ -137,6 +142,9 @@ void default_device_para(void)
   strcpy((char *)device_info.regin_in.password,"111111");
   device_info.regin_in.password_len = strlen((char const *)device_info.regin_in.password);;  
   W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+  
+  init_jingsha_para(&JingSha_File);
+  W25QXX_Write((u8 *)&JingSha_File,(u32)W25QXX_ADDR_JINGSHA,sizeof(JingSha_File));
   init_peiliao_para(&peiliao_para);
   W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
   init_product_para(&product_para,peiliao_para);

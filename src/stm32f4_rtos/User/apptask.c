@@ -913,23 +913,25 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if((var_addr >= PAGE_STOP_OFF) && (var_addr <= PAGE_STOP_OFF + 11))
             {//停机原因选择
-              if(device_info.system_state == SYS_NORMAL)
+              if((device_info.system_state == SYS_STOP) || (device_info.system_state == SYS_IDLE))
               {//只有系统正常时，才能选择停机原因
                 device_info.system_state = var_addr - PAGE_STOP_OFF + 1;
                 Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
                 W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                 Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_ON);//图标显示选中
                 printf("System stop is num %d.\r\n",device_info.system_state);
+                RELAY_CLOSE();
               }
               else
               {
                 if(device_info.system_state == (var_addr - PAGE_STOP_OFF + 1))
                 {//取消选择停机
                   Sdwe_writeIcon(var_addr - PAGE_STOP_OFF + PAGE_STOP_ON,VGUS_OFF);
-                  device_info.system_state = SYS_NORMAL;
+                  device_info.system_state = SYS_STOP;
                   Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
                   W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                   printf("System normal.\r\n");
+                  RELAY_OPEN();
                 }
                 else
                 {
@@ -2616,8 +2618,8 @@ static void vTaskMotorControl(void *pvParameters)
             }
             else
             {
-              if(first_circle > device_info.sevro_stop_pluse)
-                ServoMotorRunning(servomotor_step,FORWARD);//发送一纬对应的脉冲信号到伺服驱动器
+//              if(first_circle > device_info.sevro_stop_pluse)
+              ServoMotorRunning(servomotor_step,FORWARD);//发送一纬对应的脉冲信号到伺服驱动器
 //              printf("servomotor_step is %d\r\n",servomotor_step);
             }
             
@@ -2743,7 +2745,7 @@ static void vTaskMotorControl(void *pvParameters)
                   step_speed = speed_zhu * (pluse_step_src[i] - (float)speed_diff[i] / MotorProcess.song_total_wei[i] * MotorProcess.song_current_wei[i]);
                 sstep = from_speed_step(step_speed);//计算速度对应的脉冲数
                 StepMotor_adjust_speed(STEPMOTOR1 + i,sstep); //定时器发送PWM
-                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
+//                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
               }
               if(MotorProcess.song_current_wei[i] >= MotorProcess.song_total_wei[i])
               {
@@ -2887,13 +2889,13 @@ static void vTaskFreq(void *pvParameters)
         if(fault_weimi_flag == 0)
         {
           is_stop = 1;
-          if(is_stop != old_is_stop)
-          {//主轴速度大于0时，步进电机开始运行
-            old_is_stop = is_stop;
-            StepMotor_start(STEPMOTOR1);
-            StepMotor_start(STEPMOTOR2);
-            StepMotor_start(STEPMOTOR3);
-          }
+//          if(is_stop != old_is_stop)
+//          {//主轴速度大于0时，步进电机开始运行
+//            old_is_stop = is_stop;
+//            StepMotor_start(STEPMOTOR1);
+//            StepMotor_start(STEPMOTOR2);
+//            StepMotor_start(STEPMOTOR3);
+//          }
           
           if(stepmotor_guodu[0] == 0)
           {
@@ -2916,7 +2918,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR1);
               }
               StepMotor_adjust_speed(STEPMOTOR1,step1_count);
-//              printf("step1_count %d\r\n",step1_count);
+              printf("step1_count %d\r\n",step1_count);
             }
           }
           else
@@ -2949,7 +2951,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR2);
               }
               StepMotor_adjust_speed(STEPMOTOR2,step2_count);
-//              printf("step2_count %d\r\n",step2_count);
+              printf("step2_count %d\r\n",step2_count);
             }
           }
           else
@@ -2982,7 +2984,7 @@ static void vTaskFreq(void *pvParameters)
                 StepMotor_start(STEPMOTOR3);
               }
               StepMotor_adjust_speed(STEPMOTOR3,step3_count);
-//              printf("step3_count %d\r\n",step3_count);
+              printf("step3_count %d\r\n",step3_count);
             }
           }
           else
@@ -2993,6 +2995,13 @@ static void vTaskFreq(void *pvParameters)
               step_speed = speed_zhu * (pluse_step_src[2] - (float)speed_diff[2] / MotorProcess.song_total_wei[2] * MotorProcess.song_current_wei[2]);
             sstep = from_speed_step(step_speed);//计算速度对应的脉冲数
             StepMotor_adjust_speed(STEPMOTOR3,sstep); //定时器发送PWM
+          }
+          if(is_stop != old_is_stop)
+          {//主轴速度大于0时，步进电机开始运行
+            old_is_stop = is_stop;
+            StepMotor_start(STEPMOTOR1);
+            StepMotor_start(STEPMOTOR2);
+            StepMotor_start(STEPMOTOR3);
           }
         }
         else
@@ -3544,68 +3553,77 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {
     sample_time++;
   }
-//  Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu,2);//显示速度
   if(work_idle_time < 1000)
     work_idle_time++;
   if(work_idle_time < 10)
   {//10s内无脉冲认为是工作时间
-    work_idle = PLUSE_WORK;
-    device_info.system_state = SYS_NORMAL;
+    if((device_info.system_state == SYS_STOP) || (device_info.system_state == SYS_IDLE))
+      device_info.system_state = SYS_NORMAL;
     if(old_system_state != device_info.system_state)
     {
       old_system_state = device_info.system_state;
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
       u8 publish_topic;
       publish_topic = TOPIC_STOP;
-      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
+//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
   else if(work_idle_time < 310)
   {//10~300s无脉冲认为是空闲时间，不计入工作时间
-    work_idle = PLUSE_IDLE;
-  }
-  else
-  {//大于5分钟无脉冲认为停机
-    work_idle = PLUSE_STOP;
-    device_info.system_state = SYS_STOP;
+    if(device_info.system_state == SYS_NORMAL)
+      device_info.system_state = SYS_IDLE;
     if(old_system_state != device_info.system_state)
     {
       old_system_state = device_info.system_state;
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
       u8 publish_topic;
       publish_topic = TOPIC_STOP;
-      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
+//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
-  if(work_idle != PLUSE_IDLE)
-  {
-    if(device_info.system_state == SYS_NORMAL)
+  else
+  {//大于5分钟无脉冲认为停机
+    if((device_info.system_state == SYS_NORMAL) || (device_info.system_state > SYS_REPLACE_PAN))
+      device_info.system_state = SYS_STOP;
+    if(old_system_state != device_info.system_state)
     {
-      product_para.total_work_time++;
-      if((product_para.total_work_time % 60) == 0)
-      {//每分钟刷新一次开机时间显示
-        u16 hour,min;
-        hour = product_para.total_work_time / 3600;
-        min = product_para.total_work_time % 3600 / 60;
-        Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_HOUR,hour,2);
-        Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_MIN,min,2);
-      }
+      old_system_state = device_info.system_state;
+      Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
+      u8 publish_topic;
+      publish_topic = TOPIC_STOP;
+//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
-    else
+  }
+  if(device_info.system_state == SYS_NORMAL)
+  {
+    product_para.total_work_time++;
+    if((product_para.total_work_time % 60) == 0)
+    {//每分钟刷新一次开机时间显示
+      u16 hour,min;
+      hour = product_para.total_work_time / 3600;
+      min = product_para.total_work_time % 3600 / 60;
+      Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_HOUR,hour,2);
+      Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_MIN,min,2);
+    }
+  }
+  else if(device_info.system_state == SYS_IDLE)
+  {
+    
+  }
+  else
+  {
+    product_para.total_stop_time++;//停机总时间
+    if((product_para.total_stop_time % 60) == 0)
+    {//每分钟刷新一次停机时间显示
+      u16 hour,min;
+      hour = product_para.total_stop_time / 3600;
+      min = product_para.total_stop_time % 3600 / 60;
+      Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);
+      Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);
+    }
+    if(device_info.system_state != SYS_STOP)
     {
-      product_para.total_stop_time++;//停机总时间
-      if((product_para.total_stop_time % 60) == 0)
-      {//每分钟刷新一次停机时间显示
-        u16 hour,min;
-        hour = product_para.total_stop_time / 3600;
-        min = product_para.total_stop_time % 3600 / 60;
-        Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_HOUR,hour,2);
-        Sdwe_disDigi(PAGE_PRODUCT_TIME_OFF_MIN,min,2);
-      }
-      if(device_info.system_state != SYS_STOP)
-      {
-        device_info.stop_para.stop_time[device_info.system_state - 1]++;
-      }
+      device_info.stop_para.stop_time[device_info.system_state - 1]++;
     }
   }
 //  printf("speed_zhu is %d\r\n",speed_zhu);

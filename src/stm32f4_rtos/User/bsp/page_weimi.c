@@ -141,6 +141,8 @@ u8 get_songwei0_maxseg(WEIMI_PARA para)
       break;
     }
   }
+  if(i >= 10)
+    seg = 10;
   return seg;
 }
 
@@ -158,6 +160,8 @@ u8 get_songwei1_maxseg(WEIMI_PARA para)
       break;
     }
   }
+  if(i >= 10)
+    seg = 10;
   return seg;
 }
 
@@ -175,6 +179,8 @@ u8 get_songwei2_maxseg(WEIMI_PARA para)
       break;
     }
   }
+  if(i >= 10)
+    seg = 10;
   return seg;
 }
 

@@ -44,7 +44,8 @@ typedef enum
   SYS_REPAIR,           //维修
   SYS_WAIT_QAD,         //待QAD处理
   SYS_REPLACE_PAN,       //替换盘头
-  SYS_STOP
+  SYS_STOP,             //系统停止
+  SYS_IDLE              //系统空闲
 }SYSTEM_STATE;
 
 typedef struct
@@ -81,7 +82,6 @@ typedef struct
 }PEILIAO_PARA;
 extern PEILIAO_PARA peiliao_para;
 
-extern u8 work_idle;
 extern u16 work_idle_time;
 
 extern u32 total_meter_gross;

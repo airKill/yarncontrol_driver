@@ -7,7 +7,6 @@ u32 total_meter_gross = 0;
 u32 total_weight_gross = 0;
 u8 plan_complete = 0,old_plan_complete = 0;
 
-u8 work_idle = PLUSE_STOP;
 u16 work_idle_time = 0;
 
 const char system_state_dis[20][20] = {
@@ -24,6 +23,7 @@ const char system_state_dis[20][20] = {
   {"待QAD处理"},
   {"替换盘头"},   
   {"系统停止"},
+  {"系统正常"}
 };
 
 void init_product_para(PRODUCT_PARA *para,PEILIAO_PARA peiliao)
