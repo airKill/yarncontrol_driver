@@ -2220,7 +2220,11 @@ static void vTaskRev485(void *pvParameters)
   {
     if((device_info.func_onoff.jingsha == 1) && (isDevicePeriod == 0))
     {
-      isWork = GetDeviceState();
+//      isWork = GetDeviceState();
+      if((speed_zhu > 50) || (product_para.speed > 50))
+        isWork = 1;
+      else
+        isWork = 0;
     }
     else
     {//产能功能未打开，不工作
