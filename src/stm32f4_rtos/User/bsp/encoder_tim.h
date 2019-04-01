@@ -31,7 +31,7 @@ typedef enum {DISPLAY_TIMCNT = 0,DISPLAY_THETA,DISPLAY_W} DisplayType;
 /* Private define ------------------------------------------------------------*/
 #define ENCODER_TIMER   TIM8  // Encoder unit connected to TIM3
 #define ENCODER_PPR           (u16)(600)   // number of pulses per revolution
-#define SPEED_BUFFER_SIZE 12
+#define SPEED_BUFFER_SIZE 8
 
 #define COUNTER_RESET   (u16)0
 #define ICx_FILTER      (u8) 6 // 6<-> 670nsec

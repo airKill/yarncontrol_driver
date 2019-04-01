@@ -8,7 +8,7 @@ void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num)
   //  period = SystemCoreClock / TIM_Prescaler / freq / 2; 
   period = freq;
   TIM4_CH1_GPIO_Configuration();
-  TIM4_CH1_PWMDMA_Config(period,num);
+//  TIM4_CH1_PWMDMA_Config(period,num);
 }
 
 void TIM4_CH1_StartPwmOut(void)
@@ -49,30 +49,46 @@ void TIM4_CH1_GPIO_Configuration(void)
   GPIO_Init(GPIOD,&GPIO_InitStructure);
 }
 
-//void DIFF_G_init(void)
-//{
-//  GPIO_InitTypeDef GPIO_InitStructure;
-//  
-//  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
-//  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
-//  
-//  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G;
-//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-//  GPIO_Init(GPIO_PORT_SERVOMOTOR_G,&GPIO_InitStructure);
-//  
-//  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVOMOTOR_G0;
-//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-//  GPIO_Init(GPIO_PORT_SERVOMOTOR_G0,&GPIO_InitStructure);
-//  
-//  DIFF_G_H();
-//  DIFF_G0_H();
-//}  
+void SEVRO_PWM_Continue(u32 per)
+{
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef TIM_OCInitStructure;
+  
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);   //Open TIM3  Clock
+
+  TIM_DeInit(TIM4);
+  
+  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;          //定时器时钟84MHZ/4=21
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   //TIM3 Count mode
+  TIM_TimeBaseStructure.TIM_Period = per - 1;         //Fout_clk=Fclk_cnt/(ARR+1)=21MHZ/1000=21KHZ
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   
+  
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+
+  /* PWM1 Mode configuration: TIM5_CH2 */
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;               //select PWM1 mode
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //config oc1 as output 
+  TIM_OCInitStructure.TIM_Pulse = per / 2;                            //config TIM3_CCR1 vaule
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;    //config oc1 high level avaliable
+  TIM_OC1Init(TIM4, &TIM_OCInitStructure);
+  
+  TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);         // turn on oc1 preload 
+  TIM_ARRPreloadConfig(TIM4, ENABLE);
+  /* TIM4 enable counter */
+  TIM_Cmd(TIM4, ENABLE);
+}
+
+void ServoMotor_start(u32 per)
+{
+  SERVO_FORWARD();//连续运转时顺时针转动
+  SEVRO_PWM_Continue(per);
+}
+
+void ServoMotor_adjust_speed(u32 value)
+{
+  TIM_SetCompare1(TIM4,value / 2);
+  TIM_SetAutoreload(TIM4,value);
+}
 
 void TIM4_PWM_Config(u32 period,u8 dir)
 {
@@ -101,17 +117,37 @@ void TIM4_PWM_Config(u32 period,u8 dir)
 
   TIM_DMACmd(TIM4,TIM_DMA_CC1,DISABLE);
   TIM4 -> CCER &= ~(1<<0); //
+  
+  TIM_Cmd(TIM4,DISABLE);
+}
 
-  //PP信号控制方向
-  //TIM_OCMode_PWM1:逆时针 TIM_OCMode_PWM2:顺时针
-//  TIM_OCInitStructure.TIM_OCMode = dir;
-//  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-//  TIM_OCInitStructure.TIM_Pulse = period / 2;
-//  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-//  TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-//
-//  TIM_DMACmd(TIM4,TIM_DMA_CC2,DISABLE);
-//  TIM4 -> CCER &= ~(1<<4); //
+void Sevro_PWM_Config(void)
+{
+  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef    TIM_OCInitStructure;
+  
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  
+  //------------------------------------------------------------------------------------	
+  TIM_DeInit(TIM4);
+  TIM_TimeBaseStructure.TIM_Prescaler = 21 - 1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = 400 - 1;
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0x0000;
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+  
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;////
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = 200;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC1Init(TIM4, &TIM_OCInitStructure);
+  
+  TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);         // turn on oc1 preload 
+  
+  TIM_ARRPreloadConfig(TIM4, ENABLE);
   
   TIM_Cmd(TIM4,DISABLE);
 }

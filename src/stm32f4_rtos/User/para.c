@@ -32,7 +32,7 @@ void read_device_info(void)
     device_info.func_onoff.channeng = 1;
     device_info.func_onoff.weimi = 1;
     
-    device_info.ratio.GEAR1 = 60;
+    device_info.ratio.GEAR1 = 10;
     device_info.ratio.GEAR2 = 30;  
     for(i=0;i<30;i++)
     {

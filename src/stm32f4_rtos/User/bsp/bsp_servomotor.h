@@ -53,4 +53,8 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt);
 //void DIFF_G_init(void);
 void TIM4_MANUAL_PWM_Config(u32 period);
 void TIM4_MANUAL_PWM_Stop(void);
+void SEVRO_PWM_Continue(u32 per);
+void ServoMotor_adjust_speed(u32 value);
+void ServoMotor_start(u32 per);
+void Sevro_PWM_Config(void);
 #endif

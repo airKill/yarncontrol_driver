@@ -3,6 +3,7 @@
 WEIMI_PARA weimi_para;
 MOTOR_PROCESS MotorProcess;
 u16 speed_zhu = 0;
+u16 speed_zhu1 = 0;
 u8 servomotor_guodu = 0;//伺服电机过渡调速标志
 u8 stepmotor_guodu[3] = {0,0,0};
 
@@ -17,7 +18,7 @@ u8 first_circle = 0;
 
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
-u16 servomotor_step = 0;
+//u16 servomotor_step = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
@@ -90,6 +91,25 @@ u16 get_main_speed(float freq)
   speed = (u16)(freq / 600.0 * 60);//编码器频率/线数600*60=主轴转速/分钟
   return speed;
 }
+
+//将转速转换为伺服电机步数
+//输入：speed 转/分钟
+//输出：count 步数
+u32 get_sevro_step(float speed)
+{
+  u16 freq;
+  u32 count;
+  if(speed > 0)
+  {
+//    freq = speed / 60 * 1000;
+//    count = 4000000 / freq;
+    count = 240000 / speed;
+  }
+  else
+    count = 0;
+  return count;
+}
+
 //将转速转换为步进电机步数
 //输入：speed 转/分钟
 //输出：count 步数

@@ -270,7 +270,7 @@ void vTaskSample(void *pvParameters)
           }
           else
           {
-            if(key_reset_time >= 25)
+            if(key_reset_time >= 30)
             {
               Device_Process = PROCESS_STOP;
               motor_dir = MOTOR_STOP;
