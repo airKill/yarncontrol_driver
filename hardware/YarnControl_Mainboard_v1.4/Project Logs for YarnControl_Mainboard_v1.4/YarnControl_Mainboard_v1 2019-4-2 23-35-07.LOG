@@ -1,0 +1,27 @@
+Removed Pin From Net: NetName=ANALOG_OUT1 Pin=R31-1
+Removed Pin From Net: NetName=DAC_OUT1 Pin=R31-2
+Removed Pin From Net: NetName=GND Pin=R37-1
+Removed Pin From Net: NetName=DAC_OUT1 Pin=R37-2
+Removed Member From Class: ClassName=mainboard_mcu.v1.4 Member=R31
+Removed Member From Class: ClassName=mainboard_mcu.v1.4 Member=R37
+Change Component DesignItemId : Designator=R31 Old DesignItemId=Res2 New DesignItemId=RES
+Change Component DesignItemId : Designator=R37 Old DesignItemId=Res2 New DesignItemId=RES
+Change Component Description : Designator=R31 Old Description=Resistor New Description=µç×è
+Change Component Description : Designator=R37 Old Description=Resistor New Description=µç×è
+Change Component Library : Designator=R31 Old Library=TIAN's Schlib.schlib New Library=Component.SchLib
+Change Component Library : Designator=R37 Old Library=TIAN's Schlib.schlib New Library=Component.SchLib
+Added Component: Designator=C22(0805)
+Added Pin To Net: NetName=GND Pin=C22-1
+Added Pin To Net: NetName=+24V Pin=C22-2
+Added Pin To Net: NetName=GND Pin=R37-2
+Added Pin To Net: NetName=DAC_OUT1 Pin=U6-3
+Added Pin To Net: NetName=ANALOG_OUT Pin=R31-1
+Added Pin To Net: NetName=ANALOG_OUT Pin=U6-1
+Added Net: Name=ANALOG_OUT
+Added Pin To Net: NetName=NetR31_2 Pin=R31-2
+Added Pin To Net: NetName=NetR31_2 Pin=R37-1
+Added Pin To Net: NetName=NetR31_2 Pin=U6-2
+Added Net: Name=NetR31_2
+Added Member To Class: ClassName=mainboard_interface.v1.4 Member=Component C22 104
+Added Member To Class: ClassName=mainboard_interface.v1.4 Member=Component R31 30K
+Added Member To Class: ClassName=mainboard_interface.v1.4 Member=Component R37 10K

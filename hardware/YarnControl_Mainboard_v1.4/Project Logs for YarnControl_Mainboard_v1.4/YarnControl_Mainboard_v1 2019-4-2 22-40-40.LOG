@@ -1,0 +1,3 @@
+Change Component Footprint: Designator=C18 Old Footprint=CAP-5mm New Footprint=CAP_SMT_10X10
+Added Pin To Net: NetName=GND Pin=C19-2
+Added Pin To Net: NetName=GND Pin=C20-2

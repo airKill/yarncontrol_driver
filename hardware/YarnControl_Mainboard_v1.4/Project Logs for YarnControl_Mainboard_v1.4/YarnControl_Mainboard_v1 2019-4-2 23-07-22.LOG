@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=ONOFF Pin=U11-1
+Added Component: Designator=R47(0805)
+Added Pin To Net: NetName=ONOFF Pin=R47-2
+Added Pin To Net: NetName=NetR47_1 Pin=R47-1
+Added Pin To Net: NetName=NetR47_1 Pin=U11-1
+Added Net: Name=NetR47_1
+Added Member To Class: ClassName=mainboard_interface.v1.4 Member=Component R47 1K

@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=DAC_OUT1 Pin=U12-3
+Added Component: Designator=R48(0805)
+Added Pin To Net: NetName=DAC_OUT1 Pin=R48-2
+Added Pin To Net: NetName=NetR48_1 Pin=R48-1
+Added Pin To Net: NetName=NetR48_1 Pin=U12-3
+Added Net: Name=NetR48_1
+Added Member To Class: ClassName=mainboard_motor.v1.4 Member=Component R48 1K

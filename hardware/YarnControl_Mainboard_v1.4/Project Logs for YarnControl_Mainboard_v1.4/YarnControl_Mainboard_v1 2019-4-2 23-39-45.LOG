@@ -1,0 +1,10 @@
+Removed Member From Class: ClassName=mainboard_interface.v1.4 Member=C22
+Removed Member From Class: ClassName=mainboard_interface.v1.4 Member=R31
+Removed Member From Class: ClassName=mainboard_interface.v1.4 Member=R37
+Removed Member From Class: ClassName=mainboard_interface.v1.4 Member=U12
+Added Pin To Net: NetName=ANALOG_OUT1 Pin=R31-1
+Added Pin To Net: NetName=ANALOG_OUT1 Pin=U12-1
+Added Member To Class: ClassName=mainboard_motor.v1.4 Member=Component C22 104
+Added Member To Class: ClassName=mainboard_motor.v1.4 Member=Component R31 30K
+Added Member To Class: ClassName=mainboard_motor.v1.4 Member=Component R37 10K
+Added Member To Class: ClassName=mainboard_motor.v1.4 Member=Component U12 LM358

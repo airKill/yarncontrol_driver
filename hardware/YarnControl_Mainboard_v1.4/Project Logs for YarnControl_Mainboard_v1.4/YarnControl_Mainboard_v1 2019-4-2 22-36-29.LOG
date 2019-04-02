@@ -1,0 +1,43 @@
+Removed Pin From Net: NetName=GND Pin=C19-1
+Removed Pin From Net: NetName=GND Pin=C20-1
+Removed Pin From Net: NetName=START_STOP1 Pin=R21-1
+Removed Pin From Net: NetName=+3.3V Pin=R21-2
+Removed Pin From Net: NetName=+3.3V Pin=R52-1
+Removed Pin From Net: NetName=ONOFF Pin=R52-2
+Removed Pin From Net: NetName=START_STOP2 Pin=U11-1
+Removed Pin From Net: NetName=GND Pin=U11-3
+Removed Pin From Net: NetName=ONOFF Pin=U11-4
+Removed Member From Class: ClassName=mainboard_interface.v1.3 Member=R21
+Removed Member From Class: ClassName=mainboard_interface.v1.3 Member=R52
+Change Component DesignItemId : Designator=C19 Old DesignItemId=Cap0805 New DesignItemId=Cap Pol1
+Change Component DesignItemId : Designator=C20 Old DesignItemId=Cap0805 New DesignItemId=Cap Pol1
+Change Component Footprint: Designator=C19 Old Footprint=0805 New Footprint=CAP_SMT_10X10
+Change Component Footprint: Designator=C20 Old Footprint=0805 New Footprint=CAP_SMT_10X10
+Change Component Comment : Designator=C20 Old Comment=0.1uF New Comment=1000uF
+Change Component Comment : Designator=C19 Old Comment=10uF New Comment=1000uF
+Change Component Comment : Designator=C18 Old Comment=330uF New Comment=1000uF
+Added Component: Designator=R?(0805)
+Added Component: Designator=R?(0805)
+Added Pin To Net: NetName=GND Pin=R?-1
+Added Pin To Net: NetName=+5V Pin=R?-2
+Added Pin To Net: NetName=ONOFF Pin=U11-1
+Added Pin To Net: NetName=START_STOP2 Pin=U11-3
+Added Pin To Net: NetName=START_STOP1 Pin=U11-4
+Added Pin To Net: NetName=ADC_POWER Pin=R?-1
+Added Pin To Net: NetName=ADC_POWER Pin=R?-2
+Added Pin To Net: NetName=ADC_POWER Pin=U1-36
+Added Net: Name=ADC_POWER
+Added Pin To Net: NetName=NetC19_1 Pin=C19-1
+Added Pin To Net: NetName=NetC19_1 Pin=C20-1
+Added Pin To Net: NetName=NetC19_1 Pin=C21-2
+Added Pin To Net: NetName=NetC19_1 Pin=FB1-1
+Added Pin To Net: NetName=NetC19_1 Pin=U6-0
+Added Pin To Net: NetName=NetC19_1 Pin=U6-2
+Added Net: Name=NetC19_1
+Change Class Name : Old Net Name=mainboard_interface.v1.3 New Net Name=mainboard_interface.v1.4
+Change Class Name : Old Net Name=mainboard_mcu.v1.3 New Net Name=mainboard_mcu.v1.4
+Change Class Name : Old Net Name=mainboard_motor.v1.3 New Net Name=mainboard_motor.v1.4
+Change Class Name : Old Net Name=mainboard_rs485.v1.3 New Net Name=mainboard_rs485.v1.4
+Change Class Name : Old Net Name=mainboard_wifi.v1.3 New Net Name=mainboard_wifi.v1.4
+Added Member To Class: ClassName=mainboard_mcu.v1.4 Member=Component R? 10K
+Added Member To Class: ClassName=mainboard_mcu.v1.4 Member=Component R? 10K
