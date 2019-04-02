@@ -24,16 +24,16 @@ const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 //info:系统参数，包含滚筒和伺服电机齿轮比
 //para:电机配置参数，包含纬厘米设置
 //num:段号
-u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
-{
-  u16 stepcount = 0;
-  //10mm/滚筒周长=滚筒圈数
-  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
-  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
-  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
-  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
-  return stepcount;
-}
+//u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
+//{
+//  u16 stepcount = 0;
+//  //10mm/滚筒周长=滚筒圈数
+//  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
+//  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
+//  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
+//  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
+//  return stepcount;
+//}
 
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
 {
@@ -71,14 +71,14 @@ void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
   motor->songwei_seg[1] = info->weimi_info.songwei_seg[1];
   motor->songwei_seg[2] = info->weimi_info.songwei_seg[2];
   motor->current_wei = info->weimi_info.count;
-  motor->song_current_wei[0] = info->weimi_info.count;
-  motor->song_current_wei[1] = info->weimi_info.count;
-  motor->song_current_wei[2] = info->weimi_info.count;
-  motor->total_wei = para->total_wei_count[motor->current_seg];
+  motor->song_current_wei[0] = info->weimi_info.songwei_count[0];
+  motor->song_current_wei[1] = info->weimi_info.songwei_count[1];
+  motor->song_current_wei[2] = info->weimi_info.songwei_count[2];
+  motor->total_wei = para->total_wei_count[motor->current_seg *2 + info->weimi_info.guodu_flag[0]];
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
-  motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2];
-  motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2];
-  motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2];
+  motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2 + info->weimi_info.guodu_flag[1]];
+  motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2 + info->weimi_info.guodu_flag[2]];
+  motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2 + info->weimi_info.guodu_flag[3]];
   motor->wei_cm_set = para->wei_cm_set[motor->current_seg];
   motor->step_factor[0] = para->step_factor[0][motor->current_seg / 2];
   motor->step_factor[1] = para->step_factor[1][motor->current_seg / 2];

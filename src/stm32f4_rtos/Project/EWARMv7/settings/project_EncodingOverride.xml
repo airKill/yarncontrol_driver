@@ -2,6 +2,10 @@
 
 <userOverrides>
   <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\MQTTPacket\mqtt.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\apptask.c</path>
     <encoding>System</encoding>
   </override>
@@ -15,6 +19,14 @@
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_adc.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\bsp_adc.h</path>
     <encoding>System</encoding>
   </override>
   <override>
@@ -87,6 +99,10 @@
   </override>
   <override>
     <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\page_weimi.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>E:\work\YarnControl_Driver\src\stm32f4_rtos\User\bsp\src\bsp_led.c</path>
     <encoding>System</encoding>
   </override>
   <override>

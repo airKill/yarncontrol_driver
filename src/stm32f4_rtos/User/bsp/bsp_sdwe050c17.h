@@ -286,6 +286,8 @@
 #define PAGE_HISTORY2_IMPORT            0x0A01
 #define PAGE_HISTORY2_WARNNING          0x0A06
 
+#define PAGE_WIFI_STATE                 0x0A10
+
 #define VGUS_ON   1
 #define VGUS_OFF   0
 

@@ -1,6 +1,7 @@
 #include "includes.h"
 
 TaskHandle_t xHandleTaskLCD = NULL;
+TaskHandle_t xHandleTaskADC = NULL;
 TaskHandle_t xHandleTaskLED = NULL;
 TaskHandle_t xHandleTaskRFID = NULL;
 TaskHandle_t xHandleTaskMassStorage = NULL;
@@ -966,15 +967,6 @@ void vTaskTaskLCD(void *pvParameters)
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               device_info.ratio.GEAR1 = cnt;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
-            }
-            else if(var_addr == PAGE_CONFIG_RATIO2)
-            {//齿轮比2
-              u16 cnt;
-              cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-              device_info.ratio.GEAR2 = cnt;
-              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
             }
             /****************************机器编号显示************************************/
             else if(var_addr == PAGE_CONFIG_DEVICE_ID)
@@ -1308,7 +1300,6 @@ void vTaskTaskLCD(void *pvParameters)
                 if(seg_num == MotorProcess.current_seg)
                 {//如果改变的纬密为当前段号纬密，立刻更新步数/纬
                   MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
-//                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
                 }
                   
                 if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
@@ -1620,6 +1611,10 @@ void vTaskTaskLCD(void *pvParameters)
               stepmotor_guodu[0] = 0;
               stepmotor_guodu[1] = 0;
               stepmotor_guodu[2] = 0;
+              device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+              device_info.weimi_info.guodu_flag[1] = stepmotor_guodu[0];
+              device_info.weimi_info.guodu_flag[2] = stepmotor_guodu[1];
+              device_info.weimi_info.guodu_flag[3] = stepmotor_guodu[2];
               fault_weimi_flag = 0;
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
@@ -1798,6 +1793,29 @@ static void vTaskTaskLED(void *pvParameters)
     bsp_LedToggle(1);
     bsp_LedToggle(2);
     vTaskDelay(500);
+    Task_iwdg_refresh(TASK_LED);
+  }
+}
+
+static void vTaskTaskADC(void *pvParameters)
+{
+  float power_adc;
+  u8 jiyi = 0,old_jiyi = 0xff;
+  while(1)
+  {
+    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
+    if(power_adc <= 4.8)
+    {//电压低于4.5V认为掉电
+      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
+      jiyi = 1;
+      if(jiyi != old_jiyi)
+      {
+        old_jiyi = jiyi;
+        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+        printf("断电保存\r\n");
+      }
+    }
+    vTaskDelay(10);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2559,29 +2577,52 @@ void vTaskManageCapacity(void *pvParameters)
 static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
-//  u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
-//  u16 servo_diff;//伺服电机过渡期纬差
-//  float servo_speed_diff;
-//  u8 symbol_servo = 0;
-//  float pluse_step_src[3] = {0,0,0};
-//  float speed_diff[3] = {0,0,0};
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
-  bsp_InitStepMotor();
   vTaskDelay(200);
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
-//  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
   valid_seg[0] = get_valid_seg(weimi_para);
   valid_seg[1] = get_songwei0_maxseg(weimi_para);
   valid_seg[2] = get_songwei1_maxseg(weimi_para);
   valid_seg[3] = get_songwei2_maxseg(weimi_para);
   max_seg = get_max_type(valid_seg);
+  servomotor_guodu = device_info.weimi_info.guodu_flag[0];
+  stepmotor_guodu[0] = device_info.weimi_info.guodu_flag[1];
+  stepmotor_guodu[1] = device_info.weimi_info.guodu_flag[2];
+  stepmotor_guodu[2] = device_info.weimi_info.guodu_flag[3];
+  if(max_seg == 0)
+  {
+    if(servomotor_guodu == 0)
+      Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.current_seg * 2,MotorProcess.current_wei,4);
+    else
+      Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.current_seg * 2,MotorProcess.current_wei,4);
+  }
+  else if(max_seg == 1)
+  {
+    if(stepmotor_guodu[0] == 0)
+      Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.songwei_seg[0] * 2,MotorProcess.song_current_wei[0],4);
+    else
+      Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.songwei_seg[0] * 2,MotorProcess.song_current_wei[0],4);
+  }
+  else if(max_seg == 2)
+  {
+    if(stepmotor_guodu[1] == 0)
+      Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.songwei_seg[1] * 2,MotorProcess.song_current_wei[1],4);
+    else
+      Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.songwei_seg[1] * 2,MotorProcess.song_current_wei[1],4);
+  }
+  else
+  {
+    if(stepmotor_guodu[2] == 0)
+      Sdwe_disDigi(PAGE_WEIMI_REALWEI_1 + MotorProcess.songwei_seg[2] * 2,MotorProcess.song_current_wei[2],4);
+    else
+      Sdwe_disDigi(PAGE_WEIMI_REAL_MEDIAN_1 + MotorProcess.songwei_seg[2] * 2,MotorProcess.song_current_wei[2],4);
+  }
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_encoder, (TickType_t)xMaxBlockTime);
     if(xResult == pdTRUE)
     {
-//      xSemaphoreGive(xSemaphore_pluse);
       if(device_info.func_onoff.channeng)
       {
         if(servomotor_mode == AUTO)
@@ -2589,6 +2630,7 @@ static void vTaskMotorControl(void *pvParameters)
           if(fault_weimi_flag == 0)
           {
             MotorProcess.current_wei++;//纬号增加
+            
             weimi_para.real_wei_count[MotorProcess.current_seg] = MotorProcess.current_wei;
             if(MotorProcess.step_factor[0] > 0)
               MotorProcess.song_current_wei[0]++;
@@ -2596,6 +2638,16 @@ static void vTaskMotorControl(void *pvParameters)
               MotorProcess.song_current_wei[1]++;
             if(MotorProcess.step_factor[2] > 0)
               MotorProcess.song_current_wei[2]++;
+            /*************用于掉电保存*********************/
+            device_info.weimi_info.reg = MotorProcess.current_seg;
+            device_info.weimi_info.songwei_seg[0] = MotorProcess.songwei_seg[0];
+            device_info.weimi_info.songwei_seg[1] = MotorProcess.songwei_seg[1];
+            device_info.weimi_info.songwei_seg[2] = MotorProcess.songwei_seg[2];
+            device_info.weimi_info.count = MotorProcess.current_wei;
+            device_info.weimi_info.songwei_count[0] = MotorProcess.song_current_wei[0];
+            device_info.weimi_info.songwei_count[1] = MotorProcess.song_current_wei[1];
+            device_info.weimi_info.songwei_count[2] = MotorProcess.song_current_wei[2];
+            /*************************************************/
             if(max_seg == 0)
             {
               if(servomotor_guodu == 0)
@@ -2684,6 +2736,7 @@ static void vTaskMotorControl(void *pvParameters)
                   servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
                   servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                   servomotor_guodu = 1;
+                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
                 else
                 {//如果是段，总纬号为段循环号
@@ -2699,6 +2752,7 @@ static void vTaskMotorControl(void *pvParameters)
                     break;
                   }
                   servomotor_guodu = 0;
+                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
               else
@@ -2731,6 +2785,7 @@ static void vTaskMotorControl(void *pvParameters)
                     servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
                     servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                     servomotor_guodu = 1;
+                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                   }
                 }
                 else
@@ -2738,6 +2793,7 @@ static void vTaskMotorControl(void *pvParameters)
                   MotorProcess.current_seg = 0;//进入下一段号
                   MotorProcess.total_wei = weimi_para.total_wei_count[0];
                   servomotor_guodu = 0;
+                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
             }
@@ -2804,6 +2860,7 @@ static void vTaskMotorControl(void *pvParameters)
                     speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
                     pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
                     stepmotor_guodu[i] = 1;
+                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                   else
                   {//如果是段，总纬号为段循环号
@@ -2819,6 +2876,7 @@ static void vTaskMotorControl(void *pvParameters)
                       break;
                     }
                     stepmotor_guodu[i] = 0;
+                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                 }
                 else
@@ -2851,6 +2909,7 @@ static void vTaskMotorControl(void *pvParameters)
                       speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
                       pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
                       stepmotor_guodu[i] = 1;
+                      device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                     }
                   }
                   else
@@ -2858,6 +2917,7 @@ static void vTaskMotorControl(void *pvParameters)
                     MotorProcess.songwei_seg[i] = 0;//进入下一段号
                     MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
                     stepmotor_guodu[i] = 0;
+                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                 }
               }
@@ -3109,13 +3169,26 @@ void vEsp8266_Main_Task(void *ptr)
   while(net_device_send_cmd("AT\r\n", "OK"))
   {
     vTaskDelay(500);
-//    printf("WIFI DEVICE LOST\r\n");
+    printf("WIFI DEVICE LOST\r\n");
   }
   while(net_device_send_cmd("ATE0\r\n", "OK"));
   {
     vTaskDelay(500);
     printf("CLOSE ECHO FAILURE\r\n");
   }
+  while(ESP8266_Net_Mode_Choose(STA))
+  {
+    vTaskDelay(500);
+    printf("wait for STA...\r\n");
+  }
+  while(ESP8266_JoinAP(WIFI_SSID,WIFI_PASSWORD))
+  {
+    vTaskDelay(500);
+    printf("wait for AP...\r\n");
+  }
+  printf("connect to AP success!\r\n");
+  wifi_flag = WIFI_CONNECT;
+  ESP8266_Enable_MultipleId(DISABLE);
   while(1)
   {
     if((g_esp_status_t.esp_hw_status_e != ESP_HW_CONNECT_OK) && (g_esp_status_t.esp_hw_status_e != ESP_HW_RECONFIG))
@@ -3148,9 +3221,10 @@ void vEsp8266_Main_Task(void *ptr)
       }
       break;
     case ESP_HW_LOST_WIFI:
+      wifi_flag = NO_CONNECT;
       esp_error_t.err_esp_lostwifi++;
       printf("ESP8266 Lost\r\n");			//设备丢失
-      
+      ESP8266_JoinAP(WIFI_SSID,WIFI_PASSWORD);
       break;
     case ESP_HW_BUSY_STUS:
       printf("--%s",netDeviceInfo_t.cmd_resp);
@@ -3180,6 +3254,11 @@ void vEsp8266_Main_Task(void *ptr)
     
     printf("esp_hw_status_e=%d,esp_net_work_e=%d",g_esp_status_t.esp_hw_status_e,g_esp_status_t.esp_net_work_e);
     vTaskDelay(2000);
+    if(wifi_flag != old_wifi_flag)
+    {
+      old_wifi_flag = wifi_flag;
+      Sdwe_writeIcon(PAGE_WIFI_STATE,wifi_flag);
+    }
   }
 }
 
@@ -3192,6 +3271,7 @@ void vMQTT_Handler_Task(void *ptr)
     {
     case MQTT_IDLE:
       {
+        wifi_flag = WIFI_CONNECT;
         MqttHandle();
         memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
         Mqtt_status_step = MQTT_CONNECT;
@@ -3229,6 +3309,7 @@ void vMQTT_Handler_Task(void *ptr)
         {
           /* 如果订阅成功，则进入发布状态*/
           Mqtt_status_step = MQTT_PUBLSH;
+          wifi_flag = SEVER_CONNECT_OK;
           memset(mqttSubscribeData,0,sizeof(mqttSubscribeData));
         }
         else
@@ -3246,6 +3327,7 @@ void vMQTT_Handler_Task(void *ptr)
         {
           printf("mqtt connect is failed");
           Mqtt_status_step = MQTT_IDLE;
+          wifi_flag = WIFI_CONNECT;
         }
       }
       break;
@@ -3381,65 +3463,72 @@ void AppTaskCreate (void)
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskLED );  /* 任务句柄  */
+  xTaskCreate( vTaskTaskADC,   	/* 任务函数  */
+              "vTaskTaskADC",     	/* 任务名    */
+              256,               	/* 任务栈大小，单位word，也就是4字节 */
+              NULL,              	/* 任务参数  */
+              2,                 	/* 任务优先级*/
+              &xHandleTaskADC );  /* 任务句柄  */
+  
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */
               1024,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              2,                 	/* 任务优先级*/
+              3,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
-              512,             		/* 任务栈大小，单位word，也就是4字节 */
+              256,             		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              3,               		/* 任务优先级*/
+              4,               		/* 任务优先级*/
               &xHandleTaskMsgPro );  /* 任务句柄  */
   xTaskCreate( vTaskRev485,     		/* 任务函数  */
               "vTaskRev485",   		/* 任务名    */
-              512,            		/* 任务栈大小，单位word，也就是4字节 */
+              128,            		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              4,              		/* 任务优先级*/
+              5,              		/* 任务优先级*/
               &xHandleTaskRev485 );   /* 任务句柄  */
   xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
               "vTaskTaskRFID",     	/* 任务名    */
               512,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              5,                 	/* 任务优先级*/
+              6,                 	/* 任务优先级*/
               &xHandleTaskRFID );  /* 任务句柄  */
   xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
               "vTaskMassStorage",  		/* 任务名    */
               1024,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              6,           		/* 任务优先级*/
+              7,           		/* 任务优先级*/
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
               768,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              7,           		/* 任务优先级*/
+              8,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              8,           		/* 任务优先级*/
+              9,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
   xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
               "vTaskMotorControl",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              9,           		/* 任务优先级*/
+              10,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */
   xTaskCreate( vTaskFreq,    		/* 任务函数  */
               "vTaskFreq",  		/* 任务名    */
               128,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              10,           		/* 任务优先级*/
+              11,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
-  //  xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
-  //  xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
-  //  xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
-  //  xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
-  //  xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
+    xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
+    xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
+    xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
+    xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
+    xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
 }
 
 /*
@@ -3618,7 +3707,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
       u8 publish_topic;
       publish_topic = TOPIC_STOP;
-//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
+      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
   else if(work_idle_time < 310)
@@ -3631,7 +3720,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
       u8 publish_topic;
       publish_topic = TOPIC_STOP;
-//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
+      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
   else
@@ -3644,7 +3733,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       Sdwe_disString(PAGE1_SYSTEM_STATE,(u8 *)system_state_dis[device_info.system_state],strlen(system_state_dis[device_info.system_state]));
       u8 publish_topic;
       publish_topic = TOPIC_STOP;
-//      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
+      xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
     }
   }
   if(device_info.system_state == SYS_NORMAL)

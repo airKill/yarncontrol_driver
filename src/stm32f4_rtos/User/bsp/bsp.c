@@ -32,6 +32,7 @@ void bsp_Init(void)
   my_mem_init(SRAMIN);
   bsp_InitUart(); 	/* 初始化串口 */
   bsp_Init_Relay();
+  bsp_InitStepMotor();
   bsp_InitDWT();       /* 初始DWT */
   bsp_InitSdwe050c17();
   bsp_InitHardTimer(); /* 初始化TIM2定时器 */
@@ -40,7 +41,8 @@ void bsp_Init(void)
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
   read_device_info();
   para_init(&SlavePara);
-  Dac1_Init();
+//  Dac1_Init();
+  Adc_Init();
   mb_init(0);
 }
 

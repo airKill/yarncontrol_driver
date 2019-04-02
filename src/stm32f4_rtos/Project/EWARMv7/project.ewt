@@ -1057,6 +1057,9 @@
       <name>$PROJ_DIR$\..\..\User\bsp\bsp.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bsp\bsp_adc.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\bsp_closeSW.c</name>
     </file>
     <file>

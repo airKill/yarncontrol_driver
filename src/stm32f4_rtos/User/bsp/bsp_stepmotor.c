@@ -53,6 +53,10 @@ void bsp_InitStepMotor(void)
   STEPMOTOR1_DIR_L();
   STEPMOTOR2_DIR_L();
   STEPMOTOR3_DIR_L();
+  
+  STEPMOTOR1_EN_H();
+  STEPMOTOR2_EN_H();
+  STEPMOTOR3_EN_H();
 }
 
 void TIM3_PWM_SETPMOTOR(void)
@@ -258,15 +262,18 @@ void StepMotor_stop(u8 motor)
 {
   if(motor == STEPMOTOR1)
   {
+    STEPMOTOR1_EN_H();
     TIM_Cmd(TIM3, DISABLE);
   }
   else if(motor == STEPMOTOR2)
   {
+    STEPMOTOR2_EN_H();
     TIM_Cmd(TIM1, DISABLE);
     TIM_CtrlPWMOutputs(TIM1, DISABLE);//高级定时器需要增加
   }
   else if(motor == STEPMOTOR3)
   {
+    STEPMOTOR3_EN_H();
     TIM_Cmd(TIM5, DISABLE);
   }
 }
@@ -275,18 +282,17 @@ void StepMotor_start(u8 motor,u32 per)
 {
   if(motor == STEPMOTOR1)
   {
-//    TIM_Cmd(TIM3, ENABLE);
     STEP1_PWM_START(per);
+    STEPMOTOR1_EN_L();
   }
   else if(motor == STEPMOTOR2)
   {
-//    TIM_CtrlPWMOutputs(TIM1, ENABLE);//高级定时器需要增加
-    TIM_Cmd(TIM1, ENABLE);
     STEP2_PWM_START(per);
+    STEPMOTOR2_EN_L();
   }
   else if(motor == STEPMOTOR3)
   {
-//    TIM_Cmd(TIM5, ENABLE);
     STEP3_PWM_START(per);
+    STEPMOTOR3_EN_L();
   }
 }

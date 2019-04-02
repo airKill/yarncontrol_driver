@@ -97,6 +97,7 @@
 #include "mcheck.h"
 
 #include "encoder.h"
+#include "bsp_adc.h"
 
 /* 提供给其他C文件调用的函数 */
 void bsp_Init(void);

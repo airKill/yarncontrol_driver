@@ -6,7 +6,7 @@ void read_device_info(void)
 {
   u8 i;
   W25QXX_Read((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//  W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+  //  W25QXX_Read((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
@@ -32,8 +32,7 @@ void read_device_info(void)
     device_info.func_onoff.channeng = 1;
     device_info.func_onoff.weimi = 1;
     
-    device_info.ratio.GEAR1 = 10;
-    device_info.ratio.GEAR2 = 30;  
+    device_info.ratio.GEAR1 = 40;
     for(i=0;i<30;i++)
     {
       device_info.onoff[i] = 0;
@@ -51,6 +50,13 @@ void read_device_info(void)
     device_info.weimi_info.songwei_seg[1] = 0;
     device_info.weimi_info.songwei_seg[2] = 0;
     device_info.weimi_info.count = 0;
+    device_info.weimi_info.songwei_count[0] = 0;
+    device_info.weimi_info.songwei_count[1] = 0;
+    device_info.weimi_info.songwei_count[2] = 0;
+    device_info.weimi_info.guodu_flag[0] = 0;
+    device_info.weimi_info.guodu_flag[1] = 0;
+    device_info.weimi_info.guodu_flag[2] = 0;
+    device_info.weimi_info.guodu_flag[4] = 0;
     //试用期默认参数设置
     device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
     device_info.period_para.period_year = 20;//默认试用期限2020年
@@ -110,8 +116,7 @@ void default_device_para(void)
   device_info.func_onoff.channeng = 1;
   device_info.func_onoff.weimi = 1;
   
-  device_info.ratio.GEAR1 = 60;
-  device_info.ratio.GEAR2 = 30;  
+  device_info.ratio.GEAR1 = 40;
   for(i=0;i<30;i++)
   {
     device_info.onoff[i] = 0;
@@ -129,6 +134,13 @@ void default_device_para(void)
   device_info.weimi_info.songwei_seg[1] = 0;
   device_info.weimi_info.songwei_seg[2] = 0;
   device_info.weimi_info.count = 0;
+  device_info.weimi_info.songwei_count[0] = 0;
+  device_info.weimi_info.songwei_count[1] = 0;
+  device_info.weimi_info.songwei_count[2] = 0;
+  device_info.weimi_info.guodu_flag[0] = 0;
+  device_info.weimi_info.guodu_flag[1] = 0;
+  device_info.weimi_info.guodu_flag[2] = 0;
+  device_info.weimi_info.guodu_flag[4] = 0;
   //试用期默认参数设置
   device_info.period_para.period_enable_onoff = 0;//默认试用期关闭
   device_info.period_para.period_year = 20;//默认试用期限2020年
@@ -151,7 +163,6 @@ void default_device_para(void)
   W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   init_weimi_para(&weimi_para,peiliao_para);
   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
-  
   JingSha_File.filename_len = 0;
   for(i=0;i<10;i++)
   {
@@ -430,12 +441,12 @@ void read_from_disk(char *diskbuf)
       sscanf(da,"%f",&value);
       SlavePara.value_set[29] = (u16)(value * 1000);
     }
-//    strx = strstr(diskbuf,"时间日期");
-//    if(strx)
-//    {
-//      sscanf(strx,"时间日期,%d/%d/%d,%d:%d:%d\n\n",&jingsha_file.year,&jingsha_file.month,
-//             &jingsha_file.day,&jingsha_file.hour,&jingsha_file.minute,&jingsha_file.second);
-//    }
+    //    strx = strstr(diskbuf,"时间日期");
+    //    if(strx)
+    //    {
+    //      sscanf(strx,"时间日期,%d/%d/%d,%d:%d:%d\n\n",&jingsha_file.year,&jingsha_file.month,
+    //             &jingsha_file.day,&jingsha_file.hour,&jingsha_file.minute,&jingsha_file.second);
+    //    }
     strx = strstr(diskbuf,"经纱");
     if(strx)
     {

@@ -18,6 +18,13 @@
 /* 串口发送间隔(MS) */
 #define USART_SEND_INTERVAL		1000
 
+#define NO_CONNECT        0
+#define WIFI_CONNECT      1
+#define SEVER_CONNECT_OK     2
+
+#define WIFI_SSID       "TP-LINK_DDE6"
+#define WIFI_PASSWORD   "65102608*"
+
 /* ESP8266硬件状态类型 */
 typedef enum
 {
@@ -31,6 +38,12 @@ typedef enum
   ESP_HW_NOT_RESP,
   ESP_HW_RECONFIG
 }ESP_HW_STATUS_E;
+
+typedef enum{
+  STA,
+  AP,
+  STA_AP  
+} ENUM_Net_ModeTypeDef;
 
 /* ESP8266网络状态类型 */
 typedef enum
@@ -53,6 +66,8 @@ typedef struct
   uint8_t err_esp_notresp;			//esp8266串口无响应
   uint8_t err_esp_network;
 }ESP_ERROR_T;
+
+extern u8 wifi_flag,old_wifi_flag;
 
 extern ESP_STATUS_T g_esp_status_t;		//定义esp8266模块工作状态全局变量
 
@@ -84,5 +99,8 @@ uint8_t net_device_send_cmd(char *cmd, char *res);
 void esp8266_cmd_handle(char *cmd);
 ESP_HW_STATUS_E check_esp8266_status(void);
 void getTcpConnect(void);
+u8 ESP8266_JoinAP (char * pSSID, char * pPassWord);
+u8 ESP8266_Net_Mode_Choose ( ENUM_Net_ModeTypeDef enumMode );
+u8 ESP8266_Enable_MultipleId ( FunctionalState enumEnUnvarnishTx );
 #endif
 

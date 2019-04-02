@@ -73,7 +73,6 @@ typedef struct
 typedef struct
 {
   u8 GEAR1;
-  u8 GEAR2;
 }GEAR_RATIO;
 
 typedef struct
@@ -81,6 +80,8 @@ typedef struct
   u8 reg;
   u8 songwei_seg[3];
   u32 count;
+  u32 songwei_count[3];
+  u8 guodu_flag[4];
 }WEIMI_INFO;
 
 typedef struct

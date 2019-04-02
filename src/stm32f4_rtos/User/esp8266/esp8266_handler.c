@@ -24,6 +24,8 @@ ESP_ERROR_T esp_error_t= {0,0,0,0};
 /* 串口接收数据缓冲区 */
 char gUsartReciveLineBuf[1000] = {0};
 
+u8 wifi_flag = NO_CONNECT,old_wifi_flag = NO_CONNECT;
+
 //==========================================================
 //	函数名称：	net_device_send_cmd
 //
@@ -57,6 +59,62 @@ uint8_t net_device_send_cmd(char *cmd, char *res)
   {
     return 1;
   }
+}
+
+u8 ESP8266_Enable_MultipleId ( FunctionalState enumEnUnvarnishTx )
+{
+  char cStr [20];
+  char count=0;
+  sprintf ( cStr, "AT+CIPMUX=%d", ( enumEnUnvarnishTx ? 1 : 0 ) );
+  while(count<10)
+  {
+    if(net_device_send_cmd("AT+CWMODE=1", "OK"))
+      return 0;
+    ++count;
+  }
+  return 1;		
+}
+
+u8 ESP8266_Net_Mode_Choose ( ENUM_Net_ModeTypeDef enumMode )
+{
+  u8 result=0;
+  u8 count=0;
+  while(count<10)
+  {
+    switch ( enumMode )
+    {
+    case STA:
+      result = net_device_send_cmd("AT+CWMODE=1\r\n", "OK");
+      break;
+    case AP:
+      result = net_device_send_cmd("AT+CWMODE=2\r\n", "OK");
+      break;
+    case STA_AP:
+      result = net_device_send_cmd("AT+CWMODE=3\r\n", "OK");
+      break;
+    default:
+      result = false;
+      break;
+    }
+    if(result == 0) 
+      return 0;
+    ++count;
+  }
+  return 1;
+}
+
+u8 ESP8266_JoinAP (char * pSSID, char * pPassWord)
+{
+  char cCmd [120];
+  char count = 0;
+  sprintf ( cCmd, "AT+CWJAP=\"%s\",\"%s\"\r\n",pSSID,pPassWord);
+  while(count < 10)
+  {
+    if(net_device_send_cmd(cCmd, "OK"))
+      return 0;
+    ++count;
+  }
+  return 1;	
 }
 
 //==========================================================
