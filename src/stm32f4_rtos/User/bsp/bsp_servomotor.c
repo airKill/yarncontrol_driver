@@ -80,6 +80,7 @@ void SEVRO_PWM_Continue(u32 per)
 
 void ServoMotor_start(u32 per)
 {
+  SERVO_ENABLE();
   SERVO_FORWARD();//连续运转时顺时针转动
   SEVRO_PWM_Continue(per);
 }
@@ -185,6 +186,7 @@ void TIM4_MANUAL_PWM_Config(u32 period)
 
 void TIM4_MANUAL_PWM_Stop(void)
 {
+  SERVO_DISABLE();
   TIM_Cmd(TIM4,DISABLE);
 }
 

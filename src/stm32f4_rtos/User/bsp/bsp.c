@@ -36,13 +36,14 @@ void bsp_Init(void)
   bsp_InitDWT();       /* 初始DWT */
   bsp_InitSdwe050c17();
   bsp_InitHardTimer(); /* 初始化TIM2定时器 */
-  bsp_Init_SW_ONOFF();
+//  bsp_Init_SW_ONOFF();
+  bsp_Init_SEVRO_EN();
   W25QXX_Init();
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
   read_device_info();
   para_init(&SlavePara);
 //  Dac1_Init();
-  Adc_Init();
+//  Adc_Init();
   mb_init(0);
 }
 

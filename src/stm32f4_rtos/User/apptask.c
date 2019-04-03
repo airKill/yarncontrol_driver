@@ -1129,6 +1129,10 @@ void vTaskTaskLCD(void *pvParameters)
               {//特殊密码进入系统设置页面
                 Sdwe_disPicture(PAGE_CONFIG);
               }
+              else if(strcmp((char const*)input_password_buf,"190403") == 0)
+              {
+                Sdwe_disPicture(PAGE_CONFIG);
+              }
               else
               {//密码错误
                 SDWE_WARNNING(PAGE_CONFIG_WARNNING,"密码错误",5);
@@ -1554,8 +1558,10 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
+                  
                   SERVO_FORWARD();
                   TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
+                  SERVO_ENABLE();
                 }
                 else if(value == 0x0002)
                 {//持续按下
@@ -1578,8 +1584,10 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
+                  
                   SERVO_BACKWARD();
                   TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
+                  SERVO_ENABLE();
                 }
                 else if(value == 0x0002)
                 {//持续按下
@@ -1588,6 +1596,7 @@ void vTaskTaskLCD(void *pvParameters)
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
+                  
                   TIM4_MANUAL_PWM_Stop();
                   SERVO_FORWARD();
                 }
@@ -1803,18 +1812,19 @@ static void vTaskTaskADC(void *pvParameters)
   u8 jiyi = 0,old_jiyi = 0xff;
   while(1)
   {
-    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
-    if(power_adc <= 4.8)
-    {//电压低于4.5V认为掉电
-      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
-      jiyi = 1;
-      if(jiyi != old_jiyi)
-      {
-        old_jiyi = jiyi;
-        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-        printf("断电保存\r\n");
-      }
-    }
+//    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
+//    if(power_adc <= 4.8)
+//    {//电压低于4.5V认为掉电
+//      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
+//      jiyi = 1;
+//      if(jiyi != old_jiyi)
+//      {
+//        old_jiyi = jiyi;
+//        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//        printf("断电保存\r\n");
+//      }
+//    }
     vTaskDelay(10);
     Task_iwdg_refresh(TASK_LED);
   }
@@ -2461,7 +2471,7 @@ void vTaskManageCapacity(void *pvParameters)
               {//纬纱/千纬
                 count = 0;
                 Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               }
               if((total_meter_gross == 0) && (total_weight_gross == 0))
               {
@@ -2946,7 +2956,7 @@ static void vTaskFreq(void *pvParameters)
   float servo_speed;
   u32 servostep;//步进电机转速，转/分钟
   static portTickType xLastWakeTime;  
-  const portTickType xFrequency = pdMS_TO_TICKS(5);  
+  const portTickType xFrequency = pdMS_TO_TICKS(10);  
   
   xLastWakeTime = xTaskGetTickCount(); 
 
@@ -3107,6 +3117,7 @@ static void vTaskFreq(void *pvParameters)
           if(is_stop != old_is_stop)
           {//主轴速度大于0时，步进电机开始运行
             old_is_stop = is_stop;
+//            SERVO_ENABLE();
             ServoMotor_start(servo_count);
             StepMotor_start(STEPMOTOR2,step2_count);
             StepMotor_start(STEPMOTOR3,step3_count);
@@ -3120,6 +3131,7 @@ static void vTaskFreq(void *pvParameters)
           if(is_stop != old_is_stop)
           {//主轴速度为0时，停止步进电机
             old_is_stop = is_stop;
+//            SERVO_DISABLE();
             TIM4_MANUAL_PWM_Stop();
             StepMotor_stop(STEPMOTOR2);
             StepMotor_stop(STEPMOTOR3);
@@ -3133,6 +3145,7 @@ static void vTaskFreq(void *pvParameters)
         if(is_stop != old_is_stop)
         {//主轴速度为0时，停止步进电机
           old_is_stop = is_stop;
+//          SERVO_DISABLE();
           TIM4_MANUAL_PWM_Stop();
           StepMotor_stop(STEPMOTOR2);
           StepMotor_stop(STEPMOTOR3);
@@ -3147,6 +3160,7 @@ static void vTaskFreq(void *pvParameters)
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;
+//        SERVO_DISABLE();
         TIM4_MANUAL_PWM_Stop();
         StepMotor_stop(STEPMOTOR2);
         StepMotor_stop(STEPMOTOR3);
@@ -3474,55 +3488,55 @@ void AppTaskCreate (void)
               "vTaskLCD",     	/* 任务名    */
               1024,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              3,                 	/* 任务优先级*/
+              2,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
               256,             		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              4,               		/* 任务优先级*/
+              3,               		/* 任务优先级*/
               &xHandleTaskMsgPro );  /* 任务句柄  */
   xTaskCreate( vTaskRev485,     		/* 任务函数  */
               "vTaskRev485",   		/* 任务名    */
               128,            		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
-              5,              		/* 任务优先级*/
+              4,              		/* 任务优先级*/
               &xHandleTaskRev485 );   /* 任务句柄  */
   xTaskCreate( vTaskTaskRFID,   	/* 任务函数  */
               "vTaskTaskRFID",     	/* 任务名    */
               512,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
-              6,                 	/* 任务优先级*/
+              5,                 	/* 任务优先级*/
               &xHandleTaskRFID );  /* 任务句柄  */
   xTaskCreate( vTaskMassStorage,    		/* 任务函数  */
               "vTaskMassStorage",  		/* 任务名    */
               1024,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              7,           		/* 任务优先级*/
+              6,           		/* 任务优先级*/
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
               768,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              8,           		/* 任务优先级*/
+              7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              9,           		/* 任务优先级*/
+              8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
   xTaskCreate( vTaskMotorControl,    		/* 任务函数  */
               "vTaskMotorControl",  		/* 任务名    */
               512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              10,           		/* 任务优先级*/
+              9,           		/* 任务优先级*/
               &xHandleTaskMotorControl); /* 任务句柄  */
   xTaskCreate( vTaskFreq,    		/* 任务函数  */
               "vTaskFreq",  		/* 任务名    */
               128,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
-              11,           		/* 任务优先级*/
+              10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
     xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
     xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);

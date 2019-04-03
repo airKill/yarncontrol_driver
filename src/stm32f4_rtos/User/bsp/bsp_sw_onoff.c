@@ -6,13 +6,30 @@ void bsp_Init_SW_ONOFF(void)
   /* 打开GPIO时钟 */
   RCC_AHB1PeriphClockCmd(RCC_SW_ONOFF, ENABLE);
   
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;		/* 设为输出口 */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;		/* 设为推挽模式 */
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;	/* 上下拉电阻不使能 */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		/* 设为输出口 */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
   
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SW_ONOFF;
   GPIO_Init(GPIO_PORT_SW_ONOFF, &GPIO_InitStructure);
+}
+
+void bsp_Init_SEVRO_EN(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  /* 打开GPIO时钟 */
+  RCC_AHB1PeriphClockCmd(RCC_SERVO_ENABLE, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		/* 设为输出口 */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		/* 设为推挽模式 */
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	/* 上下拉电阻不使能 */
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	/* IO口最大速度 */
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SERVO_ENABLE;
+  GPIO_Init(GPIO_PORT_SERVO_ENABLE, &GPIO_InitStructure);
+  
+  SERVO_DISABLE();
 }
 
 u8 GetDeviceState(void)
