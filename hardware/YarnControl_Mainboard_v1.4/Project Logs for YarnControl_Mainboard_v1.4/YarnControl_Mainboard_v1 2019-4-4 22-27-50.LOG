@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=GND Pin=U11-2
+Removed Member From Class: ClassName=mainboard_interface.v1.4 Member=U11
+Added Component: Designator=R49(0805)
+Added Pin To Net: NetName=SERVO_EN1 Pin=R47-1
+Added Pin To Net: NetName=SERVO_EN1 Pin=U1-65
+Added Net: Name=SERVO_EN1
+Added Pin To Net: NetName=SERVO_EN2 Pin=R49-1
+Added Pin To Net: NetName=SERVO_EN2 Pin=U1-67
+Added Net: Name=SERVO_EN2
+Added Pin To Net: NetName=SERVO_MOTOR_EN1 Pin=J4-6
+Added Pin To Net: NetName=SERVO_MOTOR_EN1 Pin=R47-2
+Added Net: Name=SERVO_MOTOR_EN1
+Added Pin To Net: NetName=SERVO_MOTOR_EN2 Pin=J4-1
+Added Pin To Net: NetName=SERVO_MOTOR_EN2 Pin=R49-2
+Added Net: Name=SERVO_MOTOR_EN2
+Added Member To Class: ClassName=mainboard_interface.v1.4 Member=Component R49 1K

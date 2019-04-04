@@ -1,0 +1,6 @@
+Added Component: Designator=DZ1(HRS1H-S-DC5)
+Added Pin To Net: NetName=+5V Pin=DZ1-2
+Added Pin To Net: NetName=EN2 Pin=DZ1-3
+Added Pin To Net: NetName=NetDZ1_5 Pin=DZ1-5
+Added Pin To Net: NetName=EN1 Pin=DZ1-6
+Added Member To Class: ClassName=YarnControl_Connect_v1.2 Member=Component DZ1 HRS1H-S-5V
