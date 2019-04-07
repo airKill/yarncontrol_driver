@@ -1,7 +1,7 @@
 Protel Design System Design Rule Check
-PCB File : E:\work\YarnControl_Driver\hardware\YarnControl_Mainboard_v1.4\YarnControl_Mainboard_v1.4.PcbDoc
-Date     : 2019/4/3
-Time     : 13:39:44
+PCB File : E:\WORK\YarnControl_Driver\YarnControl_Driver\hardware\YarnControl_Mainboard_v1.4\YarnControl_Mainboard_v1.4.PcbDoc
+Date     : 2019/4/4
+Time     : 22:54:46
 
 Processing Rule : Clearance Constraint (Gap=0.508mm) (inpoly),(All)
 Rule Violations :0
@@ -47,4 +47,4 @@ Rule Violations :0
 
 
 Violations Detected : 0
-Time Elapsed        : 00:00:02
+Time Elapsed        : 00:00:01

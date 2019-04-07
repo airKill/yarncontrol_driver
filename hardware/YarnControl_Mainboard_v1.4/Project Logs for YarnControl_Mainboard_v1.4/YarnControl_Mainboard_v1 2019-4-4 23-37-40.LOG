@@ -1,0 +1,6 @@
+Added Pin To Net: NetName=NetR47_1 Pin=R47-1
+Added Net: Name=NetR47_1
+Added Pin To Net: NetName=NetR49_1 Pin=R49-1
+Added Net: Name=NetR49_1
+Added Pin To Net: NetName=ONOFF Pin=U1-65
+Added Net: Name=ONOFF

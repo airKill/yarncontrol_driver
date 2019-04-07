@@ -1558,7 +1558,7 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
-                  
+//                  RELAY_CLOSE();
                   SERVO_FORWARD();
                   TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
                   SERVO_ENABLE();
@@ -1572,6 +1572,7 @@ void vTaskTaskLCD(void *pvParameters)
                   servomotor_mode = AUTO;
                   TIM4_MANUAL_PWM_Stop();
                   SERVO_FORWARD();
+//                  RELAY_OPEN();
                 }
               }
             }
@@ -1584,7 +1585,7 @@ void vTaskTaskLCD(void *pvParameters)
                 if(value == 0x0001)
                 {//第一次按下
                   servomotor_mode = MANUAL;
-                  
+//                  RELAY_CLOSE();
                   SERVO_BACKWARD();
                   TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
                   SERVO_ENABLE();
@@ -1596,7 +1597,7 @@ void vTaskTaskLCD(void *pvParameters)
                 else if(value == 0x0003)
                 {//抬起
                   servomotor_mode = AUTO;
-                  
+//                  RELAY_OPEN();
                   TIM4_MANUAL_PWM_Stop();
                   SERVO_FORWARD();
                 }

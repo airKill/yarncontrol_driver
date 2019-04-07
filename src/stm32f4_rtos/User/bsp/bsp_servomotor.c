@@ -80,7 +80,7 @@ void SEVRO_PWM_Continue(u32 per)
 
 void ServoMotor_start(u32 per)
 {
-  SERVO_ENABLE();
+  SERVO_DISABLE();
   SERVO_FORWARD();//连续运转时顺时针转动
   SEVRO_PWM_Continue(per);
 }
