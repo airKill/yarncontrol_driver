@@ -3,10 +3,10 @@
 
 #include "stm32f4xx.h"
 
-#define GPIO_PORT_ADC_POWER  GPIOA
-#define GPIO_PIN_ADC_POWER	GPIO_Pin_4
+#define GPIO_PORT_ADC_POWER  GPIOB
+#define GPIO_PIN_ADC_POWER	GPIO_Pin_1
 
-#define ADC_POWER_CHANNEL       ADC_Channel_4
+#define ADC_POWER_CHANNEL       ADC_Channel_9
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途

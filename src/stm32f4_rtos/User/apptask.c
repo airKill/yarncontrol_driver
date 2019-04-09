@@ -1813,19 +1813,19 @@ static void vTaskTaskADC(void *pvParameters)
   u8 jiyi = 0,old_jiyi = 0xff;
   while(1)
   {
-//    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
-//    if(power_adc <= 4.8)
-//    {//电压低于4.5V认为掉电
-//      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
-//      jiyi = 1;
-//      if(jiyi != old_jiyi)
-//      {
-//        old_jiyi = jiyi;
-//        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-//        printf("断电保存\r\n");
-//      }
-//    }
+    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
+    if(power_adc <= 4.8)
+    {//电压低于4.5V认为掉电
+      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
+      jiyi = 1;
+      if(jiyi != old_jiyi)
+      {
+        old_jiyi = jiyi;
+        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+        printf("断电保存\r\n");
+      }
+    }
     vTaskDelay(10);
     Task_iwdg_refresh(TASK_LED);
   }
