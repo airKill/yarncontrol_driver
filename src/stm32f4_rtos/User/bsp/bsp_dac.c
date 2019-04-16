@@ -43,7 +43,7 @@ void Dac1_Init(void)
 void Dac1_Set_Vol(u16 vol)
 {
   float temp;
-  temp = (float)vol / 4000.0;
+  temp = (float)vol / 40;
   temp = temp * 4096 / 3.3;
   DAC_SetChannel1Data(DAC_Align_12b_R,(u16)temp);//12位右对齐数据格式设置DAC值
 }

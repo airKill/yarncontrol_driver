@@ -84,7 +84,7 @@ void vTaskTaskLCD(void *pvParameters)
   BaseType_t xResult;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(300); /* 设置最大等待时间为300ms */
   //  LCD_POWER_ON();
-  
+  Sdwe_writeIcon(PAGE_MAIN_DACOUT_ADD,device_info.dac_volate);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_lcd, (TickType_t)xMaxBlockTime);
@@ -1223,22 +1223,26 @@ void vTaskTaskLCD(void *pvParameters)
             /*****************************机器速度DAC输出设置*********************************/
             else if(var_addr == PAGE_MAIN_DACOUT_ADD)
             {
-              if(device_info.dac_volate < 10000)
-              {
-                device_info.dac_volate = device_info.dac_volate + 200;//一次递增200mV输出
-                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-                Dac1_Set_Vol(device_info.dac_volate);
-              }
+              value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
+              Dac1_Set_Vol(value);
+              device_info.dac_volate = value;
+//              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//              if(device_info.dac_volate < 100)
+//              {
+//                device_info.dac_volate = device_info.dac_volate + 200;//一次递增200mV输出
+//                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//                Dac1_Set_Vol(device_info.dac_volate);
+//              }
             }
-            else if(var_addr == PAGE_MAIN_DACOUT_SUB)
-            {
-              if(device_info.dac_volate > 200)
-              {
-                device_info.dac_volate = device_info.dac_volate - 200;//一次递增200mV输出
-                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-                Dac1_Set_Vol(device_info.dac_volate);
-              }
-            }
+//            else if(var_addr == PAGE_MAIN_DACOUT_SUB)
+//            {
+//              if(device_info.dac_volate > 200)
+//              {
+//                device_info.dac_volate = device_info.dac_volate - 200;//一次递增200mV输出
+//                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//                Dac1_Set_Vol(device_info.dac_volate);
+//              }
+//            }
             /***********************************************************************/
           }
           else
@@ -1813,19 +1817,19 @@ static void vTaskTaskADC(void *pvParameters)
   u8 jiyi = 0,old_jiyi = 0xff;
   while(1)
   {
-    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
-    if(power_adc <= 4.8)
-    {//电压低于4.5V认为掉电
-      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
-      jiyi = 1;
-      if(jiyi != old_jiyi)
-      {
-        old_jiyi = jiyi;
-        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-        printf("断电保存\r\n");
-      }
-    }
+//    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
+//    if(power_adc <= 4.8)
+//    {//电压低于4.5V认为掉电
+//      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
+//      jiyi = 1;
+//      if(jiyi != old_jiyi)
+//      {
+//        old_jiyi = jiyi;
+//        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//        printf("断电保存\r\n");
+//      }
+//    }
     vTaskDelay(10);
     Task_iwdg_refresh(TASK_LED);
   }
