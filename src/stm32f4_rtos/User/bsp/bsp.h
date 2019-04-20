@@ -95,7 +95,7 @@
 #include "modbus.h"
 #include "malloc.h"
 #include "mcheck.h"
-
+#include "bkp_pwr.h"
 #include "encoder.h"
 #include "bsp_adc.h"
 

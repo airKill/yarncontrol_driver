@@ -1051,6 +1051,9 @@
   <group>
     <name>BSP</name>
     <file>
+      <name>$PROJ_DIR$\..\..\User\bkp_pwr.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\User\bsp\bsp.c</name>
     </file>
     <file>

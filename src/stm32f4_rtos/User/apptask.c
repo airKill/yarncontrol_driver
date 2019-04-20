@@ -1226,23 +1226,7 @@ void vTaskTaskLCD(void *pvParameters)
               value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               Dac1_Set_Vol(value);
               device_info.dac_volate = value;
-//              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//              if(device_info.dac_volate < 100)
-//              {
-//                device_info.dac_volate = device_info.dac_volate + 200;//一次递增200mV输出
-//                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//                Dac1_Set_Vol(device_info.dac_volate);
-//              }
             }
-//            else if(var_addr == PAGE_MAIN_DACOUT_SUB)
-//            {
-//              if(device_info.dac_volate > 200)
-//              {
-//                device_info.dac_volate = device_info.dac_volate - 200;//一次递增200mV输出
-//                W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//                Dac1_Set_Vol(device_info.dac_volate);
-//              }
-//            }
             /***********************************************************************/
           }
           else
@@ -1621,14 +1605,15 @@ void vTaskTaskLCD(void *pvParameters)
               MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
-              servomotor_guodu = 0;
-              stepmotor_guodu[0] = 0;
-              stepmotor_guodu[1] = 0;
-              stepmotor_guodu[2] = 0;
-              device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-              device_info.weimi_info.guodu_flag[1] = stepmotor_guodu[0];
-              device_info.weimi_info.guodu_flag[2] = stepmotor_guodu[1];
-              device_info.weimi_info.guodu_flag[3] = stepmotor_guodu[2];
+//              servomotor_guodu = 0;
+//              stepmotor_guodu[0] = 0;
+//              stepmotor_guodu[1] = 0;
+//              stepmotor_guodu[2] = 0;
+//              device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+//              device_info.weimi_info.guodu_flag[1] = stepmotor_guodu[0];
+//              device_info.weimi_info.guodu_flag[2] = stepmotor_guodu[1];
+//              device_info.weimi_info.guodu_flag[3] = stepmotor_guodu[2];
+              write_bkp_para(&MotorProcess);
               fault_weimi_flag = 0;
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
@@ -1814,23 +1799,19 @@ static void vTaskTaskLED(void *pvParameters)
 static void vTaskTaskADC(void *pvParameters)
 {
   float power_adc;
-  u8 jiyi = 0,old_jiyi = 0xff;
+  vTaskDelay(200);
   while(1)
   {
-//    power_adc = (float)Get_Adc_Average(5) / 4096 * 3.3 * 2;
-//    if(power_adc <= 4.8)
-//    {//电压低于4.5V认为掉电
+    power_adc = (float)Get_Adc_Average(1) / 4096 * 3.3 * 2;
+    if(power_adc <= 4.9)
+    {//电压低于4.5V认为掉电
 //      LCD_POWER_OFF();//显示屏太耗电，先关闭显示屏
-//      jiyi = 1;
-//      if(jiyi != old_jiyi)
-//      {
-//        old_jiyi = jiyi;
-//        W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-//        W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-//        printf("断电保存\r\n");
-//      }
-//    }
-    vTaskDelay(10);
+      W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//      W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+      printf("断电保存\r\n");
+      while(1);
+    }
+    vTaskDelay(1);
     Task_iwdg_refresh(TASK_LED);
   }
 }
@@ -2601,10 +2582,10 @@ static void vTaskMotorControl(void *pvParameters)
   valid_seg[2] = get_songwei1_maxseg(weimi_para);
   valid_seg[3] = get_songwei2_maxseg(weimi_para);
   max_seg = get_max_type(valid_seg);
-  servomotor_guodu = device_info.weimi_info.guodu_flag[0];
-  stepmotor_guodu[0] = device_info.weimi_info.guodu_flag[1];
-  stepmotor_guodu[1] = device_info.weimi_info.guodu_flag[2];
-  stepmotor_guodu[2] = device_info.weimi_info.guodu_flag[3];
+//  servomotor_guodu = device_info.weimi_info.guodu_flag[0];
+//  stepmotor_guodu[0] = device_info.weimi_info.guodu_flag[1];
+//  stepmotor_guodu[1] = device_info.weimi_info.guodu_flag[2];
+//  stepmotor_guodu[2] = device_info.weimi_info.guodu_flag[3];
   if(max_seg == 0)
   {
     if(servomotor_guodu == 0)
@@ -2654,14 +2635,15 @@ static void vTaskMotorControl(void *pvParameters)
             if(MotorProcess.step_factor[2] > 0)
               MotorProcess.song_current_wei[2]++;
             /*************用于掉电保存*********************/
-            device_info.weimi_info.reg = MotorProcess.current_seg;
-            device_info.weimi_info.songwei_seg[0] = MotorProcess.songwei_seg[0];
-            device_info.weimi_info.songwei_seg[1] = MotorProcess.songwei_seg[1];
-            device_info.weimi_info.songwei_seg[2] = MotorProcess.songwei_seg[2];
-            device_info.weimi_info.count = MotorProcess.current_wei;
-            device_info.weimi_info.songwei_count[0] = MotorProcess.song_current_wei[0];
-            device_info.weimi_info.songwei_count[1] = MotorProcess.song_current_wei[1];
-            device_info.weimi_info.songwei_count[2] = MotorProcess.song_current_wei[2];
+//            device_info.weimi_info.reg = MotorProcess.current_seg;
+//            device_info.weimi_info.songwei_seg[0] = MotorProcess.songwei_seg[0];
+//            device_info.weimi_info.songwei_seg[1] = MotorProcess.songwei_seg[1];
+//            device_info.weimi_info.songwei_seg[2] = MotorProcess.songwei_seg[2];
+//            device_info.weimi_info.count = MotorProcess.current_wei;
+//            device_info.weimi_info.songwei_count[0] = MotorProcess.song_current_wei[0];
+//            device_info.weimi_info.songwei_count[1] = MotorProcess.song_current_wei[1];
+//            device_info.weimi_info.songwei_count[2] = MotorProcess.song_current_wei[2];
+            write_bkp_para(&MotorProcess);
             /*************************************************/
             if(max_seg == 0)
             {
@@ -2751,7 +2733,7 @@ static void vTaskMotorControl(void *pvParameters)
                   servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
                   servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                   servomotor_guodu = 1;
-                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+//                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
                 else
                 {//如果是段，总纬号为段循环号
@@ -2767,7 +2749,7 @@ static void vTaskMotorControl(void *pvParameters)
                     break;
                   }
                   servomotor_guodu = 0;
-                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+//                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
               else
@@ -2800,7 +2782,7 @@ static void vTaskMotorControl(void *pvParameters)
                     servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
                     servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                     servomotor_guodu = 1;
-                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+//                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                   }
                 }
                 else
@@ -2808,7 +2790,7 @@ static void vTaskMotorControl(void *pvParameters)
                   MotorProcess.current_seg = 0;//进入下一段号
                   MotorProcess.total_wei = weimi_para.total_wei_count[0];
                   servomotor_guodu = 0;
-                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+//                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
             }
@@ -2875,7 +2857,7 @@ static void vTaskMotorControl(void *pvParameters)
                     speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
                     pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
                     stepmotor_guodu[i] = 1;
-                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+//                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                   else
                   {//如果是段，总纬号为段循环号
@@ -2891,7 +2873,7 @@ static void vTaskMotorControl(void *pvParameters)
                       break;
                     }
                     stepmotor_guodu[i] = 0;
-                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+//                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                 }
                 else
@@ -2924,7 +2906,7 @@ static void vTaskMotorControl(void *pvParameters)
                       speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
                       pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
                       stepmotor_guodu[i] = 1;
-                      device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+//                      device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                     }
                   }
                   else
@@ -2932,7 +2914,7 @@ static void vTaskMotorControl(void *pvParameters)
                     MotorProcess.songwei_seg[i] = 0;//进入下一段号
                     MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
                     stepmotor_guodu[i] = 0;
-                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+//                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                 }
               }
@@ -3482,12 +3464,12 @@ void AppTaskCreate (void)
               NULL,              	/* 任务参数  */
               1,                 	/* 任务优先级*/
               &xHandleTaskLED );  /* 任务句柄  */
-  xTaskCreate( vTaskTaskADC,   	/* 任务函数  */
-              "vTaskTaskADC",     	/* 任务名    */
-              256,               	/* 任务栈大小，单位word，也就是4字节 */
-              NULL,              	/* 任务参数  */
-              2,                 	/* 任务优先级*/
-              &xHandleTaskADC );  /* 任务句柄  */
+//  xTaskCreate( vTaskTaskADC,   	/* 任务函数  */
+//              "vTaskTaskADC",     	/* 任务名    */
+//              256,               	/* 任务栈大小，单位word，也就是4字节 */
+//              NULL,              	/* 任务参数  */
+//              2,                 	/* 任务优先级*/
+//              &xHandleTaskADC );  /* 任务句柄  */
   
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */

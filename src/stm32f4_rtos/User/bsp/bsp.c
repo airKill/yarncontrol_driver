@@ -41,9 +41,10 @@ void bsp_Init(void)
   W25QXX_Init();
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
   read_device_info();
+  bkp_init();
   para_init(&SlavePara);
   Dac1_Init();
-  Adc_Init();
+//  Adc_Init();
   mb_init(0);
 }
 

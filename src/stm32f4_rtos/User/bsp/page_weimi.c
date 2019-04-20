@@ -66,19 +66,19 @@ void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
 
 void get_weimi_para(WEIMI_PARA *para,DEVICE_INFO *info,MOTOR_PROCESS *motor)
 {
-  motor->current_seg = info->weimi_info.reg;
-  motor->songwei_seg[0] = info->weimi_info.songwei_seg[0];
-  motor->songwei_seg[1] = info->weimi_info.songwei_seg[1];
-  motor->songwei_seg[2] = info->weimi_info.songwei_seg[2];
-  motor->current_wei = info->weimi_info.count;
-  motor->song_current_wei[0] = info->weimi_info.songwei_count[0];
-  motor->song_current_wei[1] = info->weimi_info.songwei_count[1];
-  motor->song_current_wei[2] = info->weimi_info.songwei_count[2];
-  motor->total_wei = para->total_wei_count[motor->current_seg *2 + info->weimi_info.guodu_flag[0]];
+//  motor->current_seg = info->weimi_info.reg;
+//  motor->songwei_seg[0] = info->weimi_info.songwei_seg[0];
+//  motor->songwei_seg[1] = info->weimi_info.songwei_seg[1];
+//  motor->songwei_seg[2] = info->weimi_info.songwei_seg[2];
+//  motor->current_wei = info->weimi_info.count;
+//  motor->song_current_wei[0] = info->weimi_info.songwei_count[0];
+//  motor->song_current_wei[1] = info->weimi_info.songwei_count[1];
+//  motor->song_current_wei[2] = info->weimi_info.songwei_count[2];
+  motor->total_wei = para->total_wei_count[motor->current_seg *2 + servomotor_guodu];
   motor->real_wei_count = para->real_wei_count[motor->current_seg];
-  motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2 + info->weimi_info.guodu_flag[1]];
-  motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2 + info->weimi_info.guodu_flag[2]];
-  motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2 + info->weimi_info.guodu_flag[3]];
+  motor->song_total_wei[0] = para->total_wei_count[motor->songwei_seg[0] * 2 + stepmotor_guodu[0]];
+  motor->song_total_wei[1] = para->total_wei_count[motor->songwei_seg[1] * 2 + stepmotor_guodu[1]];
+  motor->song_total_wei[2] = para->total_wei_count[motor->songwei_seg[2] * 2 + stepmotor_guodu[2]];
   motor->wei_cm_set = para->wei_cm_set[motor->current_seg];
   motor->step_factor[0] = para->step_factor[0][motor->current_seg / 2];
   motor->step_factor[1] = para->step_factor[1][motor->current_seg / 2];

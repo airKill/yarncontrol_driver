@@ -75,7 +75,7 @@ u16 Get_Adc_Average(u8 times)
   for(t=0;t<times;t++)
   {
     temp_val += Get_Adc(ADC_POWER_CHANNEL);
-    vTaskDelay(2);
+//    vTaskDelay(2);
   }
   return temp_val / times;
 } 

@@ -628,7 +628,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>MainBoard190410.bin</state>
+          <state>MainBoard190417.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -981,6 +981,9 @@
   </configuration>
   <group>
     <name>BSP</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\bkp_pwr.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\bsp\bsp.c</name>
     </file>
