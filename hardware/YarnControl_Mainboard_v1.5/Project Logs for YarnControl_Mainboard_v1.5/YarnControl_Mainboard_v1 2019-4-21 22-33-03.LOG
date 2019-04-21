@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=NetBT1_1 Pin=C19-1
+Added Component: Designator=D4(Diode_TP)
+Added Pin To Net: NetName=NetBT1_1 Pin=D4-2
+Added Pin To Net: NetName=NetC19_1 Pin=C19-1
+Added Pin To Net: NetName=NetC19_1 Pin=D4-1
+Added Net: Name=NetC19_1
+Added Member To Class: ClassName=mainboard_mcu.v1.5 Member=Component D4 1N4007

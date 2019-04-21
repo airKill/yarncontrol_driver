@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=+3.3V Pin=U1-6
+Added Net: Name=NetBT1_1
+Added Pin To Net: NetName=NetR50_2 Pin=U1-6
+Added Net: Name=NetR50_2
+Change Class Name : Old Net Name=mainboard_interface.v1.4 New Net Name=mainboard_interface.v1.5
+Change Class Name : Old Net Name=mainboard_mcu.v1.4 New Net Name=mainboard_mcu.v1.5
+Change Class Name : Old Net Name=mainboard_motor.v1.4 New Net Name=mainboard_motor.v1.5
+Change Class Name : Old Net Name=mainboard_rs485.v1.4 New Net Name=mainboard_rs485.v1.5
+Change Class Name : Old Net Name=mainboard_wifi.v1.4 New Net Name=mainboard_wifi.v1.5

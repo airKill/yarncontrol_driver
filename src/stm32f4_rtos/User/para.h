@@ -95,7 +95,6 @@ typedef struct
   u8 onoff[30];
   u8 file_select[10];
   u16 sevro_stop_pluse;
-  u16 dac_volate;
   FUNCTION_ONOFF func_onoff; 
   u8 page_enable_onoff[3];//0:经纱页面，1：产能页面，2：纬密页面
   GEAR_RATIO ratio;

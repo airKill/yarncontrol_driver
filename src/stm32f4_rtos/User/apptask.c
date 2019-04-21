@@ -61,6 +61,8 @@ float servo_speed_diff;
 u8 symbol_servo = 0;
 
 u8 clear_text_flag = 0;
+
+u16 device_speed_volate = 0;
 /*
 *********************************************************************************************************
 *	函 数 名: vTaskTaskLCD
@@ -84,7 +86,7 @@ void vTaskTaskLCD(void *pvParameters)
   BaseType_t xResult;
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(300); /* 设置最大等待时间为300ms */
   //  LCD_POWER_ON();
-  Sdwe_writeIcon(PAGE_MAIN_DACOUT_ADD,device_info.dac_volate);
+  Sdwe_writeIcon(PAGE_MAIN_DACOUT_ADD,device_speed_volate);
   while(1)
   {
     xResult = xSemaphoreTake(xSemaphore_lcd, (TickType_t)xMaxBlockTime);
@@ -155,7 +157,8 @@ void vTaskTaskLCD(void *pvParameters)
                 {
                   Sdwe_disPicture(PAGE_CHANNENG);
                   Sdwe_product_page(&product_para);
-                  card_config = READ_PERMISSION;
+//                  card_config = READ_PERMISSION;
+                  card_config = CARD_DISABLE;
                 }
                 else
                   SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商",1);
@@ -768,7 +771,8 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PEILIAO_QUIT)
             {//退出胚料页面，进入产能页面，卡连续读
-              card_config = READ_PERMISSION;
+//              card_config = READ_PERMISSION;
+              card_config = CARD_DISABLE;
             }
             else if(var_addr == PAGE_PRODUCT_JINGSHA)
             {//经纱设置
@@ -1129,6 +1133,10 @@ void vTaskTaskLCD(void *pvParameters)
               {//特殊密码进入系统设置页面
                 Sdwe_disPicture(PAGE_CONFIG);
               }
+              else if(memcmp(&input_password_buf,"111111",6) == 0)
+              {//特殊密码进入系统设置页面
+                Sdwe_disPicture(PAGE_CONFIG);
+              }
               else if(strcmp((char const*)input_password_buf,"190403") == 0)
               {
                 Sdwe_disPicture(PAGE_CONFIG);
@@ -1225,7 +1233,8 @@ void vTaskTaskLCD(void *pvParameters)
             {
               value = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               Dac1_Set_Vol(value);
-              device_info.dac_volate = value;
+              device_speed_volate = value;
+              RTC_WriteBackupRegister(RTC_BKP_DR13,device_speed_volate);
             }
             /***********************************************************************/
           }
@@ -2457,7 +2466,7 @@ void vTaskManageCapacity(void *pvParameters)
               {//纬纱/千纬
                 count = 0;
                 Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-//                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               }
               if((total_meter_gross == 0) && (total_weight_gross == 0))
               {

@@ -36,14 +36,14 @@ void Dac1_Init(void)
   DAC_Cmd(DAC_Channel_1, ENABLE);  //使能DAC通道1
   
 //  DAC_SetChannel1Data(DAC_Align_12b_R, 0);  //12位右对齐数据格式设置DAC值
-  Dac1_Set_Vol(device_info.dac_volate);
+  Dac1_Set_Vol(device_speed_volate);
 }
 //设置通道1输出电压
 //vol:0~3300,代表0~3.3V
 void Dac1_Set_Vol(u16 vol)
 {
   float temp;
-  temp = (float)vol / 40;
+  temp = (float)vol / 80;
   temp = temp * 4096 / 3.3;
   DAC_SetChannel1Data(DAC_Align_12b_R,(u16)temp);//12位右对齐数据格式设置DAC值
 }

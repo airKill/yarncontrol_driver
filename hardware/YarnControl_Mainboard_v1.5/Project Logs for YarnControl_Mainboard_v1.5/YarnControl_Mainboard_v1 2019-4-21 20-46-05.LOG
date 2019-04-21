@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=NetC19_1 Pin=C19-1
+Removed Member From Class: ClassName=mainboard_rs485.v1.5 Member=C19
+Added Pin To Net: NetName=NetBT1_1 Pin=C19-1
+Change Net Name : Old Net Name=NetC19_1 New Net Name=NetC20_1
+Added Member To Class: ClassName=mainboard_mcu.v1.5 Member=Component C19 1000uF

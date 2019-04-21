@@ -25,6 +25,8 @@ void bkp_init(void)
     stepmotor_guodu[2] = 0;
     
     write_bkp_para(&MotorProcess);
+    device_speed_volate = 0;
+    RTC_WriteBackupRegister(RTC_BKP_DR13,device_speed_volate);//初始化机器速度为0
   }
   else
   {
@@ -46,6 +48,7 @@ void read_bkp_para(MOTOR_PROCESS *motor)
   stepmotor_guodu[0] = RTC_ReadBackupRegister(RTC_BKP_DR10);
   stepmotor_guodu[1] = RTC_ReadBackupRegister(RTC_BKP_DR11);
   stepmotor_guodu[2] = RTC_ReadBackupRegister(RTC_BKP_DR12);
+  device_speed_volate = RTC_ReadBackupRegister(RTC_BKP_DR13);
 }
 
 void write_bkp_para(MOTOR_PROCESS *motor)

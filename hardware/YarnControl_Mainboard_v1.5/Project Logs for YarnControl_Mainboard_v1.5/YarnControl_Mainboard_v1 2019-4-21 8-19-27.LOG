@@ -1,0 +1,3 @@
+Added Pin To Net: NetName=ONOFF Pin=R49-1
+Added Pin To Net: NetName=ONOFF1 Pin=U1-67
+Added Net: Name=ONOFF1

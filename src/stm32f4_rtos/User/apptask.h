@@ -69,6 +69,8 @@ typedef enum
   WORK_STAGE_STOP
 }WORK_STAGE;
 
+extern u16 device_speed_volate;
+
 extern u8 usb_disk_flag;
 extern u8 old_usb_disk_flag;
 

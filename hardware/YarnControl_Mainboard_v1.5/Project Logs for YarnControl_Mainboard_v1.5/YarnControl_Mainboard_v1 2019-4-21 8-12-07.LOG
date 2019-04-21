@@ -1,0 +1,8 @@
+Added Component: Designator=BT1(CR1220)
+Added Component: Designator=R50(0805)
+Added Pin To Net: NetName=NetBT1_1 Pin=BT1-1
+Added Pin To Net: NetName=GND Pin=BT1-2
+Added Pin To Net: NetName=NetBT1_1 Pin=R50-1
+Added Pin To Net: NetName=NetR50_2 Pin=R50-2
+Added Member To Class: ClassName=mainboard_mcu.v1.5 Member=Component BT1 CR1220
+Added Member To Class: ClassName=mainboard_mcu.v1.5 Member=Component R50 0R
