@@ -157,8 +157,8 @@ void vTaskTaskLCD(void *pvParameters)
                 {
                   Sdwe_disPicture(PAGE_CHANNENG);
                   Sdwe_product_page(&product_para);
-//                  card_config = READ_PERMISSION;
-                  card_config = CARD_DISABLE;
+                  card_config = READ_PERMISSION;
+//                  card_config = CARD_DISABLE;
                 }
                 else
                   SDWE_WARNNING(MAIN_PAGE_WARNNING,"请联系厂商",1);
@@ -771,8 +771,8 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PEILIAO_QUIT)
             {//退出胚料页面，进入产能页面，卡连续读
-//              card_config = READ_PERMISSION;
-              card_config = CARD_DISABLE;
+              card_config = READ_PERMISSION;
+//              card_config = CARD_DISABLE;
             }
             else if(var_addr == PAGE_PRODUCT_JINGSHA)
             {//经纱设置
@@ -1614,14 +1614,10 @@ void vTaskTaskLCD(void *pvParameters)
               MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
-//              servomotor_guodu = 0;
-//              stepmotor_guodu[0] = 0;
-//              stepmotor_guodu[1] = 0;
-//              stepmotor_guodu[2] = 0;
-//              device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-//              device_info.weimi_info.guodu_flag[1] = stepmotor_guodu[0];
-//              device_info.weimi_info.guodu_flag[2] = stepmotor_guodu[1];
-//              device_info.weimi_info.guodu_flag[3] = stepmotor_guodu[2];
+              servomotor_guodu = 0;
+              stepmotor_guodu[0] = 0;
+              stepmotor_guodu[1] = 0;
+              stepmotor_guodu[2] = 0;
               write_bkp_para(&MotorProcess);
               fault_weimi_flag = 0;
             }
@@ -1840,127 +1836,25 @@ static void vTaskTaskRFID(void *pvParameters)
     }
     else
     {
-      if(card_config == READ_PERMISSION)
-      {//在产能页面连续读取卡
-        rfid_rev_flag = 0;
-        rfid_rev_cnt = 0;
-        rc522_cmd_request(REQUEST_TYPE_ALL);
-        vTaskDelay(100);
-        if(rfid_rev_flag)
-        {
-          rfid_rev_flag = 0;
-          if(rfid_rev_cnt == 8)
-          {
-            isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
-            if(isCard == Mifare1_S50)
-            {
-              printf("s50\r\n");
-              rfid_rev_cnt = 0;
-              rc522_cmd_anticoll(COLLISION_GRADE_1);
-              vTaskDelay(100);
-              if(rfid_rev_flag)
-              {
-                rfid_rev_flag = 0;
-                if(rfid_rev_cnt == 10)
-                {
-                  card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
-                  printf("%x ",rfid_rev_buf[4]);
-                  printf("%x ",rfid_rev_buf[5]);
-                  printf("%x ",rfid_rev_buf[6]);
-                  printf("%x ",rfid_rev_buf[7]);
-                  //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、未注册卡
-                  card_type = get_card_type(card_id);
-                  if(card_type == FUNC_REPAIR)
-                  {//维护卡
-                    Sdwe_disPicture(PAGE_REPAIR);//维护卡进入维护页面
-                    Sdwe_stop_page(&device_info);
-                  }
-                  else if(card_type == FUNC_CLASS_A)
-                  {//A班卡
-                    if(device_info.class_para.class_enable_onoff == 0)
-                    {//如果换班功能未启用，则产量一直记在A班
-                      card_record = 1;//A班
-                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
-                    }
-                    else
-                    {
-                      if(get_class_time(&rtc_time,&device_info) == CLASS_A)
-                      {//A班卡打在A时间段
-                        card_record = 1;//A班
-                        if(old_card_record != card_record)
-                        {
-                          old_card_record = card_record;
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"A班卡",11);
-                        }
-                        else
-                        {
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
-                        }
-                      }
-                      else
-                      {//A班卡打在B时间段
-                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
-                      }
-                    }
-                  }
-                  else if(card_type == FUNC_CLASS_B)
-                  {//B班卡
-                    if(device_info.class_para.class_enable_onoff == 0)
-                    {//如果换班功能未启用，则产量一直记在A班
-                      card_record = 1;//A班
-                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
-                    }
-                    else
-                    {
-                      if(get_class_time(&rtc_time,&device_info) == CLASS_B)
-                      {//B班卡打在B时间段
-                        card_record = 2;//B班
-                        if(old_card_record != card_record)
-                        {
-                          old_card_record = card_record;
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"B班卡",11);
-                        }
-                        else
-                        {
-                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
-                        }
-                      }
-                      else
-                      {//A班卡打在B时间段
-                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
-                      }
-                    }
-                    
-                  }
-                  else
-                  {//未注册卡
-                    SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未注册卡",11);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      else
-      {//在员工卡页面单次读取卡
-        if(card_config > WRITE_PERMISSION)
-        {
+      if(speed_zhu == 0)
+      {
+        if(card_config == READ_PERMISSION)
+        {//在产能页面连续读取卡
           rfid_rev_flag = 0;
           rfid_rev_cnt = 0;
-          rc522_cmd_request(REQUEST_TYPE_ALL);//请求卡
+          rc522_cmd_request(REQUEST_TYPE_ALL);
           vTaskDelay(100);
           if(rfid_rev_flag)
-          {//收到模块返回命令
+          {
             rfid_rev_flag = 0;
             if(rfid_rev_cnt == 8)
-            {//
+            {
               isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
               if(isCard == Mifare1_S50)
-              {//识别到s50卡
+              {
                 printf("s50\r\n");
                 rfid_rev_cnt = 0;
-                rc522_cmd_anticoll(COLLISION_GRADE_1);//防碰撞获取卡片ID
+                rc522_cmd_anticoll(COLLISION_GRADE_1);
                 vTaskDelay(100);
                 if(rfid_rev_flag)
                 {
@@ -1968,69 +1862,174 @@ static void vTaskTaskRFID(void *pvParameters)
                   if(rfid_rev_cnt == 10)
                   {
                     card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
-                    if(card_id != 0)
-                    {
-                      card_type = get_card_type(card_id);
-                      if(card_config == WRITE_INC_A)
+                    printf("%x ",rfid_rev_buf[4]);
+                    printf("%x ",rfid_rev_buf[5]);
+                    printf("%x ",rfid_rev_buf[6]);
+                    printf("%x ",rfid_rev_buf[7]);
+                    //获取到卡号后，判断卡号是否为A班卡、B班卡、维护卡、未注册卡
+                    card_type = get_card_type(card_id);
+                    if(card_type == FUNC_REPAIR)
+                    {//维护卡
+                      Sdwe_disPicture(PAGE_REPAIR);//维护卡进入维护页面
+                      Sdwe_stop_page(&device_info);
+                    }
+                    else if(card_type == FUNC_CLASS_A)
+                    {//A班卡
+                      if(device_info.class_para.class_enable_onoff == 0)
+                      {//如果换班功能未启用，则产量一直记在A班
+                        card_record = 1;//A班
+                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
+                      }
+                      else
                       {
-                        if(card_type == FUNC_IDLE)
-                        {//卡片不存在，添加到数据库
-                          inc_card_type(card_id,FUNC_CLASS_A);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
+                        if(get_class_time(&rtc_time,&device_info) == CLASS_A)
+                        {//A班卡打在A时间段
+                          card_record = 1;//A班
+                          if(old_card_record != card_record)
+                          {
+                            old_card_record = card_record;
+                            SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"A班卡",11);
+                          }
+                          else
+                          {
+                            SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
+                          }
                         }
                         else
-                        {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
+                        {//A班卡打在B时间段
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
                         }
                       }
-                      else if(card_config == WRITE_DEC_A)
-                      {
-                        if(card_type == FUNC_CLASS_A)
-                        {//卡片存在，删除
-                          
-                        }
+                    }
+                    else if(card_type == FUNC_CLASS_B)
+                    {//B班卡
+                      if(device_info.class_para.class_enable_onoff == 0)
+                      {//如果换班功能未启用，则产量一直记在A班
+                        card_record = 1;//A班
+                        SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未启动换班",11);
                       }
-                      else if(card_config == WRITE_INC_B)
+                      else
                       {
-                        if(card_type == FUNC_IDLE)
-                        {//卡片不存在，添加到数据库
-                          inc_card_type(card_id,FUNC_CLASS_B);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
+                        if(get_class_time(&rtc_time,&device_info) == CLASS_B)
+                        {//B班卡打在B时间段
+                          card_record = 2;//B班
+                          if(old_card_record != card_record)
+                          {
+                            old_card_record = card_record;
+                            SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"B班卡",11);
+                          }
+                          else
+                          {
+                            SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"重复打卡",11);
+                          }
                         }
                         else
-                        {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
+                        {//A班卡打在B时间段
+                          SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"无效操作",11);
                         }
                       }
-                      else if(card_config == WRITE_DEC_B)
-                      {
-                        
-                      }
-                      else if(card_config == WRITE_INC_REPAIR)
-                      {
-                        if(card_type == FUNC_IDLE)
-                        {//卡片不存在，添加到数据库
-                          inc_card_type(card_id,FUNC_REPAIR);
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
-                        }
-                        else
-                        {
-                          SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
-                        }
-                      }
-                      else if(card_config == WRITE_DEC_REPAIR)
-                      {
-                        
-                      }
+                      
+                    }
+                    else
+                    {//未注册卡
+                      SDWE_WARNNING(PAGE_PRODUCT_RFID_WARNNING,"未注册卡",11);
                     }
                   }
                 }
               }
             }
           }
-          card_config = WRITE_PERMISSION;
         }
-        vTaskDelay(100);
+        else
+        {//在员工卡页面单次读取卡
+          if(card_config > WRITE_PERMISSION)
+          {
+            rfid_rev_flag = 0;
+            rfid_rev_cnt = 0;
+            rc522_cmd_request(REQUEST_TYPE_ALL);//请求卡
+            vTaskDelay(100);
+            if(rfid_rev_flag)
+            {//收到模块返回命令
+              rfid_rev_flag = 0;
+              if(rfid_rev_cnt == 8)
+              {//
+                isCard = (rfid_rev_buf[5] << 8) + rfid_rev_buf[4];
+                if(isCard == Mifare1_S50)
+                {//识别到s50卡
+                  printf("s50\r\n");
+                  rfid_rev_cnt = 0;
+                  rc522_cmd_anticoll(COLLISION_GRADE_1);//防碰撞获取卡片ID
+                  vTaskDelay(100);
+                  if(rfid_rev_flag)
+                  {
+                    rfid_rev_flag = 0;
+                    if(rfid_rev_cnt == 10)
+                    {
+                      card_id = (rfid_rev_buf[4] << 24) + (rfid_rev_buf[5] << 16) + (rfid_rev_buf[6] << 8) + rfid_rev_buf[7];
+                      if(card_id != 0)
+                      {
+                        card_type = get_card_type(card_id);
+                        if(card_config == WRITE_INC_A)
+                        {
+                          if(card_type == FUNC_IDLE)
+                          {//卡片不存在，添加到数据库
+                            inc_card_type(card_id,FUNC_CLASS_A);
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
+                          }
+                          else
+                          {
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
+                          }
+                        }
+                        else if(card_config == WRITE_DEC_A)
+                        {
+                          if(card_type == FUNC_CLASS_A)
+                          {//卡片存在，删除
+                            
+                          }
+                        }
+                        else if(card_config == WRITE_INC_B)
+                        {
+                          if(card_type == FUNC_IDLE)
+                          {//卡片不存在，添加到数据库
+                            inc_card_type(card_id,FUNC_CLASS_B);
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
+                          }
+                          else
+                          {
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
+                          }
+                        }
+                        else if(card_config == WRITE_DEC_B)
+                        {
+                          
+                        }
+                        else if(card_config == WRITE_INC_REPAIR)
+                        {
+                          if(card_type == FUNC_IDLE)
+                          {//卡片不存在，添加到数据库
+                            inc_card_type(card_id,FUNC_REPAIR);
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"录入成功",12);
+                          }
+                          else
+                          {
+                            SDWE_WARNNING(PAGE_CARD_WARNNING,"卡片已存在",12);
+                          }
+                        }
+                        else if(card_config == WRITE_DEC_REPAIR)
+                        {
+                          
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            card_config = WRITE_PERMISSION;
+          }
+          vTaskDelay(100);
+        }  
       }
     }
     Task_iwdg_refresh(TASK_RFID);
