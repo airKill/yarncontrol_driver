@@ -99,6 +99,11 @@
 #include "encoder.h"
 #include "bsp_adc.h"
 
+#include "smec98sp.h"
+#include "iic_smec98sp.h"
+#include "des.h"			 //如调用到DES运算，需加载
+#include "sha1.h"			 //如调用到SHA1运算，需加载
+
 /* 提供给其他C文件调用的函数 */
 void bsp_Init(void);
 void bsp_Idle(void);

@@ -1,0 +1,16 @@
+..\output\iic_smec98sp.o: SMEC98SP\Source\iic_smec98sp.c
+..\output\iic_smec98sp.o: ..\CMSIS\stm32f10x.h
+..\output\iic_smec98sp.o: ..\CMSIS\core_cm3.h
+..\output\iic_smec98sp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\output\iic_smec98sp.o: ..\CMSIS\system_stm32f10x.h
+..\output\iic_smec98sp.o: ..\User\stm32f10x_conf.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_exti.h
+..\output\iic_smec98sp.o: ..\CMSIS\stm32f10x.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_flash.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_gpio.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_pwr.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_rcc.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_spi.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_tim.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\stm32f10x_usart.h
+..\output\iic_smec98sp.o: ..\STM32_FWLib\inc\misc.h

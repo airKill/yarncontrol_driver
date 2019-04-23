@@ -1232,6 +1232,21 @@
     </file>
   </group>
   <group>
+    <name>SEMC98SE</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\des.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\iic_smec98sp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\sha1.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\smec98sp.c</name>
+    </file>
+  </group>
+  <group>
     <name>StdPeriph_Driver</name>
     <file>
       <name>$PROJ_DIR$\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\misc.c</name>

@@ -1,0 +1,54 @@
+C51 COMPILER V9.00   SMEC98SP_I2C_HARD_API                                                 04/22/2019 22:49:13 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SMEC98SP_I2C_HARD_API
+OBJECT MODULE PLACED IN .\obj\SMEC98SP_I2C_hard_api.obj
+COMPILER INVOKED BY: C:\Keil_C51\C51\BIN\C51.EXE SrcApi\SMEC98SP_I2C_hard_api.c BROWSE INTVECTOR(0X2000) INCDIR(.\SrcApi
+                    -\;.\SrcTest\) DEBUG OBJECTEXTEND PRINT(.\lst\SMEC98SP_I2C_hard_api.lst) OBJECT(.\obj\SMEC98SP_I2C_hard_api.obj)
+
+line level    source
+
+   1          //-----------------------------------------------------------------------------
+   2          // COPYRIGHT (c) 2001-2008      Sinormous Technology
+   3          // File: SMEC98SP_I2C_hard_api.c
+   4          //-----------------------------------------------------------------------------
+   5          // ABSTRACT:
+   6          // Test application for SMEC98SP-I2C
+   7          //-----------------------------------------------------------------------------
+   8          // MODIFICATIONS:
+   9          // Author       Date            Description
+  10          // 
+  11          //-----------------------------------------------------------------------------
+  12          
+  13           #include <dw8051.h>
+  14          #include <SMEC98SP_I2C.h>
+  15          
+  16          ///////////////////////////////////////////////////////////////////////////////
+  17          // Set the main clock frequency
+  18          ///////////////////////////////////////////////////////////////////////////////
+  19          void Set_Frequency(unsigned char Freq)
+  20          {
+  21   1              EA=0;
+  22   1              SRVCON|=(0x07&Freq);// Set bits for New Freq
+  23   1              SRVCON&=(0xF8|Freq);// Clr bits for New Freq
+  24   1              EA=1;
+  25   1      }
+  26          
+  27          
+  28          
+  29          
+  30                                                           
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     15    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

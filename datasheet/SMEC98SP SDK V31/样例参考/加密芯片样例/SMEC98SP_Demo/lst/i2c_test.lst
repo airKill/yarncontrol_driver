@@ -1,0 +1,532 @@
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.01
+OBJECT MODULE PLACED IN .\obj\i2c_test.obj
+ASSEMBLER INVOKED BY: C:\Keil_C51\C51\BIN\A51.EXE SrcApi\i2c_test.a51 SET(SMALL) DEBUG PRINT(.\lst\i2c_test.lst) OBJECT(
+                      .\obj\i2c_test.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;$include (.\dw8051.inc)
+                +1     2     ;/*  BYTE Registers  */
+                +1     3     
+                +1     4     ;PSW    DATA  0D0H
+                +1     5     ;ACC    DATA  0E0H
+                +1     6     ;B      DATA  0F0H
+                +1     7     ;SP     DATA  081H
+  0082          +1     8     DPL0   DATA  082H
+  0083          +1     9     DPH0   DATA  083H
+                +1    10     ;PCON   DATA  087H
+                +1    11     ;TCON   DATA  088H
+                +1    12     ;TMOD   DATA  089H
+                +1    13     ;TL0    DATA  08AH
+                +1    14     ;TL1    DATA  08BH
+                +1    15     ;TH0    DATA  08CH
+                +1    16     ;TH1    DATA  08DH
+                +1    17     ;IE     DATA  0A8H
+                +1    18     ;IP     DATA  0B8H
+                +1    19     
+                +1    20     ;/*  DS80C320 Extensions  */
+  0084          +1    21     DPL1   DATA  084H
+  0085          +1    22     DPH1   DATA  085H
+  0086          +1    23     DPS    DATA  086H
+  008E          +1    24     CKCON  DATA  08EH
+                +1    25     
+                +1    26     ;/* DW8051 EXTENSIONS */
+  0092          +1    27     MPAGE   DATA  092H
+                +1    28     ;SPC_FNC        DATA  08FH
+                +1    29     ;EICON          DATA  0D8H
+                +1    30     
+                +1    31     ;/*  BIT Registers  */
+                +1    32     ;/*  PSW  */
+                +1    33     ;CY    BIT  0D7H
+                +1    34     ;AC    BIT  0D6H
+                +1    35     ;F0    BIT  0D5H
+                +1    36     ;RS1   BIT  0D4H
+                +1    37     ;RS0   BIT  0D3H
+                +1    38     ;OV    BIT  0D2H
+                +1    39     ;FL    BIT  0D1H
+                +1    40     ;P     BIT  0D0H
+                +1    41     
+                +1    42     ;/*  TCON  */
+                +1    43     ;TF1   BIT  08FH
+                +1    44     ;TR1   BIT  08EH
+                +1    45     ;TF0   BIT  08DH
+                +1    46     ;TR0   BIT  08CH
+                +1    47     ;IE1   BIT  08BH
+                +1    48     ;IT1   BIT  08AH
+                +1    49     ;IE0   BIT  089H
+                +1    50     ;IT0   BIT  088H
+                +1    51     
+                +1    52     ;/*  IE  */
+                +1    53     ;EA    BIT  0AFH
+                +1    54     ;ES1   BIT  0AEH
+                +1    55     ;ET2   BIT  0ADH
+                +1    56     ;ES0   BIT  0ACH
+                +1    57     ;ET1   BIT  0ABH
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     2
+
+                +1    58     ;EX1   BIT  0AAH
+                +1    59     ;ET0   BIT  0A9H
+                +1    60     ;EX0   BIT  0A8H
+                +1    61     
+                +1    62     ;/*  IP  */
+                +1    63     ;PS1   BIT  0BEH
+                +1    64     ;PT2   BIT  0BDH
+                +1    65     ;PS0   BIT  0BCH
+                +1    66     ;PT1   BIT  0BBH
+                +1    67     ;PX1   BIT  0BAH
+                +1    68     ;PT0   BIT  0B9H
+                +1    69     ;PX0   BIT  0B8H
+                +1    70     
+                +1    71     ;/*  SCON0  */
+                +1    72     ;SM0   BIT  09FH
+                +1    73     ;SM1   BIT  09EH
+                +1    74     ;SM2   BIT  09DH
+                +1    75     ;REN   BIT  09CH
+                +1    76     ;TB8   BIT  09BH
+                +1    77     ;RB8   BIT  09AH
+                +1    78     ;TI    BIT  099H
+                +1    79     ;RI    BIT  098H
+                +1    80     
+                +1    81     
+                +1    82     
+                +1    83     
+                +1    84     
+                      85     
+                      86     ;$include (.\SMEC98SP_I2C.inc)
+                +1    87     ; ---------------------------------------------------------
+                +1    88     ; MMU registers definition
+                +1    89     ; ---------------------------------------------------------
+                +1    90     
+  00B1          +1    91     NVMCLR          DATA 0B1H;      NVM code limit register
+  009A          +1    92     CBS                     DATA 09AH;
+  009B          +1    93     SYSPROT         DATA 09BH;
+  009C          +1    94     DBS16H          DATA 09CH;
+  009D          +1    95     DBS32K          DATA 09DH;
+  009E          +1    96     DBS16L          DATA 09EH;
+                +1    97     
+                +1    98     ; ---------------------------------------------------------
+                +1    99     ; service registers definition
+                +1   100     ; ---------------------------------------------------------
+  00B0          +1   101     TRAP            DATA 0B0H;       TRAP status register           
+  0080          +1   102     SRVCON          DATA 080H;       services control register      
+  00B5          +1   103     TRNG            DATA 0B5H;       TRNG word                      
+  00A4          +1   104     TRIMBG          DATA 0A4H;   Bandgap control register
+  00B9          +1   105     TRIMOSC         DATA 0B9H;       TRIM oscillator register       
+  00BA          +1   106     TRIMVCC         DATA 0BAH;       TRIM regulator register 
+  00A3          +1   107     TRIMTMP         DATA 0A3H;       Bandgap correction temperature
+  00A2          +1   108     TRIMFBIAS       DATA 0A2H;
+  00A5          +1   109     TRIMCKCP        DATA 0A5H;
+  00A1          +1   110     RDMON           DATA 0A1H;
+                +1   111     
+                +1   112     ; ---------------------------------------------------------
+                +1   113     ; ISO7816-3 serial interface sfr registers definition
+                +1   114     ; ---------------------------------------------------------
+  00B2          +1   115     ISOCON          DATA 0B2H;      ISO control/status register
+  00B4          +1   116     ISOTMR          DATA 0B4H;      ISO timer
+  0093          +1   117     ETUCON          DATA 093H;      etu_counter control/status register
+  0094          +1   118     ETUCOUNT        DATA 094H;      etu_counter value
+                +1   119     ;SCON           DATA 098H
+                +1   120     
+                +1   121     ; ---------------------------------------------------------
+                +1   122     ; I2C interface
+                +1   123     ; ---------------------------------------------------------
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     3
+
+  00F8          +1   124     I2CCON          DATA 0xF8;
+  00EB          +1   125     I2CCON2         DATA 0xEB;
+  00EC          +1   126     I2CCON3         DATA 0xEC;
+  00FA          +1   127     I2CADR          DATA 0xFA;
+  00FB          +1   128     I2CXAD          DATA 0xFB;
+  00FC          +1   129     I2CBUF          DATA 0xFC;
+  00FD          +1   130     I2CSTAT         DATA 0xFD;
+  00F9          +1   131     I2CPAD          DATA 0xF9;
+                +1   132     ; ---------------------------------------------------------
+                +1   133     ; GPIO interface
+                +1   134     ; ---------------------------------------------------------
+  00E8          +1   135     GPIODATA        DATA 0xE8;
+  00D8          +1   136     GPIODIR         DATA 0xD8;
+  00E9          +1   137     GPIOPUP         DATA 0xE9;
+                +1   138     ; ---------------------------------------------------------
+                +1   139     ; CRC CCITT V41 accelerator registers definition
+                +1   140     ; ---------------------------------------------------------
+  0095          +1   141     CRCINIH         DATA 095h       ;  Initial value MSB
+  0096          +1   142     CRCINIL         DATA 096h       ;  Initial value MSB
+  0097          +1   143     CRCIO           DATA 097h       ;  Data in/out register 
+                +1   144     
+                +1   145     ; ---------------------------------------------------------
+                +1   146     ; Test controller sfr registers definition
+                +1   147     ; ---------------------------------------------------------
+  00BB          +1   148     TESTREG0        DATA 0BBH;       TEST status register           
+  00BC          +1   149     TESTREG1        DATA 0BCH;       TEST control register  
+  00B6          +1   150     EXPCON          DATA 0B6H;
+  00B7          +1   151     IDCNT           DATA 0B7H;       Authentication counter register
+                +1   152     
+                +1   153     ; ---------------------------------------------------------
+                +1   154     ; Non Volatile memories sfr registers definition
+                +1   155     ; ---------------------------------------------------------
+  0090          +1   156     GPNVM           DATA 090H;       OTP memories control register
+  00A0          +1   157     NVMCTRL         DATA 0A0H;       NVM memories control register 2
+  00BD          +1   158     NVMTEST         DATA 0BDH;
+                +1   159     ;NVMIREF                DATA 0C2H;
+  00BF          +1   160     MASSRD          DATA 0BFH;       Mass read register     
+  00C6          +1   161     CPHV            DATA 0C6H;       Charge pump HV register
+  00C7          +1   162     CPTRIM          DATA 0C7h;       New Charge pump HV register to have fine trimming in erase
+                              operation
+  00C4          +1   163     TIMECON         DATA 0C4H; 
+  00C3          +1   164     SMARTTIME       DATA 0C3H
+  00C5          +1   165     SMARTRD         DATA 0C5H
+  00C6          +1   166     FLASHTEST       DATA 0C6H
+  00C7          +1   167     SPAREREG        DATA 0C7H
+                +1   168     
+                +1   169     ; ---------------------------------------------------------
+                +1   170     ; Default values for ISO7816 SFR registers
+                +1   171     ; ---------------------------------------------------------
+  0000          +1   172     D_SBUF          EQU     00H
+  0000          +1   173     D_SCON          EQU     00H
+  0000          +1   174     D_ETUCON        EQU     00H
+  0000          +1   175     D_ETUCOUNT      EQU     00H
+  0004          +1   176     D_ISOCON        EQU     04H
+  0001          +1   177     D_ISOTMRH       EQU     01H
+  0073          +1   178     D_ISOTMRL       EQU     73H
+  0000          +1   179     D_EXPCON        EQU     00H
+  0000          +1   180     D_IDCNT         EQU     00H
+  0000          +1   181     D_TESTREG0      EQU     00H
+  0000          +1   182     D_TESTREG1      EQU     00H
+                +1   183     
+                +1   184     ; ---------------------------------------------------------
+                +1   185     ; Default values for MMU SFR registers
+                +1   186     ; ---------------------------------------------------------
+  0000          +1   187     D_NVMCLR        EQU     00H
+  0000          +1   188     D_TRAP          EQU     00H
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     4
+
+  0003          +1   189     D_CBS           EQU     03H
+  000F          +1   190     D_SYSPROT       EQU     0FH
+  0008          +1   191     D_DBS16H        EQU     08H
+  0007          +1   192     D_DBS16L        EQU     07H
+  0002          +1   193     D_DBS32K        EQU     02H
+  0028          +1   194     D_MEMLIMIT      EQU     028H
+                +1   195     
+                +1   196     ; ---------------------------------------------------------
+                +1   197     ; Default values for Control Logic SFR registers
+                +1   198     ; ---------------------------------------------------------
+  0000          +1   199     D_TIMECON       EQU     00H
+  0000          +1   200     D_CPHV          EQU     00H
+  0000          +1   201     D_CPTRIM        EQU     00H
+  0000          +1   202     D_GPNVM         EQU     00H
+  0004          +1   203     D_NVMTEST       EQU     04H     ;force NVMTEST.2 = 1
+  0000          +1   204     D_NVMIREF       EQU     00H
+  0008          +1   205     D_MASSRD        EQU     08H
+                +1   206     
+                +1   207     ; ---------------------------------------------------------
+                +1   208     ; Default values for SERV function registers
+                +1   209     ; ---------------------------------------------------------
+  00FF          +1   210     D_TRIMOSC       EQU     0FFH
+  0020          +1   211     D_TRIMVCC       EQU     20H
+  0000          +1   212     D_SRVCON        EQU     00H
+                +1   213     
+                +1   214     ; ---------------------------------------------------------
+                +1   215     ; Interrupt flag
+                +1   216     ; ---------------------------------------------------------
+  00ED          +1   217     DEFAULT_FLAG    EQU     0EDH
+  001E          +1   218     COB_FLAG                EQU     01EH
+  000F          +1   219     DOB_FLAG                EQU     00FH
+  0005          +1   220     ETUCOUNT_FLAG   EQU     005H
+  004B          +1   221     UVD_FLAG                EQU     04BH
+  005A          +1   222     OVD_FLAG                EQU     05AH
+  006B          +1   223     ALL_FLAG                EQU     06BH
+  00E4          +1   224     GPNVM_FLAG              EQU     0E4H
+  00D5          +1   225     IDLE_FLAG               EQU     0D5H
+  00C3          +1   226     VPP_FLAG                EQU     0C3H
+  0002          +1   227     RI_FLAG                 EQU     002H
+  0003          +1   228     TI_FLAG                 EQU     003H
+  0002          +1   229     START_BIT_FLAG  EQU     002H
+                +1   230     
+                +1   231     ;----------------------------------------------------------------------
+                +1   232     ; General Constant definitions for NVM Manager & Bootrom
+                +1   233     ;----------------------------------------------------------------------
+  00D1          +1   234     F1                                                                      EQU PSW.1
+  0050          +1   235     ROM_REVISION_ID                                         EQU     050h
+  0375          +1   236     GPNVM_REWORK_CODE_ADDRESS                       EQU 0375H               ; MLT change becaus
+                             e of size of OtpMassEraseFromRomCode function
+  0400          +1   237     ROM_CODE_END_ADRESSS                            EQU 0400H
+  8000          +1   238     PARAM_START_ADDRESS                             EQU 8000H
+  0040          +1   239     PARAM_SIZE                                                      EQU 0040H
+  001F          +1   240     DBS32K_SYSTEM                                           EQU 001FH
+  001F          +1   241     CBS_SYSTEM                                                      EQU 001FH               ; H
+                             IDE ROM (ROM CODE IN GPNVM FOR TEST) and select code bank 4
+  0000          +1   242     RAM_BUFFER_START_PARAM_ADDRESS          EQU 0000H
+  0040          +1   243     RAM_BUFFER_START_NVMM_ADDRESS           EQU RAM_BUFFER_START_PARAM_ADDRESS + PARAM_SIZE
+  0000          +1   244     GPNVM_USER_START_ADDRESS                        EQU 0000H
+  0400          +1   245     GPNVM_USER_START_AT_0X400                       EQU 0400H
+  8100          +1   246     GPNVM_FLASH_REGISTER_START_ADDRESS      EQU 8100H
+  002A          +1   247     HIDE_ROM_SIG_MSB_CONTENT                        EQU     02AH
+  00C8          +1   248     HIDE_ROM_SIG_LSB_CONTENT                        EQU     0C8H
+  000C          +1   249     TEST_SIG_MSB_CONTENT                            EQU     00CH
+  00BD          +1   250     TEST_SIG_LSB_CONTENT                            EQU     0BDH
+  0025          +1   251     NVMM_SIG_MSB_CONTENT                            EQU     025H
+  00D4          +1   252     NVMM_SIG_LSB_CONTENT                            EQU     0D4H
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     5
+
+  00D6          +1   253     DISTEST_SIG_MSB_CONTENT                         EQU     0D6H
+  0029          +1   254     DISTEST_SIG_LSB_CONTENT                         EQU     029H
+  0043          +1   255     CNT_SIG_MSB_CONTENT                                     EQU     043H
+  00BC          +1   256     CNT_SIG_LSB_CONTENT                                     EQU     0BCH
+  00A5          +1   257     SKIP_EM_NVM_MANAGER_VAL                         EQU 0A5H
+  0044          +1   258     SRVCON_INIT_VAL                                         EQU 044H
+  0060          +1   259     TRIMOSC_INIT_VAL                                        EQU 060H
+  0008          +1   260     TRIMFBIAS_INIT_VAL                                      EQU 008H
+  000B          +1   261     NUMBER_OF_PARAM_TO_CHECK                        EQU 00BH
+  0000          +1   262     GPNVM_USER_START                                        EQU 0000H
+                +1   263     
+                     264     
+                     265     
+                     266             EXTRN   DATA (I2C_count_bytes)
+                     267             EXTRN   DATA (I2C_send_bytes)
+                     268             EXTRN   DATA (I2C_State)
+                     269             EXTRN   XDATA (I2C_Buf)
+                     270             
+                     271     ?PR?I2C_TEST SEGMENT CODE
+                     272     
+                     273             PUBLIC  i2c_xfer
+----                 274             RSEG    ?PR?I2C_TEST
+                     275     
+0000                 276     i2c_xfer:
+0000 43EB80          277             ORL     I2CCON2,#0x80                   ; software reset
+0003 53EB00          278             ANL     I2CCON2,#0x00
+0006 75F844          279             MOV     I2CCON,#0x44            ; enable i2c, set assert_ack enable
+                     280      ;      MOV     I2CCON2,#0x08           ; NO DID detection + clock stretching disabled
+0009 75EB00          281             MOV     I2CCON2,#0x00           ; NO DID detection + clock stretching enabled   
+000C 750000   F      282             MOV             I2C_count_bytes,#00H    ; Clear I2C count
+000F 750000   F      283             MOV             I2C_State,#00H                  ; Clear I2C status
+                     284     
+0012                 285     i2c_xfer_loop:
+0012 30FBFD          286             JNB             I2CCON.3, $
+0015 E5FD            287             MOV             A, I2CSTAT
+0017 64A8            288             XRL             A, #0xA8                                ; DID Addres received + Rea
+                             d  + Ack
+0019 6030            289             JZ              readI2C_send_data
+001B E5FD            290             MOV             A, I2CSTAT
+001D C2FB            291             CLR     I2CCON.3                                ; clear INT flag
+001F B460DE          292             CJNE    A, #0x60, i2c_xfer              ; DID Addres received + Write  + Ack
+                     293             
+0022                 294     WriteI2C_recv_data:
+0022 758200   F      295             MOV             DPL0, #low(I2C_Buf)
+0025 758300   F      296             MOV             DPH0, #high(I2C_Buf)
+0028 750001   F      297             MOV             I2C_State,#01H                  ; I2C status=Write
+002B                 298     recv_lp:
+002B 30FBFD          299             JNB             I2CCON.3, $
+002E E5FC            300             MOV             A, I2CBUF       
+0030 F0              301             MOVX    @DPTR, A
+0031 E500     F      302             MOV             A, I2C_count_bytes                      ;overflow?
+0033 B4FF02          303             CJNE    A,#0xFF, recv_inc
+0036 8003            304             JMP             recv_continue   
+0038                 305     recv_inc:
+0038 A3              306             INC             DPTR
+0039 0500     F      307             INC             I2C_count_bytes
+003B                 308     recv_continue:
+003B E5FD            309             MOV             A, I2CSTAT                                      ; read before "CLR 
+                             I2CCON.3"
+003D FA              310             MOV             R2, A
+003E C2FB            311             CLR             I2CCON.3                                        ; clear INT flag   
+                                                                          
+0040 6480            312             XRL             A, #0x80                                        ; data + ACK
+0042 60E7            313             JZ              recv_lp
+0044 BAA0CB          314             CJNE    R2, #0xA0, i2c_xfer_loop        ; STOP ?
+0047                 315     recv_stop:      
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     6
+
+0047 53F8BF          316             ANL     I2CCON, #0xBF                           ; disable I2C
+004A 22              317             RET
+                     318     
+004B                 319     readI2C_send_data:
+004B 758200   F      320             MOV             DPL0, #low(I2C_Buf)
+004E 758300   F      321             MOV             DPH0, #high(I2C_Buf)
+0051 750002   F      322             MOV             I2C_State,#02H                  ; I2C status=Read
+0054                 323     send_lp:
+0054 E0              324             MOVX    A, @DPTR
+0055 F5FC            325             MOV             I2CBUF,A
+0057 75F844          326             MOV     I2CCON,#0x44            ; enable i2c, set assert_ack enable ; clear IT star
+                             t transmission
+                     327     
+005A E500     F      328             MOV             A, I2C_send_bytes                       ;overflow?
+005C 6006            329             JZ              send_continue
+005E D50002   F      330             DJNZ    I2C_send_bytes, send_inc
+0061 8001            331             JMP             send_continue
+0063                 332     send_inc:
+0063 A3              333             INC             DPTR
+0064                 334     send_continue:
+0064 30FBFD          335             JNB             I2CCON.3, $
+0067 E5FD            336             MOV             A, I2CSTAT
+0069 64B8            337             XRL             A, #0xB8                                        ; master ACK
+006B 60E7            338             JZ              send_lp
+006D 53F8BF          339             ANL     I2CCON, #0xBF                           ; disable I2C
+0070 22              340             RET
+                     341             
+                     342     
+                     343             END
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     7
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                             T Y P E  V A L U E   ATTRIBUTES
+
+?PR?I2C_TEST . . . . . . . . . . .  C SEG    0071H       REL=UNIT
+ALL_FLAG . . . . . . . . . . . . .  N NUMB   006BH   A   
+CBS. . . . . . . . . . . . . . . .  D ADDR   009AH   A   
+CBS_SYSTEM . . . . . . . . . . . .  N NUMB   001FH   A   
+CKCON. . . . . . . . . . . . . . .  D ADDR   008EH   A   
+CNT_SIG_LSB_CONTENT. . . . . . . .  N NUMB   00BCH   A   
+CNT_SIG_MSB_CONTENT. . . . . . . .  N NUMB   0043H   A   
+COB_FLAG . . . . . . . . . . . . .  N NUMB   001EH   A   
+CPHV . . . . . . . . . . . . . . .  D ADDR   00C6H   A   
+CPTRIM . . . . . . . . . . . . . .  D ADDR   00C7H   A   
+CRCINIH. . . . . . . . . . . . . .  D ADDR   0095H   A   
+CRCINIL. . . . . . . . . . . . . .  D ADDR   0096H   A   
+CRCIO. . . . . . . . . . . . . . .  D ADDR   0097H   A   
+DBS16H . . . . . . . . . . . . . .  D ADDR   009CH   A   
+DBS16L . . . . . . . . . . . . . .  D ADDR   009EH   A   
+DBS32K . . . . . . . . . . . . . .  D ADDR   009DH   A   
+DBS32K_SYSTEM. . . . . . . . . . .  N NUMB   001FH   A   
+DEFAULT_FLAG . . . . . . . . . . .  N NUMB   00EDH   A   
+DISTEST_SIG_LSB_CONTENT. . . . . .  N NUMB   0029H   A   
+DISTEST_SIG_MSB_CONTENT. . . . . .  N NUMB   00D6H   A   
+DOB_FLAG . . . . . . . . . . . . .  N NUMB   000FH   A   
+DPH0 . . . . . . . . . . . . . . .  D ADDR   0083H   A   
+DPH1 . . . . . . . . . . . . . . .  D ADDR   0085H   A   
+DPL0 . . . . . . . . . . . . . . .  D ADDR   0082H   A   
+DPL1 . . . . . . . . . . . . . . .  D ADDR   0084H   A   
+DPS. . . . . . . . . . . . . . . .  D ADDR   0086H   A   
+D_CBS. . . . . . . . . . . . . . .  N NUMB   0003H   A   
+D_CPHV . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_CPTRIM . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_DBS16H . . . . . . . . . . . . .  N NUMB   0008H   A   
+D_DBS16L . . . . . . . . . . . . .  N NUMB   0007H   A   
+D_DBS32K . . . . . . . . . . . . .  N NUMB   0002H   A   
+D_ETUCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_ETUCOUNT . . . . . . . . . . . .  N NUMB   0000H   A   
+D_EXPCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_GPNVM. . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_IDCNT. . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_ISOCON . . . . . . . . . . . . .  N NUMB   0004H   A   
+D_ISOTMRH. . . . . . . . . . . . .  N NUMB   0001H   A   
+D_ISOTMRL. . . . . . . . . . . . .  N NUMB   0073H   A   
+D_MASSRD . . . . . . . . . . . . .  N NUMB   0008H   A   
+D_MEMLIMIT . . . . . . . . . . . .  N NUMB   0028H   A   
+D_NVMCLR . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_NVMIREF. . . . . . . . . . . . .  N NUMB   0000H   A   
+D_NVMTEST. . . . . . . . . . . . .  N NUMB   0004H   A   
+D_SBUF . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SCON . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SRVCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SYSPROT. . . . . . . . . . . . .  N NUMB   000FH   A   
+D_TESTREG0 . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TESTREG1 . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TIMECON. . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TRAP . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TRIMOSC. . . . . . . . . . . . .  N NUMB   00FFH   A   
+D_TRIMVCC. . . . . . . . . . . . .  N NUMB   0020H   A   
+ETUCON . . . . . . . . . . . . . .  D ADDR   0093H   A   
+ETUCOUNT . . . . . . . . . . . . .  D ADDR   0094H   A   
+ETUCOUNT_FLAG. . . . . . . . . . .  N NUMB   0005H   A   
+EXPCON . . . . . . . . . . . . . .  D ADDR   00B6H   A   
+F1 . . . . . . . . . . . . . . . .  B ADDR   00D0H.1 A   
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     8
+
+FLASHTEST. . . . . . . . . . . . .  D ADDR   00C6H   A   
+GPIODATA . . . . . . . . . . . . .  D ADDR   00E8H   A   
+GPIODIR. . . . . . . . . . . . . .  D ADDR   00D8H   A   
+GPIOPUP. . . . . . . . . . . . . .  D ADDR   00E9H   A   
+GPNVM. . . . . . . . . . . . . . .  D ADDR   0090H   A   
+GPNVM_FLAG . . . . . . . . . . . .  N NUMB   00E4H   A   
+GPNVM_FLASH_REGISTER_START_ADDRESS  N NUMB   8100H   A   
+GPNVM_REWORK_CODE_ADDRESS. . . . .  N NUMB   0375H   A   
+GPNVM_USER_START . . . . . . . . .  N NUMB   0000H   A   
+GPNVM_USER_START_ADDRESS . . . . .  N NUMB   0000H   A   
+GPNVM_USER_START_AT_0X400. . . . .  N NUMB   0400H   A   
+HIDE_ROM_SIG_LSB_CONTENT . . . . .  N NUMB   00C8H   A   
+HIDE_ROM_SIG_MSB_CONTENT . . . . .  N NUMB   002AH   A   
+I2CADR . . . . . . . . . . . . . .  D ADDR   00FAH   A   
+I2CBUF . . . . . . . . . . . . . .  D ADDR   00FCH   A   
+I2CCON . . . . . . . . . . . . . .  D ADDR   00F8H   A   
+I2CCON2. . . . . . . . . . . . . .  D ADDR   00EBH   A   
+I2CCON3. . . . . . . . . . . . . .  D ADDR   00ECH   A   
+I2CPAD . . . . . . . . . . . . . .  D ADDR   00F9H   A   
+I2CSTAT. . . . . . . . . . . . . .  D ADDR   00FDH   A   
+I2CXAD . . . . . . . . . . . . . .  D ADDR   00FBH   A   
+I2C_BUF. . . . . . . . . . . . . .  X ADDR   -----       EXT
+I2C_COUNT_BYTES. . . . . . . . . .  D ADDR   -----       EXT
+I2C_SEND_BYTES . . . . . . . . . .  D ADDR   -----       EXT
+I2C_STATE. . . . . . . . . . . . .  D ADDR   -----       EXT
+I2C_XFER . . . . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?I2C_TEST
+I2C_XFER_LOOP. . . . . . . . . . .  C ADDR   0012H   R   SEG=?PR?I2C_TEST
+IDCNT. . . . . . . . . . . . . . .  D ADDR   00B7H   A   
+IDLE_FLAG. . . . . . . . . . . . .  N NUMB   00D5H   A   
+ISOCON . . . . . . . . . . . . . .  D ADDR   00B2H   A   
+ISOTMR . . . . . . . . . . . . . .  D ADDR   00B4H   A   
+MASSRD . . . . . . . . . . . . . .  D ADDR   00BFH   A   
+MPAGE. . . . . . . . . . . . . . .  D ADDR   0092H   A   
+NUMBER_OF_PARAM_TO_CHECK . . . . .  N NUMB   000BH   A   
+NVMCLR . . . . . . . . . . . . . .  D ADDR   00B1H   A   
+NVMCTRL. . . . . . . . . . . . . .  D ADDR   00A0H   A   
+NVMM_SIG_LSB_CONTENT . . . . . . .  N NUMB   00D4H   A   
+NVMM_SIG_MSB_CONTENT . . . . . . .  N NUMB   0025H   A   
+NVMTEST. . . . . . . . . . . . . .  D ADDR   00BDH   A   
+OVD_FLAG . . . . . . . . . . . . .  N NUMB   005AH   A   
+PARAM_SIZE . . . . . . . . . . . .  N NUMB   0040H   A   
+PARAM_START_ADDRESS. . . . . . . .  N NUMB   8000H   A   
+PSW. . . . . . . . . . . . . . . .  D ADDR   00D0H   A   
+RAM_BUFFER_START_NVMM_ADDRESS. . .  N NUMB   0040H   A   
+RAM_BUFFER_START_PARAM_ADDRESS . .  N NUMB   0000H   A   
+RDMON. . . . . . . . . . . . . . .  D ADDR   00A1H   A   
+READI2C_SEND_DATA. . . . . . . . .  C ADDR   004BH   R   SEG=?PR?I2C_TEST
+RECV_CONTINUE. . . . . . . . . . .  C ADDR   003BH   R   SEG=?PR?I2C_TEST
+RECV_INC . . . . . . . . . . . . .  C ADDR   0038H   R   SEG=?PR?I2C_TEST
+RECV_LP. . . . . . . . . . . . . .  C ADDR   002BH   R   SEG=?PR?I2C_TEST
+RECV_STOP. . . . . . . . . . . . .  C ADDR   0047H   R   SEG=?PR?I2C_TEST
+RI_FLAG. . . . . . . . . . . . . .  N NUMB   0002H   A   
+ROM_CODE_END_ADRESSS . . . . . . .  N NUMB   0400H   A   
+ROM_REVISION_ID. . . . . . . . . .  N NUMB   0050H   A   
+SEND_CONTINUE. . . . . . . . . . .  C ADDR   0064H   R   SEG=?PR?I2C_TEST
+SEND_INC . . . . . . . . . . . . .  C ADDR   0063H   R   SEG=?PR?I2C_TEST
+SEND_LP. . . . . . . . . . . . . .  C ADDR   0054H   R   SEG=?PR?I2C_TEST
+SKIP_EM_NVM_MANAGER_VAL. . . . . .  N NUMB   00A5H   A   
+SMARTRD. . . . . . . . . . . . . .  D ADDR   00C5H   A   
+SMARTTIME. . . . . . . . . . . . .  D ADDR   00C3H   A   
+SPAREREG . . . . . . . . . . . . .  D ADDR   00C7H   A   
+SRVCON . . . . . . . . . . . . . .  D ADDR   0080H   A   
+SRVCON_INIT_VAL. . . . . . . . . .  N NUMB   0044H   A   
+START_BIT_FLAG . . . . . . . . . .  N NUMB   0002H   A   
+SYSPROT. . . . . . . . . . . . . .  D ADDR   009BH   A   
+TESTREG0 . . . . . . . . . . . . .  D ADDR   00BBH   A   
+A51 MACRO ASSEMBLER  I2C_TEST                                                             04/22/2019 22:49:14 PAGE     9
+
+TESTREG1 . . . . . . . . . . . . .  D ADDR   00BCH   A   
+TEST_SIG_LSB_CONTENT . . . . . . .  N NUMB   00BDH   A   
+TEST_SIG_MSB_CONTENT . . . . . . .  N NUMB   000CH   A   
+TIMECON. . . . . . . . . . . . . .  D ADDR   00C4H   A   
+TI_FLAG. . . . . . . . . . . . . .  N NUMB   0003H   A   
+TRAP . . . . . . . . . . . . . . .  D ADDR   00B0H   A   
+TRIMBG . . . . . . . . . . . . . .  D ADDR   00A4H   A   
+TRIMCKCP . . . . . . . . . . . . .  D ADDR   00A5H   A   
+TRIMFBIAS. . . . . . . . . . . . .  D ADDR   00A2H   A   
+TRIMFBIAS_INIT_VAL . . . . . . . .  N NUMB   0008H   A   
+TRIMOSC. . . . . . . . . . . . . .  D ADDR   00B9H   A   
+TRIMOSC_INIT_VAL . . . . . . . . .  N NUMB   0060H   A   
+TRIMTMP. . . . . . . . . . . . . .  D ADDR   00A3H   A   
+TRIMVCC. . . . . . . . . . . . . .  D ADDR   00BAH   A   
+TRNG . . . . . . . . . . . . . . .  D ADDR   00B5H   A   
+UVD_FLAG . . . . . . . . . . . . .  N NUMB   004BH   A   
+VPP_FLAG . . . . . . . . . . . . .  N NUMB   00C3H   A   
+WRITEI2C_RECV_DATA . . . . . . . .  C ADDR   0022H   R   SEG=?PR?I2C_TEST
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

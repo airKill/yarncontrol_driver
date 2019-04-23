@@ -1,0 +1,474 @@
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE C_ROOT
+OBJECT MODULE PLACED IN .\obj\c_root.obj
+COMPILER INVOKED BY: C:\Keil_C51\C51\BIN\C51.EXE SrcTest\c_root.C BROWSE INTVECTOR(0X2000) INCDIR(.\SrcApi\;.\SrcTest\) 
+                    -DEBUG OBJECTEXTEND PRINT(.\lst\c_root.lst) OBJECT(.\obj\c_root.obj)
+
+line level    source
+
+   1          //-----------------------------------------------------------------------------
+   2          // COPYRIGHT (c) 2001-2008      Sinormous Technology
+   3          // File: C_ROOT.C
+   4          //-----------------------------------------------------------------------------
+   5          // ABSTRACT:
+   6          // Test application for SMEC98SP-I2C
+   7          //-----------------------------------------------------------------------------
+   8          // MODIFICATIONS:
+   9          // Author       Date            Description
+  10          // ³ÂÎÄ
+  11          //ÈçÓÐÎÊÌâÇëÁªÏµ
+  12          //QQ£º26600347   £¨¼ÓºÃÓÑ×¢Ã÷¼ÓÃÜÐ¾Æ¬£©
+  13           #include <string.h>
+  14           
+  15          #include <SMEC98SP_I2C.h>
+  16          #include <SMEC98SP_I2C_hard_api.h>
+  17          #include <SMEC98SP_API.h>
+  18          
+  19          #include <global.h>
+  20          #include <variable.h>
+  21          #include <Sha1.h>
+  22          
+  23                  unsigned char code gInternalKey[16] = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0
+             -x0D,0x0E,0x0F};//ÄÚ²¿ÈÏÖ¤ÃÜÔ¿,±ØÐëºÍSMEC98SPÒ»ÖÂ
+  24                  unsigned char code gExternalKey[16] = {0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0
+             -x1D,0x1E,0x1F};//Íâ²¿ÈÏÖ¤ÃÜÔ¿,±ØÐëºÍSMEC98SPÒ»ÖÂ
+  25                  unsigned char code gSHA1_Key[16] = {0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2C,0x2D
+             -,0x2E,0x2F};   //¹þÏ£Ëã·¨ÈÏÖ¤ÃÜÔ¿,±ØÐëºÍSMEC98SPÒ»ÖÂ
+  26                  unsigned char code gMKey[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x3A,0x3B,0x3C,0x3D,0x3
+             -E,0x3F};   //Ö÷¿ØÃÜÔ¿,ÓÃÓÚ²úÉú¹ý³ÌÃÜÔ¿,±ØÐëºÍSMEC98SPÒ»ÖÂ
+  27                  unsigned char code gPin[8] = {0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc};                 //PinÈÏÖ¤ÃÜÔ¿,±ØÐëºÍSMEC98SPÒ»Ö
+             -Â
+  28          
+  29                  unsigned char gbSessionKey[8];                                                                                          //´æ·Å¹ý³ÌÃÜÔ¿,¹ý³ÌÃÜÔ¿ÎªÁÙÊ±²úÉúµÄÃÜÔ¿
+  30                  unsigned char gbSessionFlag;                                                                                                    //ÓÃÓÚ¼ÇÂ¼ÊÇ·ñ²úÉúÁË¹ý³ÌÃÜÔ¿
+  31          
+  32          
+  33          /****************************************************************************
+  34          *   ¹¦ÄÜ£ºI2C´¦Àíº¯Êý
+  35          *   ±¸×¢£º
+  36          *         Ã¿Ò»ÌõI2CÖ¸Áî,ÓÉI2C Write ¼° I2C Read³É¶Ô×é³É. 
+  37          *         I2C Write ½«ÃüÁîÍ·¼°Êý¾Ý´«ÈëSMEC98SP, È»ºóÓÉSMEC98SP½âÎö²¢Ö´ÐÐÃüÁî, È»ºó½«Ö´ÐÐ½á¹û´æ·ÅÔÚI2C_BufÖ
+             -Ð,µÈ´ýÍâ²¿Ö÷¿ØÓÃI2C Read¶ÁÈ¡
+  38          *
+  39          *                 I2C Write¸ñÊ½: 4×Ö½ÚÃüÁîÍ· + Êý¾ÝÓò×é³É
+  40          *                                4×Ö½ÚÃüÁîÍ·(I2C_Buf[0~4]): I2C_INS + I2C_P1 + I2C_P2 + I2C_P3 
+  41          *                                                I2C_INS: ÎªÃüÁîÀàÐÍ, Èç:PINÑéÖ¤, ¶ÁÐ´FLASH, ÄÚÍâ²¿ÈÏÖ¤µÈµÈ
+  42          *                                                I2C_P1,I2C_P2: Ïà¹ØÃüÁîÀàÐÍµÄ²ÎÊý
+  43          *                                                I2C_P3: I2C WriteÊý¾ÝÓòµÄ³¤¶È »òÕß ÆÚÍûI2C Read·µ»Ø½á¹ûµÄÊý¾Ý³¤¶È
+  44          *
+  45          *                 I2C Read¸ñÊ½:  I2C_Buf[0~1]´æ·ÅÖ´ÐÐ½á¹û + ÐèÒª·µ»ØµÄÊý¾Ý
+  46          *
+  47          *   ÓÐ¹ØI2CÍ¨Ñ¶µÄÈ«¾Ö±äÁ¿ËµÃ÷:
+  48          *         I2C_Buf: I2C Write/Read µÄÊý¾Ý´æ·ÅÆðÊ¼µØÖ·
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 2   
+
+  49          *         I2C_count_bytes: ÈôI2C×ÜÏßÃüÁîÎªwrite£¬½ÓÊÕµ½µÄÊý¾Ý³¤¶È¡£
+  50          *         I2C_send_bytes: ÈôI2C×ÜÏßÃüÁîÎªI2C Read£¬¼ÓÃÜÐ¾Æ¬ÐèÒª·¢ËÍµÄÊý¾Ý³¤¶È¡£Èç¹ûÍâ²¿Ð¾Æ¬I2C¶Á³¬¹ý´Ë³¤¶È
+             -,Ôò·¢ËÍ×îºóÒ»¸ö×Ö½Ú
+  51          *         I2C_State: µ±Ç°I2C×ÜÏß×´Ì¬, 0x01 - I2C Write²Ù×÷, 0x02 - I2C Read²Ù×÷
+  52          *****************************************************************************/
+  53          void i2c_CommandProc(void)
+  54          {
+  55   1              dword   addr;   
+  56   1              byte    i;
+  57   1              byte    bLenP3;
+  58   1              
+  59   1              if(I2C_P3 > I2C_MEMSIZE)
+  60   1              {
+  61   2                      SW=0x6700;
+  62   2                      return;
+  63   2              }       
+  64   1      
+  65   1              I2C_send_bytes = 2;     //deafult only return 2bytes SW (I2C_Buf[0]+I2C_Buf[1])
+  66   1              bLenP3 = I2C_P3;        //
+  67   1              switch (I2C_INS)
+  68   1              {
+  69   2                      //-----------------------------
+  70   2                      //PinÈÏÖ¤        CMD = 70 00 00 08 0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc              
+  71   2                      //-----------------------------
+  72   2                      case 0x70:              
+  73   2                              if(I2C_Buf[3] != 0x08)
+  74   2                              {
+  75   3                                      I2C_Buf[0] = 0x67;
+  76   3                                      I2C_Buf[1] = 0x00;
+  77   3                                      return;
+  78   3                              }
+  79   2                              if (memcmp(&I2C_Buf[4],gPin,sizeof(gPin)))
+  80   2                              {
+  81   3                                      I2C_Buf[0] = 0x69;
+  82   3                                      I2C_Buf[1] = 0x82;
+  83   3                              }
+  84   2                              else
+  85   2                              {
+  86   3                                      I2C_Buf[0] = 0x90;                      //ÈÏÖ¤ÕýÈ·
+  87   3                                      I2C_Buf[1] = 0x00;
+  88   3                              }
+  89   2                              I2C_send_bytes=2;
+  90   2                              break;
+  91   2      
+  92   2                      //-----------------------------
+  93   2                      //¹þÏ£Ëã·¨ÈÏÖ¤   CMD = 71 00 00 10 0x00,0x11,..............0xff (0x00~0xff,16×Ö½ÚÎªÊäÈëµÄÈÏÖ¤Êý¾Ý
+  94   2                      //-----------------------------
+  95   2                      case 0x71:
+  96   2                              SHA1Init( &Sha1_Context );
+  97   2                              SHA1Update(&Sha1_Context, &gSHA1_Key[0], sizeof(gSHA1_Key)); //ÏÈ½«SHA1_Key×öÒ»´ÎHashÔËËã, SHA1_Key²»»á
+             -ÔÚI2CÏßÂ·ÉÏ´«Êä
+  98   2                              SHA1Update(&Sha1_Context, &I2C_Buf[4], I2C_P3);
+  99   2                              SHA1Final( &I2C_Buf[2], &Sha1_Context); //ÔËËã½á¹ûÎª20¸ö×Ö½Ú£¬Ö÷¿Øµ¥Æ¬»úÍ¨¹ýÏàÍ¬Ëã·¨µÃ³öÍ¬ÑùµÄ½á¹û±È½ÏÒ
+             -»ÖÂÎªÍ¨¹ý
+ 100   2                              I2C_Buf[0] = 0x90;
+ 101   2                              I2C_Buf[1] = 0x00;
+ 102   2                              I2C_send_bytes = 20 + 2;
+ 103   2                              break;
+ 104   2      
+ 105   2                      //-----------------------------
+ 106   2                      //ÊµÏÖÒ»¸ö¼òµ¥Ëã·¨£¬¼ÆËãÔ²ÖÜ³¤£¬Íâ²¿ÊäÈëµÄÊÇ°ë¾¶£¬¼ÆËã³öÖÜ³¤¡£C = 2*3.14*R      
+ 107   2                      //CMD = 72 00 00 01 R
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 3   
+
+ 108   2                      //RÖ»ÓÐÒ»¸ö×Ö½Ú£¬·µ»ØÖµÒ²ÊÇ1×Ö½Ú£¬×¢Òâ²»Òª³¬³ö·¶Î§¡£
+ 109   2                      //-----------------------------
+ 110   2                      case 0x72:
+ 111   2                              I2C_Buf[0] = 0x90;
+ 112   2                              I2C_Buf[1] = 0x00;
+ 113   2                              I2C_Buf[2] = (2*314*I2C_Buf[4])/100;                    //I2C_Buf[4]ÊÇR£¬°ë¾¶
+ 114   2                              I2C_send_bytes = 1 + 2;
+ 115   2                              break;
+ 116   2      
+ 117   2                      //-----------------------------
+ 118   2                      //ÊµÏÖÒ»¸ö¼òµ¥Ëã·¨£¬¼ÆËãÔ²ÖÜ³¤£¬Íâ²¿ÊäÈëµÄÊÇ°ë¾¶£¬¼ÆËã³öÖÜ³¤¡£C = 2*3.14*R      
+ 119   2                      //CMD = 73 00 00 08 RÃÜÎÄ
+ 120   2                      //½âÃÜºóRÖ»ÓÐÒ»¸ö×Ö½Ú£¬·µ»ØÖµ¼ÓÃÜÇ°Ò²ÊÇ1×Ö½Ú£¬×¢Òâ²»Òª³¬³ö·¶Î§¡£
+ 121   2                      //ÀûÓÃ¹ý³ÌÃÜÔ¿¼ÓÃÜ´«½øÀ´ºó,ÔËËãºó,ÔÙÀûÓÃ¹ý³ÌÃÜÔ¿½«½á¹û¼ÓÃÜÊä³ö
+ 122   2                      //-----------------------------
+ 123   2                      case 0x73:
+ 124   2                              if((gbSessionFlag == 0) || (I2C_P3 != 8))       //Èç¹ûÃ»ÓÐ²úÉú¹ý³ÌÃÜÔ¿ »òÕß³¤¶È²»Îª8
+ 125   2                              {
+ 126   3                                      I2C_Buf[0] = 0x6A;
+ 127   3                                      I2C_Buf[1] = 0x86;
+ 128   3                                      return;
+ 129   3                              }
+ 130   2                              HW_DES(SIMPLE_DES_DE, gbSessionKey, &I2C_Buf[4], &I2C_Buf[4]);    //½«ÊäÈëÊý¾ÝÓÃ¹ý³ÌÃÜÔ¿½âÃÜ
+ 131   2      
+ 132   2                              I2C_Buf[2] = (2*314*I2C_Buf[4])/100;                    //I2C_Buf[4]ÊÇR£¬°ë¾¶. ¼ÆËã½á¹û´æ·ÅÔÚI2C_Buf[2]
+ 133   2                              memset(&I2C_Buf[3], 0x00, 7);                                   //²»Ïà¹ØµÄÊý¾ÝÇå³É0x00, »òÉèÖÃ³ÉÆäËûÊý¾Ý
+ 134   2                              HW_DES(SIMPLE_DES_EN, gbSessionKey, &I2C_Buf[2], &I2C_Buf[2]);          //½«¼ÆËã½á¹ûI2C_Buf[2]ÓÃ¹ý³ÌÃÜÔ¿¼ÓÃÜ, 
+ 135   2                              I2C_Buf[0] = 0x90;
+ 136   2                              I2C_Buf[1] = 0x00;
+ 137   2                              I2C_send_bytes = bLenP3 + 2;
+ 138   2                              break;
+ 139   2      
+ 140   2                      //-----------------------------
+ 141   2                      //Íâ²¿ÈÏÖ¤       CMD = 82 00 00 08
+ 142   2                      //Íâ²¿Ð¾Æ¬¶ÔÉÏ´Î¼ÓÃÜÐ¾Æ¬²úÉú²¢ËÍ³öµÄËæ»úÊýÓÃÍâ²¿ÈÏÖ¤ÃÜÔ¿×ö3DES¼ÓÃÜ£¬²¢°ÑÃÜÎÄ
+ 143   2                      //ËÍÈë¼ÓÃÜÐ¾Æ¬£¬¼ÓÃÜÐ¾Æ¬¶ÔËÍÈëÊý¾Ý½âÃÜ£¬±È½Ï½âÃÜµÄÊý¾ÝÊÇ·ñÎªÉÏ´Î²úÉúµÄËæ»úÊý£¬ÓÃÓÚ¼ÓÃÜÐ¾Æ¬ÑéÖ¤Íâ²¿Ð¾Æ¬µÄ
+             -ºÏ·¨ÐÔ
+ 144   2                      //-----------------------------
+ 145   2                      case 0x82:
+ 146   2                              if(I2C_P3 != 0x08 || I2C_P1 || I2C_P2)
+ 147   2                              {
+ 148   3                                      I2C_Buf[0] = 0x6A;
+ 149   3                                      I2C_Buf[1] = 0x86;
+ 150   3                                      return;
+ 151   3                              }
+ 152   2      
+ 153   2                              HW_DES(TRIPLE_DES_DE, gExternalKey, &I2C_Buf[4], &I2C_Buf[2]);
+ 154   2                              
+ 155   2                              if (memcmp(&I2C_Buf[2],Random_Number,8))
+ 156   2                              {
+ 157   3                                      I2C_Buf[0] = 0x69;
+ 158   3                                      I2C_Buf[1] = 0x82;
+ 159   3                              }
+ 160   2                              else
+ 161   2                              {
+ 162   3                                      I2C_Buf[0] = 0x90;
+ 163   3                                      I2C_Buf[1] = 0x00;
+ 164   3                              }
+ 165   2      
+ 166   2                              break;
+ 167   2      
+ 168   2                      //-----------------------------
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 4   
+
+ 169   2                      //È¡Ð¾Æ¬Î¨Ò»ÐòÁÐºÅ       CMD = 83 00 00 P3
+ 170   2                      //-----------------------------
+ 171   2                      case 0x83:
+ 172   2                              if(I2C_P3 != 0x0C || I2C_P1 || I2C_P2)
+ 173   2                              {
+ 174   3                                      I2C_Buf[0] = 0x6A;
+ 175   3                                      I2C_Buf[1] = 0x86;
+ 176   3                                      return;
+ 177   3                              }
+ 178   2                              GetChipID(&I2C_Buf[2]);
+ 179   2                              I2C_Buf[0] = 0x90;
+ 180   2                              I2C_Buf[1] = 0x00;
+ 181   2                              I2C_send_bytes = bLenP3 + 2;
+ 182   2                              break;
+ 183   2      
+ 184   2                      //-----------------------------
+ 185   2                      //È¡Ëæ»úÊý       CMD = 84 00 00 P3
+ 186   2                      //-----------------------------
+ 187   2                      case 0x84:
+ 188   2                              if(I2C_P1 || I2C_P2)
+ 189   2                              {
+ 190   3                                      I2C_Buf[0] = 0x6A;
+ 191   3                                      I2C_Buf[1] = 0x86;
+ 192   3                                      return;
+ 193   3                              }
+ 194   2                              Random_Number_Generator_Get(&I2C_Buf[2], bLenP3);
+ 195   2                              memcpy(Random_Number, &I2C_Buf[2], 8);
+ 196   2                              I2C_Buf[0] = 0x90;
+ 197   2                              I2C_Buf[1] = 0x00;
+ 198   2                              I2C_send_bytes = bLenP3 + 2;
+ 199   2                              break;
+ 200   2      
+ 201   2                      //-----------------------------
+ 202   2                      //ÄÚ²¿ÈÏÖ¤       CMD = 88 00 00 08 D0~D7
+ 203   2                      //¶ÔÍâ²¿ÊäÈëµÄÊý¾ÝÓÃÄÚ²¿ÈÏÖ¤ÃÜÔ¿×ö3DES¼ÓÃÜ£¬ÓÃÓÚÍâ²¿ÑéÖ¤¼ÓÃÜÐ¾Æ¬µÄºÏ·¨ÐÔ
+ 204   2                      //-----------------------------
+ 205   2                      case 0x88:
+ 206   2                              if(I2C_P3 != 0x08 || I2C_P1 || I2C_P2)
+ 207   2                              {
+ 208   3                                      I2C_Buf[0] = 0x6A;
+ 209   3                                      I2C_Buf[1] = 0x86;
+ 210   3                                      return;
+ 211   3                              }
+ 212   2                              HW_DES(TRIPLE_DES_EN, gInternalKey, &I2C_Buf[4], &I2C_Buf[2]);
+ 213   2                              
+ 214   2                              I2C_Buf[0] = 0x90;
+ 215   2                              I2C_Buf[1] = 0x00;
+ 216   2                              I2C_send_bytes = 8 + 2;
+ 217   2                              break;
+ 218   2      
+ 219   2                      //-----------------------------
+ 220   2                      //²úÉú¹ý³ÌÃÜÔ¿, CMD = A0 00 00 08 D0~D7
+ 221   2                      //¹ý³ÌÃÜÔ¿¿ÉÓÃÓÚÃÜÎÄ¶Á³öFlashÊý¾Ý,¼°Ïà¹ØÔËËãµÈ
+ 222   2                      //¹ý³ÌÃÜÔ¿µÄ²úÉú:  gMKey ¶Ô (Íâ²¿ËÍÈëµÄËæ»úÊý ^ SMEC98SPËæ»úÊý)×ö3DES¼ÓÃÜÔËËã
+ 223   2                      //-----------------------------
+ 224   2                      case 0xA0:
+ 225   2                              if(I2C_P3 != 0x08 || I2C_P1 || I2C_P2)
+ 226   2                              {
+ 227   3                                      I2C_Buf[0] = 0x6A;
+ 228   3                                      I2C_Buf[1] = 0x86;
+ 229   3                                      return;
+ 230   3                              }
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 5   
+
+ 231   2                              Random_Number_Generator_Get(&Random_Number[0], 8);
+ 232   2                              for(i = 0; i < 8; i++)
+ 233   2                              {
+ 234   3                                      I2C_Buf[4 + i] ^= Random_Number[i];
+ 235   3                              }
+ 236   2                              HW_DES(TRIPLE_DES_EN, gMKey, &I2C_Buf[4], &gbSessionKey[0]);    //½«¹ý³ÌÃÜÔ¿±£´æÔÚgbSessionKey
+ 237   2                              memcpy(&I2C_Buf[2], Random_Number, 8);                                                  //½«SMEC98SP²úÉúµÄÃÜÔ¿ËÍ³ö¸øÍâ²¿Ö÷¿ØÐ¾Æ¬
+ 238   2                              gbSessionFlag = 1;                                                                                              //ÖÃÒÑ¾­²úÉúÁË¹ý³ÌÃÜÔ¿±êÖ¾
+ 239   2                              I2C_Buf[0] = 0x90;
+ 240   2                              I2C_Buf[1] = 0x00;
+ 241   2                              I2C_send_bytes = 8 + 2;
+ 242   2                              break;
+ 243   2      
+ 244   2                      //-----------------------------
+ 245   2                      //¶Ë¿ÚÊý¾ÝÔËËã, CMD = A2 00 00 08 D0~D7
+ 246   2                      //½«´«ÈëÊý¾ÝÓÃ¹ý³ÌÃÜÔ¿½âÃÜºó,×÷ÔËËã(È¡·´),È»ºóÔÙÓÃ¹ý³ÌÃÜÔ¿¼ÓÃÜËÍ³ö¸øÍâ²¿Ö÷¿ØÐ¾Æ¬
+ 247   2                      //-----------------------------
+ 248   2                      case 0xA2:
+ 249   2                              if((gbSessionFlag == 0) || (I2C_P3 != 0x08) || I2C_P1 || I2C_P2)
+ 250   2                              {
+ 251   3                                      I2C_Buf[0] = 0x6A;
+ 252   3                                      I2C_Buf[1] = 0x86;
+ 253   3                                      return;
+ 254   3                              }
+ 255   2                              HW_DES(SIMPLE_DES_DE, gbSessionKey, &I2C_Buf[4], &I2C_Buf[2]);  //½«ÊäÈëÊý¾Ý½âÃÜ
+ 256   2                              for(i = 0; i < 8; i ++)
+ 257   2                              {
+ 258   3                                      I2C_Buf[2 + i] ^= 0xFF;                                 //½âÃÜºóÊý¾ÝÈ¡·´, ºó½øÐÐ¼ÓÃÜ
+ 259   3                              }
+ 260   2                              HW_DES(SIMPLE_DES_EN, gbSessionKey, &I2C_Buf[2], &I2C_Buf[2]);  //¼ÓÃÜËÍ³ö
+ 261   2                              I2C_Buf[0] = 0x90;
+ 262   2                              I2C_Buf[1] = 0x00;
+ 263   2                              I2C_send_bytes = 8 + 2;
+ 264   2                              break;
+ 265   2      
+ 266   2                      //-----------------------------
+ 267   2                      //¶ÁÈ¡FLASH      CMD = B0 P1 P2 P3
+ 268   2                      //-----------------------------
+ 269   2                      case 0xB0:
+ 270   2                              addr = ((I2C_P1 << 8) + I2C_P2);
+ 271   2                              if(FlashReadNBytes(bLenP3, &I2C_Buf[2], addr) != SUCCESSFULL)
+ 272   2                              {
+ 273   3                                      I2C_Buf[0] = 0x65;
+ 274   3                                      I2C_Buf[1] = 0x81;
+ 275   3                              }
+ 276   2                              else
+ 277   2                              {
+ 278   3                                      I2C_Buf[0] = 0x90;
+ 279   3                                      I2C_Buf[1] = 0x00;
+ 280   3                                      I2C_send_bytes = bLenP3 + 2;
+ 281   3                              }
+ 282   2                              break;
+ 283   2      
+ 284   2                      //-----------------------------
+ 285   2                      //ÃÜÎÄ¶ÁÊý¾Ý    CMD = B1 00 00 08 data0~data7
+ 286   2                      //¶ÁÈ¡³¤¶È±ØÐëÎª8µÄÕûÊý±¶,¶ÁÈ¡½á¹ûÓÉ¹ý³ÌÃÜÔ¿gbSessionKey×öDES¼ÓÃÜºóËÍ³ö
+ 287   2                      //-----------------------------
+ 288   2                      case 0xB1:
+ 289   2                              if((gbSessionFlag == 0) || (I2C_P3 % 8))        //Èç¹ûÃ»ÓÐ²úÉú¹ý³ÌÃÜÔ¿ »òÕß³¤¶È²»Îª8µÄÕûÊý±¶
+ 290   2                              {
+ 291   3                                      I2C_Buf[0] = 0x6A;
+ 292   3                                      I2C_Buf[1] = 0x86;
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 6   
+
+ 293   3                                      return;
+ 294   3                              }
+ 295   2      
+ 296   2                              addr = ((I2C_P1 << 8) + I2C_P2);
+ 297   2                              if(FlashReadNBytes(bLenP3, &I2C_Buf[2], addr) != SUCCESSFULL)
+ 298   2                              {
+ 299   3                                      I2C_Buf[0] = 0x65;
+ 300   3                                      I2C_Buf[1] = 0x81;
+ 301   3                                      return;
+ 302   3                              }
+ 303   2                              
+ 304   2                              for(i = 0; i < bLenP3; i += 8)
+ 305   2                              {
+ 306   3                                      HW_DES(SIMPLE_DES_EN, gbSessionKey, &I2C_Buf[i + 2], &I2C_Buf[i + 2]);
+ 307   3                              }
+ 308   2      
+ 309   2                              I2C_Buf[0] = 0x90;
+ 310   2                              I2C_Buf[1] = 0x00;
+ 311   2                              I2C_send_bytes = bLenP3 + 2;
+ 312   2                      break;          
+ 313   2                              
+ 314   2                      //-----------------------------
+ 315   2                      //²ÁFLASH       CMD = D0 P1 P2 00
+ 316   2                      //-----------------------------
+ 317   2                      case 0xD0:      
+ 318   2                              addr = ((I2C_P1 << 8) + I2C_P2);
+ 319   2                              if(FlashErasePage(addr) != SUCCESSFULL)
+ 320   2                              {
+ 321   3                                      I2C_Buf[0] = 0x65;
+ 322   3                                      I2C_Buf[1] = 0x81;
+ 323   3                              }
+ 324   2                              else
+ 325   2                              {
+ 326   3                                      I2C_Buf[0] = 0x90;
+ 327   3                                      I2C_Buf[1] = 0x00;
+ 328   3                              }
+ 329   2                              break;
+ 330   2                      
+ 331   2                      //-----------------------------
+ 332   2                      //Ð´FLASH        CMD = D6 P1 P2 P3 data0~dataN
+ 333   2                      //-----------------------------
+ 334   2                      case 0xD6:      
+ 335   2                              addr = ((I2C_P1 << 8) + I2C_P2);
+ 336   2      
+ 337   2                              if(FlashWriteNBytes(addr, &I2C_Buf[4], I2C_P3) != SUCCESSFULL)
+ 338   2                              {
+ 339   3                                      I2C_Buf[0] = 0x65;
+ 340   3                                      I2C_Buf[1] = 0x81;
+ 341   3                              }
+ 342   2                              else
+ 343   2                              {
+ 344   3                                      I2C_Buf[0] = 0x90;
+ 345   3                                      I2C_Buf[1] = 0x00;
+ 346   3                              }
+ 347   2                              break;
+ 348   2      
+ 349   2                      //-----------------------------
+ 350   2                      // È¡demoÏà¹ØÐÅÏ¢ CMD = CA 00 00 01
+ 351   2                      //-----------------------------
+ 352   2                      case 0xCA:      
+ 353   2                              if (I2C_P3!=0x01 || I2C_P1 || I2C_P2)
+ 354   2                              {
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 7   
+
+ 355   3                                      I2C_Buf[0] = 0x6D;
+ 356   3                                      I2C_Buf[1] = 0x00;
+ 357   3                                      break;
+ 358   3                              }
+ 359   2                              I2C_Buf[0]=0x90;
+ 360   2                              I2C_Buf[1]=0x00;                
+ 361   2                              I2C_Buf[2]=DEMO_VERSION;
+ 362   2                              I2C_send_bytes = 0x03;                  
+ 363   2                              break;
+ 364   2      
+ 365   2                      //-----------------------------
+ 366   2                      //ÖØÐÂ½øÈëBootloader     D8 00 00 08 11 11 11 11 11 11 11 11
+ 367   2                      //-----------------------------
+ 368   2                      case 0xD8:      
+ 369   2                              if(I2C_P3 != 8)
+ 370   2                              {
+ 371   3                                      I2C_Buf[0] = 0x67;
+ 372   3                                      I2C_Buf[1] = 0x00;
+ 373   3                                      return;
+ 374   3                              }
+ 375   2                              if(memcmp(&I2C_Buf[4], "\x11\x11\x11\x11\x11\x11\x11\x11", 8))
+ 376   2                              {
+ 377   3                                      I2C_Buf[0] = 0x6A;
+ 378   3                                      I2C_Buf[1] = 0x80;
+ 379   3                                      break;
+ 380   3                              }
+ 381   2      
+ 382   2                              if(ReworkEntry() != SUCCESSFULL)
+ 383   2                              {
+ 384   3                                      I2C_Buf[0] = 0x65;
+ 385   3                                      I2C_Buf[1] = 0x81;
+ 386   3                              }
+ 387   2                              else
+ 388   2                              {
+ 389   3                                      I2C_Buf[0] = 0x90;
+ 390   3                                      I2C_Buf[1] = 0x00;
+ 391   3                              }
+ 392   2                              break;
+ 393   2      
+ 394   2                      default:
+ 395   2                              SW = 0x6E00;
+ 396   2                              break;
+ 397   2              }
+ 398   1      
+ 399   1      }
+ 400          
+ 401          ///////////////////////////////////////////////////////////////////////////////
+ 402          // MAIN function
+ 403          ///////////////////////////////////////////////////////////////////////////////
+ 404          void main(void) 
+ 405          {
+ 406   1              //IC initialisation
+ 407   1              Set_Frequency(F_OSC_30M);       //Set device frequency at 30MHz
+ 408   1              
+ 409   1              gbSessionFlag = 0;
+ 410   1              
+ 411   1              I2CPAD = 0x00;
+ 412   1              I2CADR = 0x00;//¿ÉÅäÖÃ³É×Ô¼ºÐèÒªµÄµØÖ·(7 bit)
+ 413   1      
+ 414   1               while(1)
+ 415   1               {
+ 416   2                       i2c_xfer();
+C51 COMPILER V9.00   C_ROOT                                                                04/22/2019 22:49:13 PAGE 8   
+
+ 417   2                       if(I2C_State == 0x01)  //I2C write command
+ 418   2                       {
+ 419   3                              i2c_CommandProc();
+ 420   3                       }
+ 421   2               }      
+ 422   1      }
+ 423          
+ 424          
+ 425          
+ 426          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1290    ----
+   CONSTANT SIZE    =     81    ----
+   XDATA SIZE       =    264    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

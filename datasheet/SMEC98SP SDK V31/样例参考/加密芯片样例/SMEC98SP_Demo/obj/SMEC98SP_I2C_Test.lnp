@@ -1,0 +1,10 @@
+".\obj\SHA1.obj",
+".\obj\SMEC98SP_I2C_hard_api.obj",
+".\obj\c_root.obj",
+".\obj\i2c_test.obj",
+".\obj\SMEC98SP_I2C_STARTUP.obj",
+".\SrcApi\SMEC98SP_V30.LIB" 
+TO ".\obj\SMEC98SP_I2C_Test" 
+PRINT(".\lst\SMEC98SP_I2C_Test.m51") RAMSIZE(256) 
+CODE( 0X2000-0X7FFF )
+XDATA( 0X0000-0X06FF )

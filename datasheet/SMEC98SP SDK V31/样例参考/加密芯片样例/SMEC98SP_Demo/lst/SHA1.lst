@@ -1,0 +1,272 @@
+C51 COMPILER V9.00   SHA1                                                                  04/22/2019 22:49:13 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SHA1
+OBJECT MODULE PLACED IN .\obj\SHA1.obj
+COMPILER INVOKED BY: C:\Keil_C51\C51\BIN\C51.EXE SrcApi\SHA1.C BROWSE INTVECTOR(0X2000) INCDIR(.\SrcApi\;.\SrcTest\) DEB
+                    -UG OBJECTEXTEND PRINT(.\lst\SHA1.lst) OBJECT(.\obj\SHA1.obj)
+
+line level    source
+
+   1          /*              secure hash algorithm 1 (sha1)
+   2          **
+   3          **              THIS APPLICATION NOTE IS SUBJECT TO THE
+   4          **              'CONDITIONS FOR USE OF APPLICATION NOTES'
+   5          **
+   6          **              joachim velten  11-nov-1999
+   7          **
+   8          **              (c)  1999  infineon technologies cc at sw
+   9          **
+  10          **              11-nov-1999: initial creation  jv
+  11          */
+  12          
+  13          /*              derived from 
+  14          **              SHA-1 in C by Steve Reid <steve@edmweb.com>, 100% Public Domain
+  15          **              and the cc application note sha1  V1.03: 13.01.1998
+  16          */
+  17          
+  18          /*              Test Vectors (from FIPS PUB 180-1)
+  19          **              "abc"
+  20          **              A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D
+  21          **
+  22          **              "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
+  23          **              84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1
+  24          **
+  25          **              A million repetitions of "a"
+  26          **              34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
+  27          */
+  28          
+  29          
+  30          #include <string.h>
+  31          #include <intrins.h>
+  32          
+  33          #include <sha1.h>
+  34          
+  35          //SHA1结构体全局变量
+  36          SHA1_CTX        xdata           Sha1_Context;
+  37                  
+  38          static void SHA1Transform( unsigned long * state /*[5]*/, unsigned char * buffer /*[64]*/ )  {
+  39   1              
+  40   1              /*      Hash a single 512-bit block. This is the core of the algorithm
+  41   1              */
+  42   1              
+  43   1              xdata  unsigned  long a;
+  44   1              xdata  unsigned  long b;
+  45   1              xdata  unsigned  long c;
+  46   1              xdata unsigned   long d;
+  47   1              xdata unsigned   long e;
+  48   1              
+  49   1              typedef union {
+  50   1                      unsigned  char c[64];
+  51   1                      unsigned  long l[16];
+  52   1              } CHAR64LONG16;
+  53   1              
+  54   1              xdata CHAR64LONG16 * block;
+C51 COMPILER V9.00   SHA1                                                                  04/22/2019 22:49:13 PAGE 2   
+
+  55   1              
+  56   1              xdata unsigned   char t;
+  57   1              xdata unsigned   char s;
+  58   1              xdata unsigned   long kt;
+  59   1              xdata unsigned   long temp;
+  60   1              
+  61   1              block = ( CHAR64LONG16 * ) buffer;
+  62   1              
+  63   1              /*      Copy context->state[] to working vars 
+  64   1              */
+  65   1              a = state[0];
+  66   1              b = state[1];
+  67   1              c = state[2];
+  68   1              d = state[3];
+  69   1              e = state[4];
+  70   1              
+  71   1              for ( t = 0; t < 80; t ++ ) 
+  72   1              {
+  73   2              
+  74   2                      /* set constant kt 
+  75   2                      */
+  76   2                      switch( t ) 
+  77   2                      {  
+  78   3                              
+  79   3                      case 0:
+  80   3                              kt = 0x5A827999;
+  81   3                              break;
+  82   3                      case 20:
+  83   3                              kt = 0x6ED9EBA1;
+  84   3                              break;
+  85   3                      case 40:
+  86   3                              kt = 0x8F1BBCDC;
+  87   3                              break;
+  88   3                      case 60:
+  89   3                              kt = 0xCA62C1D6;
+  90   3                              break;
+  91   3                      }
+  92   2                      
+  93   2                      s = t & 15;
+  94   2                      
+  95   2                      if( t >= 16 ) 
+  96   2                      {
+  97   3                              
+  98   3                              ( ( unsigned long * ) buffer ) [s] = _lrol_(
+  99   3                                      ( ( unsigned long * ) buffer ) [(s+13) & 15] ^
+ 100   3                                      ( ( unsigned long * ) buffer ) [(s+8) & 15] ^
+ 101   3                                      ( ( unsigned long * ) buffer ) [(s+2) & 15] ^
+ 102   3                                      ( ( unsigned long * ) buffer ) [s],1
+ 103   3                                      );
+ 104   3                      }
+ 105   2                      
+ 106   2                      /*      calculate function ft(B,C,D)
+ 107   2                      */
+ 108   2                      if( t < 20 ) 
+ 109   2                      {
+ 110   3                              
+ 111   3                              temp = ( b & c ) | ( ( ~b ) & d );
+ 112   3                      }
+ 113   2                      else if( t < 40 ) 
+ 114   2                      {
+ 115   3                              
+ 116   3                              temp = b ^ c ^ d;
+C51 COMPILER V9.00   SHA1                                                                  04/22/2019 22:49:13 PAGE 3   
+
+ 117   3                      }
+ 118   2                      else if( t < 60 ) 
+ 119   2                      {
+ 120   3                              
+ 121   3                              temp = ( b & c ) | ( b & d ) | ( c & d );
+ 122   3                      }
+ 123   2                      else {
+ 124   3                              
+ 125   3                              temp = b ^ c ^ d;
+ 126   3                      }
+ 127   2                      
+ 128   2                      temp += _lrol_( a, 5 ) + e + ( ( unsigned long * ) buffer )[s] + kt;
+ 129   2                      e = d;
+ 130   2                      d = c;
+ 131   2                      c = _lrol_( b, 30 );
+ 132   2                      b = a;
+ 133   2                      a = temp;
+ 134   2              }
+ 135   1              
+ 136   1              /*      Add the working vars back into context.state[] 
+ 137   1              */
+ 138   1              state[0] += a;
+ 139   1              state[1] += b;
+ 140   1              state[2] += c;
+ 141   1              state[3] += d;
+ 142   1              state[4] += e;
+ 143   1              
+ 144   1              /*      Wipe variables 
+ 145   1              */
+ 146   1              a = b = c = d = e = 0;
+ 147   1       }
+ 148           
+ 149           
+ 150           void SHA1Init( SHA1_CTX * context )  
+ 151           {
+ 152   1               
+ 153   1              /*      SHA1 initialization
+ 154   1               */
+ 155   1               
+ 156   1               context->state[0] = 0x67452301;
+ 157   1               context->state[1] = 0xEFCDAB89;
+ 158   1               context->state[2] = 0x98BADCFE;
+ 159   1               context->state[3] = 0x10325476;
+ 160   1               context->state[4] = 0xC3D2E1F0;
+ 161   1               context->count[0] = context->count[1] = 0;
+ 162   1       }
+ 163           
+ 164           
+ 165           void SHA1Update( SHA1_CTX * context, unsigned char * const dat, unsigned int len )  
+ 166           {
+ 167   1               
+ 168   1              /*      Run your data through this
+ 169   1               */
+ 170   1               
+ 171   1               xdata unsigned  int i;
+ 172   1               xdata unsigned char j;
+ 173   1               
+ 174   1               j = ( unsigned int ) context->count[0] >> 3 & 63; // need only lowest 11 bits
+ 175   1               if( ( context->count[0] += ( unsigned long ) len << 3 ) < ( unsigned long ) len << 3 ) context->count[1]
+             - ++; 
+ 176   1               
+ 177   1               // context->count[1] += len >> 29; // always 0 because we only support 16 bits len
+C51 COMPILER V9.00   SHA1                                                                  04/22/2019 22:49:13 PAGE 4   
+
+ 178   1               if( j + len > 63 ) 
+ 179   1               {
+ 180   2                       memcpy( context->buffer + j, dat, i = 64 - j );
+ 181   2                       SHA1Transform( context->state, context->buffer );
+ 182   2                       for ( ; i + 63 < len; i += 64 ) {
+ 183   3                               memcpy( context->buffer + 0, dat + i, 64 ); // must copy dat, may be in e2 or rom space !
+ 184   3                               SHA1Transform( context->state, context->buffer );
+ 185   3                       }
+ 186   2                       j = 0;
+ 187   2               }
+ 188   1               else 
+ 189   1               {
+ 190   2                       i = 0;
+ 191   2               }
+ 192   1               
+ 193   1               memcpy( context->buffer + j, dat + i, len - i );
+ 194   1       }
+ 195           
+ 196           
+ 197           void SHA1Final( unsigned char * digest /*[20]*/, SHA1_CTX * context)  
+ 198           {
+ 199   1               
+ 200   1              /*      Add padding and return the message digest
+ 201   1               */
+ 202   1               
+ 203   1               xdata unsigned char i;
+ 204   1               xdata unsigned char finalcount[8];
+ 205   1               
+ 206   1               for( i = 0; i < 8; i++ ) 
+ 207   1               {
+ 208   2                       
+ 209   2                       finalcount[i] = ( unsigned char ) ( (context->count[(i >= 4 ? 0 : 1)] >> ( ( 3 - ( i & 3 ) ) * 8 ) ) & 
+             -255 ); 
+ 210   2               }
+ 211   1               
+ 212   1               SHA1Update( context, ( unsigned char * ) "\200", 1 );
+ 213   1               
+ 214   1               while( (context->count[0] & 504) != 448 ) 
+ 215   1               {
+ 216   2                       
+ 217   2                       SHA1Update( context, (unsigned char *)"\0", 1 );
+ 218   2               }
+ 219   1               
+ 220   1               
+ 221   1               SHA1Update( context, finalcount, 8 );
+ 222   1               
+ 223   1               /* Wipe variables 
+ 224   1               */
+ 225   1               memset( context->buffer, 0, 64 );
+ 226   1               memset( context->count, 0, 8 );
+ 227   1               memset( & finalcount, 0, 8 );
+ 228   1               
+ 229   1               for( i = 0; i < 20; i++ ) 
+ 230   1               {
+ 231   2                       
+ 232   2                       context->buffer[i] = (unsigned char) ( (context->state[i>>2] >> ((3-(i & 3)) * 8) ) & 255 );
+ 233   2               }
+ 234   1               
+ 235   1               memset( context->state, 0, 20 );
+ 236   1               memcpy( digest, context->buffer, 20 );
+ 237   1      }
+ 238           
+C51 COMPILER V9.00   SHA1                                                                  04/22/2019 22:49:13 PAGE 5   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2186    ----
+   CONSTANT SIZE    =      4    ----
+   XDATA SIZE       =     92      45
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      20
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

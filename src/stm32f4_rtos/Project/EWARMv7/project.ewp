@@ -333,6 +333,7 @@
           <state>$PROJ_DIR$\..\..\User\MQTTPacket\src</state>
           <state>$PROJ_DIR$\..\..\User\MQTTPacket\samples</state>
           <state>$PROJ_DIR$\..\..\User\MQTTPacket</state>
+          <state>$PROJ_DIR$\..\..\User\SMEC98SP\Header</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -628,7 +629,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>MainBoard190421_1.bin</state>
+          <state>MainBoard190423.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1163,6 +1164,21 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\modbus\modbus.c</name>
+    </file>
+  </group>
+  <group>
+    <name>SEMC98SE</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\des.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\iic_smec98sp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\sha1.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\User\SMEC98SP\Source\smec98sp.c</name>
     </file>
   </group>
   <group>

@@ -34,6 +34,7 @@ void bsp_Init(void)
   bsp_Init_Relay();
   bsp_InitStepMotor();
   bsp_InitDWT();       /* 初始DWT */
+  SMEC_Test();
   bsp_InitSdwe050c17();
   bsp_InitHardTimer(); /* 初始化TIM2定时器 */
 //  bsp_Init_SW_ONOFF();

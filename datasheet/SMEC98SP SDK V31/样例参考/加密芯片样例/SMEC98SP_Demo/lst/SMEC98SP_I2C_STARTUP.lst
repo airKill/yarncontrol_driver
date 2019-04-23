@@ -1,0 +1,643 @@
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.01
+OBJECT MODULE PLACED IN .\obj\SMEC98SP_I2C_STARTUP.obj
+ASSEMBLER INVOKED BY: C:\Keil_C51\C51\BIN\A51.EXE SrcApi\SMEC98SP_I2C_STARTUP.a51 SET(SMALL) DEBUG PRINT(.\lst\SMEC98SP_
+                      I2C_STARTUP.lst) OBJECT(.\obj\SMEC98SP_I2C_STARTUP.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;------------------------------------------------------------------------------
+                       2     ;  This file is part of the C51 Compiler package
+                       3     ;  Copyright (c) 1988-2002 Keil Elektronik GmbH and Keil Software, Inc.
+                       4     ;------------------------------------------------------------------------------
+                       5     ;  STARTUP.A51:  This code is executed after processor reset.
+                       6     ;
+                       7     ;  To translate this file use A51 with the following invocation:
+                       8     ;
+                       9     ;     A51 STARTUP.A51
+                      10     ;
+                      11     ;  To link the modified STARTUP.OBJ file to your application use the following
+                      12     ;  BL51 invocation:
+                      13     ;
+                      14     ;     BL51 <your object file list>, STARTUP.OBJ <controls>
+                      15     ;
+                      16     ;------------------------------------------------------------------------------
+                      17     ;
+                      18     ;  User-defined Power-On Initialization of Memory
+                      19     ;
+                      20     ;  With the following EQU statements the initialization of memory
+                      21     ;  at processor reset can be defined:
+                      22     ;
+                      23     ;               ; the absolute start-address of IDATA memory is always 0
+  0100                24     IDATALEN        EQU    100H     ; the length of IDATA memory in bytes.
+                      25     ;
+  0000                26     XDATASTART      EQU     0H      ; the absolute start-address of XDATA memory
+  0700                27     XDATALEN        EQU  0700H      ; the length of XDATA memory in bytes.
+                      28     ;
+  0000                29     PDATASTART      EQU     0H      ; the absolute start-address of PDATA memory
+  0000                30     PDATALEN        EQU     0H      ; the length of PDATA memory in bytes.
+                      31     ;
+                      32     ;  Notes:  The IDATA space overlaps physically the DATA and BIT areas of the
+                      33     ;          8051 CPU. At minimum the memory space occupied from the C51 
+                      34     ;          run-time routines must be set to zero.
+                      35     ;------------------------------------------------------------------------------
+                      36     ;
+                      37     ;  Reentrant Stack Initilization
+                      38     ;
+                      39     ;  The following EQU statements define the stack pointer for reentrant
+                      40     ;  functions and initialized it:
+                      41     ;
+                      42     ;  Stack Space for reentrant functions in the SMALL model.
+  0000                43     IBPSTACK        EQU     0       ; set to 1 if small reentrant is used.
+  0100                44     IBPSTACKTOP     EQU     0FFH+1  ; set top of stack to highest location+1.
+                      45     ;
+                      46     ;  Stack Space for reentrant functions in the LARGE model.      
+  0000                47     XBPSTACK        EQU     0       ; set to 1 if large reentrant is used.
+  0000                48     XBPSTACKTOP     EQU     0FFFFH+1; set top of stack to highest location+1.
+                      49     ;
+                      50     ;  Stack Space for reentrant functions in the COMPACT model.    
+  0000                51     PBPSTACK        EQU     0       ; set to 1 if compact reentrant is used.
+  0000                52     PBPSTACKTOP     EQU     0FFFFH+1; set top of stack to highest location+1.
+                      53     ;
+                      54     ;------------------------------------------------------------------------------
+                      55     ;
+                      56     ;  Page Definition for Using the Compact Model with 64 KByte xdata RAM
+                      57     ;
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     2
+
+                      58     ;  The following EQU statements define the xdata page used for pdata
+                      59     ;  variables. The EQU PPAGE must conform with the PPAGE control used
+                      60     ;  in the linker invocation.
+                      61     ;
+  0000                62     PPAGEENABLE     EQU     0       ; set to 1 if pdata object are used.
+                      63     ;
+  0000                64     PPAGE           EQU     0       ; define PPAGE number.
+                      65     ;
+  0092                66     PPAGE_SFR       DATA    092H    ; SFR that supplies uppermost address byte (MPAGE)
+                      67     ;
+                      68     ;------------------------------------------------------------------------------
+  2000                69     CODE_BASE_ADDR          EQU             2000H
+                      70     
+                      71     
+                      72     ;$include (dw8051.inc)
+                +1    73     ;/*  BYTE Registers  */
+                +1    74     
+                +1    75     ;PSW    DATA  0D0H
+                +1    76     ;ACC    DATA  0E0H
+                +1    77     ;B      DATA  0F0H
+                +1    78     ;SP     DATA  081H
+  0082          +1    79     DPL0   DATA  082H
+  0083          +1    80     DPH0   DATA  083H
+                +1    81     ;PCON   DATA  087H
+                +1    82     ;TCON   DATA  088H
+                +1    83     ;TMOD   DATA  089H
+                +1    84     ;TL0    DATA  08AH
+                +1    85     ;TL1    DATA  08BH
+                +1    86     ;TH0    DATA  08CH
+                +1    87     ;TH1    DATA  08DH
+                +1    88     ;IE     DATA  0A8H
+                +1    89     ;IP     DATA  0B8H
+                +1    90     
+                +1    91     ;/*  DS80C320 Extensions  */
+  0084          +1    92     DPL1   DATA  084H
+  0085          +1    93     DPH1   DATA  085H
+  0086          +1    94     DPS    DATA  086H
+  008E          +1    95     CKCON  DATA  08EH
+                +1    96     
+                +1    97     ;/* DW8051 EXTENSIONS */
+  0092          +1    98     MPAGE   DATA  092H
+                +1    99     ;SPC_FNC        DATA  08FH
+                +1   100     ;EICON          DATA  0D8H
+                +1   101     
+                +1   102     ;/*  BIT Registers  */
+                +1   103     ;/*  PSW  */
+                +1   104     ;CY    BIT  0D7H
+                +1   105     ;AC    BIT  0D6H
+                +1   106     ;F0    BIT  0D5H
+                +1   107     ;RS1   BIT  0D4H
+                +1   108     ;RS0   BIT  0D3H
+                +1   109     ;OV    BIT  0D2H
+                +1   110     ;FL    BIT  0D1H
+                +1   111     ;P     BIT  0D0H
+                +1   112     
+                +1   113     ;/*  TCON  */
+                +1   114     ;TF1   BIT  08FH
+                +1   115     ;TR1   BIT  08EH
+                +1   116     ;TF0   BIT  08DH
+                +1   117     ;TR0   BIT  08CH
+                +1   118     ;IE1   BIT  08BH
+                +1   119     ;IT1   BIT  08AH
+                +1   120     ;IE0   BIT  089H
+                +1   121     ;IT0   BIT  088H
+                +1   122     
+                +1   123     ;/*  IE  */
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     3
+
+                +1   124     ;EA    BIT  0AFH
+                +1   125     ;ES1   BIT  0AEH
+                +1   126     ;ET2   BIT  0ADH
+                +1   127     ;ES0   BIT  0ACH
+                +1   128     ;ET1   BIT  0ABH
+                +1   129     ;EX1   BIT  0AAH
+                +1   130     ;ET0   BIT  0A9H
+                +1   131     ;EX0   BIT  0A8H
+                +1   132     
+                +1   133     ;/*  IP  */
+                +1   134     ;PS1   BIT  0BEH
+                +1   135     ;PT2   BIT  0BDH
+                +1   136     ;PS0   BIT  0BCH
+                +1   137     ;PT1   BIT  0BBH
+                +1   138     ;PX1   BIT  0BAH
+                +1   139     ;PT0   BIT  0B9H
+                +1   140     ;PX0   BIT  0B8H
+                +1   141     
+                +1   142     ;/*  SCON0  */
+                +1   143     ;SM0   BIT  09FH
+                +1   144     ;SM1   BIT  09EH
+                +1   145     ;SM2   BIT  09DH
+                +1   146     ;REN   BIT  09CH
+                +1   147     ;TB8   BIT  09BH
+                +1   148     ;RB8   BIT  09AH
+                +1   149     ;TI    BIT  099H
+                +1   150     ;RI    BIT  098H
+                +1   151     
+                +1   152     
+                +1   153     
+                +1   154     
+                +1   155     
+                     156     
+                     157     ;$include (SMEC98SP_I2C.inc)
+                +1   158     ; ---------------------------------------------------------
+                +1   159     ; MMU registers definition
+                +1   160     ; ---------------------------------------------------------
+                +1   161     
+  00B1          +1   162     NVMCLR          DATA 0B1H;      NVM code limit register
+  009A          +1   163     CBS                     DATA 09AH;
+  009B          +1   164     SYSPROT         DATA 09BH;
+  009C          +1   165     DBS16H          DATA 09CH;
+  009D          +1   166     DBS32K          DATA 09DH;
+  009E          +1   167     DBS16L          DATA 09EH;
+                +1   168     
+                +1   169     ; ---------------------------------------------------------
+                +1   170     ; service registers definition
+                +1   171     ; ---------------------------------------------------------
+  00B0          +1   172     TRAP            DATA 0B0H;       TRAP status register           
+  0080          +1   173     SRVCON          DATA 080H;       services control register      
+  00B5          +1   174     TRNG            DATA 0B5H;       TRNG word                      
+  00A4          +1   175     TRIMBG          DATA 0A4H;   Bandgap control register
+  00B9          +1   176     TRIMOSC         DATA 0B9H;       TRIM oscillator register       
+  00BA          +1   177     TRIMVCC         DATA 0BAH;       TRIM regulator register 
+  00A3          +1   178     TRIMTMP         DATA 0A3H;       Bandgap correction temperature
+  00A2          +1   179     TRIMFBIAS       DATA 0A2H;
+  00A5          +1   180     TRIMCKCP        DATA 0A5H;
+  00A1          +1   181     RDMON           DATA 0A1H;
+                +1   182     
+                +1   183     ; ---------------------------------------------------------
+                +1   184     ; ISO7816-3 serial interface sfr registers definition
+                +1   185     ; ---------------------------------------------------------
+  00B2          +1   186     ISOCON          DATA 0B2H;      ISO control/status register
+  00B4          +1   187     ISOTMR          DATA 0B4H;      ISO timer
+  0093          +1   188     ETUCON          DATA 093H;      etu_counter control/status register
+  0094          +1   189     ETUCOUNT        DATA 094H;      etu_counter value
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     4
+
+                +1   190     ;SCON           DATA 098H
+                +1   191     
+                +1   192     ; ---------------------------------------------------------
+                +1   193     ; I2C interface
+                +1   194     ; ---------------------------------------------------------
+  00F8          +1   195     I2CCON          DATA 0xF8;
+  00EB          +1   196     I2CCON2         DATA 0xEB;
+  00EC          +1   197     I2CCON3         DATA 0xEC;
+  00FA          +1   198     I2CADR          DATA 0xFA;
+  00FB          +1   199     I2CXAD          DATA 0xFB;
+  00FC          +1   200     I2CBUF          DATA 0xFC;
+  00FD          +1   201     I2CSTAT         DATA 0xFD;
+  00F9          +1   202     I2CPAD          DATA 0xF9;
+                +1   203     ; ---------------------------------------------------------
+                +1   204     ; GPIO interface
+                +1   205     ; ---------------------------------------------------------
+  00E8          +1   206     GPIODATA        DATA 0xE8;
+  00D8          +1   207     GPIODIR         DATA 0xD8;
+  00E9          +1   208     GPIOPUP         DATA 0xE9;
+                +1   209     ; ---------------------------------------------------------
+                +1   210     ; CRC CCITT V41 accelerator registers definition
+                +1   211     ; ---------------------------------------------------------
+  0095          +1   212     CRCINIH         DATA 095h       ;  Initial value MSB
+  0096          +1   213     CRCINIL         DATA 096h       ;  Initial value MSB
+  0097          +1   214     CRCIO           DATA 097h       ;  Data in/out register 
+                +1   215     
+                +1   216     ; ---------------------------------------------------------
+                +1   217     ; Test controller sfr registers definition
+                +1   218     ; ---------------------------------------------------------
+  00BB          +1   219     TESTREG0        DATA 0BBH;       TEST status register           
+  00BC          +1   220     TESTREG1        DATA 0BCH;       TEST control register  
+  00B6          +1   221     EXPCON          DATA 0B6H;
+  00B7          +1   222     IDCNT           DATA 0B7H;       Authentication counter register
+                +1   223     
+                +1   224     ; ---------------------------------------------------------
+                +1   225     ; Non Volatile memories sfr registers definition
+                +1   226     ; ---------------------------------------------------------
+  0090          +1   227     GPNVM           DATA 090H;       OTP memories control register
+  00A0          +1   228     NVMCTRL         DATA 0A0H;       NVM memories control register 2
+  00BD          +1   229     NVMTEST         DATA 0BDH;
+                +1   230     ;NVMIREF                DATA 0C2H;
+  00BF          +1   231     MASSRD          DATA 0BFH;       Mass read register     
+  00C6          +1   232     CPHV            DATA 0C6H;       Charge pump HV register
+  00C7          +1   233     CPTRIM          DATA 0C7h;       New Charge pump HV register to have fine trimming in erase
+                              operation
+  00C4          +1   234     TIMECON         DATA 0C4H; 
+  00C3          +1   235     SMARTTIME       DATA 0C3H
+  00C5          +1   236     SMARTRD         DATA 0C5H
+  00C6          +1   237     FLASHTEST       DATA 0C6H
+  00C7          +1   238     SPAREREG        DATA 0C7H
+                +1   239     
+                +1   240     ; ---------------------------------------------------------
+                +1   241     ; Default values for ISO7816 SFR registers
+                +1   242     ; ---------------------------------------------------------
+  0000          +1   243     D_SBUF          EQU     00H
+  0000          +1   244     D_SCON          EQU     00H
+  0000          +1   245     D_ETUCON        EQU     00H
+  0000          +1   246     D_ETUCOUNT      EQU     00H
+  0004          +1   247     D_ISOCON        EQU     04H
+  0001          +1   248     D_ISOTMRH       EQU     01H
+  0073          +1   249     D_ISOTMRL       EQU     73H
+  0000          +1   250     D_EXPCON        EQU     00H
+  0000          +1   251     D_IDCNT         EQU     00H
+  0000          +1   252     D_TESTREG0      EQU     00H
+  0000          +1   253     D_TESTREG1      EQU     00H
+                +1   254     
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     5
+
+                +1   255     ; ---------------------------------------------------------
+                +1   256     ; Default values for MMU SFR registers
+                +1   257     ; ---------------------------------------------------------
+  0000          +1   258     D_NVMCLR        EQU     00H
+  0000          +1   259     D_TRAP          EQU     00H
+  0003          +1   260     D_CBS           EQU     03H
+  000F          +1   261     D_SYSPROT       EQU     0FH
+  0008          +1   262     D_DBS16H        EQU     08H
+  0007          +1   263     D_DBS16L        EQU     07H
+  0002          +1   264     D_DBS32K        EQU     02H
+  0028          +1   265     D_MEMLIMIT      EQU     028H
+                +1   266     
+                +1   267     ; ---------------------------------------------------------
+                +1   268     ; Default values for Control Logic SFR registers
+                +1   269     ; ---------------------------------------------------------
+  0000          +1   270     D_TIMECON       EQU     00H
+  0000          +1   271     D_CPHV          EQU     00H
+  0000          +1   272     D_CPTRIM        EQU     00H
+  0000          +1   273     D_GPNVM         EQU     00H
+  0004          +1   274     D_NVMTEST       EQU     04H     ;force NVMTEST.2 = 1
+  0000          +1   275     D_NVMIREF       EQU     00H
+  0008          +1   276     D_MASSRD        EQU     08H
+                +1   277     
+                +1   278     ; ---------------------------------------------------------
+                +1   279     ; Default values for SERV function registers
+                +1   280     ; ---------------------------------------------------------
+  00FF          +1   281     D_TRIMOSC       EQU     0FFH
+  0020          +1   282     D_TRIMVCC       EQU     20H
+  0000          +1   283     D_SRVCON        EQU     00H
+                +1   284     
+                +1   285     ; ---------------------------------------------------------
+                +1   286     ; Interrupt flag
+                +1   287     ; ---------------------------------------------------------
+  00ED          +1   288     DEFAULT_FLAG    EQU     0EDH
+  001E          +1   289     COB_FLAG                EQU     01EH
+  000F          +1   290     DOB_FLAG                EQU     00FH
+  0005          +1   291     ETUCOUNT_FLAG   EQU     005H
+  004B          +1   292     UVD_FLAG                EQU     04BH
+  005A          +1   293     OVD_FLAG                EQU     05AH
+  006B          +1   294     ALL_FLAG                EQU     06BH
+  00E4          +1   295     GPNVM_FLAG              EQU     0E4H
+  00D5          +1   296     IDLE_FLAG               EQU     0D5H
+  00C3          +1   297     VPP_FLAG                EQU     0C3H
+  0002          +1   298     RI_FLAG                 EQU     002H
+  0003          +1   299     TI_FLAG                 EQU     003H
+  0002          +1   300     START_BIT_FLAG  EQU     002H
+                +1   301     
+                +1   302     ;----------------------------------------------------------------------
+                +1   303     ; General Constant definitions for NVM Manager & Bootrom
+                +1   304     ;----------------------------------------------------------------------
+  00D1          +1   305     F1                                                                      EQU PSW.1
+  0050          +1   306     ROM_REVISION_ID                                         EQU     050h
+  0375          +1   307     GPNVM_REWORK_CODE_ADDRESS                       EQU 0375H               ; MLT change becaus
+                             e of size of OtpMassEraseFromRomCode function
+  0400          +1   308     ROM_CODE_END_ADRESSS                            EQU 0400H
+  8000          +1   309     PARAM_START_ADDRESS                             EQU 8000H
+  0040          +1   310     PARAM_SIZE                                                      EQU 0040H
+  001F          +1   311     DBS32K_SYSTEM                                           EQU 001FH
+  001F          +1   312     CBS_SYSTEM                                                      EQU 001FH               ; H
+                             IDE ROM (ROM CODE IN GPNVM FOR TEST) and select code bank 4
+  0000          +1   313     RAM_BUFFER_START_PARAM_ADDRESS          EQU 0000H
+  0040          +1   314     RAM_BUFFER_START_NVMM_ADDRESS           EQU RAM_BUFFER_START_PARAM_ADDRESS + PARAM_SIZE
+  0000          +1   315     GPNVM_USER_START_ADDRESS                        EQU 0000H
+  0400          +1   316     GPNVM_USER_START_AT_0X400                       EQU 0400H
+  8100          +1   317     GPNVM_FLASH_REGISTER_START_ADDRESS      EQU 8100H
+  002A          +1   318     HIDE_ROM_SIG_MSB_CONTENT                        EQU     02AH
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     6
+
+  00C8          +1   319     HIDE_ROM_SIG_LSB_CONTENT                        EQU     0C8H
+  000C          +1   320     TEST_SIG_MSB_CONTENT                            EQU     00CH
+  00BD          +1   321     TEST_SIG_LSB_CONTENT                            EQU     0BDH
+  0025          +1   322     NVMM_SIG_MSB_CONTENT                            EQU     025H
+  00D4          +1   323     NVMM_SIG_LSB_CONTENT                            EQU     0D4H
+  00D6          +1   324     DISTEST_SIG_MSB_CONTENT                         EQU     0D6H
+  0029          +1   325     DISTEST_SIG_LSB_CONTENT                         EQU     029H
+  0043          +1   326     CNT_SIG_MSB_CONTENT                                     EQU     043H
+  00BC          +1   327     CNT_SIG_LSB_CONTENT                                     EQU     0BCH
+  00A5          +1   328     SKIP_EM_NVM_MANAGER_VAL                         EQU 0A5H
+  0044          +1   329     SRVCON_INIT_VAL                                         EQU 044H
+  0060          +1   330     TRIMOSC_INIT_VAL                                        EQU 060H
+  0008          +1   331     TRIMFBIAS_INIT_VAL                                      EQU 008H
+  000B          +1   332     NUMBER_OF_PARAM_TO_CHECK                        EQU 00BH
+  0000          +1   333     GPNVM_USER_START                                        EQU 0000H
+                +1   334     
+                     335     
+                     336     
+                     337     
+                     338                     NAME    ?C_STARTUP
+                     339     
+                     340     ?C_C51STARTUP   SEGMENT   CODE
+                     341     
+----                 342                     ISEG    AT 0C0H         ; SYSTEM STACK DEFINITION WLT
+00C0                 343     ?STACK:         DS 64
+                     344     
+                     345     
+                     346              EXTRN CODE (?C_START)
+                     347              PUBLIC  ?C_STARTUP
+                     348     ;                EXTRN CODE(InterruptRoutineVectorTimer0)
+                     349              ;EXTRN CODE (?B_SWITCH0)
+                     350     
+----                 351             CSEG    AT      CODE_BASE_ADDR
+2000                 352     ?C_STARTUP:     
+2000 020000   F      353                     LJMP    STARTUP1
+                     354     
+----                 355                     CSEG AT CODE_BASE_ADDR + 03H
+2003                 356     otpVectorApiEntry:                      ; IT SINT (Soft interrupt)
+2003 32              357                     RETI
+                     358     
+                     359     ;               CSEG AT CODE_BASE_ADDR + 0BH            ; IT timer 0
+                     360     ;               LJMP    InterruptRoutineVectorTimer0
+                     361                     
+----                 362                     CSEG AT CODE_BASE_ADDR + 13H            ; MMU COB or DOB or OVD or UFD or O
+                             FD
+2013 32              363                     RETI
+                     364                     
+----                 365                     CSEG AT CODE_BASE_ADDR + 1BH            ; IT timer 1
+201B                 366     otpVectorTimer1:
+201B 32              367                     RETI
+                     368                     
+----                 369                     CSEG AT CODE_BASE_ADDR + 23H            ; RI TI sources
+2023                 370     otpVectorComms: 
+2023 5398FC          371                     ANL     SCON,#0FCH;     ; clear RI and TI
+2026 32              372                     RETI
+                     373                     
+----                 374                     CSEG AT CODE_BASE_ADDR + 2BH            ; IT2= SBD or WUT or NVM or UW
+202B                 375     otpVectorEvents:
+202B 32              376                     RETI
+                     377     
+----                 378             RSEG    ?C_C51STARTUP
+                     379     
+0000                 380     STARTUP1:
+0000 758080          381                     MOV     SRVCON,#80H             ; Max speed + TRNG start
+                     382     
+                     383     IF IDATALEN <> 0
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     7
+
+0003 78FF            384             MOV     R0,#IDATALEN - 1
+0005 E4              385             CLR     A
+0006                 386     IDATALOOP:      
+0006 F6              387                     MOV     @R0,A
+0007 D8FD            388             DJNZ    R0,IDATALOOP
+                     389     ENDIF
+                     390     
+                     391     IF XDATALEN <> 0
+0009 900000          392                     MOV     DPTR,#XDATASTART
+000C 7F00            393                     MOV     R7,#LOW (XDATALEN)
+                     394       IF (LOW (XDATALEN)) <> 0
+                                             MOV     R6,#(HIGH (XDATALEN)) +1
+                               ELSE
+000E 7E07            397                     MOV     R6,#HIGH (XDATALEN)
+                     398       ENDIF
+0010 E4              399                     CLR     A
+0011                 400     XDATALOOP:     
+0011 F0              401                     MOVX    @DPTR,A
+0012 A3              402                     INC     DPTR
+0013 DFFC            403                     DJNZ    R7,XDATALOOP
+0015 DEFA            404                     DJNZ    R6,XDATALOOP
+                     405     ENDIF
+                     406     
+                     407     IF PPAGEENABLE <> 0
+                                             MOV     PPAGE_SFR,#PPAGE
+                             ENDIF
+                     410     
+                     411     IF PDATALEN <> 0
+                                             MOV     R0,#LOW (PDATASTART)
+                                             MOV     R7,#LOW (PDATALEN)
+                                             CLR     A
+                             PDATALOOP:      
+                                             MOVX    @R0,A
+                                             INC     R0
+                                             DJNZ    R7,PDATALOOP
+                             ENDIF
+                     420     
+                     421     IF IBPSTACK <> 0
+                             EXTRN DATA (?C_IBP)
+                             
+                                             MOV     ?C_IBP,#LOW IBPSTACKTOP
+                             ENDIF
+                     426     
+                     427     IF XBPSTACK <> 0
+                             EXTRN DATA (?C_XBP)
+                             
+                                             MOV     ?C_XBP,#HIGH XBPSTACKTOP
+                                             MOV     ?C_XBP+1,#LOW XBPSTACKTOP
+                             ENDIF
+                     433     
+                     434     IF PBPSTACK <> 0
+                             EXTRN DATA (?C_PBP)
+                                             MOV     ?C_PBP,#LOW PBPSTACKTOP
+                             ENDIF
+0017 7581BF          438                     MOV     SP,#?STACK-1
+                     439                     ;CALL    ?B_SWITCH0      ; init bank mechanism to code bank 1
+                     440             
+                     441                     
+001A 020000   F      442                     LJMP    ?C_START
+                     443                     END
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     8
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                             T Y P E  V A L U E   ATTRIBUTES
+
+?C_C51STARTUP. . . . . . . . . . .  C SEG    001DH       REL=UNIT
+?C_START . . . . . . . . . . . . .  C ADDR   -----       EXT
+?C_STARTUP . . . . . . . . . . . .  C ADDR   2000H   A   
+?STACK . . . . . . . . . . . . . .  I ADDR   00C0H   A   
+ALL_FLAG . . . . . . . . . . . . .  N NUMB   006BH   A   
+CBS. . . . . . . . . . . . . . . .  D ADDR   009AH   A   
+CBS_SYSTEM . . . . . . . . . . . .  N NUMB   001FH   A   
+CKCON. . . . . . . . . . . . . . .  D ADDR   008EH   A   
+CNT_SIG_LSB_CONTENT. . . . . . . .  N NUMB   00BCH   A   
+CNT_SIG_MSB_CONTENT. . . . . . . .  N NUMB   0043H   A   
+COB_FLAG . . . . . . . . . . . . .  N NUMB   001EH   A   
+CODE_BASE_ADDR . . . . . . . . . .  N NUMB   2000H   A   
+CPHV . . . . . . . . . . . . . . .  D ADDR   00C6H   A   
+CPTRIM . . . . . . . . . . . . . .  D ADDR   00C7H   A   
+CRCINIH. . . . . . . . . . . . . .  D ADDR   0095H   A   
+CRCINIL. . . . . . . . . . . . . .  D ADDR   0096H   A   
+CRCIO. . . . . . . . . . . . . . .  D ADDR   0097H   A   
+DBS16H . . . . . . . . . . . . . .  D ADDR   009CH   A   
+DBS16L . . . . . . . . . . . . . .  D ADDR   009EH   A   
+DBS32K . . . . . . . . . . . . . .  D ADDR   009DH   A   
+DBS32K_SYSTEM. . . . . . . . . . .  N NUMB   001FH   A   
+DEFAULT_FLAG . . . . . . . . . . .  N NUMB   00EDH   A   
+DISTEST_SIG_LSB_CONTENT. . . . . .  N NUMB   0029H   A   
+DISTEST_SIG_MSB_CONTENT. . . . . .  N NUMB   00D6H   A   
+DOB_FLAG . . . . . . . . . . . . .  N NUMB   000FH   A   
+DPH0 . . . . . . . . . . . . . . .  D ADDR   0083H   A   
+DPH1 . . . . . . . . . . . . . . .  D ADDR   0085H   A   
+DPL0 . . . . . . . . . . . . . . .  D ADDR   0082H   A   
+DPL1 . . . . . . . . . . . . . . .  D ADDR   0084H   A   
+DPS. . . . . . . . . . . . . . . .  D ADDR   0086H   A   
+D_CBS. . . . . . . . . . . . . . .  N NUMB   0003H   A   
+D_CPHV . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_CPTRIM . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_DBS16H . . . . . . . . . . . . .  N NUMB   0008H   A   
+D_DBS16L . . . . . . . . . . . . .  N NUMB   0007H   A   
+D_DBS32K . . . . . . . . . . . . .  N NUMB   0002H   A   
+D_ETUCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_ETUCOUNT . . . . . . . . . . . .  N NUMB   0000H   A   
+D_EXPCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_GPNVM. . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_IDCNT. . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_ISOCON . . . . . . . . . . . . .  N NUMB   0004H   A   
+D_ISOTMRH. . . . . . . . . . . . .  N NUMB   0001H   A   
+D_ISOTMRL. . . . . . . . . . . . .  N NUMB   0073H   A   
+D_MASSRD . . . . . . . . . . . . .  N NUMB   0008H   A   
+D_MEMLIMIT . . . . . . . . . . . .  N NUMB   0028H   A   
+D_NVMCLR . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_NVMIREF. . . . . . . . . . . . .  N NUMB   0000H   A   
+D_NVMTEST. . . . . . . . . . . . .  N NUMB   0004H   A   
+D_SBUF . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SCON . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SRVCON . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_SYSPROT. . . . . . . . . . . . .  N NUMB   000FH   A   
+D_TESTREG0 . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TESTREG1 . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TIMECON. . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TRAP . . . . . . . . . . . . . .  N NUMB   0000H   A   
+D_TRIMOSC. . . . . . . . . . . . .  N NUMB   00FFH   A   
+D_TRIMVCC. . . . . . . . . . . . .  N NUMB   0020H   A   
+ETUCON . . . . . . . . . . . . . .  D ADDR   0093H   A   
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE     9
+
+ETUCOUNT . . . . . . . . . . . . .  D ADDR   0094H   A   
+ETUCOUNT_FLAG. . . . . . . . . . .  N NUMB   0005H   A   
+EXPCON . . . . . . . . . . . . . .  D ADDR   00B6H   A   
+F1 . . . . . . . . . . . . . . . .  B ADDR   00D0H.1 A   
+FLASHTEST. . . . . . . . . . . . .  D ADDR   00C6H   A   
+GPIODATA . . . . . . . . . . . . .  D ADDR   00E8H   A   
+GPIODIR. . . . . . . . . . . . . .  D ADDR   00D8H   A   
+GPIOPUP. . . . . . . . . . . . . .  D ADDR   00E9H   A   
+GPNVM. . . . . . . . . . . . . . .  D ADDR   0090H   A   
+GPNVM_FLAG . . . . . . . . . . . .  N NUMB   00E4H   A   
+GPNVM_FLASH_REGISTER_START_ADDRESS  N NUMB   8100H   A   
+GPNVM_REWORK_CODE_ADDRESS. . . . .  N NUMB   0375H   A   
+GPNVM_USER_START . . . . . . . . .  N NUMB   0000H   A   
+GPNVM_USER_START_ADDRESS . . . . .  N NUMB   0000H   A   
+GPNVM_USER_START_AT_0X400. . . . .  N NUMB   0400H   A   
+HIDE_ROM_SIG_LSB_CONTENT . . . . .  N NUMB   00C8H   A   
+HIDE_ROM_SIG_MSB_CONTENT . . . . .  N NUMB   002AH   A   
+I2CADR . . . . . . . . . . . . . .  D ADDR   00FAH   A   
+I2CBUF . . . . . . . . . . . . . .  D ADDR   00FCH   A   
+I2CCON . . . . . . . . . . . . . .  D ADDR   00F8H   A   
+I2CCON2. . . . . . . . . . . . . .  D ADDR   00EBH   A   
+I2CCON3. . . . . . . . . . . . . .  D ADDR   00ECH   A   
+I2CPAD . . . . . . . . . . . . . .  D ADDR   00F9H   A   
+I2CSTAT. . . . . . . . . . . . . .  D ADDR   00FDH   A   
+I2CXAD . . . . . . . . . . . . . .  D ADDR   00FBH   A   
+IBPSTACK . . . . . . . . . . . . .  N NUMB   0000H   A   
+IBPSTACKTOP. . . . . . . . . . . .  N NUMB   0100H   A   
+IDATALEN . . . . . . . . . . . . .  N NUMB   0100H   A   
+IDATALOOP. . . . . . . . . . . . .  C ADDR   0006H   R   SEG=?C_C51STARTUP
+IDCNT. . . . . . . . . . . . . . .  D ADDR   00B7H   A   
+IDLE_FLAG. . . . . . . . . . . . .  N NUMB   00D5H   A   
+ISOCON . . . . . . . . . . . . . .  D ADDR   00B2H   A   
+ISOTMR . . . . . . . . . . . . . .  D ADDR   00B4H   A   
+MASSRD . . . . . . . . . . . . . .  D ADDR   00BFH   A   
+MPAGE. . . . . . . . . . . . . . .  D ADDR   0092H   A   
+NUMBER_OF_PARAM_TO_CHECK . . . . .  N NUMB   000BH   A   
+NVMCLR . . . . . . . . . . . . . .  D ADDR   00B1H   A   
+NVMCTRL. . . . . . . . . . . . . .  D ADDR   00A0H   A   
+NVMM_SIG_LSB_CONTENT . . . . . . .  N NUMB   00D4H   A   
+NVMM_SIG_MSB_CONTENT . . . . . . .  N NUMB   0025H   A   
+NVMTEST. . . . . . . . . . . . . .  D ADDR   00BDH   A   
+OTPVECTORAPIENTRY. . . . . . . . .  C ADDR   2003H   A   
+OTPVECTORCOMMS . . . . . . . . . .  C ADDR   2023H   A   
+OTPVECTOREVENTS. . . . . . . . . .  C ADDR   202BH   A   
+OTPVECTORTIMER1. . . . . . . . . .  C ADDR   201BH   A   
+OVD_FLAG . . . . . . . . . . . . .  N NUMB   005AH   A   
+PARAM_SIZE . . . . . . . . . . . .  N NUMB   0040H   A   
+PARAM_START_ADDRESS. . . . . . . .  N NUMB   8000H   A   
+PBPSTACK . . . . . . . . . . . . .  N NUMB   0000H   A   
+PBPSTACKTOP. . . . . . . . . . . .  N NUMB   0000H   A   
+PDATALEN . . . . . . . . . . . . .  N NUMB   0000H   A   
+PDATASTART . . . . . . . . . . . .  N NUMB   0000H   A   
+PPAGE. . . . . . . . . . . . . . .  N NUMB   0000H   A   
+PPAGEENABLE. . . . . . . . . . . .  N NUMB   0000H   A   
+PPAGE_SFR. . . . . . . . . . . . .  D ADDR   0092H   A   
+PSW. . . . . . . . . . . . . . . .  D ADDR   00D0H   A   
+RAM_BUFFER_START_NVMM_ADDRESS. . .  N NUMB   0040H   A   
+RAM_BUFFER_START_PARAM_ADDRESS . .  N NUMB   0000H   A   
+RDMON. . . . . . . . . . . . . . .  D ADDR   00A1H   A   
+RI_FLAG. . . . . . . . . . . . . .  N NUMB   0002H   A   
+ROM_CODE_END_ADRESSS . . . . . . .  N NUMB   0400H   A   
+ROM_REVISION_ID. . . . . . . . . .  N NUMB   0050H   A   
+SCON . . . . . . . . . . . . . . .  D ADDR   0098H   A   
+SKIP_EM_NVM_MANAGER_VAL. . . . . .  N NUMB   00A5H   A   
+SMARTRD. . . . . . . . . . . . . .  D ADDR   00C5H   A   
+SMARTTIME. . . . . . . . . . . . .  D ADDR   00C3H   A   
+A51 MACRO ASSEMBLER  SMEC98SP_I2C_STARTUP                                                 04/22/2019 22:49:14 PAGE    10
+
+SP . . . . . . . . . . . . . . . .  D ADDR   0081H   A   
+SPAREREG . . . . . . . . . . . . .  D ADDR   00C7H   A   
+SRVCON . . . . . . . . . . . . . .  D ADDR   0080H   A   
+SRVCON_INIT_VAL. . . . . . . . . .  N NUMB   0044H   A   
+STARTUP1 . . . . . . . . . . . . .  C ADDR   0000H   R   SEG=?C_C51STARTUP
+START_BIT_FLAG . . . . . . . . . .  N NUMB   0002H   A   
+SYSPROT. . . . . . . . . . . . . .  D ADDR   009BH   A   
+TESTREG0 . . . . . . . . . . . . .  D ADDR   00BBH   A   
+TESTREG1 . . . . . . . . . . . . .  D ADDR   00BCH   A   
+TEST_SIG_LSB_CONTENT . . . . . . .  N NUMB   00BDH   A   
+TEST_SIG_MSB_CONTENT . . . . . . .  N NUMB   000CH   A   
+TIMECON. . . . . . . . . . . . . .  D ADDR   00C4H   A   
+TI_FLAG. . . . . . . . . . . . . .  N NUMB   0003H   A   
+TRAP . . . . . . . . . . . . . . .  D ADDR   00B0H   A   
+TRIMBG . . . . . . . . . . . . . .  D ADDR   00A4H   A   
+TRIMCKCP . . . . . . . . . . . . .  D ADDR   00A5H   A   
+TRIMFBIAS. . . . . . . . . . . . .  D ADDR   00A2H   A   
+TRIMFBIAS_INIT_VAL . . . . . . . .  N NUMB   0008H   A   
+TRIMOSC. . . . . . . . . . . . . .  D ADDR   00B9H   A   
+TRIMOSC_INIT_VAL . . . . . . . . .  N NUMB   0060H   A   
+TRIMTMP. . . . . . . . . . . . . .  D ADDR   00A3H   A   
+TRIMVCC. . . . . . . . . . . . . .  D ADDR   00BAH   A   
+TRNG . . . . . . . . . . . . . . .  D ADDR   00B5H   A   
+UVD_FLAG . . . . . . . . . . . . .  N NUMB   004BH   A   
+VPP_FLAG . . . . . . . . . . . . .  N NUMB   00C3H   A   
+XBPSTACK . . . . . . . . . . . . .  N NUMB   0000H   A   
+XBPSTACKTOP. . . . . . . . . . . .  N NUMB   0000H   A   
+XDATALEN . . . . . . . . . . . . .  N NUMB   0700H   A   
+XDATALOOP. . . . . . . . . . . . .  C ADDR   0011H   R   SEG=?C_C51STARTUP
+XDATASTART . . . . . . . . . . . .  N NUMB   0000H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

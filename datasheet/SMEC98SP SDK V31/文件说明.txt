@@ -1,0 +1,29 @@
+SMEC98SP SDK： 开发包包含文件说明：
+
+SMEC98SP加密芯片开发手册 V21.pdf
+   SMEC98SP加密芯片开发手册
+
+RSA.EXE
+   PC端算法工具,内有DES算法,SHA1算法等功能
+
+SMEC98SP Tool V2.0.0.6.exe
+   编程器工具PC端工具,配合编程器,可烧录加密芯片.还可以在PC端,发送I2C指令,测试加密芯片功能.
+
+
+样例参考\SMEC98SP加密芯片事例程序说明.pdf
+    介绍了基于SMEC98SP保护MCU方案的典型设计。MCU及加密芯片的样例程序，都是按照此文档编写。
+
+样例参考\加密芯片样例\SMEC98SP_Demo
+   加密芯片SMEC98SP的样例工程
+
+样例参考\主控MCU样例\SMEC98SPforSTM32
+   STM32主控芯片样例工程
+
+样例参考\主控MCU样例\SMEC98SPfor8051
+   8051主控芯片样例工程
+
+样例参考\主控MCU样例\SMEC98SPforTMS320
+   DSP芯片TMS32028335主控芯片样例工程
+
+样例参考\主控MCU样例\SMEC98SPforMEGA2560
+   Arduino Mega 2560主控芯片样例工程

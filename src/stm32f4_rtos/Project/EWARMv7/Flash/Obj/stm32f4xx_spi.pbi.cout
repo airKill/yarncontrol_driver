@@ -44,6 +44,8 @@ E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\.
 -I
 E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\..\..\User\MQTTPacket
 -I
+E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\..\..\User\SMEC98SP\Header
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\arm\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\arm\inc\c
@@ -89,6 +91,8 @@ E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\User\MQTTPacket\s
 E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\User\MQTTPacket\samples
 -I
 E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\User\MQTTPacket
+-I
+E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\User\SMEC98SP\Header
 -DUSE_STDPERIPH_DRIVER=1
 -DSTM32F40_41xxx=1
 -DUSE_USB_OTG_FS=1
