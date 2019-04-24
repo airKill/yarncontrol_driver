@@ -1620,6 +1620,7 @@ void vTaskTaskLCD(void *pvParameters)
               stepmotor_guodu[2] = 0;
               write_bkp_para(&MotorProcess);
               fault_weimi_flag = 0;
+              Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,0,4);
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
             {//ÎÄ¼þÑ¡Ôñ
