@@ -5,6 +5,9 @@
 #define GPIO_PORT_CLOSE_SW      GPIOC
 #define GPIO_PIN_CLOSE_SW	 GPIO_Pin_9
 
+#define GPIO_PORT_ENCODERZ      GPIOA
+#define GPIO_PIN_ENCODERZ	 GPIO_Pin_8
+
 #define EXTI_PortSourceSW   EXTI_PortSourceGPIOC
 #define EXTI_PinSourceSW    EXTI_PinSource9
 #define EXTI_LineSW         EXTI_Line9

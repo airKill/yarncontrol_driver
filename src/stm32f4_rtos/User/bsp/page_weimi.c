@@ -14,8 +14,6 @@ u8 max_seg = 0,valid_seg[4] = {0,0,0,0};
 
 u8 fault_weimi_flag = 0;
 
-u8 first_circle = 0;
-
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
 //u16 servomotor_step = 0;

@@ -1603,13 +1603,13 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_WEIMI_RESET)
             {
               MotorProcess.current_seg = 0;
-              MotorProcess.current_wei = 0;
+              MotorProcess.current_wei = 1;
               MotorProcess.songwei_seg[0] = 0;
               MotorProcess.songwei_seg[1] = 0;
               MotorProcess.songwei_seg[2] = 0;
-              MotorProcess.song_current_wei[0] = 0;
-              MotorProcess.song_current_wei[1] = 0;
-              MotorProcess.song_current_wei[2] = 0;
+              MotorProcess.song_current_wei[0] = 1;
+              MotorProcess.song_current_wei[1] = 1;
+              MotorProcess.song_current_wei[2] = 1;
               MotorProcess.total_wei = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
               MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
@@ -3152,7 +3152,6 @@ static void vTaskFreq(void *pvParameters)
     else
     {
       is_stop = 0;
-      first_circle = 0;
       if(is_stop != old_is_stop)
       {//主轴速度为0时，停止步进电机
         old_is_stop = is_stop;

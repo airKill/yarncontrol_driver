@@ -66,7 +66,6 @@ extern u8 is_stop,old_is_stop;
 extern u8 max_seg,valid_seg[4];
 extern const float SPEED_RADIO[3];
 extern u8 fault_weimi_flag;
-extern u8 first_circle;
 
 u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num);
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao);
