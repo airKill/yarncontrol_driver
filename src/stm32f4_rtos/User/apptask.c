@@ -1620,7 +1620,7 @@ void vTaskTaskLCD(void *pvParameters)
               stepmotor_guodu[2] = 0;
               write_bkp_para(&MotorProcess);
               fault_weimi_flag = 0;
-              Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,0,4);
+              Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,1,4);
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
             {//ÎÄ¼þÑ¡Ôñ
@@ -2030,7 +2030,11 @@ static void vTaskTaskRFID(void *pvParameters)
             card_config = WRITE_PERMISSION;
           }
           vTaskDelay(100);
-        }  
+        }
+      }
+      else
+      {
+        vTaskDelay(100);
       }
     }
     Task_iwdg_refresh(TASK_RFID);

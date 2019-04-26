@@ -62,11 +62,11 @@ void ENC_Init(void)
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM8);
   
   /* Enable the TIM3 Update Interrupt */
-//  NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
-//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
-//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-//  NVIC_Init(&NVIC_InitStructure);
+  NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 
   /* Timer configuration in Encoder mode */
   TIM_DeInit(ENCODER_TIMER);
@@ -91,7 +91,7 @@ void ENC_Init(void)
   
  // Clear all pending interrupts
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
-//  TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
+  TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
   //Reset counter
   TIM_SetCounter(TIM8,COUNTER_RESET);
   ENC_Clear_Speed_Buffer();
@@ -264,9 +264,9 @@ void TIM8_UP_TIM13_IRQHandler(void)
     {
       hEncoder_Timer_Overflow++;
     }
-//    xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
-//    /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-//    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+    /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 }
 
