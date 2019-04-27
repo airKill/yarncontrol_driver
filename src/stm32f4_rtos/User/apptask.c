@@ -2470,7 +2470,7 @@ void vTaskManageCapacity(void *pvParameters)
               {//纬纱/千纬
                 count = 0;
                 Sdwe_disDigi(PAGE_PRODUCT_KILOCOUNT,product_para.weicount_kilowei,4);
-                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               }
               if((total_meter_gross == 0) && (total_weight_gross == 0))
               {
@@ -2648,14 +2648,6 @@ static void vTaskMotorControl(void *pvParameters)
             if(MotorProcess.step_factor[2] > 0)
               MotorProcess.song_current_wei[2]++;
             /*************用于掉电保存*********************/
-//            device_info.weimi_info.reg = MotorProcess.current_seg;
-//            device_info.weimi_info.songwei_seg[0] = MotorProcess.songwei_seg[0];
-//            device_info.weimi_info.songwei_seg[1] = MotorProcess.songwei_seg[1];
-//            device_info.weimi_info.songwei_seg[2] = MotorProcess.songwei_seg[2];
-//            device_info.weimi_info.count = MotorProcess.current_wei;
-//            device_info.weimi_info.songwei_count[0] = MotorProcess.song_current_wei[0];
-//            device_info.weimi_info.songwei_count[1] = MotorProcess.song_current_wei[1];
-//            device_info.weimi_info.songwei_count[2] = MotorProcess.song_current_wei[2];
             write_bkp_para(&MotorProcess);
             /*************************************************/
             if(max_seg == 0)
@@ -3667,6 +3659,8 @@ void UserTimerCallback(TimerHandle_t xTimer)
   static u16 speed_1 = 0,speed_2 = 0;
   static u8 timefor10s = 0;
   static u16 timefor5min = 0;
+  static u16 timefor10min = 0;
+  static u16 timefor20min = 0;
   EventBits_t uxBits;
   uxBits = xEventGroupWaitBits(idwgEventGroup, /* 事件标志组句柄 */
                                IWDG_BIT_ALL,            /* 等待bit0和bit1被设置 */
@@ -3760,6 +3754,12 @@ void UserTimerCallback(TimerHandle_t xTimer)
       Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_HOUR,hour,2);
       Sdwe_disDigi(PAGE_PRODUCT_TIME_ON_MIN,min,2);
     }
+    timefor10min++;
+    if(timefor10min >= 600)
+    {//开机状况下，每10分钟保存一次产能数据
+      timefor10min = 0;
+      W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+    }
   }
   else if(device_info.system_state == SYS_IDLE)
   {
@@ -3779,6 +3779,13 @@ void UserTimerCallback(TimerHandle_t xTimer)
     if(device_info.system_state != SYS_STOP)
     {
       device_info.stop_para.stop_time[device_info.system_state - 1]++;
+    }
+    timefor20min++;
+    if(timefor20min >= 600)
+    {//开机状况下，每10分钟保存一次时间数据
+      timefor20min = 0;
+      W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+      W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
     }
   }
 //  printf("speed_zhu is %d\r\n",speed_zhu);
