@@ -179,7 +179,7 @@
       <Focus>0</Focus>
       <ColumnNumber>41</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>40</TopLine>
+      <TopLine>41</TopLine>
       <CurrentLine>55</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\SrcApi\SHA1.C</PathWithFileName>
@@ -205,10 +205,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>25</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>205</TopLine>
-      <CurrentLine>211</CurrentLine>
+      <TopLine>401</TopLine>
+      <CurrentLine>407</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\SrcTest\c_root.C</PathWithFileName>
       <FilenameWithoutPath>c_root.C</FilenameWithoutPath>
@@ -259,7 +259,7 @@
 
   <AlienFiles>
     <PathWithFilename>E:\WORK\YarnControl_Driver\YarnControl_Driver\datasheet\SMEC98SP SDK V31\样例参考\加密芯片样例\SMEC98SP_Demo\SRCAPI\GLOBAL.H</PathWithFilename>
-    <TopLine>2</TopLine>
+    <TopLine>8</TopLine>
     <CurrentLine>22</CurrentLine>
     <Constant>0</Constant>
     <WindowPosition>
@@ -337,7 +337,7 @@
 
   <AlienFiles>
     <PathWithFilename>E:\WORK\YarnControl_Driver\YarnControl_Driver\datasheet\SMEC98SP SDK V31\样例参考\加密芯片样例\SMEC98SP_Demo\SRCAPI\SMEC98SP_I2C_HARD_API.H</PathWithFilename>
-    <TopLine>23</TopLine>
+    <TopLine>26</TopLine>
     <CurrentLine>40</CurrentLine>
     <Constant>0</Constant>
     <WindowPosition>
@@ -1745,7 +1745,7 @@
         <Doc>
           <Name>.\SRCAPI\SMEC98SP_I2C_HARD_API.H</Name>
           <ColumnNumber>0</ColumnNumber>
-          <TopLine>23</TopLine>
+          <TopLine>26</TopLine>
           <CurrentLine>40</CurrentLine>
         </Doc>
         <Doc>
@@ -1762,14 +1762,14 @@
         </Doc>
         <Doc>
           <Name>.\SrcTest\c_root.C</Name>
-          <ColumnNumber>4</ColumnNumber>
-          <TopLine>205</TopLine>
-          <CurrentLine>211</CurrentLine>
+          <ColumnNumber>25</ColumnNumber>
+          <TopLine>401</TopLine>
+          <CurrentLine>407</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\SrcApi\SHA1.C</Name>
           <ColumnNumber>41</ColumnNumber>
-          <TopLine>40</TopLine>
+          <TopLine>41</TopLine>
           <CurrentLine>55</CurrentLine>
         </Doc>
         <Doc>
@@ -1781,7 +1781,7 @@
         <Doc>
           <Name>.\SRCAPI\GLOBAL.H</Name>
           <ColumnNumber>0</ColumnNumber>
-          <TopLine>2</TopLine>
+          <TopLine>8</TopLine>
           <CurrentLine>22</CurrentLine>
         </Doc>
       </Documents>

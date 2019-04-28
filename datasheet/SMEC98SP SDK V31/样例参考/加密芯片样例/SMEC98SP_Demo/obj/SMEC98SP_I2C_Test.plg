@@ -7,8 +7,3 @@ E:\WORK\YarnControl_Driver\YarnControl_Driver\datasheet\SMEC98SP SDK V31\ÑùÀý²Î¿
 Project File Date:  04/22/2019
 
 <h2>Output:</h2>
-Build target 'SMEC98SP'
-linking...
-Program Size: data=129.0 xdata=612 code=6700
-creating hex file from ".\obj\SMEC98SP_I2C_Test"...
-".\obj\SMEC98SP_I2C_Test" - 0 Error(s), 0 Warning(s).

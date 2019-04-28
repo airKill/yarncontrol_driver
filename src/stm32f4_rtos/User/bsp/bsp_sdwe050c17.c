@@ -377,6 +377,12 @@ void Sdwe_hidden_page(DEVICE_INFO *para)
 void Sdwe_stop_page(DEVICE_INFO *para)
 {
   u8 buf[20];
+  
+  if(para->system_state != 0)
+  {
+    Sdwe_writeIcon(para->system_state - 1 + PAGE_STOP_ON,VGUS_ON);
+  }
+  
   memset(buf,0,20);
   sprintf((char *)buf,"%04d:%02d",para->stop_para.stop_time[0] / 3600,para->stop_para.stop_time[0] % 3600 / 60);
   Sdwe_disString(PAGE_STOP_WAIT_TRANSFER,buf,strlen((char const*)buf));

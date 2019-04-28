@@ -205,10 +205,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>34</ColumnNumber>
+      <ColumnNumber>4</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>46</TopLine>
-      <CurrentLine>53</CurrentLine>
+      <TopLine>205</TopLine>
+      <CurrentLine>211</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\SrcTest\c_root.C</PathWithFileName>
       <FilenameWithoutPath>c_root.C</FilenameWithoutPath>
@@ -1762,9 +1762,9 @@
         </Doc>
         <Doc>
           <Name>.\SrcTest\c_root.C</Name>
-          <ColumnNumber>16</ColumnNumber>
-          <TopLine>58</TopLine>
-          <CurrentLine>67</CurrentLine>
+          <ColumnNumber>4</ColumnNumber>
+          <TopLine>205</TopLine>
+          <CurrentLine>211</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\SrcApi\SHA1.C</Name>
