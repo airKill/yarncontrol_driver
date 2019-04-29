@@ -22,8 +22,10 @@
 #define WIFI_CONNECT      1
 #define SEVER_CONNECT_OK     2
 
-#define WIFI_SSID       "TP-LINK_DDE6"
-#define WIFI_PASSWORD   "65102608*"
+#define WIFI_SSID       "tplink589"
+#define WIFI_PASSWORD   "y18509213517"
+//#define WIFI_SSID       "znkzxt"
+//#define WIFI_PASSWORD   "zn123654xt"
 
 /* ESP8266硬件状态类型 */
 typedef enum
