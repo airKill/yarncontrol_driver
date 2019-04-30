@@ -336,6 +336,7 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para->kaidu_set,2);
   Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para->weimi_set,2);
   Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
+  Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
 }
 
 void Sdwe_ratio_display(DEVICE_INFO *para)

@@ -762,7 +762,7 @@ void vTaskTaskLCD(void *pvParameters)
               total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
               init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
               peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
-              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,(int)(peiliao_para.add_meter_set * 10),4);
+              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
               Sdwe_product_page(&product_para);
               W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
@@ -3586,7 +3586,7 @@ void AppTaskCreate (void)
               &xHandleTaskMassStorage ); /* 任务句柄  */
   xTaskCreate( vTaskReadDisk,    		/* 任务函数  */
               "vTaskReadDisk",  		/* 任务名    */
-              768,         		/* 任务栈大小，单位word，也就是4字节 */
+              1124,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               7,           		/* 任务优先级*/
               &xHandleTaskReadDisk); /* 任务句柄  */

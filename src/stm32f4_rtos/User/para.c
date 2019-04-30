@@ -446,30 +446,40 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"经纱");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.latitude_weight);
-      peiliao_para.latitude_weight = peiliao_para.latitude_weight * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.latitude_weight = (u32)temp * 10;
     }
     strx = strstr(diskbuf,"纬纱");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.longitude_weight);
-      peiliao_para.longitude_weight = peiliao_para.longitude_weight * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.longitude_weight = (u32)temp * 10;
     }
     strx = strstr(diskbuf,"橡胶");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.rubber_weight);
-      peiliao_para.rubber_weight = peiliao_para.rubber_weight * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.rubber_weight = (u32)temp * 10;
     }
     strx = strstr(diskbuf,"成品");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.final_weight);
-      peiliao_para.final_weight = peiliao_para.final_weight * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.final_weight = (u32)temp * 10;
+    }
+    strx = strstr(diskbuf,"纬密显示");
+    if(strx)
+    {
+      sscanf(strx,"%*[^,],%[^\n]",da);
+      sscanf(da,"%d",&peiliao_para.weimi_dis_set);
     }
     strx = strstr(diskbuf,"织机条数");
     if(strx)
@@ -498,23 +508,20 @@ void read_from_disk(char *diskbuf)
     strx = strstr(diskbuf,"开度");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.kaidu_set);
-      peiliao_para.kaidu_set = peiliao_para.kaidu_set * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.kaidu_set = (u32)temp * 10;
     }
     strx = strstr(diskbuf,"纬密");
     if(strx)
     {
+      float temp;
       sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%f",&peiliao_para.weimi_set);
-      peiliao_para.weimi_set = peiliao_para.weimi_set * 10;
+      sscanf(da,"%f",&temp);
+      peiliao_para.weimi_set = (u32)temp * 10;
     }
-    strx = strstr(diskbuf,"纬密显示");
-    if(strx)
-    {
-      sscanf(strx,"%*[^,],%[^\n]",da);
-      sscanf(da,"%d",&peiliao_para.weimi_dis_set);
-    }
+    
     strx = strstr(diskbuf,"补单数量");
     if(strx)
     {
