@@ -91,7 +91,7 @@ void ENC_Init(void)
   
  // Clear all pending interrupts
   TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
-  TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
+//  TIM_ITConfig(ENCODER_TIMER, TIM_IT_Update, ENABLE);
   //Reset counter
   TIM_SetCounter(TIM8,COUNTER_RESET);
   ENC_Clear_Speed_Buffer();

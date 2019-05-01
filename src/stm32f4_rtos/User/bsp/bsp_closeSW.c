@@ -54,15 +54,9 @@ void EXTI9_5_IRQHandler(void)
   if(EXTI_GetITStatus(EXTI_LineSW) != RESET)
   {
     EXTI_ClearITPendingBit(EXTI_LineSW); /* 清除中断标志位 */
-    xSemaphoreGiveFromISR(xSemaphore_pluse, &xHigherPriorityTaskWoken);
+//    xSemaphoreGiveFromISR(xSemaphore_pluse, &xHigherPriorityTaskWoken);
+    xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
     /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
-//  if(EXTI_GetITStatus(EXTI_Line8) != RESET)
-//  {
-//    EXTI_ClearITPendingBit(EXTI_Line8); /* 清除中断标志位 */
-//    xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
-//    /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-//    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-//  }
 }

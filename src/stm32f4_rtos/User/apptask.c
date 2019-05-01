@@ -3769,13 +3769,20 @@ void UserTimerCallback(TimerHandle_t xTimer)
     speed_1 = pluse_count;
     sample_time++;
   }
-  else if(sample_time >= 10)
+  else if(sample_time >= 2)
   {//计算2s内的脉冲数
     sample_time = 0;
     speed_2 = pluse_count;
+    speed_zhu1 = (speed_2 - speed_1) * 30;//2秒内的脉冲数*30转换为1分钟脉冲数
     pluse_count = 0;
-    speed_zhu1 = (speed_2 - speed_1) * 6;//2秒内的脉冲数*30转换为1分钟脉冲数
-    Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu1,2);//显示速度
+    if(speed_zhu > 0)
+    {
+      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu,2);//显示速度
+    }
+    else
+    {
+      Sdwe_disDigi(PAGE_PRODUCT_SPEED,speed_zhu1,2);//显示速度
+    }
   }
   else
   {
