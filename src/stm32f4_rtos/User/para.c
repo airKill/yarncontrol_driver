@@ -10,10 +10,10 @@ void read_device_info(void)
   if(device_info.isfirst != 0xaa)
   {
     device_info.isfirst = 0xaa;
-    sprintf((char *)device_info.device_id,"%s","jx1234");
+    sprintf((char *)device_info.device_id,"%s","JX001");
     device_info.device_id_len = 6;
     device_info.system_state = SYS_NORMAL;
-    device_info.page_count_all = 0;
+    device_info.page_count_all = 1;
     device_info.page_count_select = 0;
     device_info.sevro_stop_pluse = 0;
 
@@ -35,10 +35,11 @@ void read_device_info(void)
     {
       device_info.onoff[i] = 0;
     }
-    for(i=0;i<10;i++)
+    for(i=1;i<10;i++)
     {
       device_info.file_select[i] = 0;
     }
+    device_info.file_select[0] = 1;
     for(i=0;i<11;i++)
     {
       device_info.stop_para.stop_time[i] = 0;
@@ -92,10 +93,10 @@ void default_device_para(void)
   u8 i;
   
   device_info.isfirst = 0xaa;
-  sprintf((char *)device_info.device_id,"%s","jx1234");
+  sprintf((char *)device_info.device_id,"%s","JX001");
   device_info.device_id_len = 6;
   device_info.system_state = SYS_NORMAL;
-  device_info.page_count_all = 0;
+  device_info.page_count_all = 1;
   device_info.page_count_select = 0;
   device_info.sevro_stop_pluse = 0;
 
@@ -117,10 +118,11 @@ void default_device_para(void)
   {
     device_info.onoff[i] = 0;
   }
-  for(i=0;i<10;i++)
+  for(i=1;i<10;i++)
   {
     device_info.file_select[i] = 0;
   }
+  device_info.file_select[0] = 1;
   for(i=0;i<11;i++)
   {
     device_info.stop_para.stop_time[i] = 0;
@@ -159,15 +161,15 @@ void default_device_para(void)
   W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   init_weimi_para(&weimi_para,peiliao_para);
   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
-  JingSha_File.filename_len = 0;
-  for(i=0;i<10;i++)
-  {
-    JingSha_File.filename[i] = 0;
-  }
-  for(i=0;i<30;i++)
-  {
-    JingSha_File.weight_value[i] = 0;
-  }
+//  JingSha_File.filename_len = 0;
+//  for(i=0;i<10;i++)
+//  {
+//    JingSha_File.filename[i] = 0;
+//  }
+//  for(i=0;i<30;i++)
+//  {
+//    JingSha_File.weight_value[i] = 0;
+//  }
   para_init(&SlavePara);
 }
 

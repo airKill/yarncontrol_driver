@@ -233,7 +233,7 @@ u16 ENC_Calc_Average_Speed(void)
   u16 sum = 0;
   wtemp = ENC_Calc_Rot_Speed();
 
-  if(wtemp < 1600)
+  if(wtemp < 2000)
     hSpeed_Buffer[bSpeed_Buffer_Index++] = (s16)wtemp;
   if(bSpeed_Buffer_Index >= SPEED_BUFFER_SIZE)
     bSpeed_Buffer_Index = 0;
