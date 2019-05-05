@@ -643,6 +643,7 @@
       <file>$PROJ_DIR$\Flash\Obj\usbh_msc_scsi.pbi</file>
       <file>$PROJ_DIR$\Flash\Obj\main.pbi</file>
       <file>$PROJ_DIR$\Flash\Obj\stm32f4xx_usart.pbi</file>
+      <file>$PROJ_DIR$\Flash\Exe\MainBoard190505.bin</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -824,7 +825,7 @@
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 458</file>
+          <file> 637</file>
         </tool>
       </outputs>
       <inputs>
