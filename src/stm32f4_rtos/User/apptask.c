@@ -623,21 +623,21 @@ void vTaskTaskLCD(void *pvParameters)
                   {
                     if(var_addr == PAGE_HISTORY_KEY_SELECT)
                     {//调用文件
-                      JINGSHA_FILE file_read;
+//                      JINGSHA_FILE file_read;
                       u8 i;
-                      memset((u8 *)&file_read,0,sizeof(file_read));
-                      W25QXX_Read((u8 *)&file_read,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * num),sizeof(file_read));//读出num的数据
+//                      memset((u8 *)&file_read,0,sizeof(file_read));
+                      W25QXX_Read((u8 *)&JingSha_File,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * num),sizeof(JingSha_File));//读出num的数据
                       W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + CHANNENG_SIZE * num),sizeof(peiliao_para));//读出num的数据
                       W25QXX_Read((u8 *)&weimi_para,(u32)(W25QXX_ADDR_WEIMI + WEIMI_SIZE * num),sizeof(weimi_para));//读出num的数据
                       device_info.page_count_select = num;
-                      SlavePara.filename_len = file_read.filename_len;
-                      for(i=0;i<file_read.filename_len;i++)
+                      SlavePara.filename_len = JingSha_File.filename_len;
+                      for(i=0;i<JingSha_File.filename_len;i++)
                       {
-                        SlavePara.filename[i] = file_read.filename[i];
+                        SlavePara.filename[i] = JingSha_File.filename[i];
                       }
                       for(i=0;i<30;i++)
                       {
-                        SlavePara.value_set[i] = file_read.weight_value[i];
+                        SlavePara.value_set[i] = JingSha_File.weight_value[i];
                       }
                       W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
                       Init_JINGSHA_GUI();
@@ -790,7 +790,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -805,7 +805,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -820,7 +820,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -833,7 +833,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -848,7 +848,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -868,7 +868,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               plan_complete = 0;
               old_plan_complete = 0;
@@ -893,7 +893,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
               plan_complete = 0;
               old_plan_complete = 0;
@@ -910,7 +910,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -925,7 +925,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                  W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
                 weimi_para.wei_cm_set[0] = cnt / 10;//胚料页面纬厘米和纬密页面段1纬厘米相同
                 weimi_para.wei_inch_set[0] = weimi_para.wei_cm_set[0] * 2.54;
                 //转换为纬/inch显示
@@ -944,7 +944,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -957,7 +957,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
               u8 publish_topic;
               publish_topic = TOPIC_PEILIAO;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
@@ -1297,7 +1297,7 @@ void vTaskTaskLCD(void *pvParameters)
                   u8 no = 0;
                   no = isFileSelect();
                   if(no == 1)
-                    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                   if((var_addr - PAGE_WEIMI_TOTALWEI_1) == MotorProcess.current_seg)
                   {//如果修改的循环纬刚好是当前段号，立刻更新当前循环纬
                     MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
@@ -1313,7 +1313,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 if((var_addr - PAGE_WEIMI_TOTALWEI_1) == MotorProcess.current_seg)
                 {//如果修改的循环纬刚好是当前段号，立刻更新当前循环纬
                   MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
@@ -1345,7 +1345,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
                 if(seg_num == MotorProcess.current_seg)
                 {//如果改变的纬密为当前段号纬密，立刻更新步数/纬
@@ -1358,7 +1358,7 @@ void vTaskTaskLCD(void *pvParameters)
                   u8 no = 0;
                   no = isFileSelect();
                   if(no == 1)
-                    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                    W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 }
                 valid_seg[0] = get_valid_seg(weimi_para);
                 max_seg = get_max_type(valid_seg);
@@ -1375,7 +1375,7 @@ void vTaskTaskLCD(void *pvParameters)
               u8 no = 0;
               no = isFileSelect();
               if(no == 1)
-                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
               if((var_addr - PAGE_WEIMI_MEDIANWEI_1 + 1) == MotorProcess.current_seg)
               {//如果修改的纬过渡刚好是当前段号，立刻更新当前循环纬
                 MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
@@ -1394,7 +1394,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_SPEED) / 2) == (MotorProcess.songwei_seg[0] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
@@ -1422,7 +1422,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SPEED) / 2) == (MotorProcess.songwei_seg[1] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
@@ -1450,7 +1450,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SPEED) / 2) == (MotorProcess.songwei_seg[2] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
@@ -1480,7 +1480,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP1_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_ADD1) / 2) == (MotorProcess.current_seg / 2))
@@ -1525,7 +1525,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_ADD1) / 2) == (MotorProcess.current_seg / 2))
@@ -1549,7 +1549,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP2_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SUB1) / 2) == (MotorProcess.current_seg / 2))
@@ -1573,7 +1573,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP3_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_ADD1) / 2) == (MotorProcess.current_seg / 2))
@@ -1597,7 +1597,7 @@ void vTaskTaskLCD(void *pvParameters)
                 u8 no = 0;
                 no = isFileSelect();
                 if(no == 1)
-                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
+                  W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 Sdwe_disDigi(PAGE_WEIMI_STEP3_SPEED + 2 * position,speed,2);
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SUB1) / 2) == (MotorProcess.current_seg / 2))
