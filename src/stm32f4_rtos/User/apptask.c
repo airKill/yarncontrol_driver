@@ -3593,7 +3593,7 @@ void AppTaskCreate (void)
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
-              512,         		/* 任务栈大小，单位word，也就是4字节 */
+              612,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
