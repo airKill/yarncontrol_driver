@@ -2658,6 +2658,7 @@ void vTaskManageCapacity(void *pvParameters)
         RELAY_CLOSE();
       }
     }
+//    printf("-->free %f K", xPortGetFreeHeapSize()/1024.0); 
     Task_iwdg_refresh(TASK_ManageCapacity);
   }
 }
