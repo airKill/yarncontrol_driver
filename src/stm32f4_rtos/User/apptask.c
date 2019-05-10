@@ -2547,6 +2547,7 @@ void vTaskManageCapacity(void *pvParameters)
             case 0:
               RELAY_OPEN();//ÓÐÂö³åÐÅºÅºó£¬¼ÌµçÆ÷¶Ï¿ª
               count++;
+              printf("wei\r\n");
               product_para.weicount_kilowei = product_para.weicount_kilowei + count / peiliao_para.weimi_dis_set;
               if((count % (peiliao_para.weimi_dis_set)) == 0)
               {//Î³É´/Ç§Î³
