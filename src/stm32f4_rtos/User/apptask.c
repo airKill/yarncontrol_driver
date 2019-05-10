@@ -1358,7 +1358,10 @@ void vTaskTaskLCD(void *pvParameters)
                   u8 no = 0;
                   no = isFileSelect();
                   if(no == 1)
+                  {
+                    W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select,sizeof(peiliao_para));
                     W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
+                  }
                 }
                 valid_seg[0] = get_valid_seg(weimi_para);
                 max_seg = get_max_type(valid_seg);
