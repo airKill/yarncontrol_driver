@@ -753,7 +753,9 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_PRODUCT_PEILIAO)
             {//
-              Sdwe_peiliao_page(&peiliao_para);
+              //由于运行一段时间后，会出现胚料页面数据错误，现每次进入胚料页面后，重新从存储器中读取胚料数据进行测试
+              W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select),sizeof(peiliao_para));//胚料保存数据
+              Sdwe_peiliao_page(peiliao_para);
               card_config = CARD_DISABLE;
             }
             else if(var_addr == PAGE_PRODUCT_CLEAR)
@@ -3561,13 +3563,13 @@ void AppTaskCreate (void)
   
   xTaskCreate( vTaskTaskLCD,   	/* 任务函数  */
               "vTaskLCD",     	/* 任务名    */
-              1024,               	/* 任务栈大小，单位word，也就是4字节 */
+              1224,               	/* 任务栈大小，单位word，也就是4字节 */
               NULL,              	/* 任务参数  */
               2,                 	/* 任务优先级*/
               &xHandleTaskLCD );  /* 任务句柄  */
   xTaskCreate( vTaskMsgPro,     		/* 任务函数  */
               "vTaskMsgPro",   		/* 任务名    */
-              256,             		/* 任务栈大小，单位word，也就是4字节 */
+              128,             		/* 任务栈大小，单位word，也就是4字节 */
               NULL,           		/* 任务参数  */
               3,               		/* 任务优先级*/
               &xHandleTaskMsgPro );  /* 任务句柄  */
@@ -3597,7 +3599,7 @@ void AppTaskCreate (void)
               &xHandleTaskReadDisk); /* 任务句柄  */
   xTaskCreate( vTaskManageCapacity,    		/* 任务函数  */
               "vTaskManageCapacity",  		/* 任务名    */
-              612,         		/* 任务栈大小，单位word，也就是4字节 */
+              512,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               8,           		/* 任务优先级*/
               &xHandleTaskManageCapacity); /* 任务句柄  */
@@ -3609,15 +3611,15 @@ void AppTaskCreate (void)
               &xHandleTaskMotorControl); /* 任务句柄  */
   xTaskCreate( vTaskFreq,    		/* 任务函数  */
               "vTaskFreq",  		/* 任务名    */
-              128,         		/* 任务栈大小，单位word，也就是4字节 */
+              256,         		/* 任务栈大小，单位word，也就是4字节 */
               NULL,        		/* 任务参数  */
               10,           		/* 任务优先级*/
               &xHandleTaskFreq); /* 任务句柄  */
     xTaskCreate( vAnalysisUartData,   	"vAnalysisUartData",  	256, NULL, 11, NULL);
-    xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	256, NULL, 12, NULL);
+    xTaskCreate( vEsp8266_Main_Task,   	"vEsp8266_Main_Task",  	128, NULL, 12, NULL);
     xTaskCreate( vMQTT_Handler_Task,   	"vMQTT_Handler_Task",  	256, NULL, 13, NULL);
     xTaskCreate( vMQTT_Recive_Task,   	"vMQTT_Recive_Task",  	256, NULL, 14, NULL);
-    xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	256, NULL, 14, NULL);
+    xTaskCreate( vMQTT_Tranmit_Task,   	"vMQTT_Tranmit_Task",  	128, NULL, 14, NULL);
 }
 
 /*

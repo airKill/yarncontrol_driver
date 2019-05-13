@@ -309,7 +309,7 @@ void Sdwe_product_page(PRODUCT_PARA *para)
 }
 
 //ÅßÁÏÒ³Ãæ
-void Sdwe_peiliao_page(PEILIAO_PARA *para)
+void Sdwe_peiliao_page(PEILIAO_PARA para)
 {
   u8 name[20],name_1[20];
   u8 name_len;
@@ -325,17 +325,17 @@ void Sdwe_peiliao_page(PEILIAO_PARA *para)
   name_len = strlen((char const*)name);
   Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
   
-  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,para->latitude_weight,2);
-  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,para->longitude_weight,2);
-  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,para->rubber_weight,2);
-  Sdwe_disDigi(PAGE_PRODUCT_FINAL,para->final_weight,2);
-  Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,para->loom_num,2);
-  Sdwe_disDigi(PAGE_PRODUCT_LOSS,para->loss,2);
-  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para->total_meter_set),4);
-  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para->total_weitht_set),4);
-  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para->kaidu_set,2);
-  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para->weimi_set,2);
-  Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para->weimi_dis_set),2);
+  Sdwe_disDigi(PAGE_PRODUCT_JINGSHA,para.latitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHA,para.longitude_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_RUBBER,para.rubber_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_FINAL,para.final_weight,2);
+  Sdwe_disDigi(PAGE_PRODUCT_ZHIJI,para.loom_num,2);
+  Sdwe_disDigi(PAGE_PRODUCT_LOSS,para.loss,2);
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_METER,(int)(para.total_meter_set),4);
+  Sdwe_disDigi(PAGE_PRODUCT_TOTAL_WEIGHT,(int)(para.total_weitht_set),4);
+  Sdwe_disDigi(PAGE_PRODUCT_KAIDU,para.kaidu_set,2);
+  Sdwe_disDigi(PAGE_WEIMI_WEI_CM_1,para.weimi_set,2);
+  Sdwe_disDigi(PAGE_PRODUCT_WEISHU_DIS,(int)(para.weimi_dis_set),2);
   Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
 }
 

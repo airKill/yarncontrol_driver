@@ -314,7 +314,7 @@ void Sdwe_clear_filename(u8 file_count);
 u8 hex_to_decimal(u8 da);
 void Sdwe_ClearReadDisk(void);
 void Sdwe_product_page(PRODUCT_PARA *para);
-void Sdwe_peiliao_page(PEILIAO_PARA *para);
+void Sdwe_peiliao_page(PEILIAO_PARA para);
 void Sdwe_stop_page(DEVICE_INFO *para);
 void SDWE_WARNNING(u16 addr,u8 *str,u8 text);
 void Sdwe_change_class_time(DEVICE_INFO *para);

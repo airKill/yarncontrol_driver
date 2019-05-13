@@ -161,15 +161,6 @@ void default_device_para(void)
   W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
   init_weimi_para(&weimi_para,peiliao_para);
   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI,sizeof(weimi_para));
-//  JingSha_File.filename_len = 0;
-//  for(i=0;i<10;i++)
-//  {
-//    JingSha_File.filename[i] = 0;
-//  }
-//  for(i=0;i<30;i++)
-//  {
-//    JingSha_File.weight_value[i] = 0;
-//  }
   para_init(&SlavePara);
 }
 
@@ -439,12 +430,6 @@ void read_from_disk(char *diskbuf)
       sscanf(da,"%f",&value);
       SlavePara.value_set[29] = (u16)(value * 1000);
     }
-    //    strx = strstr(diskbuf,"时间日期");
-    //    if(strx)
-    //    {
-    //      sscanf(strx,"时间日期,%d/%d/%d,%d:%d:%d\n\n",&jingsha_file.year,&jingsha_file.month,
-    //             &jingsha_file.day,&jingsha_file.hour,&jingsha_file.minute,&jingsha_file.second);
-    //    }
     strx = strstr(diskbuf,"经纱");
     if(strx)
     {
