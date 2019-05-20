@@ -2520,14 +2520,14 @@ void vTaskManageCapacity(void *pvParameters)
   total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
   if(total_meter_gross > 0)
   {
-    if(product_para.product_complete >= total_meter_gross)
+    if(product_para.product_complete >= total_meter_gross * 10)
     {
       plan_complete = 1;
     }
   }
   if(total_weight_gross > 0)
   {
-    if(product_para.weight_complete >= total_weight_gross)
+    if(product_para.weight_complete >= total_weight_gross * 10)
     {
       plan_complete = 1;
     }

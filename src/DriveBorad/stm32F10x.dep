@@ -308,6 +308,7 @@
       <file>$PROJ_DIR$\USER\protocol.c</file>
       <file>$PROJ_DIR$\USER\stm32f10x_it.c</file>
       <file>$PROJ_DIR$\USER\switch.c</file>
+      <file>$PROJ_DIR$\Debug\Exe\SlaveBoard190518.bin</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -354,7 +355,7 @@
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 98</file>
+          <file> 302</file>
         </tool>
       </outputs>
       <inputs>
