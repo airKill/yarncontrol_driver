@@ -30,7 +30,8 @@
 #define VGUS_RTC_COM_ADJ        0x1F    //用户申请修改RTC数据，VGUS修改后清零，年：月：日：星期：时：分：秒
 
 #define PAGE_MAIN           1
-#define PAGE_1              2
+//#define PAGE_1              2
+#define PAGE_1              4
 #define PAGE_1_SECRET       3
 #define PAGE_1_SET_VALUE    4
 #define PAGE_1_FILENAME     5
