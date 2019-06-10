@@ -181,11 +181,14 @@ void vTaskSample(void *pvParameters)
     //PA0电压=采样值/4096*3.3
     //采样电阻两端电压V=PA0电压/放大倍数11
     //电机电流=采样电流=采样电压V/采样电阻0.01
-    value_current = (float)Average_filter() / 4096 * 3.3 / 11 / 0.01;
+    value_current = (float)Average_filter() / 4096 * 3.3 / 11 / 0.1;
     printf("%.3fkg,%.3fA\r\n",(float)load_value / 1000,value_current);
     if(value_current >= SAMPLE_CURRENT_MAX)
     {//过载
 //      Device_Process = PROCESS_OVERCURRENTS;
+      Device_Process = PROCESS_STOP;
+      motor_dir = MOTOR_STOP;
+      motor_control(motor_dir);
     }
     switch(Device_Process)
     {
