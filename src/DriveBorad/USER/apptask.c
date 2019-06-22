@@ -202,7 +202,7 @@ void vTaskSample(void *pvParameters)
         if((device_info.onoff == 1) && (start_stop == 1))
         {
           diff = abs(load_value - device_info.weight_value);
-          if((diff <= 150) || (load_value <= ZERO))
+          if((diff <= 50) || (load_value <= ZERO))
           {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);  
