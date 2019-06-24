@@ -201,6 +201,9 @@ void vTaskSample(void *pvParameters)
         {
           motor_dir = MOTOR_REVERSE;
         }
+        u16 speed;
+        speed = 850;
+        motor_speed(speed);
         motor_control(motor_dir);
         Device_Process = PROCESS_OVERCURRENTS;
         overCurrent_flag = 1;
@@ -273,6 +276,9 @@ void vTaskSample(void *pvParameters)
             {
               motor_dir = MOTOR_REVERSE;
             }
+            u16 speed;
+            speed = 850;
+            motor_speed(speed);
             motor_control(motor_dir);
             Device_Process = PROCESS_OVERWEIGHT;
             overWeight_flag = 1;
@@ -287,6 +293,8 @@ void vTaskSample(void *pvParameters)
         }
         break;
       case PROCESS_RESET://¸´Î»
+        u16 speed;
+        speed = 850;
         motor_dir = MOTOR_REVERSE;
         motor_control(motor_dir);
 //        Device_Process = PROCESS_RESET_1;
@@ -302,6 +310,8 @@ void vTaskSample(void *pvParameters)
 //        }
 //        else
         {
+          u16 speed;
+          speed = 850;
           motor_dir = MOTOR_FORWARD;
           motor_control(motor_dir);
           if(key_reset == 0)
