@@ -6,6 +6,7 @@
 #define soft_version "SB.0.1181212"
 
 #define ZERO    60//零点，小于该值时，驱动板不工作
+#define MAX_WEIGHT    15000//最大重量限制15KG
 
 typedef enum
 {
@@ -15,6 +16,7 @@ typedef enum
   PROCESS_RESET_1,
   PROCESS_RESET_2,
   PROCESS_OVERCURRENTS,
+  PROCESS_OVERWEIGHT,
   PROCESS_PAUSE
 }DEVICE_PROCESS;
 
@@ -26,6 +28,12 @@ extern u16 k3_short_cnt;
 extern u8 k3_short_flag;
 extern u8 key_reset;
 extern u16 key_reset_time; 
+
+extern u8 overCurrent_flag;
+extern u16 overCurrent_time;
+
+extern u8 overWeight_flag;
+extern u16 overWeight_time;
 
 void KeyProcess(void);
 void AppTaskCreate (void);

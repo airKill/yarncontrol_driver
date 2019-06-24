@@ -13,6 +13,12 @@ TimerHandle_t xTimerUser = NULL;
 u8 key_reset = 0;
 u16 key_reset_time = 0;
 
+u8 overCurrent_flag = 0;
+u16 overCurrent_time = 0;
+
+u8 overWeight_flag = 0;
+u16 overWeight_time = 0;
+
 u8 Device_Process = PROCESS_STOP;
 u8 old_Device_Process = PROCESS_STOP;
 
@@ -184,11 +190,25 @@ void vTaskSample(void *pvParameters)
     value_current = (float)Average_filter() / 4096 * 3.3 / 11 / 0.1;
     printf("%.3fkg,%.3fA\r\n",(float)load_value / 1000,value_current);
     if(value_current >= SAMPLE_CURRENT_MAX)
-    {//过载
-//      Device_Process = PROCESS_OVERCURRENTS;
-      Device_Process = PROCESS_STOP;
-      motor_dir = MOTOR_STOP;
-      motor_control(motor_dir);
+    {//电流过载
+      if(Device_Process == PROCESS_RUNNING)
+      {//电机如果转动中，反向
+        if(motor_dir == MOTOR_REVERSE)
+        {
+          motor_dir = MOTOR_FORWARD;
+        }
+        else if(motor_dir == MOTOR_FORWARD)
+        {
+          motor_dir = MOTOR_REVERSE;
+        }
+        motor_control(motor_dir);
+        Device_Process = PROCESS_OVERCURRENTS;
+        overCurrent_flag = 1;
+        overCurrent_time = 0;
+      }
+//      Device_Process = PROCESS_STOP;
+//      motor_dir = MOTOR_STOP;
+//      motor_control(motor_dir);
     }
     switch(Device_Process)
     {
@@ -202,43 +222,61 @@ void vTaskSample(void *pvParameters)
         if((device_info.onoff == 1) && (start_stop == 1))
         {
           diff = abs(load_value - device_info.weight_value);
-          if((diff <= 50) || (load_value <= ZERO))
-          {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
-            motor_dir = MOTOR_STOP;
-            motor_control(motor_dir);  
+          if(load_value < MAX_WEIGHT)
+          {//小于最大重量限制
+            if((diff <= 50) || (load_value <= ZERO))
+            {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
+              motor_dir = MOTOR_STOP;
+              motor_control(motor_dir);  
+            }
+            else
+            {//差值大于0.5kg时，连续运转
+              u16 speed;
+              u8 mode;
+              if(diff > 500)
+              {
+                speed = 850;
+              }
+              else if((diff > 400) && (diff <= 500))
+              {
+                speed = 800;
+              }
+              else if((diff > 300) && (diff <= 400))
+              {
+                speed = 750;
+              }
+              else if((diff > 200) && (diff <= 300))
+              {
+                speed = 500;
+              }
+              if(load_value > device_info.weight_value)
+              {
+                motor_speed(speed);
+                motor_dir = MOTOR_REVERSE;
+                motor_control(motor_dir);
+              }
+              else if(load_value < device_info.weight_value)
+              {
+                motor_speed(speed);
+                motor_dir = MOTOR_FORWARD;
+                motor_control(motor_dir);
+              }
+            }
           }
           else
-          {//差值大于0.5kg时，连续运转
-            u16 speed;
-            u8 mode;
-            if(diff > 500)
+          {//超过最大重量限制后，反转20s
+            if(motor_dir == MOTOR_REVERSE)
             {
-              speed = 850;
-            }
-            else if((diff > 400) && (diff <= 500))
-            {
-              speed = 800;
-            }
-            else if((diff > 300) && (diff <= 400))
-            {
-              speed = 750;
-            }
-            else if((diff > 200) && (diff <= 300))
-            {
-              speed = 500;
-            }
-            if(load_value > device_info.weight_value)
-            {
-              motor_speed(speed);
-              motor_dir = MOTOR_REVERSE;
-              motor_control(motor_dir);
-            }
-            else if(load_value < device_info.weight_value)
-            {
-              motor_speed(speed);
               motor_dir = MOTOR_FORWARD;
-              motor_control(motor_dir);
             }
+            else if(motor_dir == MOTOR_FORWARD)
+            {
+              motor_dir = MOTOR_REVERSE;
+            }
+            motor_control(motor_dir);
+            Device_Process = PROCESS_OVERWEIGHT;
+            overWeight_flag = 1;
+            overWeight_time = 0;
           }
         }
         else 
@@ -283,8 +321,24 @@ void vTaskSample(void *pvParameters)
         }
         break;    
       case PROCESS_OVERCURRENTS:
-        motor_dir = MOTOR_STOP;
-        motor_control(motor_dir);
+        if(overCurrent_time >= 20)
+        {
+          overCurrent_time = 0;
+          overCurrent_flag = 0;
+          motor_dir = MOTOR_STOP;
+          motor_control(motor_dir);
+          Device_Process = PROCESS_RUNNING;
+        }
+        break; 
+      case PROCESS_OVERWEIGHT:
+        if(overWeight_time >= 20)
+        {
+          overWeight_time = 0;
+          overWeight_flag = 0;
+          motor_dir = MOTOR_STOP;
+          motor_control(motor_dir);
+          Device_Process = PROCESS_RUNNING;
+        }
         break; 
       case PROCESS_PAUSE:
         motor_dir = MOTOR_STOP;
@@ -342,6 +396,30 @@ void UserTimerCallback(TimerHandle_t xTimer)
   {//10s内未收到链接命令，重启
     link_err = 0;
     NVIC_SystemReset();
+  }
+  if(overCurrent_flag == 1)
+  {
+    overCurrent_time++;
+    if(overCurrent_time >= 100)
+    {//防差错处理
+      overCurrent_time = 0;
+      overCurrent_flag = 0;
+      motor_dir = MOTOR_STOP;
+      motor_control(motor_dir); 
+      Device_Process = PROCESS_STOP;
+    }
+  }
+  if(overWeight_flag == 1)
+  {
+    overWeight_time++;
+    if(overWeight_time >= 100)
+    {//防差错处理
+      overWeight_time = 0;
+      overWeight_flag = 0;
+      motor_dir = MOTOR_STOP;
+      motor_control(motor_dir); 
+      Device_Process = PROCESS_STOP;
+    }
   }
 }
 
