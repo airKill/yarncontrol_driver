@@ -227,7 +227,7 @@ void vTaskSample(void *pvParameters)
           diff = abs(load_value - device_info.weight_value);
           if(load_value < MAX_WEIGHT)
           {//小于最大重量限制
-            if((diff <= 50) || (load_value <= ZERO))
+            if((diff <= 400) || (load_value <= ZERO))
             {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
               motor_dir = MOTOR_STOP;
               motor_control(motor_dir);  
@@ -236,19 +236,19 @@ void vTaskSample(void *pvParameters)
             {//差值大于0.5kg时，连续运转
               u16 speed;
               u8 mode;
-              if(diff > 500)
+              if(diff > 1000)
               {
                 speed = 850;
               }
-              else if((diff > 400) && (diff <= 500))
+              else if((diff > 800) && (diff <= 1000))
               {
                 speed = 800;
               }
-              else if((diff > 300) && (diff <= 400))
+              else if((diff > 600) && (diff <= 800))
               {
                 speed = 750;
               }
-              else if((diff > 200) && (diff <= 300))
+              else if((diff > 400) && (diff <= 600))
               {
                 speed = 500;
               }
@@ -268,14 +268,15 @@ void vTaskSample(void *pvParameters)
           }
           else
           {//超过最大重量限制后，反转20s
-            if(motor_dir == MOTOR_REVERSE)
-            {
-              motor_dir = MOTOR_FORWARD;
-            }
-            else if(motor_dir == MOTOR_FORWARD)
-            {
-              motor_dir = MOTOR_REVERSE;
-            }
+//            if(motor_dir == MOTOR_REVERSE)
+//            {
+//              motor_dir = MOTOR_FORWARD;
+//            }
+//            else if(motor_dir == MOTOR_FORWARD)
+//            {
+//              motor_dir = MOTOR_REVERSE;
+//            }
+            motor_dir = MOTOR_REVERSE;
             u16 speed;
             speed = 850;
             motor_speed(speed);
@@ -331,7 +332,7 @@ void vTaskSample(void *pvParameters)
         }
         break;    
       case PROCESS_OVERCURRENTS:
-        if(overCurrent_time >= 20)
+        if(overCurrent_time >= 10)
         {
           overCurrent_time = 0;
           overCurrent_flag = 0;
