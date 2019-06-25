@@ -227,7 +227,7 @@ void vTaskSample(void *pvParameters)
           diff = abs(load_value - device_info.weight_value);
           if(load_value < MAX_WEIGHT)
           {//小于最大重量限制
-            if((diff <= 400) || (load_value <= ZERO))
+            if((diff <= 150) || (load_value <= ZERO))
             {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
               motor_dir = MOTOR_STOP;
               motor_control(motor_dir);  
@@ -248,7 +248,7 @@ void vTaskSample(void *pvParameters)
               {
                 speed = 750;
               }
-              else if((diff > 400) && (diff <= 600))
+              else if((diff > 60) && (diff <= 600))
               {
                 speed = 500;
               }
