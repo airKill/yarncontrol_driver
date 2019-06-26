@@ -32,6 +32,9 @@ extern u8 k3_short_flag;
 extern u8 key_reset;
 extern u16 key_reset_time; 
 
+extern u8 key2_reset;
+extern u16 key2_reset_time;
+
 extern u8 overCurrent_flag;
 extern u16 overCurrent_time;
 

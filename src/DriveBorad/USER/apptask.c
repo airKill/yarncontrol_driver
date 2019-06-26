@@ -16,6 +16,9 @@ TimerHandle_t xTimerUser = NULL;
 u8 key_reset = 0;
 u16 key_reset_time = 0;
 
+u8 key2_reset = 0;
+u16 key2_reset_time = 0;
+
 u8 overCurrent_flag = 0;
 u16 overCurrent_time = 0;
 
@@ -238,7 +241,6 @@ void vTaskSample(void *pvParameters)
             else
             {//差值大于0.5kg时，连续运转
               u16 speed;
-              u8 mode;
               if(diff > 1000)
               {
                 speed = 850;
@@ -297,15 +299,27 @@ void vTaskSample(void *pvParameters)
         }
         break;
       case PROCESS_RESET://复位
-        u16 speed;
-        speed = 850;
-        motor_speed(speed);
+        motor_speed(850);
         motor_dir = MOTOR_REVERSE;
         motor_control(motor_dir);
+        if(key2_reset == 0)
+        {
+          key2_reset = 1;
+          key2_reset_time = 0;
+        }
+        else
+        {
+          if(key2_reset_time >= 30)
+          {
+            Device_Process = PROCESS_STOP;
+            motor_dir = MOTOR_STOP;
+            motor_control(motor_dir);
+          }
+        }
 //        Device_Process = PROCESS_RESET_1;
         break;
-//      case PROCESS_RESET_1:
-//        break; 
+      case PROCESS_RESET_1:
+        break; 
       case PROCESS_RESET_2:
 //        if((device_info.onoff == 1) && (start_stop == 1))
 //        {
@@ -407,6 +421,15 @@ void UserTimerCallback(TimerHandle_t xTimer)
   }
   else
     key_reset_time = 0;
+  
+  if(key2_reset == 1)
+  {
+    if(Device_Process != PROCESS_PAUSE)
+      key2_reset_time++;
+  }
+  else
+    key2_reset_time = 0;
+  
   link_err++;
   if(link_err >= 10)
   {//10s内未收到链接命令，重启
