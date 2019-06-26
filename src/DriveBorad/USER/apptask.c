@@ -1,6 +1,9 @@
 #include "main.h"
 
 u8 start_stop = 0;
+u8 start_time_flag = 0;
+u8 start_time = 0;
+u8 rev_start_stop = 0;
 
 TaskHandle_t xHandleTaskKey = NULL;
 TaskHandle_t xHandleTaskSend485 = NULL;
@@ -296,6 +299,7 @@ void vTaskSample(void *pvParameters)
       case PROCESS_RESET://¸´Î»
         u16 speed;
         speed = 850;
+        motor_speed(speed);
         motor_dir = MOTOR_REVERSE;
         motor_control(motor_dir);
 //        Device_Process = PROCESS_RESET_1;
@@ -313,6 +317,7 @@ void vTaskSample(void *pvParameters)
         {
           u16 speed;
           speed = 850;
+          motor_speed(speed);
           motor_dir = MOTOR_FORWARD;
           motor_control(motor_dir);
           if(key_reset == 0)
@@ -431,6 +436,13 @@ void UserTimerCallback(TimerHandle_t xTimer)
       motor_control(motor_dir); 
       Device_Process = PROCESS_STOP;
     }
+  }
+  if(start_time_flag == 1)
+  {
+    if(start_time < 10)
+      start_time++;
+    else if(start_time >= 10)
+      start_stop = 1;
   }
 }
 

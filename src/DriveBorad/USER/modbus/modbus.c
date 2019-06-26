@@ -178,7 +178,17 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
     {
       if(fx->reg == REG_START)
       {
-        start_stop = (fx->data[0] << 8) + fx->data[1];
+        rev_start_stop = (fx->data[0] << 8) + fx->data[1];
+        if(rev_start_stop == 0)
+        {
+          start_time_flag = 0;
+          start_stop = 0;
+          start_time = 0;
+        }
+        else
+        {
+          start_time_flag = 1;
+        }
       }
       else if(fx->reg == REG_RESET)
       {

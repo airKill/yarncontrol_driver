@@ -24,6 +24,9 @@ extern u8 Device_Process;
 extern u8 old_Device_Process;
 
 extern u8 start_stop;
+extern u8 start_time_flag;
+extern u8 start_time;
+extern u8 rev_start_stop;
 extern u16 k3_short_cnt;
 extern u8 k3_short_flag;
 extern u8 key_reset;
