@@ -71,11 +71,13 @@ void vTaskTaskKey(void *pvParameters)
           printf("上限位\r\n");
           break;    
         case KEY_DOWN_K2:	//下限位
-          Device_Process = PROCESS_RESET;
+          key2_reset = 0;
+          Device_Process = PROCESS_RESET_1;
           printf("下限位复位\r\n");
           break;  
         case KEY_LONG_K2:
-          Device_Process = PROCESS_RESET;
+          key2_reset = 0;
+          Device_Process = PROCESS_RESET_1;
           printf("下限位复位\r\n");
           break;  
         case KEY_DOWN_K3:
@@ -302,6 +304,27 @@ void vTaskSample(void *pvParameters)
         motor_speed(850);
         motor_dir = MOTOR_REVERSE;
         motor_control(motor_dir);
+        break;
+      case PROCESS_RESET_1:
+        motor_speed(850);
+        motor_dir = MOTOR_REVERSE;
+        motor_control(motor_dir);
+        if((device_info.onoff == 1) && (start_stop == 1))
+        {
+          diff = abs(load_value - device_info.weight_value);
+          if(load_value < MAX_WEIGHT)
+          {
+            if((diff <= 300) || (load_value <= ZERO))
+            {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
+              motor_dir = MOTOR_STOP;
+              motor_control(motor_dir);  
+              key2_reset = 0;
+              key2_reset_time = 0;
+              Device_Process = PROCESS_RUNNING;
+              break;
+            }
+          }
+        }
         if(key2_reset == 0)
         {
           key2_reset = 1;
@@ -311,14 +334,12 @@ void vTaskSample(void *pvParameters)
         {
           if(key2_reset_time >= 30)
           {
-            Device_Process = PROCESS_STOP;
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
+            key2_reset = 0;
+            Device_Process = PROCESS_STOP;
           }
         }
-//        Device_Process = PROCESS_RESET_1;
-        break;
-      case PROCESS_RESET_1:
         break; 
       case PROCESS_RESET_2:
 //        if((device_info.onoff == 1) && (start_stop == 1))
@@ -462,9 +483,9 @@ void UserTimerCallback(TimerHandle_t xTimer)
   }
   if(start_time_flag == 1)
   {
-    if(start_time < 10)
+    if(start_time < 5)
       start_time++;
-    else if(start_time >= 10)
+    else if(start_time >= 5)
       start_stop = 1;
   }
 }
