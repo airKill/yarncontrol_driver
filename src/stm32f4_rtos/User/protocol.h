@@ -12,6 +12,8 @@ typedef struct
   u8 onoff[30];         //当前页面驱动板工作开关
   u16 value_set[30];    //当前页面设定张力，单位g
   u16 value_sample[30]; //当前页面张力，单位g
+  u16 value_compare[30];
+  u16 value_precision[30];
 }SLAVE_PARA;
 extern SLAVE_PARA SlavePara;
 
@@ -27,6 +29,8 @@ typedef struct
   u8 minute; 
   u8 second;
   u16 weight_value[30];
+  u16 weight_compare[30];
+  u16 weight_precision[30];
 }JINGSHA_FILE;
 extern JINGSHA_FILE JingSha_File;
 

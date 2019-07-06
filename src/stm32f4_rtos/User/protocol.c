@@ -95,7 +95,11 @@ void init_jingsha_para(JINGSHA_FILE *para)
   para->filename_len = 3;
   memcpy(para->filename,"123",strlen("123"));
   for(i=0;i<30;i++)
+  {
     para->weight_value[i] = 0;
+    para->weight_compare[i] = 20000;
+    para->weight_precision[i] = 300;
+  }
 }
 
  

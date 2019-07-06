@@ -44,9 +44,33 @@ void Init_JINGSHA_GUI(void)
   for(i=0;i<30;i++)
   {
     Sdwe_disDigi(PAGE1_SET_VALUE1 + i,SlavePara.value_set[i] / 10,2);
+    Sdwe_disDigi(PAGE1_SET_COMPARE_VALUE + i,SlavePara.value_compare[i] / 10,2);
 //    vTaskDelay(5);
     Sdwe_writeIcon(PAGE1_SLAVE_ONOFF1 + i,SlavePara.onoff[i]);
 //    vTaskDelay(5);
+  }
+}
+
+void init_sense_clear(void)
+{
+  u8 i;
+  u8 name[20],name_1[20];
+  u8 name_len;
+  u8 id[10];
+  memset(name,0,20);
+  memset(name_1,0,20);
+  memset(id,0,10);
+  memcpy(name_1,SlavePara.filename,SlavePara.filename_len);
+
+  memcpy(id,device_info.device_id,device_info.device_id_len);
+//  sprintf((char *)name,"%s-%s.CSV",id,name_1);
+  sprintf((char *)name,"%s-%s",id,name_1);
+  name_len = strlen((char const*)name);
+  Sdwe_disString(PAGE1_TEXT_FILE_NUM,name,name_len);
+  
+  for(i=0;i<30;i++)
+  {
+    Sdwe_disDigi(PAGE1_SENSE_PRECISION + i,SlavePara.value_precision[i] / 10,2);
   }
 }
 

@@ -45,13 +45,12 @@ void vTaskTaskKey(void *pvParameters)
         case KEY_DOWN_K1://上限位,传感器清零,电机停止
 //          motor_dir = MOTOR_STOP;
 //          motor_control(motor_dir); 
-          SetNull();//传感器重新校准
-//          NULL_IDLE = (u32)hx711_filter();//获得传感器的零点输出，存于NULL中，主要用于天平开机时	 
-          NULL_IDLE = Read_HX711_Count() / 100;
-          device_info.hx711_offset = (u32)NULLMASS;
-          __set_PRIMASK(1);
-          Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
-          __set_PRIMASK(0);
+//          SetNull();//传感器重新校准
+//          NULL_IDLE = Read_HX711_Count() / 100;
+//          device_info.hx711_offset = (u32)NULLMASS;
+//          __set_PRIMASK(1);
+//          Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
+//          __set_PRIMASK(0);
           LED1_ON();
 //          bsp_StartHardTimer(1,50000,(void *)TIM_CallBack1);
           Device_Process = PROCESS_RESET_2;
@@ -235,7 +234,7 @@ void vTaskSample(void *pvParameters)
           diff = abs(load_value - device_info.weight_value);
           if(load_value < MAX_WEIGHT)
           {//小于最大重量限制
-            if((diff <= 300) || (load_value <= ZERO))
+            if((diff <= device_info.precision) || (load_value <= ZERO))
             {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
               motor_dir = MOTOR_STOP;
               motor_control(motor_dir);  
@@ -362,7 +361,7 @@ void vTaskSample(void *pvParameters)
           }
           else
           {
-            if(key_reset_time >= 35)
+            if(key_reset_time >= 45)
             {
               Device_Process = PROCESS_STOP;
               motor_dir = MOTOR_STOP;

@@ -12,6 +12,7 @@ void readPara(void)
     device_info.weight_value = 0;
     device_info.hx711_offset = 84945;
     device_info.hx711_xishu = 500.0 / 523.0;
+    device_info.precision = 300;
     __set_PRIMASK(1);
     Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
     __set_PRIMASK(0);

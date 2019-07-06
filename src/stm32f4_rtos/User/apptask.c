@@ -374,6 +374,93 @@ void vTaskTaskLCD(void *pvParameters)
                 printf("%d# value %.2f 队列发送成功\r\n",var_addr - 0x0320 + 1,(float)value / 1000);
               }
             }
+            else if((var_addr >= PAGE1_SET_COMPARE_VALUE) && (var_addr <= (PAGE1_SET_COMPARE_VALUE + 30)))
+            {//比较值修改
+              value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) * 1000 / 100;//串口数据为两位数小数，单位kg，转换为g
+              SlavePara.value_compare[var_addr - PAGE1_SET_COMPARE_VALUE] = value;
+              JingSha_File.weight_compare[var_addr - PAGE1_SET_COMPARE_VALUE] = value;
+              u8 no = 0;
+              no = isFileSelect();
+              if(no == 1)
+              {
+                W25QXX_Write((u8 *)&JingSha_File,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_select),sizeof(JingSha_File));
+              }
+            }
+            else if((var_addr >= PAGE1_SENSE_PRECISION) && (var_addr <= (PAGE1_SENSE_PRECISION + 30)))
+            {//传感器范围设置
+              value = ((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) * 1000 / 100;//串口数据为两位数小数，单位kg，转换为g
+              SlavePara.value_precision[var_addr - PAGE1_SENSE_PRECISION] = value;
+              JingSha_File.weight_precision[var_addr - PAGE1_SENSE_PRECISION] = value;
+              u8 no = 0;
+              no = isFileSelect();
+              if(no == 1)
+              {
+                W25QXX_Write((u8 *)&JingSha_File,(u32)(W25QXX_ADDR_JINGSHA + JINGSHA_SIZE * device_info.page_count_select),sizeof(JingSha_File));
+              }
+              ptMsg->addr = var_addr - PAGE1_SENSE_PRECISION;
+              ptMsg->func = FUNC_WRITE;
+              ptMsg->reg = REG_PRECISION;
+              ptMsg->value = value;
+              if(xQueueSend(xQueue_message,                  /* 消息队列句柄 */
+                            (void *) &ptMsg,           /* 发送结构体指针变量ptMsg的地址 */
+                            (TickType_t)10) == pdPASS )
+              {
+                /* 发送失败，即使等待了10个时钟节拍 */
+//                printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
+              }
+            }
+            else if((var_addr >= PAGE1_CLEAR_SENSE) && (var_addr <= (PAGE1_CLEAR_SENSE + 30)))
+            {//单个传感器清零
+              ptMsg->addr = var_addr - PAGE1_CLEAR_SENSE;
+              ptMsg->func = FUNC_WRITE;
+              ptMsg->reg = REG_CLEAR;
+              ptMsg->value = 1;
+              if(xQueueSend(xQueue_message,                  /* 消息队列句柄 */
+                            (void *) &ptMsg,           /* 发送结构体指针变量ptMsg的地址 */
+                            (TickType_t)10) == pdPASS )
+              {
+                /* 发送失败，即使等待了10个时钟节拍 */
+//                printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
+              }
+            }
+            else if(var_addr == PAGE1_SENSE_ALL_CLEAR)
+            {//所有传感器清零
+              ptMsg->addr = BROADCAST;
+              ptMsg->func = FUNC_WRITE;
+              ptMsg->reg = REG_CLEAR;
+              ptMsg->value = 1;
+              if(xQueueSend(xQueue_message,                  /* 消息队列句柄 */
+                            (void *) &ptMsg,           /* 发送结构体指针变量ptMsg的地址 */
+                            (TickType_t)10) == pdPASS )
+              {
+                /* 发送失败，即使等待了10个时钟节拍 */
+//                printf("%d# sw %d 队列发送成功\r\n",var_addr - PAGE1_SLAVE_ONOFF1 + 1,value);
+              }
+            }
+            else if(var_addr == PAGE1_SENSE_PASSWORD)
+            {//输入登录密码
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//串口发送为字长
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE1_SENSE_DIS,buf,input_password_len);//密码显示为*
+              if(strcmp((char const*)input_password_buf,"222222") == 0)
+//              if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
+              {//密码正确
+                Sdwe_disPicture(PAGE_SENSE_CLEAR);
+                vTaskDelay(10);
+                init_sense_clear();
+              }
+              else
+              {//密码错误
+                Sdwe_disString(PAGE1_SENSE_WARNNING,"密码错误",strlen("密码错误"));
+              }
+            }
             else if(var_addr == PAGE1_SECRET_TEXT_IMPORT)
             {//输入登录密码
               u8 llen;
@@ -751,27 +838,87 @@ void vTaskTaskLCD(void *pvParameters)
               }
               SDWE_WARNNING(PAGE_DEVICE_WARNNING,"驱动板复位",4);
             }
-            else if(var_addr == PAGE_PRODUCT_PEILIAO)
-            {//
-              //由于运行一段时间后，会出现胚料页面数据错误，现每次进入胚料页面后，重新从存储器中读取胚料数据进行测试
-              W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select),sizeof(peiliao_para));//胚料保存数据
-              Sdwe_peiliao_page(peiliao_para);
-              card_config = CARD_DISABLE;
-            }
-            else if(var_addr == PAGE_PRODUCT_CLEAR)
-            {//产量清零，重新开始生产
-              total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
-              total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
-              init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
-              peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
-              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
-              Sdwe_product_page(&product_para);
-              W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
-              W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
-              plan_complete = 0;
-              old_plan_complete = 0;
+//            else if(var_addr == PAGE_PRODUCT_PEILIAO)
+//            {//
+//              //由于运行一段时间后，会出现胚料页面数据错误，现每次进入胚料页面后，重新从存储器中读取胚料数据进行测试
+//              W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select),sizeof(peiliao_para));//胚料保存数据
+//              Sdwe_peiliao_page(peiliao_para);
+//              card_config = CARD_DISABLE;
+//            }
+            else if(var_addr == PAGE_PEILIAO_PASSWORD)
+            {//输入系统配置页面登录密码
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//串口发送为字长
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_PEILIAO_DIS,buf,input_password_len);//密码显示为*
               
-              Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
+              if(memcmp(&input_password_buf,"222222",6) == 0)
+              {//特殊密码进入系统设置页面
+                Sdwe_disPicture(PAGE_PEILIAO);
+                W25QXX_Read((u8 *)&peiliao_para,(u32)(W25QXX_ADDR_PEILIAO + PEILIAO_SIZE * device_info.page_count_select),sizeof(peiliao_para));//胚料保存数据
+                Sdwe_peiliao_page(peiliao_para);
+                card_config = CARD_DISABLE;
+              }
+              else
+              {//密码错误
+                SDWE_WARNNING(PAGE_PEILIAO_WARNNING,"密码错误",5);
+              }
+            }
+//            else if(var_addr == PAGE_PRODUCT_CLEAR)
+//            {//产量清零，重新开始生产
+//              total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
+//              total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
+//              init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
+//              peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
+//              Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
+//              Sdwe_product_page(&product_para);
+//              W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+//              W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+//              plan_complete = 0;
+//              old_plan_complete = 0;
+//              
+//              Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
+//            }
+            else if(var_addr == PAGE_CLEAR_PASSWORD)
+            {//输入系统配置页面登录密码
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//串口发送为字长
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_CLEAR_DIS,buf,input_password_len);//密码显示为*
+              
+              if(memcmp(&input_password_buf,"222222",6) == 0)
+              {//特殊密码进入系统设置页面
+//                Sdwe_disPicture(PAGE_CHANNENG_CLEAR);
+                Sdwe_disPicture(PAGE_CHANNENG);
+                total_meter_gross = (u32)(peiliao_para.total_meter_set * (1 + (float)peiliao_para.loss / 100));
+                total_weight_gross = (u32)(peiliao_para.total_weitht_set * (1 + peiliao_para.loss / 100.0));//总重量设置含损耗
+                init_product_para(&product_para,peiliao_para);//重新设置生产任务后，产能清零
+                peiliao_para.add_meter_set = 0;//重新设置生产任务后，补单数清零
+                Sdwe_disDigi(PAGE_PRODUCT_ADD_METER,peiliao_para.add_meter_set,4);
+                Sdwe_product_page(&product_para);
+                W25QXX_Write((u8 *)&peiliao_para,(u32)W25QXX_ADDR_PEILIAO,sizeof(peiliao_para));
+                W25QXX_Write((u8 *)&product_para,(u32)W25QXX_ADDR_CHANNENG,sizeof(product_para));
+                plan_complete = 0;
+                old_plan_complete = 0;
+                
+                Sdwe_clearString(PAGE_PRODUCT_RFID_WARNNING);//清除产能完成显示
+              }
+              else
+              {//密码错误
+                SDWE_WARNNING(PAGE_CLEAR_WARNNING,"密码错误",5);
+              }
             }
             else if(var_addr == PAGE_PRODUCT_QUIT)
             {//退出产能页面，卡功能禁止
@@ -2251,6 +2398,14 @@ static void vTaskMsgPro(void *pvParameters)
           info.value = ptMsg1->value;
           modbus_send_frame(&txframe,info);
         }
+        else if((ptMsg1->func == FUNC_WRITE) && (ptMsg1->reg == REG_CLEAR))
+        {
+          info.addr = BROADCAST;
+          info.func = ptMsg1->func;
+          info.reg = ptMsg1->reg;
+          info.value = ptMsg1->value;
+          modbus_send_frame(&txframe,info);
+        }
       }
       else
       {
@@ -2290,6 +2445,13 @@ static void vTaskMsgPro(void *pvParameters)
                 Sdwe_disDigi(PAGE1_SAMPLE_VALUE1 + readSlave.addr - 1,SlavePara.value_sample[index] / 10,2);
                 Sdwe_writeIcon(PAGE1_SLAVE_STATE1 + readSlave.addr - 1,VGUS_OFF);//对应位置正确错误图标
                 Sdwe_disDigi(PAGE1_ECHO_WEIGHT + readSlave.addr - 1,readSlave.set_value / 10,2);
+                if(SlavePara.value_compare[readSlave.addr - 1] > 0)
+                {//只有上限值设置不为0时，比较才有效
+                  if(readSlave.value >= SlavePara.value_compare[readSlave.addr - 1])
+                  {
+                    RELAY_CLOSE();//采集重量超过设定重量时，闭合继电器，机器停止工作
+                  }
+                }
               }
             }
           }

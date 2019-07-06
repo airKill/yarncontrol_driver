@@ -171,6 +171,8 @@ void para_init(SLAVE_PARA *para)
   {
     para->onoff[i] = device_info.onoff[i];
     para->value_set[i] = JingSha_File.weight_value[i];
+    para->value_compare[i] = JingSha_File.weight_compare[i];
+    para->value_precision[i] = JingSha_File.weight_precision[i];
     para->value_sample[i] = 0;
   }
   para->filename_len = JingSha_File.filename_len;

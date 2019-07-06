@@ -33,6 +33,7 @@ typedef struct
   u32 weight_value;
   float hx711_xishu;
   u32 hx711_offset;
+  u16 precision;
 //  u8 onoff;
 //  u16 weight;
 }DEVICE_INFO;

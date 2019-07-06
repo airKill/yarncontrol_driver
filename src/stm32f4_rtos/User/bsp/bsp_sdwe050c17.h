@@ -32,7 +32,7 @@
 #define PAGE_MAIN           1
 //#define PAGE_1              2
 #define PAGE_1              4
-#define PAGE_1_SECRET       3
+#define PAGE_SENSE_CLEAR       3
 #define PAGE_1_SET_VALUE    4
 #define PAGE_1_FILENAME     5
 #define PAGE_2              6
@@ -46,12 +46,15 @@
 #define PAGE_HISTORY        14
 #define PAGE_U              19
 #define PAGE_CHANNENG       20
+#define PAGE_PEILIAO       21
 #define PAGE_REPAIR         22    
 #define PAGE_CONFIG         23  
 #define PAGE_HIDDEN         29  
 #define PAGE_PERIOD         30 
 #define PAGE_WEIMI          32
 #define PAGE_HISTORY2          36
+#define PAGE_CHANNENG_CLEAR   38
+#define PAGE_PEILIAO_CONFIG   39
 
 #define MAIN_PAGE_KEY_JINGSHA   0x0100
 #define MAIN_PAGE_KEY_WEIMI     0x0101
@@ -92,6 +95,17 @@
 #define PAGE1_FILE_TEXT_DIS       0x0223
 #define PAGE1_FILE_TEXT_IMPORT       0x0223
 #define PAGE1_FILE_TEXT_WARN       0x0228
+
+#define PAGE1_SET_COMPARE_VALUE 0x0C00
+
+#define PAGE1_CLEAR_SENSE 0x0D00
+#define PAGE1_SENSE_PRECISION 0x0D20
+#define PAGE1_SENSE_PAGE  0x0D40
+#define PAGE1_SENSE_ALL_CLEAR  0x0D41
+
+#define PAGE1_SENSE_PASSWORD    0x0D50//产能页面继续生产按钮输入登录密码
+#define PAGE1_SENSE_DIS         0x0D55
+#define PAGE1_SENSE_WARNNING    0x0D5A
 
 #define PAGE2_KEY_SET_WEIGHT    0x010D
 #define PAGE2_KEY_LEFT          0x010E
@@ -181,6 +195,14 @@
 #define PAGE_PRODUCT_CLEAR      0x0141
 #define PAGE_PRODUCT_QUIT       0x0142
 #define PAGE_PEILIAO_QUIT       0x0143
+
+#define PAGE_CLEAR_PASSWORD    0x0B00//产能页面继续生产按钮输入登录密码
+#define PAGE_CLEAR_DIS         0x0B05
+#define PAGE_CLEAR_WARNNING    0x0B0A
+
+#define PAGE_PEILIAO_PASSWORD    0x0B10//产能页面继续生产按钮输入登录密码
+#define PAGE_PEILIAO_DIS         0x0B15
+#define PAGE_PEILIAO_WARNNING    0x0B1A
 
 #define PAGE_CONFIG_RATIO_DISPLAY        0x0144
 #define PAGE_CONFIG_TIME        0x0145
@@ -327,4 +349,5 @@ void sdew_weisha_page1(WEIMI_PARA *para);
 void sdew_weisha_page2(WEIMI_PARA *para);
 void Sdwe_ratio_display(DEVICE_INFO *para);
 void Sdwe_sevro_pulse_display(DEVICE_INFO *para);
+void init_sense_clear(void);
 #endif

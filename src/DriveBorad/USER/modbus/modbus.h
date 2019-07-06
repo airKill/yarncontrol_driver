@@ -32,6 +32,8 @@
 #define REG_SET_WEIGHT      2
 #define REG_VALUE_WEIGHT      3
 #define REG_RESET       4
+#define REG_CLEAR       5
+#define REG_PRECISION       6
 
 #define BROADCAST       0xff
 

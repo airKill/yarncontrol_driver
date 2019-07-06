@@ -156,6 +156,22 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
         __set_PRIMASK(0);
         printf("SET_WEIGHT is %d\r\n",device_info.weight_value);
       }
+      else if(fx->reg == REG_CLEAR)
+      {
+        SetNull();//传感器重新校准
+        NULL_IDLE = Read_HX711_Count() / 100;
+        device_info.hx711_offset = (u32)NULLMASS;
+        __set_PRIMASK(1);
+        Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
+        __set_PRIMASK(0);
+      }
+      else if(fx->reg == REG_PRECISION)
+      {//设置传感器动作范围
+        device_info.precision = (fx->data[0] << 8) + fx->data[1];
+        __set_PRIMASK(1);
+        Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
+        __set_PRIMASK(0);
+      }
       mb_packsend_frame(fx);
     }
     else if(fx->function == FUNC_READ)
@@ -193,6 +209,15 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
       else if(fx->reg == REG_RESET)
       {
         Device_Process = PROCESS_RESET;
+      }
+      else if(fx->reg == REG_CLEAR)
+      {
+        SetNull();//传感器重新校准
+        NULL_IDLE = Read_HX711_Count() / 100;
+        device_info.hx711_offset = (u32)NULLMASS;
+        __set_PRIMASK(1);
+        Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
+        __set_PRIMASK(0);
       }
     }
   }

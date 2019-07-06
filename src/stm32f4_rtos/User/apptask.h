@@ -38,6 +38,8 @@
 #define REG_SET_WEIGHT      2
 #define REG_GET_WEIGHT      3
 #define REG_RESET       4
+#define REG_CLEAR       5
+#define REG_PRECISION       6
 
 #define FUNC_WRITE   1
 #define FUNC_READ   3
