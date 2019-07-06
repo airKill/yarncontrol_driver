@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1784942963</fileChecksum>
+  <fileChecksum>3162147052</fileChecksum>
   <configuration>
     <name>Flash</name>
     <outputs>
@@ -643,6 +643,7 @@
       <file>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc\usb_regs.h</file>
       <file>$PROJ_DIR$\Flash\Obj\portasm.o</file>
       <file>$PROJ_DIR$\Flash\Obj\heap_4.o</file>
+      <file>$PROJ_DIR$\Flash\Exe\MainBoard190707.bin</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\..\..\User\bsp\bsp.c</name>
@@ -824,7 +825,7 @@
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 278</file>
+          <file> 637</file>
         </tool>
       </outputs>
       <inputs>

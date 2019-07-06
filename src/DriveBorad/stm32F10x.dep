@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>665140547</fileChecksum>
+  <fileChecksum>1828886666</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -308,6 +308,8 @@
       <file>$PROJ_DIR$\USER\protocol.c</file>
       <file>$PROJ_DIR$\USER\stm32f10x_it.c</file>
       <file>$PROJ_DIR$\USER\switch.c</file>
+      <file>$PROJ_DIR$\Debug\Exe\SlaveBoard190706.bin</file>
+      <file>$PROJ_DIR$\Debug\Exe\SlaveBoard190707.bin</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -354,7 +356,7 @@
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 185</file>
+          <file> 303</file>
         </tool>
       </outputs>
       <inputs>
