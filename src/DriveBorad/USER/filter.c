@@ -106,8 +106,11 @@ void get_mass(void)
   if(mass < 0)	mass = 0;		//保证mass不小于0
   //本次求得的结果与上次的差的绝对值小于0.03时，视为没有改变，本次结果作废，直接返回
   if(((mass - load_value) > -0.03) && ((mass - load_value) < 0.03))	
-    return;  
-  load_value = (u32)mass; 
+    return;
+  if((u32)mass < 20000)
+  {//防止传感器数据出错，超过20KG传感器最大值时放弃
+    load_value = (u32)mass; 
+  }
 }
 
 

@@ -276,23 +276,17 @@ void vTaskSample(void *pvParameters)
             }
           }
           else
-          {//超过最大重量限制后，反转20s
-//            if(motor_dir == MOTOR_REVERSE)
-//            {
-//              motor_dir = MOTOR_FORWARD;
-//            }
-//            else if(motor_dir == MOTOR_FORWARD)
-//            {
-//              motor_dir = MOTOR_REVERSE;
-//            }
-            motor_dir = MOTOR_REVERSE;
-            u16 speed;
-            speed = 850;
-            motor_speed(speed);
+          {//超过最大重量限制后，停止
+            motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
-            Device_Process = PROCESS_OVERWEIGHT;
-            overWeight_flag = 1;
-            overWeight_time = 0;
+//            motor_dir = MOTOR_REVERSE;
+//            u16 speed;
+//            speed = 850;
+//            motor_speed(speed);
+//            motor_control(motor_dir);
+//            Device_Process = PROCESS_OVERWEIGHT;
+//            overWeight_flag = 1;
+//            overWeight_time = 0;
           }
         }
         else 
@@ -508,7 +502,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
   if(cut_down_flag == 1)
   {
     cut_down_time++;
-    if(cut_down_time >= 5)
+    if(cut_down_time >= 3)
     {
       cut_down_flag = 0;
       cut_down_time = 0;

@@ -6,7 +6,7 @@
 #define soft_version "SB.0.1181212"
 
 #define ZERO    60//零点，小于该值时，驱动板不工作
-#define MAX_WEIGHT    15000//最大重量限制15KG
+#define MAX_WEIGHT    18000//最大重量限制15KG
 
 typedef enum
 {
