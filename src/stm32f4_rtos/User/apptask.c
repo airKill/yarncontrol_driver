@@ -449,7 +449,7 @@ void vTaskTaskLCD(void *pvParameters)
               for(i=0;i<input_password_len;i++)
                 buf[i] = '*';
               Sdwe_disString(PAGE1_SENSE_DIS,buf,input_password_len);//密码显示为*
-              if(strcmp((char const*)input_password_buf,"222222") == 0)
+              if(strcmp((char const*)input_password_buf,"899170") == 0)
 //              if(memcmp(&input_password_buf,&device_info.regin_in.password,device_info.regin_in.password_len) == 0)
               {//密码正确
                 Sdwe_disPicture(PAGE_SENSE_CLEAR);

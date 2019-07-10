@@ -41,6 +41,9 @@ extern u16 overCurrent_time;
 extern u8 overWeight_flag;
 extern u16 overWeight_time;
 
+extern u8 cut_down_flag;
+extern u8 cut_down_time;
+
 void KeyProcess(void);
 void AppTaskCreate (void);
 void vTaskTaskSend485(void *pvParameters);

@@ -1,9 +1,12 @@
 #include "main.h"
 
-u8 start_stop = 0;
+u8 start_stop = 0,old_start_stop = 0;
 u8 start_time_flag = 0;
 u8 start_time = 0;
 u8 rev_start_stop = 0;
+
+u8 cut_down_flag = 0;
+u8 cut_down_time = 0;
 
 TaskHandle_t xHandleTaskKey = NULL;
 TaskHandle_t xHandleTaskSend485 = NULL;
@@ -294,10 +297,25 @@ void vTaskSample(void *pvParameters)
         }
         else 
         {
-          Device_Process = PROCESS_STOP;
-          motor_dir = MOTOR_STOP;
-          motor_control(motor_dir);
+          if(start_stop == 0)
+          {//如果无启动信号
+            if(old_start_stop != start_stop)
+            {
+  //            old_start_stop = start_stop;
+              motor_dir = MOTOR_FORWARD;
+              motor_control(motor_dir); 
+              cut_down_flag = 1;
+              cut_down_time = 0;
+            }
+          }
+          else if(device_info.onoff == 0)
+          {
+            Device_Process = PROCESS_STOP;
+            motor_dir = MOTOR_STOP;
+            motor_control(motor_dir);          
+          }
         }
+        old_start_stop = start_stop;
         break;
       case PROCESS_RESET://复位
         motor_speed(850);
@@ -486,6 +504,17 @@ void UserTimerCallback(TimerHandle_t xTimer)
       start_time++;
     else if(start_time >= 5)
       start_stop = 1;
+  }
+  if(cut_down_flag == 1)
+  {
+    cut_down_time++;
+    if(cut_down_time >= 5)
+    {
+      cut_down_flag = 0;
+      cut_down_time = 0;
+      motor_dir = MOTOR_STOP;
+      motor_control(motor_dir); 
+    }
   }
 }
 
