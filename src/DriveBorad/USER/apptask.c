@@ -19,6 +19,10 @@ TimerHandle_t xTimerUser = NULL;
 u8 key_reset = 0;
 u16 key_reset_time = 0;
 
+u8 key1_press_flag = 0;
+u8 key1_press_time = 0;
+u8 key1_running_time = 0;
+
 u8 key2_reset = 0;
 u16 key2_reset_time = 0;
 
@@ -46,30 +50,16 @@ void vTaskTaskKey(void *pvParameters)
       switch(ucKeyCode)
       {
         case KEY_DOWN_K1://上限位,传感器清零,电机停止
-//          motor_dir = MOTOR_STOP;
-//          motor_control(motor_dir); 
-//          SetNull();//传感器重新校准
-//          NULL_IDLE = Read_HX711_Count() / 100;
-//          device_info.hx711_offset = (u32)NULLMASS;
-//          __set_PRIMASK(1);
-//          Write_flash(USER_FLASH_ADDR,(u16*)&device_info,sizeof(device_info) / 2);
-//          __set_PRIMASK(0);
           LED1_ON();
-//          bsp_StartHardTimer(1,50000,(void *)TIM_CallBack1);
           Device_Process = PROCESS_RESET_2;
           key_reset = 0;
-//          if((device_info.onoff == 0) || (start_stop == 0))
-//          {//复位到上限位无开机信号，开始正转一分钟
-//            Device_Process = PROCESS_RESET_2;
-//            key_reset = 0;
-//          }
-//          else
-//          {
-//            Device_Process = PROCESS_RUNNING;
-//          }
+          key1_press_flag = 1;
+          key1_press_time = 0;
+          key1_running_time = 10;
           printf("上限位校准零点\r\n");
           break;
         case KEY_LONG_K1:
+          Device_Process = PROCESS_RESET_2;
           printf("上限位\r\n");
           break;    
         case KEY_DOWN_K2:	//下限位
@@ -83,6 +73,10 @@ void vTaskTaskKey(void *pvParameters)
           printf("下限位复位\r\n");
           break;  
         case KEY_DOWN_K3:
+          if(key1_press_flag == 1)
+          {
+            key1_running_time = 45;
+          }
           if(k3_short_flag == 0)
           {
             k3_short_flag = 1;
@@ -373,7 +367,7 @@ void vTaskSample(void *pvParameters)
           }
           else
           {
-            if(key_reset_time >= 45)
+            if(key_reset_time >= key1_running_time)
             {
               Device_Process = PROCESS_STOP;
               motor_dir = MOTOR_STOP;
@@ -508,6 +502,15 @@ void UserTimerCallback(TimerHandle_t xTimer)
       cut_down_time = 0;
       motor_dir = MOTOR_STOP;
       motor_control(motor_dir); 
+    }
+  }
+  if(key1_press_flag == 1)
+  {
+    key1_press_time++;
+    if(key1_press_time >= 5)
+    {
+      key1_press_time = 0;
+      key1_press_flag = 0;
     }
   }
 }
