@@ -15,6 +15,7 @@ typedef enum
   PROCESS_RESET,
   PROCESS_RESET_1,
   PROCESS_RESET_2,
+  PROCESS_RESET_3,
   PROCESS_OVERCURRENTS,
   PROCESS_OVERWEIGHT,
   PROCESS_PAUSE
@@ -27,8 +28,6 @@ extern u8 start_stop;
 extern u8 start_time_flag;
 extern u8 start_time;
 extern u8 rev_start_stop;
-extern u16 k3_short_cnt;
-extern u8 k3_short_flag;
 extern u8 key_reset;
 extern u16 key_reset_time; 
 

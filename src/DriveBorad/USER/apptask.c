@@ -26,6 +26,8 @@ u8 key1_running_time = 0;
 u8 key2_reset = 0;
 u16 key2_reset_time = 0;
 
+u8 key3_press_flag = 0;
+
 u8 overCurrent_flag = 0;
 u16 overCurrent_time = 0;
 
@@ -35,8 +37,6 @@ u16 overWeight_time = 0;
 u8 Device_Process = PROCESS_STOP;
 u8 old_Device_Process = PROCESS_STOP;
 
-u16 k3_short_cnt = 0;
-u8 k3_short_flag = 0;
 u8 link_err = 0;
 
 void vTaskTaskKey(void *pvParameters)
@@ -51,15 +51,31 @@ void vTaskTaskKey(void *pvParameters)
       {
         case KEY_DOWN_K1://上限位,传感器清零,电机停止
           LED1_ON();
-          Device_Process = PROCESS_RESET_2;
-          key_reset = 0;
-          key1_press_flag = 1;
-          key1_press_time = 0;
-          key1_running_time = 10;
+          if(key3_press_flag == 1)
+          {
+            key1_running_time = 45;
+            key_reset = 0;
+            Device_Process = PROCESS_RESET_2;
+          }
+          else
+          {
+            key3_press_flag = 0;
+            Device_Process = PROCESS_RESET_3;
+          }
           printf("上限位校准零点\r\n");
           break;
         case KEY_LONG_K1:
-          Device_Process = PROCESS_RESET_2;
+          if(key3_press_flag == 1)
+          {
+            key1_running_time = 45;
+            key_reset = 0;
+            Device_Process = PROCESS_RESET_2;
+          }
+          else
+          {
+            key3_press_flag = 0;
+            Device_Process = PROCESS_RESET_3;
+          }
           printf("上限位\r\n");
           break;    
         case KEY_DOWN_K2:	//下限位
@@ -73,41 +89,10 @@ void vTaskTaskKey(void *pvParameters)
           printf("下限位复位\r\n");
           break;  
         case KEY_DOWN_K3:
-          if(key1_press_flag == 1)
-          {
-            key1_running_time = 45;
-          }
-          if(k3_short_flag == 0)
-          {
-            k3_short_flag = 1;
-            printf("k3 click.\r\n");
-          }
-          else if(k3_short_flag == 1)
-          {
-            if(k3_short_cnt < 200)
-            {//两次按键时间小于100ms，认为是双击
-              k3_short_flag = 2;
-              old_Device_Process = Device_Process;
-              Device_Process = PROCESS_PAUSE;
-              printf("k3 double click.\r\n");
-            }
-            else
-            {
-              k3_short_flag = 0;
-              k3_short_cnt = 0;
-              printf("cancel double click.\r\n");
-            }
-          }
-          else if(k3_short_flag == 2)
-          {
-            k3_short_flag = 0;
-            k3_short_cnt = 0;
-            Device_Process = old_Device_Process;
-            printf("continue...\r\n");
-          }
           break;
         case KEY_LONG_K3://长按复位按钮
           Device_Process = PROCESS_RESET;
+          key3_press_flag = 1;
           printf("下限位复位\r\n");
           break;
           /* 其他的键值不处理 */
@@ -115,16 +100,6 @@ void vTaskTaskKey(void *pvParameters)
           break;
       }
       ucKeyCode = 0;
-    }
-    if(k3_short_flag == 1)
-    {
-      k3_short_cnt++;
-      if(k3_short_cnt > 200)
-      {
-        k3_short_cnt = 0;
-        k3_short_flag = 0;
-        printf("cancel double click1.\r\n");
-      }
     }
     vTaskDelay(10);
     IWDG_Feed();
@@ -226,6 +201,7 @@ void vTaskSample(void *pvParameters)
         }
         break;
       case PROCESS_RUNNING://运行
+        key3_press_flag = 0;
         if((device_info.onoff == 1) && (start_stop == 1))
         {
           diff = abs(load_value - device_info.weight_value);
@@ -273,14 +249,6 @@ void vTaskSample(void *pvParameters)
           {//超过最大重量限制后，停止
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
-//            motor_dir = MOTOR_REVERSE;
-//            u16 speed;
-//            speed = 850;
-//            motor_speed(speed);
-//            motor_control(motor_dir);
-//            Device_Process = PROCESS_OVERWEIGHT;
-//            overWeight_flag = 1;
-//            overWeight_time = 0;
           }
         }
         else 
@@ -369,6 +337,7 @@ void vTaskSample(void *pvParameters)
           {
             if(key_reset_time >= key1_running_time)
             {
+              key3_press_flag = 0;
               Device_Process = PROCESS_STOP;
               motor_dir = MOTOR_STOP;
               motor_control(motor_dir);
@@ -376,6 +345,25 @@ void vTaskSample(void *pvParameters)
           }
         }
         break;    
+      case PROCESS_RESET_3://运行
+        if((device_info.onoff == 1) && (start_stop == 1))
+        {
+          if(load_value > device_info.weight_value)
+          {
+            motor_dir = MOTOR_STOP;
+            motor_control(motor_dir);
+          }
+          else
+          {
+            Device_Process = PROCESS_RUNNING;
+          }
+        }
+        else
+        {
+          motor_dir = MOTOR_STOP;
+          motor_control(motor_dir);
+        }
+        break;
       case PROCESS_OVERCURRENTS:
         if(overCurrent_time >= 10)
         {
@@ -502,15 +490,6 @@ void UserTimerCallback(TimerHandle_t xTimer)
       cut_down_time = 0;
       motor_dir = MOTOR_STOP;
       motor_control(motor_dir); 
-    }
-  }
-  if(key1_press_flag == 1)
-  {
-    key1_press_time++;
-    if(key1_press_time >= 5)
-    {
-      key1_press_time = 0;
-      key1_press_flag = 0;
     }
   }
 }
