@@ -208,6 +208,7 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
       }
       else if(fx->reg == REG_RESET)
       {
+        key3_press_flag = 1;
         Device_Process = PROCESS_RESET;
       }
       else if(fx->reg == REG_CLEAR)

@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=LCD_RXD Pin=J6-4
+Removed Pin From Net: NetName=LCD_TXD Pin=J6-5
+Added Pin To Net: NetName=NetJ6_4 Pin=J6-4
+Added Pin To Net: NetName=NetJ6_4 Pin=J8-6
+Added Pin To Net: NetName=NetJ6_4 Pin=R27-1
+Added Net: Name=NetJ6_4
+Added Pin To Net: NetName=NetJ6_5 Pin=J6-5
+Added Pin To Net: NetName=NetJ6_5 Pin=J8-5
+Added Pin To Net: NetName=NetJ6_5 Pin=R26-1
+Added Net: Name=NetJ6_5

@@ -188,9 +188,6 @@ void vTaskSample(void *pvParameters)
         overCurrent_flag = 1;
         overCurrent_time = 0;
       }
-//      Device_Process = PROCESS_STOP;
-//      motor_dir = MOTOR_STOP;
-//      motor_control(motor_dir);
     }
     switch(Device_Process)
     {
@@ -257,11 +254,21 @@ void vTaskSample(void *pvParameters)
           {//如果无启动信号
             if(old_start_stop != start_stop)
             {
-  //            old_start_stop = start_stop;
-              motor_dir = MOTOR_FORWARD;
-              motor_control(motor_dir); 
-              cut_down_flag = 1;
-              cut_down_time = 0;
+              if(load_value > ZERO)
+              {
+                motor_dir = MOTOR_FORWARD;
+                motor_control(motor_dir); 
+                cut_down_flag = 1;
+                cut_down_time = 0;
+              }
+              else
+              {
+                motor_dir = MOTOR_STOP;
+                motor_control(motor_dir);
+                Device_Process = PROCESS_STOP;
+                cut_down_flag = 0;
+                cut_down_time = 0;
+              }
             }
           }
           else if(device_info.onoff == 0)
@@ -490,6 +497,7 @@ void UserTimerCallback(TimerHandle_t xTimer)
       cut_down_time = 0;
       motor_dir = MOTOR_STOP;
       motor_control(motor_dir); 
+      Device_Process = PROCESS_STOP;
     }
   }
 }

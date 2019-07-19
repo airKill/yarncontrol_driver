@@ -1,0 +1,10 @@
+Added Component: Designator=J6(8PIN_2.0SMD)
+Added Pin To Net: NetName=LCD_5V Pin=J6-1
+Added Pin To Net: NetName=LCD_5V Pin=J6-2
+Added Pin To Net: NetName=LCD_RXD Pin=J6-4
+Added Pin To Net: NetName=LCD_TXD Pin=J6-5
+Added Pin To Net: NetName=GND Pin=J6-7
+Added Pin To Net: NetName=GND Pin=J6-8
+Added Pin To Net: NetName=GND Pin=J6-9
+Added Pin To Net: NetName=GND Pin=J6-10
+Added Member To Class: ClassName=mainboard_interface.v1.5 Member=Component J6 SDWe050C11
