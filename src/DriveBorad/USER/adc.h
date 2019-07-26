@@ -5,7 +5,7 @@
 
 #define ADC_CURRENT_CHANNEL       ADC_Channel_0
 
-#define SAMPLE_CURRENT_MAX 0.52
+#define SAMPLE_CURRENT_MAX 0.5
 #define A_SAMPLE_MAXCOUNT 10
 
 extern u8 A_sample_count;

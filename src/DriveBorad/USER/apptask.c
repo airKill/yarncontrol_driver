@@ -39,6 +39,8 @@ u8 old_Device_Process = PROCESS_STOP;
 
 u8 link_err = 0;
 
+u8 adjust_cnt = 0;
+
 void vTaskTaskKey(void *pvParameters)
 {
   u8 ucKeyCode;
@@ -196,6 +198,7 @@ void vTaskSample(void *pvParameters)
         {
           Device_Process = PROCESS_RUNNING;
         }
+        adjust_cnt = 0;
         break;
       case PROCESS_RUNNING://运行
         key3_press_flag = 0;
@@ -207,38 +210,44 @@ void vTaskSample(void *pvParameters)
             if((diff <= device_info.precision) || (load_value <= ZERO))
             {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
               motor_dir = MOTOR_STOP;
-              motor_control(motor_dir);  
+              motor_control(motor_dir);
+              adjust_cnt = 0;
             }
             else
             {//差值大于0.5kg时，连续运转
-              u16 speed;
-              if(diff > 1000)
+              if(adjust_cnt < 100)
+                adjust_cnt++;
+              if(adjust_cnt > 10)
               {
-                speed = 850;
-              }
-              else if((diff > 800) && (diff <= 1000))
-              {
-                speed = 800;
-              }
-              else if((diff > 600) && (diff <= 800))
-              {
-                speed = 750;
-              }
-              else if((diff > 60) && (diff <= 600))
-              {
-                speed = 500;
-              }
-              if(load_value > device_info.weight_value)
-              {
-                motor_speed(speed);
-                motor_dir = MOTOR_REVERSE;
-                motor_control(motor_dir);
-              }
-              else if(load_value < device_info.weight_value)
-              {
-                motor_speed(speed);
-                motor_dir = MOTOR_FORWARD;
-                motor_control(motor_dir);
+                u16 speed;
+                if(diff > 1000)
+                {
+                  speed = 850;
+                }
+                else if((diff > 800) && (diff <= 1000))
+                {
+                  speed = 800;
+                }
+                else if((diff > 600) && (diff <= 800))
+                {
+                  speed = 750;
+                }
+                else if((diff > 60) && (diff <= 600))
+                {
+                  speed = 500;
+                }
+                if(load_value > device_info.weight_value)
+                {
+                  motor_speed(speed);
+                  motor_dir = MOTOR_REVERSE;
+                  motor_control(motor_dir);
+                }
+                else if(load_value < device_info.weight_value)
+                {
+                  motor_speed(speed);
+                  motor_dir = MOTOR_FORWARD;
+                  motor_control(motor_dir);
+                }
               }
             }
           }
@@ -246,39 +255,43 @@ void vTaskSample(void *pvParameters)
           {//超过最大重量限制后，停止
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
+            adjust_cnt = 0;
           }
         }
         else 
         {
-          if(start_stop == 0)
-          {//如果无启动信号
-            if(old_start_stop != start_stop)
-            {
-              if(load_value > ZERO)
-              {
-                motor_dir = MOTOR_FORWARD;
-                motor_control(motor_dir); 
-                cut_down_flag = 1;
-                cut_down_time = 0;
-              }
-              else
-              {
-                motor_dir = MOTOR_STOP;
-                motor_control(motor_dir);
-                Device_Process = PROCESS_STOP;
-                cut_down_flag = 0;
-                cut_down_time = 0;
-              }
-            }
-          }
-          else if(device_info.onoff == 0)
-          {
-            Device_Process = PROCESS_STOP;
-            motor_dir = MOTOR_STOP;
-            motor_control(motor_dir);          
-          }
+//          if(start_stop == 0)
+//          {//如果无启动信号
+//            if(old_start_stop != start_stop)
+//            {
+//              if(load_value > ZERO)
+//              {
+//                motor_dir = MOTOR_FORWARD;
+//                motor_control(motor_dir); 
+//                cut_down_flag = 1;
+//                cut_down_time = 0;
+//              }
+//              else
+//              {
+//                motor_dir = MOTOR_STOP;
+//                motor_control(motor_dir);
+//                Device_Process = PROCESS_STOP;
+//                cut_down_flag = 0;
+//                cut_down_time = 0;
+//              }
+//            }
+//          }
+//          else if(device_info.onoff == 0)
+//          {
+//            Device_Process = PROCESS_STOP;
+//            motor_dir = MOTOR_STOP;
+//            motor_control(motor_dir);          
+//          }
+          Device_Process = PROCESS_STOP;
+          motor_dir = MOTOR_STOP;
+          motor_control(motor_dir);
+          adjust_cnt = 0;
         }
-        old_start_stop = start_stop;
         break;
       case PROCESS_RESET://复位
         motor_speed(850);
@@ -481,13 +494,13 @@ void UserTimerCallback(TimerHandle_t xTimer)
       Device_Process = PROCESS_STOP;
     }
   }
-  if(start_time_flag == 1)
-  {
-    if(start_time < 5)
-      start_time++;
-    else if(start_time >= 5)
-      start_stop = 1;
-  }
+//  if(start_time_flag == 1)
+//  {
+//    if(start_time < 5)
+//      start_time++;
+//    else if(start_time >= 5)
+//      start_stop = 1;
+//  }
   if(cut_down_flag == 1)
   {
     cut_down_time++;
