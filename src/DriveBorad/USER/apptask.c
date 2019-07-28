@@ -39,7 +39,7 @@ u8 old_Device_Process = PROCESS_STOP;
 
 u8 link_err = 0;
 
-u8 adjust_cnt = 0;
+//u8 adjust_cnt = 0;
 
 void vTaskTaskKey(void *pvParameters)
 {
@@ -198,7 +198,7 @@ void vTaskSample(void *pvParameters)
         {
           Device_Process = PROCESS_RUNNING;
         }
-        adjust_cnt = 0;
+//        adjust_cnt = 0;
         break;
       case PROCESS_RUNNING://运行
         key3_press_flag = 0;
@@ -211,13 +211,13 @@ void vTaskSample(void *pvParameters)
             {//当前重量和设定值相差0.2kg，或当前重量小于零点值时，停止不动
               motor_dir = MOTOR_STOP;
               motor_control(motor_dir);
-              adjust_cnt = 0;
+//              adjust_cnt = 0;
             }
             else
             {//差值大于0.5kg时，连续运转
-              if(adjust_cnt < 100)
-                adjust_cnt++;
-              if(adjust_cnt > 10)
+//              if(adjust_cnt < 100)
+//                adjust_cnt++;
+//              if(adjust_cnt > 10)
               {
                 u16 speed;
                 if(diff > 1000)
@@ -255,7 +255,7 @@ void vTaskSample(void *pvParameters)
           {//超过最大重量限制后，停止
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
-            adjust_cnt = 0;
+//            adjust_cnt = 0;
           }
         }
         else 
@@ -290,7 +290,7 @@ void vTaskSample(void *pvParameters)
           Device_Process = PROCESS_STOP;
           motor_dir = MOTOR_STOP;
           motor_control(motor_dir);
-          adjust_cnt = 0;
+//          adjust_cnt = 0;
         }
         break;
       case PROCESS_RESET://复位
