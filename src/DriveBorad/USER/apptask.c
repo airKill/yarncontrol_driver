@@ -385,7 +385,7 @@ void vTaskSample(void *pvParameters)
         }
         break;
       case PROCESS_OVERCURRENTS:
-        if(overCurrent_time >= 10)
+        if(overCurrent_time >= 5)
         {
           overCurrent_time = 0;
           overCurrent_flag = 0;
