@@ -325,7 +325,7 @@ void vTaskSample(void *pvParameters)
         }
         else
         {
-          if(key2_reset_time >= 30)
+          if(key2_reset_time >= 5)
           {
             motor_dir = MOTOR_STOP;
             motor_control(motor_dir);
