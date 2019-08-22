@@ -80,4 +80,5 @@ u16 WeimiMQTTPackage(u8 *buf);
 u16 WeishaMQTTPackage(u8 *buf);
 u8 get_max_type(u8 *buf);
 u32 get_sevro_step(float speed);
+void reset_seg_to_1(void);
 #endif

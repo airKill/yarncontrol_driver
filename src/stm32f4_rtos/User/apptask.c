@@ -1449,10 +1449,11 @@ void vTaskTaskLCD(void *pvParameters)
                     W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                   if((var_addr - PAGE_WEIMI_TOTALWEI_1) == MotorProcess.current_seg)
                   {//如果修改的循环纬刚好是当前段号，立刻更新当前循环纬
-                    MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
-                    MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[MotorProcess.songwei_seg[0]];
-                    MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[MotorProcess.songwei_seg[1]];
-                    MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[MotorProcess.songwei_seg[2]];
+//                    MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+//                    MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[MotorProcess.songwei_seg[0]];
+//                    MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[MotorProcess.songwei_seg[1]];
+//                    MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[MotorProcess.songwei_seg[2]];
+                    reset_seg_to_1();
                   }
                 }
               }
@@ -1465,10 +1466,11 @@ void vTaskTaskLCD(void *pvParameters)
                   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 if((var_addr - PAGE_WEIMI_TOTALWEI_1) == MotorProcess.current_seg)
                 {//如果修改的循环纬刚好是当前段号，立刻更新当前循环纬
-                  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
-                  MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[MotorProcess.songwei_seg[0]];
-                  MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[MotorProcess.songwei_seg[1]];
-                  MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[MotorProcess.songwei_seg[2]];
+//                  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+//                  MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[MotorProcess.songwei_seg[0]];
+//                  MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[MotorProcess.songwei_seg[1]];
+//                  MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[MotorProcess.songwei_seg[2]];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1498,7 +1500,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(seg_num == MotorProcess.current_seg)
                 {//如果改变的纬密为当前段号纬密，立刻更新步数/纬
-                  MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
+//                  MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
+                  reset_seg_to_1();
                 }
                   
                 if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
@@ -1530,7 +1533,8 @@ void vTaskTaskLCD(void *pvParameters)
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
               if((var_addr - PAGE_WEIMI_MEDIANWEI_1 + 1) == MotorProcess.current_seg)
               {//如果修改的纬过渡刚好是当前段号，立刻更新当前循环纬
-                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+//                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+                reset_seg_to_1();
               }
               u8 publish_topic;
               publish_topic = TOPIC_WEIMI;
@@ -1550,7 +1554,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_SPEED) / 2) == (MotorProcess.songwei_seg[0] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.songwei_seg[0] / 2];
+//                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.songwei_seg[0] / 2];
+                  reset_seg_to_1();
                 }
                 valid_seg[1] = get_songwei0_maxseg(weimi_para);
                 max_seg = get_max_type(valid_seg);
@@ -1578,7 +1583,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SPEED) / 2) == (MotorProcess.songwei_seg[1] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.songwei_seg[1] / 2];
+//                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.songwei_seg[1] / 2];
+                  reset_seg_to_1();
                 }
                 valid_seg[2] = get_songwei1_maxseg(weimi_para);
                 max_seg = get_max_type(valid_seg);
@@ -1606,7 +1612,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SPEED) / 2) == (MotorProcess.songwei_seg[2] / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.songwei_seg[2] / 2];
+//                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.songwei_seg[2] / 2];
+                  reset_seg_to_1();
                 }
                 valid_seg[3] = get_songwei2_maxseg(weimi_para);
                 max_seg = get_max_type(valid_seg);
@@ -1637,7 +1644,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1658,7 +1666,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP1_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1682,7 +1691,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1706,7 +1716,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP2_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1730,7 +1741,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_ADD1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的电机3号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1754,7 +1766,8 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(((var_addr - PAGE_WEIMI_STEP3_SUB1) / 2) == (MotorProcess.current_seg / 2))
                 {//如果设置的电机3号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
+//                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.current_seg / 2];
+                  reset_seg_to_1();
                 }
               }
               u8 publish_topic;
@@ -1833,25 +1846,26 @@ void vTaskTaskLCD(void *pvParameters)
             }
             else if(var_addr == PAGE_WEIMI_RESET)
             {
-              MotorProcess.current_seg = 0;
-              MotorProcess.current_wei = 1;
-              MotorProcess.songwei_seg[0] = 0;
-              MotorProcess.songwei_seg[1] = 0;
-              MotorProcess.songwei_seg[2] = 0;
-              MotorProcess.song_current_wei[0] = 1;
-              MotorProcess.song_current_wei[1] = 1;
-              MotorProcess.song_current_wei[2] = 1;
-              MotorProcess.total_wei = weimi_para.total_wei_count[0];
-              MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
-              MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
-              MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
-              servomotor_guodu = 0;
-              stepmotor_guodu[0] = 0;
-              stepmotor_guodu[1] = 0;
-              stepmotor_guodu[2] = 0;
-              write_bkp_para(&MotorProcess);
-              fault_weimi_flag = 0;
-              Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,1,4);
+//              MotorProcess.current_seg = 0;
+//              MotorProcess.current_wei = 1;
+//              MotorProcess.songwei_seg[0] = 0;
+//              MotorProcess.songwei_seg[1] = 0;
+//              MotorProcess.songwei_seg[2] = 0;
+//              MotorProcess.song_current_wei[0] = 1;
+//              MotorProcess.song_current_wei[1] = 1;
+//              MotorProcess.song_current_wei[2] = 1;
+//              MotorProcess.total_wei = weimi_para.total_wei_count[0];
+//              MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
+//              MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
+//              MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
+//              servomotor_guodu = 0;
+//              stepmotor_guodu[0] = 0;
+//              stepmotor_guodu[1] = 0;
+//              stepmotor_guodu[2] = 0;
+//              write_bkp_para(&MotorProcess);
+//              fault_weimi_flag = 0;
+//              Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,1,4);
+              reset_seg_to_1();
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
             {//文件选择

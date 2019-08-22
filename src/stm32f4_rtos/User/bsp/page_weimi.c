@@ -112,6 +112,29 @@ u32 get_sevro_step(float speed)
   return count;
 }
 
+void reset_seg_to_1(void)
+{
+  MotorProcess.current_seg = 0;
+  MotorProcess.current_wei = 1;
+  MotorProcess.songwei_seg[0] = 0;
+  MotorProcess.songwei_seg[1] = 0;
+  MotorProcess.songwei_seg[2] = 0;
+  MotorProcess.song_current_wei[0] = 1;
+  MotorProcess.song_current_wei[1] = 1;
+  MotorProcess.song_current_wei[2] = 1;
+  MotorProcess.total_wei = weimi_para.total_wei_count[0];
+  MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
+  MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
+  MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
+  servomotor_guodu = 0;
+  stepmotor_guodu[0] = 0;
+  stepmotor_guodu[1] = 0;
+  stepmotor_guodu[2] = 0;
+  write_bkp_para(&MotorProcess);
+  fault_weimi_flag = 0;
+  Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,1,4);
+}
+
 //将转速转换为步进电机步数
 //输入：speed 转/分钟
 //输出：count 步数
