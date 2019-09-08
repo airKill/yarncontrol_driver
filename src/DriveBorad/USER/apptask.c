@@ -260,38 +260,39 @@ void vTaskSample(void *pvParameters)
         }
         else 
         {
-//          if(start_stop == 0)
-//          {//如果无启动信号
-//            if(old_start_stop != start_stop)
-//            {
-//              if(load_value > ZERO)
-//              {
-//                motor_dir = MOTOR_FORWARD;
-//                motor_control(motor_dir); 
-//                cut_down_flag = 1;
-//                cut_down_time = 0;
-//              }
-//              else
-//              {
-//                motor_dir = MOTOR_STOP;
-//                motor_control(motor_dir);
-//                Device_Process = PROCESS_STOP;
-//                cut_down_flag = 0;
-//                cut_down_time = 0;
-//              }
-//            }
-//          }
-//          else if(device_info.onoff == 0)
-//          {
-//            Device_Process = PROCESS_STOP;
-//            motor_dir = MOTOR_STOP;
-//            motor_control(motor_dir);          
-//          }
-          Device_Process = PROCESS_STOP;
-          motor_dir = MOTOR_STOP;
-          motor_control(motor_dir);
+          if(start_stop == 0)
+          {//如果无启动信号
+            if(old_start_stop != start_stop)
+            {
+              if(load_value > ZERO)
+              {
+                motor_dir = MOTOR_FORWARD;
+                motor_control(motor_dir); 
+                cut_down_flag = 1;
+                cut_down_time = 0;
+              }
+              else
+              {
+                motor_dir = MOTOR_STOP;
+                motor_control(motor_dir);
+                Device_Process = PROCESS_STOP;
+                cut_down_flag = 0;
+                cut_down_time = 0;
+              }
+            }
+          }
+          else if(device_info.onoff == 0)
+          {
+            Device_Process = PROCESS_STOP;
+            motor_dir = MOTOR_STOP;
+            motor_control(motor_dir);          
+          }
+//          Device_Process = PROCESS_STOP;
+//          motor_dir = MOTOR_STOP;
+//          motor_control(motor_dir);
 //          adjust_cnt = 0;
         }
+        old_start_stop = start_stop;
         break;
       case PROCESS_RESET://复位
         motor_speed(850);

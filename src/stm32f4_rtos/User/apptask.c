@@ -2969,7 +2969,7 @@ static void vTaskMotorControl(void *pvParameters)
                   if(MotorProcess.total_wei == 0)//过渡循环号设置为0，错误
                   {
                     fault_weimi_flag = 1;
-                    break;
+                    continue;
                   }
                   if(MotorProcess.current_seg == 9)
                   {
@@ -3013,7 +3013,7 @@ static void vTaskMotorControl(void *pvParameters)
                   if(MotorProcess.total_wei == 0)//循环号设置为0，错误
                   {
                     fault_weimi_flag = 1;
-                    break;
+                    continue;
                   }
                   servomotor_guodu = 0;
 //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
@@ -3034,7 +3034,7 @@ static void vTaskMotorControl(void *pvParameters)
                     if(MotorProcess.total_wei == 0)//过渡循环号设置为0，错误
                     {
                       fault_weimi_flag = 1;
-                      break;
+                      continue;
                     }
                     if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
                     {
@@ -3093,7 +3093,7 @@ static void vTaskMotorControl(void *pvParameters)
                     if(MotorProcess.song_total_wei[i] == 0)//过渡循环号设置为0，错误
                     {
                       fault_weimi_flag = 1;
-                      break;
+                      continue;
                     }
                     if(MotorProcess.songwei_seg[i] == 9)
                     {
@@ -3137,7 +3137,7 @@ static void vTaskMotorControl(void *pvParameters)
                     if(MotorProcess.song_total_wei[i] == 0)//循环号设置为0，错误
                     {
                       fault_weimi_flag = 1;
-                      break;
+                      continue;
                     }
                     stepmotor_guodu[i] = 0;
 //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
@@ -3158,7 +3158,7 @@ static void vTaskMotorControl(void *pvParameters)
                       if(MotorProcess.song_total_wei[i] == 0)//过渡循环号设置为0，错误
                       {
                         fault_weimi_flag = 1;
-                        break;
+                        continue;
                       }
                       if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
                       {
