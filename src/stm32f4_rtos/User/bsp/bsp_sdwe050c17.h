@@ -311,6 +311,8 @@
 
 #define PAGE_WIFI_STATE                 0x0A10
 
+#define PAGE_ECHO_SENSE_ZERO1                 0x2000
+
 #define VGUS_ON   1
 #define VGUS_OFF   0
 

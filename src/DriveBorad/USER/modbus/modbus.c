@@ -182,8 +182,8 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
         fx->data[1] = weight & 0xff;
 //        fx->data[2] = (device_info.weight_value & 0xff00) >> 8;
 //        fx->data[3] = device_info.weight_value & 0xff;
-        fx->data[2] = (device_info.hx711_offset & 0xff00) >> 8;
-        fx->data[3] = device_info.hx711_offset & 0xff;
+        fx->data[2] = ((device_info.hx711_offset / 10) & 0xff00) >> 8;
+        fx->data[3] = (device_info.hx711_offset / 10) & 0xff;
         fx->data[4] = device_info.onoff;
         mb_packsend_frame(fx);
         printf("read weight is %d\r\n",weight);
