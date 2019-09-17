@@ -180,8 +180,10 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
       {
         fx->data[0] = (weight & 0xff00) >> 8;
         fx->data[1] = weight & 0xff;
-        fx->data[2] = (device_info.weight_value & 0xff00) >> 8;
-        fx->data[3] = device_info.weight_value & 0xff;
+//        fx->data[2] = (device_info.weight_value & 0xff00) >> 8;
+//        fx->data[3] = device_info.weight_value & 0xff;
+        fx->data[2] = (device_info.hx711_offset & 0xff00) >> 8;
+        fx->data[3] = device_info.hx711_offset & 0xff;
         fx->data[4] = device_info.onoff;
         mb_packsend_frame(fx);
         printf("read weight is %d\r\n",weight);
@@ -195,20 +197,17 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
       if(fx->reg == REG_START)
       {
         rev_start_stop = (fx->data[0] << 8) + fx->data[1];
-//        start_stop = rev_start_stop;
-        if(rev_start_stop == 0)
-        {
-          start_time_flag = 0;
-          start_stop = 0;
-          start_time = 0;
-        }
-        else
-        {
+        start_stop = rev_start_stop;
+//        if(rev_start_stop == 0)
+//        {
+//          start_time_flag = 0;
+//          start_stop = 0;
+//          start_time = 0;
+//        }
+//        else
+//        {
 //          start_time_flag = 1;
-          start_time_flag = 0;
-          start_stop = 1;
-          start_time = 0;
-        }
+//        }
       }
       else if(fx->reg == REG_RESET)
       {
