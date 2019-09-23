@@ -182,7 +182,8 @@ u8 modbus_send_frame(m_frame_typedef * fx,SLAVE info)
         {
           readSlave.value = (rxframe.data[0] << 8) + rxframe.data[1];  
           readSlave.set_value = (rxframe.data[2] << 8) + rxframe.data[3]; 
-          readSlave.onoff = rxframe.data[4]; 
+          readSlave.hx711_offset = (rxframe.data[4] << 8) + rxframe.data[5];
+          readSlave.onoff = rxframe.data[6]; 
         }
         else
         {

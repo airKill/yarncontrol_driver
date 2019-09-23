@@ -2439,8 +2439,8 @@ static void vTaskMsgPro(void *pvParameters)
                 SlavePara.value_sample[readSlave.addr - 1] = readSlave.value;
                 Sdwe_disDigi(PAGE1_SAMPLE_VALUE1 + readSlave.addr - 1,SlavePara.value_sample[index] / 10,2);
                 Sdwe_writeIcon(PAGE1_SLAVE_STATE1 + readSlave.addr - 1,VGUS_OFF);//对应位置正确错误图标
-//                Sdwe_disDigi(PAGE1_ECHO_WEIGHT + readSlave.addr - 1,readSlave.set_value / 10,2);
-                Sdwe_disDigi(PAGE_ECHO_SENSE_ZERO1 + readSlave.addr - 1,readSlave.set_value,2);
+                Sdwe_disDigi(PAGE1_ECHO_WEIGHT + readSlave.addr - 1,readSlave.set_value / 10,2);
+                Sdwe_disDigi(PAGE_ECHO_SENSE_ZERO1 + readSlave.addr - 1,readSlave.hx711_offset,2);
                 if(SlavePara.value_compare[readSlave.addr - 1] > 0)
                 {//只有上限值设置不为0时，比较才有效
                   if(readSlave.value >= SlavePara.value_compare[readSlave.addr - 1])

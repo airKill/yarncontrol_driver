@@ -57,6 +57,7 @@ typedef struct Msg
   u8 reg;
   u16 value;
   u16 set_value;
+  u16 hx711_offset;
   u8 onoff;
 }SLAVE;
 
