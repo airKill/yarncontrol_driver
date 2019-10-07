@@ -313,6 +313,15 @@
 
 #define PAGE_ECHO_SENSE_ZERO1                 0x2000
 
+#define PAGE_WEIMI1_UNLOCK                  0x2100
+#define PAGE_WEIMI1_LOCK                    0x2101
+#define PAGE_WEIMI2_UNLOCK                  0x2102
+#define PAGE_WEIMI2_LOCK                    0x2103
+#define PAGE_WEISHA1_UNLOCK                  0x2104
+#define PAGE_WEISHA1_LOCK                    0x2105
+#define PAGE_WEISHA2_UNLOCK                  0x2106
+#define PAGE_WEISHA2_LOCK                    0x2107
+
 #define VGUS_ON   1
 #define VGUS_OFF   0
 
