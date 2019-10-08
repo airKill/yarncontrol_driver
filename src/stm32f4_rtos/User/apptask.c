@@ -1863,6 +1863,94 @@ void vTaskTaskLCD(void *pvParameters)
                 printf("file %d on\r\n",var_addr - PAGE_HISTORY_SELECT + 1);
               }
             }
+            else if(var_addr == PAGE_WEIMI1_SECRET_INPUT)
+            {//ÊäÈëµÇÂ¼ÃÜÂë
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//´®¿Ú·¢ËÍÎª×Ö³¤
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_WEIMI1_SECRET_DISPLAY,buf,input_password_len);//ÃÜÂëÏÔÊ¾Îª*
+              if(strcmp((char const*)input_password_buf,"000000") == 0)
+              {//ÃÜÂëÕýÈ·
+                Sdwe_disPicture(PAGE_WEIMI1_XIUGAI);
+                vTaskDelay(10);
+              }
+              else
+              {//ÃÜÂë´íÎó
+                Sdwe_disString(PAGE_WEIMI1_SECRET_WARNING,"ÃÜÂë´íÎó",strlen("ÃÜÂë´íÎó"));
+              }
+            }
+            else if(var_addr == PAGE_WEIMI2_SECRET_INPUT)
+            {//ÊäÈëµÇÂ¼ÃÜÂë
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//´®¿Ú·¢ËÍÎª×Ö³¤
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_WEIMI2_SECRET_DISPLAY,buf,input_password_len);//ÃÜÂëÏÔÊ¾Îª*
+              if(strcmp((char const*)input_password_buf,"000000") == 0)
+              {//ÃÜÂëÕýÈ·
+                Sdwe_disPicture(PAGE_WEIMI2_XIUGAI);
+                vTaskDelay(10);
+              }
+              else
+              {//ÃÜÂë´íÎó
+                Sdwe_disString(PAGE_WEIMI2_SECRET_WARNING,"ÃÜÂë´íÎó",strlen("ÃÜÂë´íÎó"));
+              }
+            }
+            else if(var_addr == PAGE_WEISHA1_SECRET_INPUT)
+            {//ÊäÈëµÇÂ¼ÃÜÂë
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//´®¿Ú·¢ËÍÎª×Ö³¤
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_WEISHA1_SECRET_DISPLAY,buf,input_password_len);//ÃÜÂëÏÔÊ¾Îª*
+              if(strcmp((char const*)input_password_buf,"000000") == 0)
+              {//ÃÜÂëÕýÈ·
+                Sdwe_disPicture(PAGE_WEISHA1_XIUGAI);
+                vTaskDelay(10);
+              }
+              else
+              {//ÃÜÂë´íÎó
+                Sdwe_disString(PAGE_WEISHA1_SECRET_WARNING,"ÃÜÂë´íÎó",strlen("ÃÜÂë´íÎó"));
+              }
+            }
+            else if(var_addr == PAGE_WEISHA2_SECRET_INPUT)
+            {//ÊäÈëµÇÂ¼ÃÜÂë
+              u8 llen;
+              u8 buf[20],i;
+              llen = lcd_rev_buf[6] * 2;//´®¿Ú·¢ËÍÎª×Ö³¤
+              memset(input_password_buf,0,10);
+              memcpy(input_password_buf,lcd_rev_buf + 7,llen);
+              input_password_len = get_valid_length(input_password_buf,llen);
+              input_password_buf[input_password_len] = '\0';
+              for(i=0;i<input_password_len;i++)
+                buf[i] = '*';
+              Sdwe_disString(PAGE_WEISHA2_SECRET_DISPLAY,buf,input_password_len);//ÃÜÂëÏÔÊ¾Îª*
+              if(strcmp((char const*)input_password_buf,"000000") == 0)
+              {//ÃÜÂëÕýÈ·
+                Sdwe_disPicture(PAGE_WEISHA2_XIUGAI);
+                vTaskDelay(10);
+              }
+              else
+              {//ÃÜÂë´íÎó
+                Sdwe_disString(PAGE_WEISHA2_SECRET_WARNING,"ÃÜÂë´íÎó",strlen("ÃÜÂë´íÎó"));
+              }
+            }
           }
         }
       }

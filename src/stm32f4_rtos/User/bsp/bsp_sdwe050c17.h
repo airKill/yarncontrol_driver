@@ -55,6 +55,11 @@
 #define PAGE_HISTORY2          36
 #define PAGE_CHANNENG_CLEAR   38
 #define PAGE_PEILIAO_CONFIG   39
+#define PAGE_WEIMI1_XIUGAI      41
+#define PAGE_WEIMI2_XIUGAI      42
+#define PAGE_WEISHA1_XIUGAI     43
+#define PAGE_WEISHA2_XIUGAI     44
+
 
 #define MAIN_PAGE_KEY_JINGSHA   0x0100
 #define MAIN_PAGE_KEY_WEIMI     0x0101
@@ -321,6 +326,22 @@
 #define PAGE_WEISHA1_LOCK                    0x2105
 #define PAGE_WEISHA2_UNLOCK                  0x2106
 #define PAGE_WEISHA2_LOCK                    0x2107
+
+#define PAGE_WEIMI1_SECRET_INPUT                    0x2110
+#define PAGE_WEIMI1_SECRET_DISPLAY                  0x2115
+#define PAGE_WEIMI1_SECRET_WARNING                  0x211A
+
+#define PAGE_WEIMI2_SECRET_INPUT                      0x2120
+#define PAGE_WEIMI2_SECRET_DISPLAY                    0x2125
+#define PAGE_WEIMI2_SECRET_WARNING                    0x212A
+
+#define PAGE_WEISHA1_SECRET_INPUT                     0x2130
+#define PAGE_WEISHA1_SECRET_DISPLAY                   0x2135
+#define PAGE_WEISHA1_SECRET_WARNING                   0x213A
+
+#define PAGE_WEISHA2_SECRET_INPUT                     0x2140
+#define PAGE_WEISHA2_SECRET_DISPLAY                   0x2145
+#define PAGE_WEISHA2_SECRET_WARNING                   0x214A
 
 #define VGUS_ON   1
 #define VGUS_OFF   0
