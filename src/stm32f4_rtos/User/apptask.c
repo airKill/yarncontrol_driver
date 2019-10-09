@@ -1552,9 +1552,14 @@ void vTaskTaskLCD(void *pvParameters)
                 if(no == 1)
                   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
-                if(((var_addr - PAGE_WEIMI_STEP1_SPEED) / 2) == (MotorProcess.songwei_seg[0] / 2))
+                if(((var_addr - PAGE_WEIMI_STEP1_SPEED) / 2) == (MotorProcess.songwei_seg[0]))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.songwei_seg[0] / 2];
+                  if(cnt == 0)
+                  {
+                    weisha_reset_to_seg1(0);
+                  }
+                  else
+                    MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.songwei_seg[0]];
 //                  reset_seg_to_1();
                 }
                 valid_seg[1] = get_songwei0_maxseg(weimi_para);
@@ -1581,9 +1586,14 @@ void vTaskTaskLCD(void *pvParameters)
                 if(no == 1)
                   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
-                if(((var_addr - PAGE_WEIMI_STEP2_SPEED) / 2) == (MotorProcess.songwei_seg[1] / 2))
+                if(((var_addr - PAGE_WEIMI_STEP2_SPEED) / 2) == (MotorProcess.songwei_seg[1]))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.songwei_seg[1] / 2];
+                  if(cnt == 0)
+                  {
+                    weisha_reset_to_seg1(1);
+                  }
+                  else
+                    MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.songwei_seg[1]];
 //                  reset_seg_to_1();
                 }
                 valid_seg[2] = get_songwei1_maxseg(weimi_para);
@@ -1610,9 +1620,14 @@ void vTaskTaskLCD(void *pvParameters)
                 if(no == 1)
                   W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
                 
-                if(((var_addr - PAGE_WEIMI_STEP3_SPEED) / 2) == (MotorProcess.songwei_seg[2] / 2))
+                if(((var_addr - PAGE_WEIMI_STEP3_SPEED) / 2) == (MotorProcess.songwei_seg[2]))
                 {//如果设置的送纬电机号段为当前号段，立刻更新送纬电机比例
-                  MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.songwei_seg[2] / 2];
+                  if(cnt == 0)
+                  {
+                    weisha_reset_to_seg1(2);
+                  }
+                  else
+                    MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.songwei_seg[2]];
 //                  reset_seg_to_1();
                 }
                 valid_seg[3] = get_songwei2_maxseg(weimi_para);
@@ -1847,6 +1862,9 @@ void vTaskTaskLCD(void *pvParameters)
             else if(var_addr == PAGE_WEIMI_RESET)
             {
               reset_seg_to_1();
+//              StepMotor_stop(STEPMOTOR1);
+//              StepMotor_stop(STEPMOTOR2);
+//              StepMotor_stop(STEPMOTOR3);
             }
             else if((var_addr >= PAGE_HISTORY_SELECT) && (var_addr <= (PAGE_HISTORY_SELECT + 9)))
             {//文件选择

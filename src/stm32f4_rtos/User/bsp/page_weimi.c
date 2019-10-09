@@ -135,6 +135,14 @@ void reset_seg_to_1(void)
   Sdwe_disDigi(PAGE_WEIMI_REALWEI_1,1,4);
 }
 
+void weisha_reset_to_seg1(u8 weisha_num)
+{
+  MotorProcess.song_current_wei[weisha_num] = 0;//当前纬清零
+  MotorProcess.song_total_wei[weisha_num] = weimi_para.total_wei_count[0];//总纬数为第一段纬数
+  MotorProcess.songwei_seg[weisha_num] = 0;//段号清零
+  stepmotor_guodu[weisha_num] = 0;//过渡标志清零
+}
+
 //将转速转换为步进电机步数
 //输入：speed 转/分钟
 //输出：count 步数
