@@ -41,6 +41,7 @@ void bsp_Init(void)
   bsp_Init_SEVRO_EN();
   W25QXX_Init();
   bsp_InitLed(); 		/* 初始LED指示灯端口 */
+  bsp_InitKey();
   read_device_info();
   bkp_init();
   para_init(&SlavePara);

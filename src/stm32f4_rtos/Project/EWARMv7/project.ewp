@@ -629,7 +629,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>MainBoard191009.bin</state>
+          <state>MainBoard191010.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1005,9 +1005,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\bsp\src\bsp_key.c</name>
-      <excluded>
-        <configuration>Flash</configuration>
-      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\User\bsp\src\bsp_led.c</name>

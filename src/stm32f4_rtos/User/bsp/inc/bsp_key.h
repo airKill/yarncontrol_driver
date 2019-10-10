@@ -14,7 +14,7 @@
 #ifndef __BSP_KEY_H
 #define __BSP_KEY_H
 
-#define KEY_COUNT    10	   					/* 按键个数, 8个独立建 + 2个组合键 */
+#define KEY_COUNT    1	   					/* 按键个数, 8个独立建 + 2个组合键 */
 
 /* 根据应用程序的功能重命名按键宏 */
 #define KEY_DOWN_K1		KEY_1_DOWN
