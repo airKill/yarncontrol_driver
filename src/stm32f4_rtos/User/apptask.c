@@ -1478,7 +1478,7 @@ void vTaskTaskLCD(void *pvParameters)
               publish_topic = TOPIC_WEIMI;
               xQueueSend(xQueue_MQTT_Transmit,(void *)&publish_topic,(TickType_t)10);
             }
-            else if((var_addr >= PAGE_WEIMI_WEI_CM_1) && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
+            else if((var_addr >= PAGE_WEIMI_WEI_CM_1)  && (var_addr < PAGE_WEIMI_WEI_CM_1 + 20))
             {//纬/cm设置
               float cnt;
               u8 seg_num;
@@ -1501,8 +1501,12 @@ void vTaskTaskLCD(void *pvParameters)
                 
                 if(seg_num == MotorProcess.current_seg)
                 {//如果改变的纬密为当前段号纬密，立刻更新步数/纬
-//                  MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
-                  reset_seg_to_1();
+                  if(cnt == 0)
+                  {
+                    reset_seg_to_1();
+                  }
+                  else
+                    MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
                 }
                   
                 if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
@@ -1534,8 +1538,10 @@ void vTaskTaskLCD(void *pvParameters)
                 W25QXX_Write((u8 *)&weimi_para,(u32)W25QXX_ADDR_WEIMI + WEIMI_SIZE * device_info.page_count_select,sizeof(weimi_para));
               if((var_addr - PAGE_WEIMI_MEDIANWEI_1 + 1) == MotorProcess.current_seg)
               {//如果修改的纬过渡刚好是当前段号，立刻更新当前循环纬
-//                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
-                reset_seg_to_1();
+                if(cnt == 0)
+                  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg];
+                else
+                  reset_seg_to_1();
               }
               u8 publish_topic;
               publish_topic = TOPIC_WEIMI;
@@ -3817,7 +3823,7 @@ void vTaskTaskKey(void *pvParameters)
           if(is_stop == 0)
           {
             servomotor_mode = MANUAL;
-            SERVO_BACKWARD();
+            SERVO_FORWARD();
             TIM4_MANUAL_PWM_Config(FREQ_37_5KHZ);
             SERVO_ENABLE();
           }
@@ -3825,10 +3831,12 @@ void vTaskTaskKey(void *pvParameters)
         case KEY_LONG_K1:
           break;
         case KEY_UP_K1:
-          servomotor_mode = AUTO;
-//                  RELAY_OPEN();
-          TIM4_MANUAL_PWM_Stop();
-          SERVO_FORWARD();
+          if(is_stop == 0)
+          {
+            servomotor_mode = AUTO;
+            TIM4_MANUAL_PWM_Stop();
+            SERVO_FORWARD();
+          }
           break;  
       }
     }

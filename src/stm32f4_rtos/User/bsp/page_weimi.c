@@ -123,6 +123,7 @@ void reset_seg_to_1(void)
   MotorProcess.song_current_wei[1] = 1;
   MotorProcess.song_current_wei[2] = 1;
   MotorProcess.total_wei = weimi_para.total_wei_count[0];
+  MotorProcess.wei_cm_set = weimi_para.wei_cm_set[0];
   MotorProcess.song_total_wei[0] = weimi_para.total_wei_count[0];
   MotorProcess.song_total_wei[1] = weimi_para.total_wei_count[0];
   MotorProcess.song_total_wei[2] = weimi_para.total_wei_count[0];
