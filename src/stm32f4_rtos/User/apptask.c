@@ -3315,7 +3315,7 @@ static void vTaskFreq(void *pvParameters)
   {
     vTaskDelayUntil( &xLastWakeTime,xFrequency); //¾ø¶ÔÑÓÊ±
     speed_zhu = ENC_Calc_Average_Speed();
-//    printf("speed_zhu is %d\r\n",speed_zhu);
+    printf("speed_zhu is %d\r\n",speed_zhu);
     if(speed_zhu > 0)
     {
       if(device_info.func_onoff.weimi)

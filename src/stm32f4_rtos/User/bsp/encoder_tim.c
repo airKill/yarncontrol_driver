@@ -22,7 +22,7 @@
 s16 ENC_Calc_Rot_Speed(void);
 
 /* Private variables ---------------------------------------------------------*/
-s16 hPrevious_angle, hSpeed_Buffer[SPEED_BUFFER_SIZE], hRot_Speed;
+s16 hPrevious_angle, hSpeed_Buffer[SPEED_BUFFER_SIZE + 1], hRot_Speed;
 u8 bSpeed_Buffer_Index = 0;
 u16 hEncoder_Timer_Overflow; 
 u8 bIs_First_Measurement = 1;
@@ -233,14 +233,31 @@ u16 ENC_Calc_Average_Speed(void)
   u16 sum = 0;
   wtemp = ENC_Calc_Rot_Speed();
 
+//  if(wtemp < 2000)
+//    hSpeed_Buffer[bSpeed_Buffer_Index++] = (s16)wtemp;
+//  if(bSpeed_Buffer_Index >= SPEED_BUFFER_SIZE)
+//    bSpeed_Buffer_Index = 0;
+//  
+//  //递推平均滤波（滑动平均滤波法）
+//  for(i=0;i<SPEED_BUFFER_SIZE;i++)
+//  {
+//    sum = sum + hSpeed_Buffer[i];
+//  }
+  
   if(wtemp < 2000)
-    hSpeed_Buffer[bSpeed_Buffer_Index++] = (s16)wtemp;
-  if(bSpeed_Buffer_Index >= SPEED_BUFFER_SIZE)
-    bSpeed_Buffer_Index = 0;
+  {
+    //    hSpeed_Buffer[bSpeed_Buffer_Index++] = (s16)wtemp;
+    hSpeed_Buffer[SPEED_BUFFER_SIZE] = (s16)wtemp;
+  }
+//  if(bSpeed_Buffer_Index >= SPEED_BUFFER_SIZE)
+//    bSpeed_Buffer_Index = 0;
   
   //递推平均滤波（滑动平均滤波法）
   for(i=0;i<SPEED_BUFFER_SIZE;i++)
+  {
+    hSpeed_Buffer[i] = hSpeed_Buffer[i + 1]; // 所有数据左移，低位仍掉
     sum = sum + hSpeed_Buffer[i];
+  }
   return (sum / SPEED_BUFFER_SIZE);
 }
 
