@@ -16,22 +16,23 @@ u8 fault_weimi_flag = 0;
 
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
-//u16 servomotor_step = 0;
+u16 servomotor_step = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
 //para:电机配置参数，包含纬厘米设置
 //num:段号
-//u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
-//{
-//  u16 stepcount = 0;
-//  //10mm/滚筒周长=滚筒圈数
-//  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
-//  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
-//  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
+u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
+{
+  u16 stepcount = 0;
+  //10mm/滚筒周长=滚筒圈数
+  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
+  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
+  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
 //  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
-//  return stepcount;
-//}
+  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * SERVOMOTOR_DIV / para->wei_cm_set[num] / CIRCLE_LENGTH);
+  return stepcount;
+}
 
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
 {

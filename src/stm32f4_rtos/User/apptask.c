@@ -56,10 +56,9 @@ float pluse_step_src[3] = {0,0,0};
 float speed_diff[3] = {0,0,0};
 u8 symbol[3] = {0,0,0};
 
-float servo_per_wei_src;//伺服电机过渡期不仅数每纬
-float servo_diff;//伺服电机过渡期纬差
-float servo_speed_diff;
-u8 symbol_servo = 0;
+//float servo_per_wei_src;//伺服电机过渡期不仅数每纬
+//float servo_diff;//伺服电机过渡期纬差
+//float servo_speed_diff;
 
 u8 clear_text_flag = 0;
 
@@ -2820,7 +2819,7 @@ void vTaskManageCapacity(void *pvParameters)
             case 0:
               RELAY_OPEN();//有脉冲信号后，继电器断开
               count++;
-              printf("wei\r\n");
+//              printf("wei\r\n");
               product_para.weicount_kilowei = product_para.weicount_kilowei + count / peiliao_para.weimi_dis_set;
               if((count % (peiliao_para.weimi_dis_set)) == 0)
               {//纬纱/千纬
@@ -2943,19 +2942,20 @@ void vTaskManageCapacity(void *pvParameters)
 static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
+  u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
+  u16 servo_diff;//伺服电机过渡期纬差
+  u8 symbol_servo = 0;
+  
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   vTaskDelay(200);
   TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
+  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
   valid_seg[0] = get_valid_seg(weimi_para);
   valid_seg[1] = get_songwei0_maxseg(weimi_para);
   valid_seg[2] = get_songwei1_maxseg(weimi_para);
   valid_seg[3] = get_songwei2_maxseg(weimi_para);
   max_seg = get_max_type(valid_seg);
-//  servomotor_guodu = device_info.weimi_info.guodu_flag[0];
-//  stepmotor_guodu[0] = device_info.weimi_info.guodu_flag[1];
-//  stepmotor_guodu[1] = device_info.weimi_info.guodu_flag[2];
-//  stepmotor_guodu[2] = device_info.weimi_info.guodu_flag[3];
   if(max_seg == 0)
   {
     if(servomotor_guodu == 0)
@@ -3037,17 +3037,32 @@ static void vTaskMotorControl(void *pvParameters)
             }
             
             /**********************************************************************************/
-            if(servomotor_guodu > 0)
+//            if(servomotor_guodu > 0)
+//            {
+//              float sevro_speed;
+//              u32 sevrostep;//步进电机转速，转/分钟
+//              if(symbol_servo == 0)//速度增加
+//                sevro_speed = speed_zhu * (servo_per_wei_src + (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
+//              else//速度减少
+//                sevro_speed = speed_zhu * (servo_per_wei_src - (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
+//              sevrostep = get_sevro_step(sevro_speed);//计算速度对应的脉冲数
+//              ServoMotor_adjust_speed(sevrostep); //定时器发送PWM
+//              //                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
+//            }
+            if(servomotor_guodu)
+            {//过渡纬号，步进电机调速，每纬调节一次转速
+              u16 sevro_step;
+              if(symbol_servo == 0)//正数增加
+                sevro_step = servo_per_wei_src + (float)servo_diff / MotorProcess.total_wei * MotorProcess.current_wei;
+              else//负数减少
+                sevro_step = servo_per_wei_src - (float)servo_diff / MotorProcess.total_wei * MotorProcess.current_wei;
+              ServoMotorRunning(sevro_step,FORWARD);
+//              printf("sevro_step is %d\r\n",sevro_step);
+            }
+            else
             {
-              float sevro_speed;
-              u32 sevrostep;//步进电机转速，转/分钟
-              if(symbol_servo == 0)//速度增加
-                sevro_speed = speed_zhu * (servo_per_wei_src + (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
-              else//速度减少
-                sevro_speed = speed_zhu * (servo_per_wei_src - (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
-              sevrostep = get_sevro_step(sevro_speed);//计算速度对应的脉冲数
-              ServoMotor_adjust_speed(sevrostep); //定时器发送PWM
-              //                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
+              ServoMotorRunning(servomotor_step,FORWARD);//发送一纬对应的脉冲信号到伺服驱动器
+//              printf("servomotor_step is %d\r\n",servomotor_step);
             }
             if(MotorProcess.current_wei >= MotorProcess.total_wei)
             {
@@ -3066,34 +3081,44 @@ static void vTaskMotorControl(void *pvParameters)
                     fault_weimi_flag = 1;
                     continue;
                   }
+                  u16 value1,value2;
                   if(MotorProcess.current_seg == 9)
                   {
-                    if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    value1 = MotorStepCount(&device_info,&weimi_para,0);
+                    value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);
+                    if(weimi_para.wei_cm_set[0] >= weimi_para.wei_cm_set[MotorProcess.current_seg])
                     {//纬密越小速度越高
-                      symbol_servo = 0;
-                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                      symbol_servo = 1;
+                      servo_diff = value2 - value1;
+//                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
                     }
                     else
                     {
-                      symbol_servo = 1;
-                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[0];
+                      symbol_servo = 0;
+                      servo_diff = value1 - value2;
+//                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[0];
                     }
                   }
                   else
                   {
-                    if(weimi_para.wei_cm_set[MotorProcess.current_seg + 1] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    value1 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg + 1);
+                    value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);
+                    if(weimi_para.wei_cm_set[MotorProcess.current_seg + 1] >= weimi_para.wei_cm_set[MotorProcess.current_seg])
                     {
-                      symbol_servo = 0;
-                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                      symbol_servo = 1;
+                      servo_diff = value2 - value1;
+//                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
                     }
                     else
                     {
-                      symbol_servo = 1;
-                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1];
+                      symbol_servo = 0;
+                      servo_diff = value1 - value2;
+//                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1];
                     }
                   }
-                  servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
-                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
+//                  servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
+//                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
+                  servo_per_wei_src = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);
                   servomotor_guodu = 1;
 //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
@@ -3111,6 +3136,7 @@ static void vTaskMotorControl(void *pvParameters)
                     continue;
                   }
                   servomotor_guodu = 0;
+                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
 //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
@@ -3122,6 +3148,7 @@ static void vTaskMotorControl(void *pvParameters)
                   if(MotorProcess.current_seg == 0)
                   {
                     MotorProcess.total_wei = weimi_para.total_wei_count[0];
+                    servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
                   }
                   else
                   {
@@ -3131,19 +3158,25 @@ static void vTaskMotorControl(void *pvParameters)
                       fault_weimi_flag = 1;
                       continue;
                     }
-                    if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    u16 value1,value2;
+                    value1 = MotorStepCount(&device_info,&weimi_para,0);
+                    value2 = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);
+                    if(weimi_para.wei_cm_set[0] >= weimi_para.wei_cm_set[MotorProcess.current_seg])
                     {
-                      symbol_servo = 0;
-                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                      symbol_servo = 1;
+//                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                      servo_diff = value2 - value1;
                     }
                     else
                     {
-                      symbol_servo = 1;
-                      servo_diff = (1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg]) - (1.0 / weimi_para.wei_cm_set[0]);
+                      symbol_servo = 0;
+//                      servo_diff = (1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg]) - (1.0 / weimi_para.wei_cm_set[0]);
+                      servo_diff = value1- value2;
                     }
-                    servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
-                    servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
+//                    servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
+//                    servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                     servomotor_guodu = 1;
+                    servo_per_wei_src = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);
 //                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                   }
                 }
@@ -3153,6 +3186,7 @@ static void vTaskMotorControl(void *pvParameters)
                   MotorProcess.total_wei = weimi_para.total_wei_count[0];
                   servomotor_guodu = 0;
 //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
                 }
               }
             }
@@ -3295,15 +3329,15 @@ static void vTaskFreq(void *pvParameters)
   u8 step1_stop = 0,old_step1_stop = 0xff;
   u8 step2_stop = 0,old_step2_stop = 0xff;
   u8 step3_stop = 0,old_step3_stop = 0xff;
-  u8 servo_stop = 0,old_servo_stop = 0xff;
+//  u8 servo_stop = 0,old_servo_stop = 0xff;
   u32 step1_count;
   u32 step2_count;
   u32 step3_count;
   u32 servo_count;
   float step_speed;
   u32 sstep;//步进电机转速，转/分钟
-  float servo_speed;
-  u32 servostep;//步进电机转速，转/分钟
+//  float servo_speed;
+//  u32 servostep;//步进电机转速，转/分钟
   static portTickType xLastWakeTime;  
   const portTickType xFrequency = pdMS_TO_TICKS(10);  
   
@@ -3427,42 +3461,42 @@ static void vTaskFreq(void *pvParameters)
             sstep = from_speed_step(step_speed);//计算速度对应的脉冲数
             StepMotor_adjust_speed(STEPMOTOR3,sstep); //定时器发送PWM
           }
-          if(servomotor_guodu == 0)
-          {
-            if(MotorProcess.wei_cm_set == 0)
-              servo_count = 0;
-            else
-              servo_count = get_sevro_step((float)speed_zhu / MotorProcess.wei_cm_set * device_info.ratio.GEAR1);//计算步进电机脉冲频率
-            if(servo_count == 0)
-            {//电机3速度设置为0
-              servo_stop = 0;
-              if(servo_stop != old_servo_stop)
-              {//停止电机3工作
-                old_servo_stop = servo_stop;
-                TIM4_MANUAL_PWM_Stop();
-              }
-            }
-            else
-            {//电机3速度设置大于0
-              servo_stop = 0xff;
-              if(servo_stop != old_servo_stop)
-              {//开启电机3工作
-                old_servo_stop = servo_stop;
-                TIM4_MANUAL_PWM_Config(servo_count);
-              }
-              ServoMotor_adjust_speed(servo_count);
-//              printf("step3_count %d\r\n",step3_count);
-            }
-          }
-          else
-          {
-            if(symbol_servo == 0)//速度增加
-              servo_speed = speed_zhu * (servo_per_wei_src + (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
-            else//速度减少
-              servo_speed = speed_zhu * (servo_per_wei_src - (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
-            servostep = get_sevro_step(servo_speed);//计算速度对应的脉冲数
-            ServoMotor_adjust_speed(servostep); //定时器发送PWM
-          }
+//          if(servomotor_guodu == 0)
+//          {
+//            if(MotorProcess.wei_cm_set == 0)
+//              servo_count = 0;
+//            else
+//              servo_count = get_sevro_step((float)speed_zhu / MotorProcess.wei_cm_set * device_info.ratio.GEAR1);//计算步进电机脉冲频率
+//            if(servo_count == 0)
+//            {//电机3速度设置为0
+//              servo_stop = 0;
+//              if(servo_stop != old_servo_stop)
+//              {//停止电机3工作
+//                old_servo_stop = servo_stop;
+//                TIM4_MANUAL_PWM_Stop();
+//              }
+//            }
+//            else
+//            {//电机3速度设置大于0
+//              servo_stop = 0xff;
+//              if(servo_stop != old_servo_stop)
+//              {//开启电机3工作
+//                old_servo_stop = servo_stop;
+//                TIM4_MANUAL_PWM_Config(servo_count);
+//              }
+//              ServoMotor_adjust_speed(servo_count);
+////              printf("step3_count %d\r\n",step3_count);
+//            }
+//          }
+//          else
+//          {
+//            if(symbol_servo == 0)//速度增加
+//              servo_speed = speed_zhu * (servo_per_wei_src + (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
+//            else//速度减少
+//              servo_speed = speed_zhu * (servo_per_wei_src - (float)servo_speed_diff / MotorProcess.total_wei * MotorProcess.current_wei);
+//            servostep = get_sevro_step(servo_speed);//计算速度对应的脉冲数
+//            ServoMotor_adjust_speed(servostep); //定时器发送PWM
+//          }
           if(is_stop != old_is_stop)
           {//主轴速度大于0时，步进电机开始运行
             old_is_stop = is_stop;
@@ -3473,7 +3507,7 @@ static void vTaskFreq(void *pvParameters)
             StepMotor_start(STEPMOTOR1,step1_count);
           }
           __set_PRIMASK(0);
-        }
+        }  
         else
         {
           is_stop = 0;
@@ -3531,7 +3565,7 @@ void vEsp8266_Main_Task(void *ptr)
   while(net_device_send_cmd("AT\r\n", "OK"))
   {
     vTaskDelay(500);
-    printf("WIFI DEVICE LOST\r\n");
+//    printf("WIFI DEVICE LOST\r\n");
   }
   while(net_device_send_cmd("ATE0\r\n", "OK"));
   {

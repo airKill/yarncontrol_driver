@@ -6,6 +6,8 @@
 #define CIRCLE_LENGTH   (PI * ROLLER_D)
 #define SERVOMOTOR_DIV  1000
 
+#define SERVOMOTOR_GEAR (44.0 / 9 * 28)
+
 #define SEVRO_RADIO     (1.0 / 10)
 
 #define SPEED_RADIO12   (3.6 / 500.0)
@@ -59,7 +61,7 @@ extern u16 speed_zhu1;
 extern u16 speed_zhu;
 extern u8 servomotor_guodu;
 extern u8 stepmotor_guodu[3];
-//extern u16 servomotor_step;
+extern u16 servomotor_step;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;

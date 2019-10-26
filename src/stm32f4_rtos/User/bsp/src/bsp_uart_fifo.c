@@ -1398,21 +1398,6 @@ void UART5_IRQHandler(void)
 {
   u16 data;
   u8 tmp;
-//  if(USART_GetITStatus(UART5,USART_IT_IDLE) != RESET)
-//  {
-//    DMA_Cmd(DMA1_Stream0, DISABLE);
-//    data = UART5->SR;
-//    data = UART5->DR;
-//    data = data;
-//    UART_ReceiveSize = UART5_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream0);
-//    rfid_rev_cnt = UART_ReceiveSize;
-//    memcpy(rfid_rev_buf,UART5_RX_BUF,rfid_rev_cnt);
-////    UART1ToPC(rfid_rev_buf,rfid_rev_cnt);
-//    DMA_ClearFlag(DMA1_Stream0,DMA_FLAG_TCIF0 | DMA_FLAG_FEIF0 | DMA_FLAG_DMEIF0 | DMA_FLAG_TEIF0 | DMA_FLAG_HTIF0);//??DMA1_Steam3??????
-//    DMA_SetCurrDataCounter(DMA1_Stream0, UART5_RX_BUF_SIZE);
-//    DMA_Cmd(DMA1_Stream0, ENABLE);
-//    rfid_rev_flag = 1;
-//  }
   if(USART_GetITStatus(UART5,USART_IT_RXNE) != RESET)
   {
     USART_ClearITPendingBit(UART5,USART_IT_RXNE);

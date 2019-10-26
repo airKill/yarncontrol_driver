@@ -8,7 +8,7 @@ void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num)
   //  period = SystemCoreClock / TIM_Prescaler / freq / 2; 
   period = freq;
   TIM4_CH1_GPIO_Configuration();
-//  TIM4_CH1_PWMDMA_Config(period,num);
+  TIM4_CH1_PWMDMA_Config(period,num);
 }
 
 void TIM4_CH1_StartPwmOut(void)
