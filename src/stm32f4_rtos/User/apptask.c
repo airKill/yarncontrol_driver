@@ -1566,6 +1566,7 @@ void vTaskTaskLCD(void *pvParameters)
                   if(cnt == 0)
                   {
                     weisha_reset_to_seg1(0);
+                    MotorProcess.step_factor[0] = weimi_para.step_factor[0][0];
                   }
                   else
                     MotorProcess.step_factor[0] = weimi_para.step_factor[0][MotorProcess.songwei_seg[0]];
@@ -1600,6 +1601,7 @@ void vTaskTaskLCD(void *pvParameters)
                   if(cnt == 0)
                   {
                     weisha_reset_to_seg1(1);
+                    MotorProcess.step_factor[1] = weimi_para.step_factor[1][0];
                   }
                   else
                     MotorProcess.step_factor[1] = weimi_para.step_factor[1][MotorProcess.songwei_seg[1]];
@@ -1634,6 +1636,7 @@ void vTaskTaskLCD(void *pvParameters)
                   if(cnt == 0)
                   {
                     weisha_reset_to_seg1(2);
+                    MotorProcess.step_factor[2] = weimi_para.step_factor[2][0];
                   }
                   else
                     MotorProcess.step_factor[2] = weimi_para.step_factor[2][MotorProcess.songwei_seg[2]];
