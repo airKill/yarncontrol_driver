@@ -1505,7 +1505,10 @@ void vTaskTaskLCD(void *pvParameters)
                     reset_seg_to_1();
                   }
                   else
+                  {
                     MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
+                  }
+                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
                 }
                   
                 if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
