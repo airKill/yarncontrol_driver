@@ -15,11 +15,14 @@
 #define LED1_PORT       GPIOA
 #define LED1_PIN        GPIO_Pin_8
 
-//#define LED1_PORT       GPIOB
-//#define LED1_PIN        GPIO_Pin_0
+#define SWITCH_LED_PORT       GPIOB
+#define SWITCH_LED_PIN        GPIO_Pin_11
 //
 #define LED1_ON()       GPIO_SetBits(LED1_PORT,LED1_PIN) 
 #define LED1_OFF()       GPIO_ResetBits(LED1_PORT,LED1_PIN) 
+
+#define SWITCH_LED_ON()       GPIO_SetBits(SWITCH_LED_PORT,SWITCH_LED_PIN) 
+#define SWITCH_LED_OFF()       GPIO_ResetBits(SWITCH_LED_PORT,SWITCH_LED_PIN) 
 //
 //#define LED2_PORT       GPIOG
 //#define LED2_PIN        GPIO_Pin_6
@@ -51,6 +54,7 @@ extern u16 Uart2_rx_count;
 extern u8 UART3_RX_BUF[UART3_MAX_RECV_LEN];
 extern u16 Uart3_rx_count;
 
+void Switch_LED_init(void);
 void DMA_Config(void);
 void watchdog(void);
 void IWDG_Feed(void);

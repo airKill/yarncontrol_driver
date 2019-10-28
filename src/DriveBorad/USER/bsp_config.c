@@ -154,6 +154,20 @@ void LED_init(void)
   GPIO_Init(LED1_PORT, &GPIO_InitStructure);
 }
 
+void Switch_LED_init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;  
+  
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Pin = SWITCH_LED_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(SWITCH_LED_PORT, &GPIO_InitStructure);
+  
+  SWITCH_LED_OFF();
+}
+
 void TIM2_Configuration(void)
 {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -222,6 +236,7 @@ void IWDG_Feed(void)
 
 void bsp_init(void)
 {
+  Switch_LED_init();
   LED_init();
   delay_init(72);
   InterruptConfig();

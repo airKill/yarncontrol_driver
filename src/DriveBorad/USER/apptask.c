@@ -53,6 +53,7 @@ void vTaskTaskKey(void *pvParameters)
       {
         case KEY_DOWN_K1://上限位,传感器清零,电机停止
           LED1_ON();
+          SWITCH_LED_ON();
           if(key3_press_flag == 1)
           {
             key1_running_time = 45;
@@ -66,7 +67,11 @@ void vTaskTaskKey(void *pvParameters)
           }
           printf("上限位校准零点\r\n");
           break;
+        case KEY_UP_K1:
+          SWITCH_LED_OFF();
+          break;
         case KEY_LONG_K1:
+          SWITCH_LED_ON();
           if(key3_press_flag == 1)
           {
             key1_running_time = 45;
@@ -81,11 +86,13 @@ void vTaskTaskKey(void *pvParameters)
           printf("上限位\r\n");
           break;    
         case KEY_DOWN_K2:	//下限位
+          SWITCH_LED_OFF();
           key2_reset = 0;
           Device_Process = PROCESS_RESET_1;
           printf("下限位复位\r\n");
           break;  
         case KEY_LONG_K2:
+          SWITCH_LED_OFF();
           key2_reset = 0;
           Device_Process = PROCESS_RESET_1;
           printf("下限位复位\r\n");
