@@ -312,8 +312,10 @@ void ServoMotorRunning(u16 stepnum,u8 dir)
     SERVO_FORWARD();
   else
     SERVO_BACKWARD();
-  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
-  TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
+//  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
+  TIM4_PWM_Config(FREQ_200KHZ,FORWARD_PWM);
+//  TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
+  TIM4_CH1_PWMDMA_Config(FREQ_200KHZ,stepnum);
   TIM4_CH1_StartPwmOut();
 }
 

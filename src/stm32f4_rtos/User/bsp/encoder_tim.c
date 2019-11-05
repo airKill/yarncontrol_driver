@@ -281,12 +281,12 @@ void TIM8_UP_TIM13_IRQHandler(void)
       hEncoder_Timer_Overflow++;
     }
     TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
-    if(speed_zhu > 0)
-    {
-      xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
-      /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    }
+//    if(speed_zhu > 0)
+//    {
+//      xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+//      /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+//      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//    }
   }
 }
 

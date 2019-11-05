@@ -2954,7 +2954,9 @@ static void vTaskMotorControl(void *pvParameters)
   
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   vTaskDelay(200);
-  TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
+//  TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
+  TIM4_CH1_ConfigPwmOut(FREQ_200KHZ,10);
+  
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
   servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
   valid_seg[0] = get_valid_seg(weimi_para);
