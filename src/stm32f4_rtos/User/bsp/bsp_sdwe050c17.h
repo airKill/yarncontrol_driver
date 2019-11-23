@@ -217,10 +217,10 @@
 #define PAGE_CONFIG_DEVICE_ID   0x0149
 #define PAGE_CONFIG_CARD        0x014A
 #define PAGE_CONFIG_DEFAULT     0x014B
-#define PAGE_CONFIG_RATIO1        0x014C
-#define PAGE_CONFIG_RATIO2        0x014E
-#define PAGE_CONFIG_SEVRO_PLUSE_PAGE        0x014F
-#define PAGE_CONFIG_SEVRO_PLUSE        0x0160
+#define PAGE_CONFIG_PERIMETER        0x014C//滚筒周长设置
+#define PAGE_CONFIG_PLUSE_PREQ        0x014E//脉冲频率设置
+#define PAGE_CONFIG_SEVRO_PLUSE_CIRCLE        0x014F//伺服一圈脉冲数设置
+#define PAGE_CONFIG_ENCODE_LINE        0x0160//编码器线数
 
 #define PAGE_MAIN_DACOUT_ADD        0x0161
 #define PAGE_MAIN_DACOUT_SUB        0x0162
@@ -380,6 +380,5 @@ void sdew_weimi_page2(WEIMI_PARA *para);
 void sdew_weisha_page1(WEIMI_PARA *para);
 void sdew_weisha_page2(WEIMI_PARA *para);
 void Sdwe_ratio_display(DEVICE_INFO *para);
-void Sdwe_sevro_pulse_display(DEVICE_INFO *para);
 void init_sense_clear(void);
 #endif

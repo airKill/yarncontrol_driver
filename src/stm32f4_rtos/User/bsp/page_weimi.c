@@ -30,7 +30,8 @@ u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
   //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
   //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
 //  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
-  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * SERVOMOTOR_DIV / para->wei_cm_set[num] / CIRCLE_LENGTH);
+//  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * SERVOMOTOR_DIV / para->wei_cm_set[num] / CIRCLE_LENGTH);
+  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * device_info.ratio.sevro_circle_count / para->wei_cm_set[num] / device_info.ratio.perimeter);
   return stepcount;
 }
 

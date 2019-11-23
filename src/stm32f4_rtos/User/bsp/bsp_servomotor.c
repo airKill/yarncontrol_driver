@@ -306,16 +306,21 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   NVIC_Init(&NVIC_InitStructure);
 }
 
-void ServoMotorRunning(u16 stepnum,u8 dir)
+u16 get_ServoMotor_freq(u16 value)
+{
+  u16 tmp;
+  tmp = 42000 / value;//PWM频率=84MHZ/2/频率=定时器值
+  return tmp;
+}
+
+void ServoMotorRunning(u16 freq,u16 stepnum,u8 dir)
 {
   if(dir == FORWARD)
     SERVO_FORWARD();
   else
     SERVO_BACKWARD();
-//  TIM4_PWM_Config(FREQ_500KHZ,FORWARD_PWM);
-  TIM4_PWM_Config(FREQ_200KHZ,FORWARD_PWM);
-//  TIM4_CH1_PWMDMA_Config(FREQ_500KHZ,stepnum);
-  TIM4_CH1_PWMDMA_Config(FREQ_200KHZ,stepnum);
+  TIM4_PWM_Config(freq,FORWARD_PWM);
+  TIM4_CH1_PWMDMA_Config(freq,stepnum);
   TIM4_CH1_StartPwmOut();
 }
 

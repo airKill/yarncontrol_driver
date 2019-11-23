@@ -39,7 +39,7 @@
 #define SERVO_FORWARD()  GPIO_SetBits(GPIO_PORT_SERVOMOTOR4,GPIO_PIN_SERVOMOTOR4)
 #define SERVO_BACKWARD() GPIO_ResetBits(GPIO_PORT_SERVOMOTOR4,GPIO_PIN_SERVOMOTOR4)
 
-void ServoMotorRunning(u16 stepnum,u8 dir);
+void ServoMotorRunning(u16 freq,u16 stepnum,u8 dir);
 void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num);
 void TIM4_CH1_StartPwmOut(void);
 void TIM4_CH1_StopPwmOut(void);
@@ -58,4 +58,5 @@ void SEVRO_PWM_Continue(u32 per);
 void ServoMotor_adjust_speed(u32 value);
 void ServoMotor_start(u32 per);
 void Sevro_PWM_Config(void);
+u16 get_ServoMotor_freq(u16 value);
 #endif

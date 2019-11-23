@@ -74,7 +74,7 @@ void ENC_Init(void)
   
   TIM_TimeBaseStructure.TIM_Prescaler = 0;  // 42 prescaling 
 //  TIM_TimeBaseStructure.TIM_Period = 3600;
-  TIM_TimeBaseStructure.TIM_Period = (4 * ENCODER_PPR) - 1;  
+  TIM_TimeBaseStructure.TIM_Period = (4 * device_info.ratio.encode_line) - 1;  
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   
   TIM_TimeBaseInit(ENCODER_TIMER, &TIM_TimeBaseStructure);
@@ -182,18 +182,18 @@ s16 ENC_Calc_Rot_Speed(void)
     if((ENCODER_TIMER->CR1 & TIM_CounterMode_Down) == TIM_CounterMode_Down)
     {// encoder timer down-counting
       wDelta_angle = (s32)(hCurrent_angle_sample_one - hPrevious_angle - 
-                    (hEnc_Timer_Overflow_sample_one) * (4 * ENCODER_PPR));
+                    (hEnc_Timer_Overflow_sample_one) * (4 * device_info.ratio.encode_line));
     }
     else  
     {//encoder timer up-counting
       wDelta_angle = (s32)(hCurrent_angle_sample_one - hPrevious_angle + 
-                    (hEnc_Timer_Overflow_sample_one) * (4 * ENCODER_PPR));
+                    (hEnc_Timer_Overflow_sample_one) * (4 * device_info.ratio.encode_line));
     }
     
     // speed computation as delta angle * 1/(speed sempling time)
     temp = (signed long long)(wDelta_angle * 6000);
 //    temp *= 10;  // 0.1 Hz resolution
-    temp /= (4 * ENCODER_PPR);
+    temp /= (4 * device_info.ratio.encode_line);
         
   } //is first measurement, discard it
   else
@@ -282,11 +282,11 @@ void TIM8_UP_TIM13_IRQHandler(void)
     }
     TIM_ClearFlag(ENCODER_TIMER, TIM_FLAG_Update);
 //    if(speed_zhu > 0)
-//    {
-//      xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
-//      /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-//      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-//    }
+    {
+      xSemaphoreGiveFromISR(xSemaphore_encoder, &xHigherPriorityTaskWoken);
+      /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
   }
 }
 

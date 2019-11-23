@@ -72,7 +72,10 @@ typedef struct
 
 typedef struct
 {
-  u8 GEAR1;
+  float perimeter;//滚筒周长
+  u16 pluse_freq;//脉冲频率（KHZ）
+  u16 sevro_circle_count;//伺服一圈脉冲数
+  u16 encode_line;//编码器线数
 }GEAR_RATIO;
 
 typedef struct
@@ -94,7 +97,6 @@ typedef struct
   u8 page_count_select;  
   u8 onoff[30];
   u8 file_select[10];
-  u16 sevro_stop_pluse;
   FUNCTION_ONOFF func_onoff; 
   u8 page_enable_onoff[3];//0:经纱页面，1：产能页面，2：纬密页面
   GEAR_RATIO ratio;

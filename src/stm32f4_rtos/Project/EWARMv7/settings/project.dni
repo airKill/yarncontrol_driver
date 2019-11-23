@@ -14,7 +14,7 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 [DebugChecksum]
-Checksum=841930003
+Checksum=-1149898631
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -45,12 +45,11 @@ ITMlogFile=$PROJ_DIR$\ITM.log
 Fmt0=DEVICE_INFO-isfirst	4	0
 Fmt1=FUNCTION_ONOFF-channeng	4	0
 Fmt2=FUNCTION_ONOFF-weimi	4	0
-Fmt3=GEAR_RATIO-GEAR1	3	0
-Fmt4=RTC_TIME-month	4	0
-Fmt5=RTC_TIME-year	4	0
-Fmt6=SLAVE-addr	4	0
-Fmt7=SLAVE-reg	4	0
-Fmt8=m_frame_typedef-datalen	4	0
+Fmt3=RTC_TIME-month	4	0
+Fmt4=RTC_TIME-year	4	0
+Fmt5=SLAVE-addr	4	0
+Fmt6=SLAVE-reg	4	0
+Fmt7=m_frame_typedef-datalen	4	0
 [array_types]
 Fmt0=u8[100]	4	0
 Fmt1=u8[11]	4	0
