@@ -105,9 +105,9 @@ u32 get_sevro_step(float speed)
   u32 count;
   if(speed > 0)
   {
-//    freq = speed / 60 * 1000;
-//    count = 4000000 / freq;
-    count = 240000 / speed;
+    freq = speed / 60 * device_info.ratio.sevro_circle_count;
+    count = 4000000 / freq;
+//    count = 240000 / speed;
   }
   else
     count = 0;
