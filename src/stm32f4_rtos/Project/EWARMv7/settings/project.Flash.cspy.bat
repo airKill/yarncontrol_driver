@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.general.xcl" --backend -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "F:\work\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.general.xcl" --backend -f "F:\work\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.general.xcl" "--debug_file=%~1" --backend -f "E:\WORK\YarnControl_Driver\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "F:\work\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.general.xcl" "--debug_file=%~1" --backend -f "F:\work\YarnControl_Driver\src\stm32f4_rtos\Project\EWARMv7\settings\project.Flash.driver.xcl" 
 
 @echo off 
 :end

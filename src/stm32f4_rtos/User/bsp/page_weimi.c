@@ -96,6 +96,13 @@ u16 get_main_speed(float freq)
   return speed;
 }
 
+float get_servo_speed(float speed)
+{
+  float servo_speed;
+  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+  return servo_speed;
+}
+
 //将转速转换为伺服电机步数
 //输入：speed 转/分钟
 //输出：count 步数

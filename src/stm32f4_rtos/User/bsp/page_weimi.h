@@ -84,4 +84,5 @@ u8 get_max_type(u8 *buf);
 u32 get_sevro_step(float speed);
 void reset_seg_to_1(void);
 void weisha_reset_to_seg1(u8 weisha_num);
+float get_servo_speed(float speed);
 #endif
