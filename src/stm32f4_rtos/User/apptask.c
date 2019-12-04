@@ -3127,8 +3127,10 @@ static void vTaskMotorControl(void *pvParameters)
                     servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1];
                   }
                 }
-                servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差  
-                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+//                servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差  
+//                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+                servo_speed_diff = servo_diff * SERVOMOTOR_GEAR;//计算相邻段号步进电机运行频率差  
+                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR;
 //                servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
 //                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                 servomotor_guodu = 1;
@@ -3179,8 +3181,10 @@ static void vTaskMotorControl(void *pvParameters)
                     symbol_servo = 1;
                     servo_diff = (1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg]) - (1.0 / weimi_para.wei_cm_set[0]);
                   }
-                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差
-                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR;//计算相邻段号步进电机运行频率差
+                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR;
+//                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差
+//                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
                   servomotor_guodu = 1;
                   //                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }

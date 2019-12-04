@@ -99,7 +99,8 @@ u16 get_main_speed(float freq)
 float get_servo_speed(float speed)
 {
   float servo_speed;
-  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR;
+//  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
   return servo_speed;
 }
 
