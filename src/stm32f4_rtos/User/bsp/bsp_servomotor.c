@@ -8,7 +8,7 @@ void TIM4_CH1_ConfigPwmOut(u32 freq,u16 num)
   //  period = SystemCoreClock / TIM_Prescaler / freq / 2; 
   period = freq;
   TIM4_CH1_GPIO_Configuration();
-  TIM4_CH1_PWMDMA_Config(period,num);
+//  TIM4_CH1_PWMDMA_Config(period,num);
 }
 
 void TIM4_CH1_StartPwmOut(void)
@@ -306,12 +306,12 @@ void TIM4_CH2_PWMDMA_Config(u16 period,u16 cnt)
   NVIC_Init(&NVIC_InitStructure);
 }
 
-u16 get_ServoMotor_freq(u16 value)
-{
-  u16 tmp;
-  tmp = 42000 / value;//PWM频率=84MHZ/2/频率=定时器值
-  return tmp;
-}
+//u16 get_ServoMotor_freq(u16 value)
+//{
+//  u16 tmp;
+//  tmp = 42000 / value;//PWM频率=84MHZ/2/频率=定时器值
+//  return tmp;
+//}
 
 void ServoMotorRunning(u16 freq,u16 stepnum,u8 dir)
 {

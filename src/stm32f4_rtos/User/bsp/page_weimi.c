@@ -16,24 +16,24 @@ u8 fault_weimi_flag = 0;
 
 const float SPEED_RADIO[3] = {SPEED_RADIO12,SPEED_RADIO12,SPEED_RADIO3};
 
-u16 servomotor_step = 0;
+//u16 servomotor_step = 0;
 //u8 isMotorStop = 0;
 //返回1纬时，伺服电机脉冲数
 //info:系统参数，包含滚筒和伺服电机齿轮比
 //para:电机配置参数，包含纬厘米设置
 //num:段号
-u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
-{
-  u16 stepcount = 0;
-  //10mm/滚筒周长=滚筒圈数
-  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
-  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
-  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
-//  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
-//  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * SERVOMOTOR_DIV / para->wei_cm_set[num] / CIRCLE_LENGTH);
-  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * device_info.ratio.sevro_circle_count / para->wei_cm_set[num] / device_info.ratio.perimeter);
-  return stepcount;
-}
+//u16 MotorStepCount(DEVICE_INFO *info,WEIMI_PARA *para,u8 num)
+//{
+//  u16 stepcount = 0;
+//  //10mm/滚筒周长=滚筒圈数
+//  //滚筒圈数*齿轮比1*齿轮比2=伺服电机圈数
+//  //伺服电机圈数*伺服细分数=1cm伺服电机脉冲数
+//  //1cm伺服电机脉冲数/纬厘米=1纬脉冲数
+////  stepcount = (u16)(10 / CIRCLE_LENGTH * info->ratio.GEAR1 * info->ratio.GEAR2 * SERVOMOTOR_DIV / para->wei_cm_set[num]);
+////  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * SERVOMOTOR_DIV / para->wei_cm_set[num] / CIRCLE_LENGTH);
+//  stepcount = (u16)(10.0 * SERVOMOTOR_GEAR * device_info.ratio.sevro_circle_count / para->wei_cm_set[num] / device_info.ratio.perimeter);
+//  return stepcount;
+//}
 
 void init_weimi_para(WEIMI_PARA *para,PEILIAO_PARA peiliao)
 {
@@ -96,13 +96,13 @@ u16 get_main_speed(float freq)
   return speed;
 }
 
-float get_servo_speed(float speed)
-{
-  float servo_speed;
-  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR;
-//  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
-  return servo_speed;
-}
+//float get_servo_speed(float speed)
+//{
+//  float servo_speed;
+//  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR;
+////  servo_speed = speed / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+//  return servo_speed;
+//}
 
 //将转速转换为伺服电机步数
 //输入：speed 转/分钟
@@ -163,10 +163,9 @@ u32 from_speed_step(float speed)
   u32 count;
   if(speed > 0)
   {
-//    freq = speed / 60 * 360 / 1.8 * 16;
-//    freq = speed * 3200 / 60;//步进电机细分数3200
-//    count = 4000000 / freq;
-    count = 75000 / speed;
+	freq = speed / 60 * device_info.ratio.sevro_circle_count;
+    count = 4000000 / freq;
+
   }
   else
     count = 0;

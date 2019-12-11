@@ -365,7 +365,7 @@ void Sdwe_peiliao_page(PEILIAO_PARA para)
 
 void Sdwe_ratio_display(DEVICE_INFO *para)
 {
-  Sdwe_disDigi(PAGE_CONFIG_PERIMETER,(int)(para->ratio.perimeter * 10),2);
+  Sdwe_disDigi(PAGE_CONFIG_RATIO1,(int)(para->ratio.GEAR1),2);
   Sdwe_disDigi(PAGE_CONFIG_PLUSE_PREQ,para->ratio.pluse_freq,2);
   Sdwe_disDigi(PAGE_CONFIG_SEVRO_PLUSE_CIRCLE,para->ratio.sevro_circle_count,2);
   Sdwe_disDigi(PAGE_CONFIG_ENCODE_LINE,para->ratio.encode_line,2);

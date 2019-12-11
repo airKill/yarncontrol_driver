@@ -29,7 +29,7 @@ void read_device_info(void)
     device_info.func_onoff.channeng = 1;
     device_info.func_onoff.weimi = 1;
     
-    device_info.ratio.perimeter = 251.2;
+    device_info.ratio.GEAR1 = 53;
     device_info.ratio.pluse_freq = 200;
     device_info.ratio.sevro_circle_count = 1000;
     device_info.ratio.encode_line = 600;
@@ -114,7 +114,7 @@ void default_device_para(void)
   device_info.func_onoff.channeng = 1;
   device_info.func_onoff.weimi = 1;
   
-  device_info.ratio.perimeter = 251.2;
+  device_info.ratio.GEAR1 = 53;
   device_info.ratio.pluse_freq = 200;
   device_info.ratio.sevro_circle_count = 1000;
   device_info.ratio.encode_line = 600;

@@ -1155,28 +1155,27 @@ void vTaskTaskLCD(void *pvParameters)
             {
               Sdwe_ratio_display(&device_info);
             }
-            else if(var_addr == PAGE_CONFIG_PERIMETER)
+            else if(var_addr == PAGE_CONFIG_RATIO1)
             {//滚筒周长设置
-              float cnt;
-              cnt = (float)((lcd_rev_buf[7] << 8) + lcd_rev_buf[8]) / 10.0;
-              device_info.ratio.perimeter = cnt;
-              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
-            }
-            else if(var_addr == PAGE_CONFIG_PLUSE_PREQ)
-            {//脉冲频率设置
               u16 cnt;
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
-              device_info.ratio.pluse_freq = cnt;
+              device_info.ratio.GEAR1 = cnt;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
             }
+//            else if(var_addr == PAGE_CONFIG_PLUSE_PREQ)
+//            {//脉冲频率设置
+//              u16 cnt;
+//              cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
+//              device_info.ratio.pluse_freq = cnt;
+//              W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
+//            }
             else if(var_addr == PAGE_CONFIG_SEVRO_PLUSE_CIRCLE)
             {//伺服一圈脉冲数设置
               u16 cnt;
               cnt = (lcd_rev_buf[7] << 8) + lcd_rev_buf[8];
               device_info.ratio.sevro_circle_count = cnt;
               W25QXX_Write((u8 *)&device_info,(u32)W25QXX_ADDR_INFO,sizeof(device_info));
-              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
+//              servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
             }
             else if(var_addr == PAGE_CONFIG_ENCODE_LINE)
             {//编码器线数
@@ -1521,7 +1520,7 @@ void vTaskTaskLCD(void *pvParameters)
                   {
                     MotorProcess.wei_cm_set = weimi_para.wei_cm_set[MotorProcess.current_seg];
                   }
-                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
+//                  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
                 }
                 
                 if((var_addr - PAGE_WEIMI_WEI_CM_1) == 0)
@@ -2961,16 +2960,16 @@ void vTaskManageCapacity(void *pvParameters)
 static void vTaskMotorControl(void *pvParameters)
 {
   BaseType_t xResult;
-  u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
-  u16 servo_diff;//伺服电机过渡期纬差
+  //  u16 servo_per_wei_src;//伺服电机过渡期不仅数每纬
+  //  u16 servo_diff;//伺服电机过渡期纬差
   //  u8 symbol_servo = 0;
   
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(200); /* 设置最大等待时间为200ms */
   vTaskDelay(200);
-  TIM4_CH1_ConfigPwmOut(get_ServoMotor_freq(device_info.ratio.pluse_freq),10);
+  TIM4_CH1_ConfigPwmOut(FREQ_500KHZ,10);
   
   get_weimi_para(&weimi_para,&device_info,&MotorProcess);//获取当前参数
-  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
+  //  servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//获取段号对应的脉冲数/纬
   valid_seg[0] = get_valid_seg(weimi_para);
   valid_seg[1] = get_songwei0_maxseg(weimi_para);
   valid_seg[2] = get_songwei1_maxseg(weimi_para);
@@ -3102,234 +3101,232 @@ static void vTaskMotorControl(void *pvParameters)
                     continue;
                   }
                   u16 value1,value2;
-                  
-                  if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
-                  {//纬密越小速度越高
-                    symbol_servo = 0;
-                    servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                  if(MotorProcess.current_seg == 9)
+                  { 
+                    if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    {//纬密越小速度越高
+                      symbol_servo = 0;
+                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                    }
+                    else
+                    {
+                      symbol_servo = 1;
+                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[0];
+                    }
                   }
                   else
                   {
-                    symbol_servo = 1;
-                    servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[0];
+                    if(weimi_para.wei_cm_set[MotorProcess.current_seg + 1] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    {
+                      symbol_servo = 0;
+                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                    }
+                    else
+                    {
+                      symbol_servo = 1;
+                      servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1];
+                    }
                   }
-                }
-                else
-                {
-                  if(weimi_para.wei_cm_set[MotorProcess.current_seg + 1] < weimi_para.wei_cm_set[MotorProcess.current_seg])
-                  {
-                    symbol_servo = 0;
-                    servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
-                  }
-                  else
-                  {
-                    symbol_servo = 1;
-                    servo_diff = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg + 1];
-                  }
-                }
-//                servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差  
-//                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
-                servo_speed_diff = servo_diff * SERVOMOTOR_GEAR;//计算相邻段号步进电机运行频率差  
-                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR;
-//                servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
-//                servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
-                servomotor_guodu = 1;
-                //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-              }
-              else
-              {//如果是段，总纬号为段循环号
-                MotorProcess.current_seg++;//进入下一段号
-                if(MotorProcess.current_seg >= 10)
-                {
-                  MotorProcess.current_seg = 0;
-                }
-                MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg * 2];
-                if(MotorProcess.total_wei == 0)//循环号设置为0，错误
-                {
-                  fault_weimi_flag = 1;
-                  continue;
-                }
-                servomotor_guodu = 0;
-//                servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
-                //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-              }
-            }
-            else
-            {
-              MotorProcess.wei_cm_set = weimi_para.wei_cm_set[0];
-              if(servomotor_guodu == 0)
-              {
-                if(MotorProcess.current_seg == 0)
-                {
-                  MotorProcess.total_wei = weimi_para.total_wei_count[0];
-                }
-                else
-                {
-                  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg * 2 + 1];
-                  if(MotorProcess.total_wei == 0)//过渡循环号设置为0，错误
-                  {
-                    fault_weimi_flag = 1;
-                    continue;
-                  }
-                  if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
-                  {
-                    symbol_servo = 0;
-                    servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
-                  }
-                  else
-                  {
-                    symbol_servo = 1;
-                    servo_diff = (1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg]) - (1.0 / weimi_para.wei_cm_set[0]);
-                  }
-                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR;//计算相邻段号步进电机运行频率差
-                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR;
-//                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差
-//                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+                  servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差  
+                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
                   servomotor_guodu = 1;
-                  //                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-                }
-              }
-              else
-              {//如果是段，总纬号为段循环号
-                MotorProcess.current_seg = 0;//进入下一段号
-                MotorProcess.total_wei = weimi_para.total_wei_count[0];
-                servomotor_guodu = 0;
-                //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
-//                servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
-              }
-            }
-          }
-          
-          u8 i;
-          u16 ratio_diff[3];
-          for(i=0;i<3;i++)
-          {
-            if(stepmotor_guodu[i] > 0)
-            {
-              float step_speed;
-              u32 sstep;//步进电机转速，转/分钟
-              if(symbol[i] == 0)//速度增加
-                step_speed = speed_zhu * (pluse_step_src[i] + (float)speed_diff[i] / MotorProcess.song_total_wei[i] * MotorProcess.song_current_wei[i]);
-              else//速度减少
-                step_speed = speed_zhu * (pluse_step_src[i] - (float)speed_diff[i] / MotorProcess.song_total_wei[i] * MotorProcess.song_current_wei[i]);
-              sstep = from_speed_step(step_speed);//计算速度对应的脉冲数
-              StepMotor_adjust_speed(STEPMOTOR1 + i,sstep); //定时器发送PWM
-              //                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
-            }
-            if(MotorProcess.song_current_wei[i] >= MotorProcess.song_total_wei[i])
-            {
-              MotorProcess.song_current_wei[i] = 0;
-              if(MotorProcess.songwei_seg[i] == 9)
-                MotorProcess.step_factor[i] = weimi_para.step_factor[i][0];
-              else
-                MotorProcess.step_factor[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1];
-              if(MotorProcess.step_factor[i] >= 2)
-              {//速比大于0
-                if(stepmotor_guodu[i] == 0)
-                {//如果是过渡段，总纬号为段过渡循环号
-                  MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2 + 1];
-                  if(MotorProcess.song_total_wei[i] == 0)//过渡循环号设置为0，错误
-                  {
-                    fault_weimi_flag = 1;
-                    continue;
-                  }
-                  if(MotorProcess.songwei_seg[i] == 9)
-                  {
-                    if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
-                    {
-                      symbol[i] = 0;
-                      ratio_diff[i] = weimi_para.step_factor[i][0] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
-                    }
-                    else
-                    {
-                      symbol[i] = 1;
-                      ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][0];
-                    }
-                  }
-                  else
-                  {
-                    if(weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
-                    {
-                      symbol[i] = 0;
-                      ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
-                    }
-                    else
-                    {
-                      symbol[i] = 1;
-                      ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1];
-                    }
-                  }
-                  speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
-                  pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
-                  stepmotor_guodu[i] = 1;
-                  //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                  //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
                 else
                 {//如果是段，总纬号为段循环号
-                  MotorProcess.songwei_seg[i]++;//进入下一段号
-                  if(MotorProcess.songwei_seg[i] >= 10)
+                  MotorProcess.current_seg++;//进入下一段号
+                  if(MotorProcess.current_seg >= 10)
                   {
-                    MotorProcess.songwei_seg[i] = 0;
+                    MotorProcess.current_seg = 0;
                   }
-                  MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2];
-                  if(MotorProcess.song_total_wei[i] == 0)//循环号设置为0，错误
+                  MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg * 2];
+                  if(MotorProcess.total_wei == 0)//循环号设置为0，错误
                   {
                     fault_weimi_flag = 1;
                     continue;
                   }
-                  stepmotor_guodu[i] = 0;
-                  //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                  servomotor_guodu = 0;
+                  //                servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
+                  //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
                 }
               }
               else
               {
-                MotorProcess.step_factor[i] = weimi_para.step_factor[i][0];
-                if(stepmotor_guodu[i] == 0)
+                MotorProcess.wei_cm_set = weimi_para.wei_cm_set[0];
+                if(servomotor_guodu == 0)
                 {
-                  if(MotorProcess.songwei_seg[i] == 0)
+                  if(MotorProcess.current_seg == 0)
                   {
-                    MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
+                    MotorProcess.total_wei = weimi_para.total_wei_count[0];
                   }
                   else
                   {
+                    MotorProcess.total_wei = weimi_para.total_wei_count[MotorProcess.current_seg * 2 + 1];
+                    if(MotorProcess.total_wei == 0)//过渡循环号设置为0，错误
+                    {
+                      fault_weimi_flag = 1;
+                      continue;
+                    }
+                    if(weimi_para.wei_cm_set[0] < weimi_para.wei_cm_set[MotorProcess.current_seg])
+                    {
+                      symbol_servo = 0;
+                      servo_diff = 1.0 / weimi_para.wei_cm_set[0] - 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg];
+                    }
+                    else
+                    {
+                      symbol_servo = 1;
+                      servo_diff = (1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg]) - (1.0 / weimi_para.wei_cm_set[0]);
+                    }
+                    servo_speed_diff = servo_diff * device_info.ratio.GEAR1;//计算相邻段号步进电机运行频率差
+                    servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * device_info.ratio.GEAR1;
+                    //                  servo_speed_diff = servo_diff * SERVOMOTOR_GEAR / device_info.ratio.perimeter;//计算相邻段号步进电机运行频率差
+                    //                  servo_per_wei_src = 1.0 / weimi_para.wei_cm_set[MotorProcess.current_seg] * SERVOMOTOR_GEAR / device_info.ratio.perimeter;
+                    servomotor_guodu = 1;
+                    //                    device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+                  }
+                }
+                else
+                {//如果是段，总纬号为段循环号
+                  MotorProcess.current_seg = 0;//进入下一段号
+                  MotorProcess.total_wei = weimi_para.total_wei_count[0];
+                  servomotor_guodu = 0;
+                  //                  device_info.weimi_info.guodu_flag[0] = servomotor_guodu;
+                  //                servomotor_step = MotorStepCount(&device_info,&weimi_para,MotorProcess.current_seg);//计算伺服电机脉冲数
+                }
+              }
+            }
+            
+            u8 i;
+            u16 ratio_diff[3];
+            for(i=0;i<3;i++)
+            {
+              if(stepmotor_guodu[i] > 0)
+              {
+                float step_speed;
+                u32 sstep;//步进电机转速，转/分钟
+                if(symbol[i] == 0)//速度增加
+                  step_speed = speed_zhu * (pluse_step_src[i] + (float)speed_diff[i] / MotorProcess.song_total_wei[i] * MotorProcess.song_current_wei[i]);
+                else//速度减少
+                  step_speed = speed_zhu * (pluse_step_src[i] - (float)speed_diff[i] / MotorProcess.song_total_wei[i] * MotorProcess.song_current_wei[i]);
+                sstep = from_speed_step(step_speed);//计算速度对应的脉冲数
+                StepMotor_adjust_speed(STEPMOTOR1 + i,sstep); //定时器发送PWM
+                //                printf("motor%d speed %d guodu is %d\r\n",i,speed_zhu,sstep);
+              }
+              if(MotorProcess.song_current_wei[i] >= MotorProcess.song_total_wei[i])
+              {
+                MotorProcess.song_current_wei[i] = 0;
+                if(MotorProcess.songwei_seg[i] == 9)
+                  MotorProcess.step_factor[i] = weimi_para.step_factor[i][0];
+                else
+                  MotorProcess.step_factor[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1];
+                if(MotorProcess.step_factor[i] >= 2)
+                {//速比大于0
+                  if(stepmotor_guodu[i] == 0)
+                  {//如果是过渡段，总纬号为段过渡循环号
                     MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2 + 1];
                     if(MotorProcess.song_total_wei[i] == 0)//过渡循环号设置为0，错误
                     {
                       fault_weimi_flag = 1;
                       continue;
                     }
-                    if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
+                    if(MotorProcess.songwei_seg[i] == 9)
                     {
-                      symbol[i] = 0;
-                      ratio_diff[i] = weimi_para.step_factor[i][0] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                      if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
+                      {
+                        symbol[i] = 0;
+                        ratio_diff[i] = weimi_para.step_factor[i][0] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                      }
+                      else
+                      {
+                        symbol[i] = 1;
+                        ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][0];
+                      }
                     }
                     else
                     {
-                      symbol[i] = 1;
-                      ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][0];
+                      if(weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
+                      {
+                        symbol[i] = 0;
+                        ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                      }
+                      else
+                      {
+                        symbol[i] = 1;
+                        ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i] + 1];
+                      }
                     }
                     speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
                     pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
                     stepmotor_guodu[i] = 1;
-                    //                      device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                    //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                  }
+                  else
+                  {//如果是段，总纬号为段循环号
+                    MotorProcess.songwei_seg[i]++;//进入下一段号
+                    if(MotorProcess.songwei_seg[i] >= 10)
+                    {
+                      MotorProcess.songwei_seg[i] = 0;
+                    }
+                    MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2];
+                    if(MotorProcess.song_total_wei[i] == 0)//循环号设置为0，错误
+                    {
+                      fault_weimi_flag = 1;
+                      continue;
+                    }
+                    stepmotor_guodu[i] = 0;
+                    //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
                   }
                 }
                 else
-                {//如果是段，总纬号为段循环号
-                  MotorProcess.songwei_seg[i] = 0;//进入下一段号
-                  MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
-                  stepmotor_guodu[i] = 0;
-                  //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                {
+                  MotorProcess.step_factor[i] = weimi_para.step_factor[i][0];
+                  if(stepmotor_guodu[i] == 0)
+                  {
+                    if(MotorProcess.songwei_seg[i] == 0)
+                    {
+                      MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
+                    }
+                    else
+                    {
+                      MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[MotorProcess.songwei_seg[i] * 2 + 1];
+                      if(MotorProcess.song_total_wei[i] == 0)//过渡循环号设置为0，错误
+                      {
+                        fault_weimi_flag = 1;
+                        continue;
+                      }
+                      if(weimi_para.step_factor[i][0] >= weimi_para.step_factor[i][MotorProcess.songwei_seg[i]])
+                      {
+                        symbol[i] = 0;
+                        ratio_diff[i] = weimi_para.step_factor[i][0] - weimi_para.step_factor[i][MotorProcess.songwei_seg[i]];
+                      }
+                      else
+                      {
+                        symbol[i] = 1;
+                        ratio_diff[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] - weimi_para.step_factor[i][0];
+                      }
+                      speed_diff[i] = ratio_diff[i] * SPEED_RADIO[i];//计算相邻段号步进电机运行频率差
+                      pluse_step_src[i] = weimi_para.step_factor[i][MotorProcess.songwei_seg[i]] * SPEED_RADIO[i];
+                      stepmotor_guodu[i] = 1;
+                      //                      device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                    }
+                  }
+                  else
+                  {//如果是段，总纬号为段循环号
+                    MotorProcess.songwei_seg[i] = 0;//进入下一段号
+                    MotorProcess.song_total_wei[i] = weimi_para.total_wei_count[0];
+                    stepmotor_guodu[i] = 0;
+                    //                    device_info.weimi_info.guodu_flag[i + 1] = stepmotor_guodu[0];
+                  }
                 }
               }
             }
           }
         }
       }
+      xSemaphoreGive(xSemaphore_pluse);
     }
-    xSemaphoreGive(xSemaphore_pluse);
+    Task_iwdg_refresh(TASK_MotorControl);
   }
-  Task_iwdg_refresh(TASK_MotorControl);
 }
 
 static void vTaskFreq(void *pvParameters)
@@ -3475,7 +3472,7 @@ static void vTaskFreq(void *pvParameters)
               servo_count = 0;
             else
               //              servo_count = get_sevro_step((float)speed_zhu / MotorProcess.wei_cm_set * SERVOMOTOR_GEAR / device_info.ratio.perimeter);//计算步进电机脉冲频率
-              servo_count = get_sevro_step(get_servo_speed((float)speed_zhu));
+              servo_count = get_sevro_step((float)speed_zhu / MotorProcess.wei_cm_set * device_info.ratio.GEAR1);
             if(servo_count == 0)
             {//电机3速度设置为0
               servo_stop = 0;

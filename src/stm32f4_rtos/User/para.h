@@ -72,7 +72,7 @@ typedef struct
 
 typedef struct
 {
-  float perimeter;//滚筒周长
+  u16 GEAR1;//滚筒周长
   u16 pluse_freq;//脉冲频率（KHZ）
   u16 sevro_circle_count;//伺服一圈脉冲数
   u16 encode_line;//编码器线数

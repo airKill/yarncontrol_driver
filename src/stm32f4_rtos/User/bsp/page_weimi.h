@@ -6,7 +6,7 @@
 #define CIRCLE_LENGTH   (PI * ROLLER_D)
 #define SERVOMOTOR_DIV  1000
 
-#define SERVOMOTOR_GEAR (44.0 / 9 * 28)
+//#define SERVOMOTOR_GEAR (44.0 / 9 * 28)
 
 #define SEVRO_RADIO     (1.0 / 10)
 
@@ -61,7 +61,7 @@ extern u16 speed_zhu1;
 extern u16 speed_zhu;
 extern u8 servomotor_guodu;
 extern u8 stepmotor_guodu[3];
-extern u16 servomotor_step;
+//extern u16 servomotor_step;
 extern u8 servomotor_dir;
 extern u8 servomotor_mode;
 extern u8 is_stop,old_is_stop;
@@ -84,5 +84,5 @@ u8 get_max_type(u8 *buf);
 u32 get_sevro_step(float speed);
 void reset_seg_to_1(void);
 void weisha_reset_to_seg1(u8 weisha_num);
-float get_servo_speed(float speed);
+//float get_servo_speed(float speed);
 #endif
