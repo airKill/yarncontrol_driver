@@ -30,6 +30,7 @@ typedef struct
 {
   u8 isfirst;
   u8 onoff;
+  u8 stop;
   u32 weight_value;
   float hx711_xishu;
   u32 hx711_offset;

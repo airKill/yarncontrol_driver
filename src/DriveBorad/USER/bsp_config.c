@@ -166,6 +166,7 @@ void Switch_LED_init(void)
   GPIO_Init(SWITCH_LED_PORT, &GPIO_InitStructure);
   
   SWITCH_LED_OFF();
+  device_info.stop = 0;
 }
 
 void TIM2_Configuration(void)

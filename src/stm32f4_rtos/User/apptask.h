@@ -59,6 +59,7 @@ typedef struct Msg
   u16 set_value;
   u16 hx711_offset;
   u8 onoff;
+  u8 stop;
 }SLAVE;
 
 typedef enum

@@ -2578,6 +2578,10 @@ static void vTaskMsgPro(void *pvParameters)
                     RELAY_CLOSE();//采集重量超过设定重量时，闭合继电器，机器停止工作
                   }
                 }
+                if(readSlave.stop == 1)
+                {
+                  RELAY_CLOSE();//驱动板到1号开关后，继电器闭合，机器停止工作
+                }
               }
             }
           }

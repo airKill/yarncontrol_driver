@@ -88,7 +88,7 @@ void mb_packsend_frame(m_frame_typedef *fx)
   u16 framelen=0;				//打包后的帧长度
   u8 sendbuf[10];				//发送缓冲区
   if(fx->reg == REG_VALUE_WEIGHT)
-    fx->datalen = 7;
+    fx->datalen = 8;
   framelen = 5 + fx->datalen;
   sendbuf[0] = fx->address;
   sendbuf[1] = fx->function;
@@ -185,6 +185,7 @@ void modbus_action(m_frame_typedef *fx,u16 weight)
         fx->data[4] = ((device_info.hx711_offset / 10) & 0xff00) >> 8;
         fx->data[5] = (device_info.hx711_offset / 10) & 0xff;
         fx->data[6] = device_info.onoff;
+        fx->data[7] = device_info.stop;
         mb_packsend_frame(fx);
         printf("read weight is %d\r\n",weight);
       }
